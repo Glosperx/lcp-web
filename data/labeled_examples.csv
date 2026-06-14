@@ -1,0 +1,15 @@
+text_name,token,lemma,complexity
+Arg_PISACowsMilk,Imaginează,Imaginează,0.340909090909091
+Arg_PISACowsMilk,cafenea,cafenea,0.113636363636364
+Arg_PISACowsMilk,tineri,tânăr,0.125
+Enc_WikiMoon,enciclopedia,enciclopedie,0.340909090909091
+Enc_WikiMoon,satelit,satelit,0.272727272727273
+Enc_WikiMoon,Pământului,Pământ,0.159090909090909
+Enc_WikiMoon,Luna,lună,0.0147058823529411
+Lit_NorthWind,putu,putea,0.545454545454545
+Lit_NorthWind,călătorul,călător,0.204545454545454
+Lit_NorthWind,suflă,sufla,0.1875
+Lit_NorthWind,final,final,0.113636363636364
+Lit_NorthWind,Nord,nord,0.133333333333333
+Lit_NorthWind,jurul,jur,0.204545454545454
+Lit_NorthWind,haina,haină,0.0454545454545454

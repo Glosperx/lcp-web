@@ -1,0 +1,15 @@
+text_name,token,llm_cx
+Arg_PISACowsMilk,Imaginează,0.3584033399897195
+Arg_PISACowsMilk,cafenea,0.2794764230849116
+Arg_PISACowsMilk,tineri,0.3133088352419162
+Enc_WikiMoon,enciclopedia,0.3814543828219027
+Enc_WikiMoon,satelit,0.3468664558806278
+Enc_WikiMoon,Pământului,0.3361513834185044
+Enc_WikiMoon,Luna,0.2656146345287157
+Lit_NorthWind,putu,0.4126894687079525
+Lit_NorthWind,călătorul,0.3652658156269817
+Lit_NorthWind,suflă,0.3466958995962916
+Lit_NorthWind,final,0.409521287143639
+Lit_NorthWind,Nord,0.3512482062375731
+Lit_NorthWind,jurul,0.4288160415019541
+Lit_NorthWind,haina,0.3116997154576724

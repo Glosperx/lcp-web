@@ -1,0 +1,30 @@
+# =============================================================================
+# Repo PRIVAT. Datele oferite de competitie sunt versionate (privat != public).
+# MLSP ramane exclus (gated pe HF, nu se redistribuie) + cache mare derivat.
+# =============================================================================
+
+# --- MLSP/MultiLS gated pe HuggingFace (nu se redistribuie) ---
+data/mlsp/
+
+# --- CompLex EN: public oricum (descarcabil din cod), nu-l versionam ---
+data/complex_en/
+
+# --- Cache mare/derivat (embeddings) ---
+*.npy
+data/cwi_en/
+
+# --- Pastrate (munca ta, doar id+scor, necesare reproducerii bit-exact): ---
+#   data/crosslingual_test.csv
+#   data/crosslingual_mlsponly_test.csv
+#   data/llm_complexity_test.csv
+#   output/*.csv
+# (NU sunt ignorate intentionat — sunt predictiile tale, nu datele competitiei.)
+
+# --- Cod vechi de dezvoltare (optional pe GitHub) ---
+_arhiva_dezvoltare/
+
+# --- Python / secrete ---
+__pycache__/
+*.pyc
+*.token
+.env
