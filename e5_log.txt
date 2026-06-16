@@ -1,0 +1,2 @@
+[recompute] enc=e5 emb=last4 feats=base tag='e5_last4_base' (reuse_llm=True; descarc CompLex + encoder; GPU)
+Salvat C:\Users\glosper\Documents\pred_eye\output/exp_e5.csv: 1587 randuri, variant=best, enc=e5, emb=last4, feats=base, surp_w=0.0, answer mean=0.270 std=0.125 (NaN=0)

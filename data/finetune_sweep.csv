@@ -1,0 +1,15 @@
+cfg,model,lr,epochs,freeze,transfer_en2ml,sec
+base_lr1e-05_ep3_fz0,base,1e-05,3,0,0.4155,271
+base_lr1e-05_ep3_fz6,base,1e-05,3,6,0.3691,92
+base_lr1e-05_ep5_fz0,base,1e-05,5,0,0.4235,394
+base_lr1e-05_ep5_fz6,base,1e-05,5,6,0.3757,161
+base_lr2e-05_ep3_fz0,base,2e-05,3,0,0.4139,245
+base_lr2e-05_ep3_fz6,base,2e-05,3,6,0.3994,91
+base_lr2e-05_ep5_fz0,base,2e-05,5,0,0.4495,357
+base_lr2e-05_ep5_fz6,base,2e-05,5,6,0.4054,148
+base_lr3e-05_ep3_fz0,base,3e-05,3,0,0.4332,217
+base_lr3e-05_ep3_fz6,base,3e-05,3,6,0.4179,90
+base_lr3e-05_ep5_fz0,base,3e-05,5,0,0.4609,364
+base_lr3e-05_ep5_fz6,base,3e-05,5,6,0.4318,141
+large_lr1e-05_ep3_fz0,large,1e-05,3,0,-0.0288,6445
+large_lr1e-05_ep3_fz12,large,1e-05,3,12,0.2029,243

@@ -1,0 +1,14 @@
+feature,corr_raw_vs_best,corr_ctrl_freqlen,n,verdict
+is_content,-0.0294,0.077,1587,redundant
+is_noun,-0.0606,-0.0788,1587,redundant
+is_verb,-0.016,0.0733,1587,redundant
+is_adj,0.0744,0.0503,1587,redundant
+is_adv,0.031,-0.007,1587,redundant
+is_propn,0.1487,0.0385,1587,redundant
+n_morph,-0.0153,-0.0479,1587,redundant
+is_entity,-0.0682,-0.1395,1587,candidate
+polysemy,-0.2836,0.0458,1587,redundant
+in_wordnet,-0.3851,0.0502,1587,redundant
+n_synonyms,-0.2404,0.0614,1587,redundant
+n_antonyms,-0.2059,0.0594,1587,redundant
+hyper_depth,-0.1795,0.0018,1587,redundant

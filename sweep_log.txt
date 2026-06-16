@@ -1,0 +1,7 @@
+[transfer_eval] emb=last4    feats=base             | EN->ML 0.5148 | ML->EN 0.5876 | transfer_avg 0.5512 | cvEN 0.7829 | cvML 0.6115
+[transfer_eval] emb=mid      feats=base             | EN->ML 0.5219 | ML->EN 0.5898 | transfer_avg 0.5558 | cvEN 0.7823 | cvML 0.6022
+[transfer_eval] emb=concat4  feats=base             | EN->ML 0.4888 | ML->EN 0.5714 | transfer_avg 0.5301 | cvEN 0.7775 | cvML 0.6318
+[transfer_eval] emb=ctxiso   feats=base             | EN->ML 0.5089 | ML->EN 0.5760 | transfer_avg 0.5425 | cvEN 0.7870 | cvML 0.6013
+[transfer_eval] emb=last4    feats=oov              | EN->ML 0.5152 | ML->EN 0.5896 | transfer_avg 0.5524 | cvEN 0.7829 | cvML 0.6116
+[transfer_eval] emb=last4    feats=oov+phon         | EN->ML 0.5149 | ML->EN 0.5896 | transfer_avg 0.5522 | cvEN 0.7828 | cvML 0.6114
+[transfer_eval] emb=last4    feats=morph+oov+phon   | EN->ML 0.5149 | ML->EN 0.5895 | transfer_avg 0.5522 | cvEN 0.7828 | cvML 0.6114

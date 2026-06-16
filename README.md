@@ -71,7 +71,9 @@ doar in pasul de distilare, care a fost eliminat (vezi mai jos). Concluzie: supe
 | wA = EN cross-lingual + LLM + distilare | 63.16 | r~0.730 |
 | B1 = RO (MLSP) cross-lingual + LLM + distilare | 63.67 | romanic > englez |
 | b2 = ensemble EN+RO + LLM + distilare | 64.41 | ensemble bate ambele |
-| **best = ensemble EN+RO + LLM, FARA distilare** | **64.52** | **r~0.741, solutia finala** |
+| best = ensemble EN+RO + LLM, FARA distilare | 64.52 | r~0.741, finala veche |
+| best + surprisal RoLlama3 (w=0.08) | 64.81 | semnal C independent (corr 0.068 cu LLM); varf 0.08-0.10 |
+| **+ frecventa constienta de lema (`--lemma-freq`)** | **68.90** | **+4.09; repara flexiunea RO (186 OOV, max(zipf_token,zipf_lema)); ghidat de SHAP** |
 
 ---
 
@@ -98,6 +100,24 @@ doar in pasul de distilare, care a fost eliminat (vezi mai jos). Concluzie: supe
 - **xlm-roberta-large**: EN-test r mai mare, dar transfer pe RO mai PROST (overfit pe EN). base castiga.
 - **Antrenare pe cele 14 etichete**: overfit garantat.
 - **ET ca semnal direct** (PC1 eye-tracking): slabeste blend-ul multi-sursa.
+
+**Runda 2 (gate transfer cross-sursa; candidati):**
+- Gate gratis = `transfer_eval` (train CompLex EN <-> test MLSP Romance, r real). Baseline XLM-R
+  transfer_avg = 0.5512.
+- **Micro-tuning XLM-R = saturat**: `mid`(layere 6-9) a castigat la gate (+0.0046) dar a PICAT public
+  (64.49<64.52). `concat4`/`ctxiso` mai proaste. features `oov/phon/morph` ~zgomot.
+- **Encoder e5** (`intfloat/multilingual-e5-base`) = castigator la gate (transfer_avg 0.5855, +0.0343) DAR
+  **PICAT public: 63.00 < 64.52**. Gate-ul masoara transfer EN<->Romanic, nu ->RO; swap-ul de model nu
+  generalizeaza la RO. Axa "embedding la nivel de model" = moarta pt RO. (LaBSE marginal, netestat.)
+- **Surprisal RoLlama3 (semnal C) = CASTIGATOR**: independent de rating (corr 0.068, mult sub 0.82 al
+  distilarii esuate). `best + W*z(surp)`, curba public: w0=64.52, **w0.08=64.81 (VARF)**, w0.10=64.79,
+  w0.12=64.71, w0.15=64.50, w0.20=63.84. Primul progres real peste finala veche. Teza confirmata: semnal
+  independent nou misca scorul (nu reglajul de embedding).
+- **Fine-tuning XLM-R cap-la-cap (ablatie, `finetune_xlmr.py`) = ESUAT**: frozen + Ridge/HGB bate TOATE
+  variantele de fine-tuning. Transfer EN->MLSP: frozen 0.5148 vs full-FT 0.46, freeze 0.37-0.43, LoRA 0.46.
+  Multilingual held-out-language: frozen-multi 0.666 vs LoRA-multi 0.600 (frozen bate pe fiecare limba).
+  Cauza: fara etichete in limba tinta, fine-tuning-ul degradeaza alinierea multilinguala preantrenata pe
+  care frozen-ul o exploateaza optim. (peft==0.13.2 --no-deps; xlm-r-large full-FT = catastrofa -0.03.)
 
 ---
 
@@ -128,11 +148,25 @@ python solution_bert.py --variant clpure     # doar cross-lingual ensemble, fara
 
 # Calea COMPLETA: recalculeaza totul de la zero (necesita GPU ~8GB; descarca CompLex automat).
 python solution_bert.py --recompute          # MLSP e gated -> trebuie pus manual in data/mlsp/
+
+# EXPERIMENTE (embedding + features). Gate gratis local INAINTE de orice submit public:
+python solution_bert.py --sweep              # tabel transfer-r pe grila de candidati (GPU embed, fara LLM)
+python solution_bert.py --eval --emb mid --feats oov,phon   # gate pt un singur config
+# Daca un config bate baseline-ul la transfer -> genereaza submission cu el (reutilizeaza LLM cache):
+python solution_bert.py --emb mid --out output/exp_midlayer.csv
+python solution_bert.py --feats oov,phon --out output/exp_oovphon.csv
 ```
 
 - **Cale rapida** = reproducere bit-exact din `data/*.csv` (semnalele cache). Ruleaza oriunde (CPU).
 - **Cale completa** = incarca XLM-R + RoLlama3-8b (4-bit), reantreneaza. Output LLM/embeddings poate
   varia minim intre hardware-uri -> finalele bit-exact se bazeaza pe cache-ul din `data/`.
+- **Gate de validare (`--eval`/`--sweep`)**: cele 14 etichete RO NU prezic publicul, deci validam pe
+  **transfer cross-sursa** (train CompLex EN -> test MLSP Romance si invers, r real, mii de etichete).
+  Tinem doar config-urile care bat baseline-ul (`last4`/`base`) la `transfer_avg`. Embedding cfg:
+  `last4`(baseline), `mid`(layere 6-9), `concat4`, `ctxiso`. Features: `oov`, `phon`, `morph`.
+- **Experimentele NU ating ancora**: semnalul A se scrie in CSV-uri proprii (`*_<emb>_<feats>.csv`),
+  semnalul B (LLM) e independent de emb/features deci se reutilizeaza din cache (fara re-rulat RoLlama3).
+  `best` (64.52) ramane bit-exact.
 
 ---
 

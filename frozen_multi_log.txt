@@ -1,0 +1,5 @@
+Device cuda | EN=8423 MLSP=2827
+  FROZEN held-out it: r=0.6006 (n=585)
+  FROZEN held-out pt: r=0.7775 (n=592)
+  FROZEN held-out es: r=0.6185 (n=593)
+-> data/frozen_multi.csv

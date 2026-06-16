@@ -1,0 +1,7 @@
+source,mode,n,pearson
+EN,zeroshot,150,0.5851
+EN,cot_sc,150,0.4989
+Romance,zeroshot,150,0.4705
+Romance,cot_sc,150,0.3717
+RO14,zeroshot,14,0.5907
+RO14,cot_sc,14,0.2677

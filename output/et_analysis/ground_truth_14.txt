@@ -1,0 +1,1 @@
+Pe cele 14 etichete: corr(zipf, complexity)=0.092 (n=14). corr(ET, complexity) NU se poate (doar 2 au ET).

@@ -1,0 +1,58 @@
+Device cuda | EN=8423 MLSP=2827
+[sweep] base_lr0.0001_ep3_lora4 : fine-tune EN (8423) -> test MLSP ...
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:150: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=DEVICE == "cuda")
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:155: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=DEVICE == "cuda"):
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:174: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=DEVICE == "cuda"):
+  -> transfer_en2ml=0.4096  (113s).  Frozen baseline 0.5148.
+[sweep] base_lr0.0002_ep3_lora4 : fine-tune EN (8423) -> test MLSP ...
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:150: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=DEVICE == "cuda")
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:155: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=DEVICE == "cuda"):
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:174: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=DEVICE == "cuda"):
+  -> transfer_en2ml=0.4308  (105s).  Frozen baseline 0.5148.
+[sweep] base_lr0.0001_ep3_lora8 : fine-tune EN (8423) -> test MLSP ...
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:150: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=DEVICE == "cuda")
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:155: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=DEVICE == "cuda"):
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:174: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=DEVICE == "cuda"):
+  -> transfer_en2ml=0.4391  (108s).  Frozen baseline 0.5148.
+[sweep] base_lr0.0002_ep3_lora8 : fine-tune EN (8423) -> test MLSP ...
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:150: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=DEVICE == "cuda")
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:155: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=DEVICE == "cuda"):
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:174: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=DEVICE == "cuda"):
+  -> transfer_en2ml=0.4498  (109s).  Frozen baseline 0.5148.
+[sweep] base_lr0.0001_ep3_lora16 : fine-tune EN (8423) -> test MLSP ...
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:150: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=DEVICE == "cuda")
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:155: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=DEVICE == "cuda"):
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:174: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=DEVICE == "cuda"):
+  -> transfer_en2ml=0.4402  (106s).  Frozen baseline 0.5148.
+[sweep] base_lr0.0002_ep3_lora16 : fine-tune EN (8423) -> test MLSP ...
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:150: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler(enabled=DEVICE == "cuda")
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:155: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=DEVICE == "cuda"):
+C:\Users\glosper\Documents\pred_eye\finetune_xlmr.py:174: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=DEVICE == "cuda"):
+  -> transfer_en2ml=0.4618  (111s).  Frozen baseline 0.5148.
+
+[sweep] gata. Rezultate in C:\Users\glosper\Documents\pred_eye\data\finetune_lora_sweep.csv
+                     cfg model     lr  epochs  freeze  lora  transfer_en2ml  sec
+base_lr0.0002_ep3_lora16  base 0.0002       3       0    16          0.4618  111
+ base_lr0.0002_ep3_lora8  base 0.0002       3       0     8          0.4498  109
+base_lr0.0001_ep3_lora16  base 0.0001       3       0    16          0.4402  106
+ base_lr0.0001_ep3_lora8  base 0.0001       3       0     8          0.4391  108
+ base_lr0.0002_ep3_lora4  base 0.0002       3       0     4          0.4308  105
+ base_lr0.0001_ep3_lora4  base 0.0001       3       0     4          0.4096  113

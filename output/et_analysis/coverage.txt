@@ -1,0 +1,3 @@
+Acoperire ET pe test: 1509/1587 (95.1%) au fixatii.
+Cuvinte FARA ET (n=78): zipf mediu 4.45 vs 4.20 (cu ET); lungime 6.91 vs 7.57. => ET lipseste sistematic la cuvinte mai frecvente/scurte (skipped) = bias de acoperire.
+GROUND-TRUTH: doar 2/14 cuvinte etichetate au ET => imposibil de validat ET->complexitate pe etichete reale. Folosim predictia (exp_surp_w08, public 64.81) ca proxy de complexitate pe cele 1509 cu ET.

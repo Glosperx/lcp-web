@@ -1,0 +1,20 @@
+[gate] EN       zeroshot  pearson=0.5668 (n=300)
+[gate] EN       fewshot   pearson=0.4533 (n=300)
+C:\Users\glosper\AppData\Local\Programs\Python\Python311\Lib\site-packages\transformers\generation\configuration_utils.py:590: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.6` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+C:\Users\glosper\AppData\Local\Programs\Python\Python311\Lib\site-packages\transformers\generation\configuration_utils.py:595: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.9` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
+  warnings.warn(
+[gate] EN       cot       pearson=0.3519 (n=300)
+[gate] Romance  zeroshot  pearson=0.4651 (n=300)
+[gate] Romance  fewshot   pearson=0.2998 (n=300)
+[gate] Romance  cot       pearson=0.2745 (n=300)
+[gate] RO14     zeroshot  pearson=0.5907 (n=14)
+[gate] RO14     fewshot   pearson=0.8415 (n=14)
+[gate] RO14     cot       pearson=0.3577 (n=14)
+
+ source        EN    RO14  Romance
+mode                             
+cot       0.3519  0.3577   0.2745
+fewshot   0.4533  0.8415   0.2998
+zeroshot  0.5668  0.5907   0.4651
+-> data/llm_gate.csv

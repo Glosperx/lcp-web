@@ -1,0 +1,12 @@
+[gate] EN       zeroshot  pearson=0.5851 (n=150)
+[gate] EN       cot_sc    pearson=0.4989 (n=150)
+[gate] Romance  zeroshot  pearson=0.4705 (n=150)
+[gate] Romance  cot_sc    pearson=0.3717 (n=150)
+[gate] RO14     zeroshot  pearson=0.5907 (n=14)
+[gate] RO14     cot_sc    pearson=0.2677 (n=14)
+
+ source        EN    RO14  Romance
+mode                             
+cot_sc    0.4989  0.2677   0.3717
+zeroshot  0.5851  0.5907   0.4705
+-> data/llm_gate.csv

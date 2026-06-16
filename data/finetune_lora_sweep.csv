@@ -1,0 +1,7 @@
+cfg,model,lr,epochs,freeze,lora,transfer_en2ml,sec
+base_lr0.0001_ep3_lora4,base,0.0001,3,0,4,0.4096,113
+base_lr0.0002_ep3_lora4,base,0.0002,3,0,4,0.4308,105
+base_lr0.0001_ep3_lora8,base,0.0001,3,0,8,0.4391,108
+base_lr0.0002_ep3_lora8,base,0.0002,3,0,8,0.4498,109
+base_lr0.0001_ep3_lora16,base,0.0001,3,0,16,0.4402,106
+base_lr0.0002_ep3_lora16,base,0.0002,3,0,16,0.4618,111
