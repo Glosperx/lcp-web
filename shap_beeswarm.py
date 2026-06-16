@@ -19,14 +19,14 @@ DATA = os.path.join(HERE, "data")
 OUT = os.path.join(HERE, "output", "shap")
 os.makedirs(OUT, exist_ok=True)
 
-# trasatura -> eticheta lizibila (RO). Include cele 2 semnale LLM (nota + surprisal) ca features.
+# feature -> readable label (EN). Includes the 2 LLM signals (rating + surprisal) as features.
 LABELS = {
-    "llm_cx": "nota LLM (rating)", "surp": "surprisal (LLM)",
-    "zipf_best": "frecventa (max token/lema)", "zipf_token": "frecventa token",
-    "zipf_lemma": "frecventa lema", "word_length": "lungime", "num_syllables": "silabe",
-    "vowel_ratio": "raport vocale", "num_consonants": "consoane", "has_diacritice": "diacritice",
-    "has_hyphen": "cratima", "is_capitalized": "majuscula", "inflection_diff": "diferenta flexiune",
-    "is_oov": "OOV (necunoscut)", "ends_with_vowel": "termina in vocala",
+    "llm_cx": "LLM rating", "surp": "surprisal",
+    "zipf_best": "frequency (max token/lemma)", "zipf_token": "token frequency",
+    "zipf_lemma": "lemma frequency", "word_length": "length", "num_syllables": "syllables",
+    "vowel_ratio": "vowel ratio", "num_consonants": "consonants", "has_diacritice": "diacritics",
+    "has_hyphen": "hyphen", "is_capitalized": "capitalized", "inflection_diff": "inflection gap",
+    "is_oov": "OOV (unknown)", "ends_with_vowel": "ends with vowel",
 }
 
 
@@ -60,8 +60,8 @@ def main():
         sv = shap.Explainer(m.predict, bg)(Xf.values[:600]).values
         Xf = Xf.iloc[:600]
 
-    shap.summary_plot(sv, Xf.values, feature_names=names, show=False, max_display=len(feats))
-    plt.title("SHAP — ce trasaturi conduc complexitatea prezisa (rosu=valoare mare)")
+    shap.summary_plot(sv, Xf.values, feature_names=names, show=False, max_display=8)
+    plt.title("SHAP: which features drive the predicted complexity (red = high value)")
     plt.tight_layout()
     png = os.path.join(OUT, "beeswarm.png")
     plt.savefig(png, dpi=140, bbox_inches="tight")

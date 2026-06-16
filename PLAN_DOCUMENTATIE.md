@@ -146,6 +146,71 @@ C (surprisal):     0.80 · 0.08        = 0.06   (6%)
 - Strategie finale (3 submisii): F1 `et_pca_w20` (69.74, ET agresiv), F2 `et_pca_w10` (69.66, moderat),
   F3 `exp_lemmafreq` (68.90, fără ET, sigur). Dacă ET e overfit public, F3 protejează pe privat.
 
+## 4c. Probabilități vs procente per semnal (clarificare)
+
+> Atenție: „probabilitățile" (interne, semnalele B și C) și „procentele per semnal" (ponderile de
+> fuziune) sunt două lucruri diferite. Această secțiune le pune cap la cap explicit, ca să nu fie
+> confundate în raport.
+
+### Partea 1 — Probabilitățile REALE (doar B și C)
+Singurele probabilități propriu-zise din pipeline, ambele din RoLlama3-8B (`recompute_gpu.py`):
+- **B (nota LLM), soft-read** (`recompute_gpu.py:241-247`): un singur forward pass, iau logits la
+  ultima poziție (`logits[0, -1]`), aplic softmax peste tot vocabularul, adun probabilitățile
+  tokenilor „1".."5" într-un vector de 5 valori, îl normalizez (Σ=1), calculez valoarea așteptată
+  `E = Σ p(d)·d` (d=1..5), o mapez în [0,1] cu `(E-1)/4` și mediez pe cele 2 prompturi.
+- **C (surprisal)** (`recompute_gpu.py:269-275`): aceleași logits, dar `log_softmax` și citesc
+  log-probabilitatea cuvântului REAL, cu deplasarea cauzală `i-1`:
+  `surprisal = mean_i( -lp[i-1, ids[i]] )`, mediat pe subcuvinte.
+
+### Partea 2 — Procentele per semnal (ponderi de fuziune, NU probabilități)
+Procentele per semnal NU sunt probabilități; sunt ponderi într-o medie ponderată de z-score-uri,
+din fuziunea imbricată în 3 pași (`solutie_finala.py:296-311`):
+```
+Pas 1: s = 0.60·z(A) + 0.40·z(B)
+Pas 2: s = 0.92·z(s) + 0.08·z(C)
+Pas 3: s = 0.80·z(s) + 0.20·z(D)
+```
+Desfac imbricarea (înmulțesc ponderile pe lanț) → procentul efectiv per semnal:
+
+| Semnal | Calcul | Pondere | % |
+|---|---|---|---|
+| A cross-lingual | 0.80·0.92·0.60 | 0.4416 | 44 |
+| B nota LLM | 0.80·0.92·0.40 | 0.2944 | 29 |
+| D eye-tracking | 0.20 | 0.2000 | 20 |
+| C surprisal | 0.80·0.08 | 0.0640 | 6 |
+| **Total** | | **1.000** | **100** |
+
+Notă de onestitate: sunt ponderi *nominale* — `z()` dintre pași re-standardizează, deci contribuția
+reală în varianță diferă ușor. Nominal: **A 44 / B 29 / D 20 / C 6**.
+
+### Partea 3 — Cum au fost alese ponderile: sweep pe leaderboard
+
+**Ce înseamnă „sweep pe leaderboard"** (grid search manual, pas cu pas):
+1. fixez celelalte ponderi și variez una pe o grilă (ex. W_ET ∈ {0, 0.10, 0.20, 0.30});
+2. generez câte un `submission.csv` pentru fiecare valoare;
+3. urc fiecare pe leaderboard-ul public și citesc scorul Pearson public;
+4. aleg valoarea cu scorul maxim.
+
+De ce sweep și nu învățare supervizată: nu există etichete RO (cele 14 nu prezic) → singura
+supervizare reală pe RO este scorul public; leaderboard-ul devine funcția de pierdere, manuală.
+Curbele sunt unimodale și netede (urcă–vârf–coboară), nu zimțate, deci semnal real, nu noroc:
+- W_ET:   0→68.90 / 0.10→69.66 / **0.20→69.74** / 0.30→69.00
+- W_SURP: 0→64.52 / **0.08→64.81** / 0.12→64.71 / 0.20→63.84
+
+Risc de menționat onest: public ≠ privat → sweep-ul poate supra-adapta publicul; de aceea hedge cu
+3 submisii finale (w20 / w10 / fără-ET).
+
+**De ce SHAP NU a ales ponderile (corecție de ordine, importantă):**
+- Ordinea corectă: **leaderboard ALEGE ponderea → SHAP DESCRIE după.** Nu invers.
+- SHAP este circular prin construcție (`shap_et.py:5-8, 32-33`): ținta lui este predicția finală
+  deja făcută cu W_ET=0.20, deci importanța lui D *scalează cu W_ET pe care l-am pus eu* (la W_ET=0,
+  SHAP raportează D≈0). Îmi întoarce alegerea înapoi, nu o decide.
+- 3 motive: (1) nu există țintă RO de optimizat (14 nu prezic, ET 2/14); (2) circular (rulează pe
+  propria predicție); (3) descriptiv (descrie modelul final, nu îl proiectează).
+- Avertisment: ordinea SHAP (A 0.061 > B 0.034 > D 0.017 > C 0.006) seamănă cu ordinea ponderilor
+  (A 44 > B 29 > D 20 > C 6) doar fiindcă este ecoul lor — NU este dovadă independentă, iar aceste
+  numere NU sunt procentele de fuziune. A nu se amesteca cele două seturi în raport.
+
 ## 5. Experimente & rezultate (tabel ablație)
 - cross-lingual + LLM: **64.52**
 - + surprisal: **64.81** (+0.29)

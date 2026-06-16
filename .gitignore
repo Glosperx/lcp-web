@@ -28,3 +28,27 @@ __pycache__/
 *.pyc
 *.token
 .env
+
+# --- Claude / fisiere de lucru-context (nu intra in submisie) ---
+.claude/
+CLAUDE.md
+SESSION_CONTEXT.md
+CONTEXT_HANDOFF.md
+CONTEXT_EXPLICATII_SESIUNE.md
+plan_documentatie.md
+PLAN_DOCUMENTATIE.md
+*.original.md
+
+# --- Nitro AI judge (pagini salvate: fisiere + foldere cu spatii) ---
+Nitro*
+nitro*
+
+# --- artefacte build LaTeX (pastram .tex/.bib/figuri) ---
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.synctex.gz
+*.fls
+*.fdb_latexmk
