@@ -12,7 +12,7 @@
 ## Current Objective
 - Push score beyond 64.52 AND build rigorous report/research material. Real tel = report (5p, BY HAND,
   LLM=0.0) + being chosen by prof **Sergiu Nisioi** for EMNLP collaboration. Rank affects grade only by
-  hundredths. **Result: 64.52 -> 64.81 (surprisal) -> 68.90 (lemma-freq), +4.38.**
+  hundredths. **Result: 64.52 -> 64.81 (surprisal) -> 68.90 (lemma-freq) -> 69.74 (ET PCA blend w0.20), +5.22.**
 
 ## Public Leaderboard Scores (every probe, chronological)
 | candidate | file | public |
@@ -26,14 +26,18 @@
 | surprisal w=0.12 | output/exp_surp_w12.csv | 64.71 |
 | encoder e5 (multilingual-e5-base) | output/exp_e5.csv | 63.00 |
 | LLM few-shot prompt | output/exp_llm_fewshot.csv | 63.31 |
-| **lemma-freq + surprisal w0.08 (BEST)** | **output/exp_lemmafreq.csv** | **68.90** |
+| lemma-freq + surprisal w0.08 (3-signal base) | output/exp_lemmafreq.csv | 68.90 |
 | lemma-freq, NO surprisal (w0) | output/exp_lemma_w00.csv | 68.645 |
+| ET PCA blend w0.10 (4-signal) | output/et_pca_w10.csv | 69.66 |
+| **ET PCA blend w0.20 (NEW BEST, 4-signal)** | **output/et_pca_w20.csv** | **69.74** |
+| ET PCA blend w0.30 (overshoot) | output/et_pca_w30.csv | 69.00 |
 | surface-only baseline (FARA resurse externe) | output/exp_baseline_surface.csv | 10.27 (r~0.175) |
 | constant 0.27 (floor analitic) | output/exp_baseline_const.csv | ~0 |
 | Lasso signal-A (regressor swap) | output/exp_lasso.csv | 64.28 (r~0.739) GATE FALS-POZITIV |
 | ET + surface self-sup (no-external MAI MARE) | output/exp_baseline_et.csv | 41.76 (r~0.542) |
 - Ablation: cross-lingual+LLM 64.52 | +surprisal 64.81 (+0.29) | +lemma no-surp 68.645 (+4.13) |
-  **+lemma+surprisal 68.90 (FINAL)**. Lemma = the giant; surprisal = small but real (+0.26 on lemma base).
+  +lemma+surprisal 68.90 (3-signal) | **+ET PCA blend w0.20 69.74 (NEW BEST, 4-signal, +0.84)**.
+  Lemma = the giant; surprisal small but real (+0.26); ET late-blend small but real (+0.84 over 68.90).
 
 ## Approaches Tried (with full metrics)
 
@@ -137,10 +141,12 @@ Metodologie = contributie unica controlata pe zipf+len, proxy = best 68.90.
 - **Infezabil pe RO** (lipsa lexicon): child-freq, AoA, imaginabilitate (`output/extra_features/infeasible.md`).
 
 ## Current State
-- **BEST = 68.90** = `output/exp_lemmafreq.csv`. Regenerate:
+- **BEST = 69.74** = `output/et_pca_w20.csv` = 4 signals (cross-lingual + LLM + surprisal + ET PCA blend
+  w0.20). Reproduce via the clean presentation file: `python solutie_finala.py` (CPU, from cache, W_ET=0.20).
+- **3-signal base = 68.90** = `output/exp_lemmafreq.csv` (no ET). Regenerate:
   `python solution_bert.py --lemma-freq --surp-weight 0.08 --out output/exp_lemmafreq.csv`
   (reuses cached `data/emb_*.npy` + `data/llm_complexity_test.csv` + `data/surprisal_test.csv`; recomputes
-  only signal A).
+  only signal A). Also = `solutie_finala.py` with W_ET=0 (bit-exact, maxdiff 3e-11).
 - `best` (64.52) **bit-exact**: `python solution_bert.py --variant best` -> maxdiff 0.0 vs FINAL_best.csv.
   All experiments opt-in flags; default path untouched. **Nothing broken.**
 - **Files (cumulative):** MODIFIED `solution_bert.py` (lemma `lexical(...,lemmas=)`, `XLMR(cfg,encoder)`,
@@ -178,10 +184,38 @@ Metodologie = contributie unica controlata pe zipf+len, proxy = best 68.90.
     make_figures.py, scrie `output/raport/report.tex` + `custom.bib` (draft pe fapte reale), user rescrie.
   - Instalat spaCy 3.8.14 + ro_core_news_sm (pin transformers 4.46.3 intact). Memorii actualizate:
     `pred-eye-baseline-surface`, `pred-eye-extra-features`.
+- **Session 2026-06-16 (part 3 — fisiere de PREZENTARE + ET blend = NEW BEST 69.74):**
+  - **Fisiere de prezentare (cerinta: cod usor de citit, format ipynb, dar predare .py):**
+    `solutie_finala.py` rescris ca **jupytext percent** (celule `# %%` + markdown), pereche cu
+    `solutie_finala.ipynb` (generat cu `jupytext --to ipynb --execute`). Cod: imports intr-o celula
+    dedicata; **fara diacritice in proza** (singura linie cu diacritice = `VOWELS`, logica silabe);
+    intro academic fara bold; explicatii concrete. **HGB pastrat** (NU XGBoost/CatBoost: aceeasi familie
+    gradient-boosting, swap = dependinta + scor schimbat + risc, zero castig). Fisierul e **importabil**
+    (guard `if __name__=="__main__"`). Checkpoint W_ET=0 (3 semnale) = **68.90 bit-exact** (maxdiff 3e-11).
+  - **Semnal D ET adaugat ca al 4-lea (PCA):** `reading_effort` = **PC1 (SVD)** al 8 metrici ET efort
+    `*_mean_norm` (TFT/FFD/FPRT/RRT/TFC/FPFC/TRC_in/RPD_inc) din `data/X_test.csv`. PC1 62% var, acoperire
+    1509/1587, loadings PC1 = ponderea per metrica. `corr(PC1, et_complexity_proxy manual)=0.973` =>
+    PCA ~= manual (am pastrat PCA, defensabil). Blend INAINTE de calibrare: `s=(1-w)*z(s3)+w*z(reading_effort)`.
+  - **PUBLIC SWEEP (deterministic, ordine reala): w0=68.90, w0.10=69.66, w0.20=69.74 (VARF), w0.30=69.00.**
+    Unimodal. Marginal +0.76/+0.08/-0.74. **NEW BEST 69.74 la W_ET=0.20** (lock). ET = semnal real (testat
+    direct pe public, NU gate fals-pozitiv). Corecteaza memoria veche (`pred-eye-et-orthogonality`).
+  - **SHAP NU poate alege ponderea** (n-ai tinta RO; cele 14 nu prezic; ET are 2/14; SHAP pe propria
+    predictie = circular, D scaleaza cu W_ET). SHAP descriptiv (4-semnale, w0.20): mean|SHAP| A 0.061 >
+    B 0.034 > D 0.017 > C 0.006 > raw-freq 0.002. Importanta reala = lift leaderboard.
+  - **Cod refactorizat — codul GPU mutat in `recompute_gpu.py`** (companion self-contained: XLMR, LLMRater,
+    blend_ridge_hgb, loaders, recalculeaza_semnale). `solutie_finala.py` (394 linii) pastreaza povestea
+    A/B/C/D in markdown + doar codul CPU (frecventa, PCA ET, citire cache, fuziune); `--recompute`
+    importa lazy din `recompute_gpu.py`. Notebook scurt: 19 celule, 8 de cod, 0 erori.
+  - **NEW files:** `solutie_finala.py` (rescris), `solutie_finala.ipynb`, `recompute_gpu.py`,
+    `make_et_candidates.py` (sweep PCA+manual x w{05,10,15,20,25,30} -> `output/et_{pca,manual}_w*.csv`),
+    `shap_et.py` (SHAP la nivel de semnal -> `output/shap/semnale_{bar,beeswarm}.png`). `solution_bert.py`
+    NEATINS. Instalat (pure-python, pin 4.46.3 intact): `jupytext nbformat nbconvert nbclient ipykernel`.
+  - Memorie noua: `pred-eye-et-blend-win`. Best 68.90 -> **69.74**.
 
 ## Next Steps
-- **Pick 3 finals (private leaderboard):** F1 `exp_lemmafreq.csv` (68.90), F2 `exp_lemma_w00.csv` (68.645),
-  F3 `exp_lemma_w12.csv` (~68.9, brackets surp weight 0/0.08/0.12).
+- **Pick 3 finals (private leaderboard) — HEDGE (public != private):** F1 `et_pca_w20.csv` (69.74, ET
+  agresiv), F2 `et_pca_w10.csv` (69.66, ET moderat), F3 `exp_lemmafreq.csv` (68.90, fara ET, sigur).
+  Daca ET tine pe privat -> F1/F2; daca a fost overfit public -> F3 protejeaza.
 - **Write LaTeX report BY HAND** (LLM=0.0). Materials ready: ablation table above, 2 SHAP figs
   (`output/shap/`), ET study (`output/et_analysis/`), all negative-result tables, free-gate methodology.
   Credit ideas: Sergiu (embedding+features), Stefan (frequency; complexity!=difficulty).
