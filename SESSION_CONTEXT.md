@@ -147,7 +147,9 @@ Metodologie = contributie unica controlata pe zipf+len, proxy = best 68.90.
   `transfer_eval`, `LLMRater.surprisal`, 4-tuple `recompute_signals(...,lemma_freq=)`, flags
   `--encoder/--emb/--feats/--eval/--sweep/--llm-file/--lemma-freq/--surp-weight/--regressor/--et-weight`),
   `README.md`.
-  NEW: `finetune_xlmr.py`, `llm_prompt.py`, `analysis_et.py`, `analysis_shap.py`, `shap_beeswarm.py`.
+  NEW: `finetune_xlmr.py`, `llm_prompt.py`, `analysis_et.py`, `analysis_shap.py`, `shap_beeswarm.py`,
+  `baseline_surface.py`, `baseline_et.py`, `analysis_features.py`, `analysis_lasso.py`, `analysis_hardset.py`,
+  `make_figures.py`.
   Outputs: `output/exp_*.csv`, `output/shap/*.png`, `output/et_analysis/*`. Data caches: `data/finetune_*.csv`,
   `data/llm_gate.csv`, `data/surprisal_test.csv`, `data/llm_fewshot_test.csv`,
   `data/crosslingual_test_*_lemma.csv`, `data/emb_*.npy`.
@@ -157,6 +159,25 @@ Metodologie = contributie unica controlata pe zipf+len, proxy = best 68.90.
   Ran `llm_prompt.py --llm-gate --modes zeroshot,cot_sc --n 150 --cot-k 3` => FAILED (section I).
   New artifacts: `data/llm_gate.csv` (overwritten w/ cot_sc rows), `llm_cot_sc_gate_log.txt`. NO predict-ro,
   NO submit (gate fail). Memory added: `pred-eye-cot-failed`. Best unchanged 68.90.
+- **Session 2026-06-16 (part 2 — baseline-uri + feature-uri Sergiu + RAPORT):**
+  - **Baseline-uri no-external (ablatie raport):** const 0.27 ->~0 | surface-only `exp_baseline_surface.csv`
+    10.27 (r0.175) | ET+surface self-sup `exp_baseline_et.csv` **41.76 (r0.542)** | full 68.90 (r0.776).
+    ET = `et_complexity_proxy` (ET-only, X_test.csv); 78 fara ET => gap-fill regresie surface->proxy.
+    Scripturi `baseline_surface.py`, `baseline_et.py`.
+  - **ET metric eval** (`output/extra_features/et_metric_eval.csv`): corr metrica ET vs complexitate (proxy
+    68.90): TFT 0.63, FRT/RBRT 0.61, FPRT 0.60, TFC 0.58, FPFC 0.53, RRT 0.52, FFD 0.43, RPD_inc 0.35,
+    skip −0.34, TRC_in 0.18; **zgomot ~0: LP 0.02, SL_in 0.003, SL_out −0.05, RPD_exc 0.08**. Excluderea SL/LP
+    justificata EMPIRIC; FRT/RBRT/FPRT excluse ca redundante (duplicat TFT). Ponderile proxy NU conteaza:
+    egal/literatura/PCA corr **0.985+**. Alternativa curata = PCA `reading_effort` (PC1, in word_features.csv).
+    Citare ET concept: Rayner 1998 (DOI 10.1037/0033-2909.124.3.372) — NU pt ponderi (heuristic).
+  - **ET-blend in 68.90 (`--et-weight`):** candidati `exp_et_w{05,10,20}.csv` generati (corr 0.999/0.997/0.986
+    cu best). DE SUBMIS (incepe w10). Free-gate NU testeaza ET => doar public decide. Default et_w=0 = bit-exact.
+  - **RAPORT (in lucru):** template ACL primit. **CONSTRANGERE: raport scris DOAR de LLM = 0.0** => user il
+    rescrie de mana; eu dau draft dens + figuri. **AUC/PRC NU se aplica (regresie)** => figuri ablatie/curba
+    surprisal/corelatii ET/SHAP. `make_figures.py` scris (3 figuri -> `output/raport/`). RAMAS: ruleaza
+    make_figures.py, scrie `output/raport/report.tex` + `custom.bib` (draft pe fapte reale), user rescrie.
+  - Instalat spaCy 3.8.14 + ro_core_news_sm (pin transformers 4.46.3 intact). Memorii actualizate:
+    `pred-eye-baseline-surface`, `pred-eye-extra-features`.
 
 ## Next Steps
 - **Pick 3 finals (private leaderboard):** F1 `exp_lemmafreq.csv` (68.90), F2 `exp_lemma_w00.csv` (68.645),
