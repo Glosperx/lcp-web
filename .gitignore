@@ -23,6 +23,8 @@ data/cwi_en/
 # --- Cod vechi de dezvoltare (optional pe GitHub) ---
 _arhiva_dezvoltare/
 
+.DS_Store
+
 # --- Python / secrete ---
 __pycache__/
 *.pyc
