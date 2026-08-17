@@ -60,7 +60,8 @@ def lexical(tokens, langs, lemmas=None):
     out = np.zeros((len(tokens), 4), np.float32)
     for i, (tok, lg) in enumerate(zip(tokens, langs)):
         t = normalize_token(tok)
-        lg = lg if isinstance(lg, str) else "en"
+        if not isinstance(lg, str):    # fallback tacit la "en" (A.1): devine eroare, nu presupunere
+            raise ValueError(f"limba nemapata pentru tokenul {tok!r}: {lg!r}")
         z = zipf_frequency(t.lower(), lg) if t else 0.0
         if lemmas is not None:
             lem = normalize_token(lemmas[i])

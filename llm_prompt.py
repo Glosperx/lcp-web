@@ -24,7 +24,7 @@ except Exception:
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 sys.path.insert(0, HERE)
-from solution_bert import LLMRater, SEED
+from solution_bert import LLMRater, RO_LEGACY_LLM, SEED
 from finetune_xlmr import load_complex_en, load_mlsp
 
 RUBRIC = ("frecventa, lungime/silabe, daca e termen tehnic/specializat, complexitate morfologica")
@@ -39,16 +39,21 @@ class PromptRater(LLMRater):
     """Extinde LLMRater cu few-shot si CoT, pastrand soft-read-ul P(1..5)."""
 
     def _soft_msgs(self, messages):
-        ids = self.tok.apply_chat_template(messages, add_generation_prompt=True,
-                                           return_tensors="pt").to(self.dev)
+        """Soft-read P(1..5). Corpul sta in LLMRater._score_msgs, deci reparatiile D.2a
+        (enable_thinking=False) si D.2b (return_dict=False) se mostenesc, nu se copiaza aici."""
+        return self._score_msgs(messages)
+
+    def _gen_ids(self, msgs, **gen_kw):
+        """Genereaza o continuare si o intoarce ca text. Torch-only: mlx_lm are alt API de generare,
+        iar modurile CoT sunt calea romaneasca, nu fac parte din bake-off-ul multilingv."""
+        if self.backend != "transformers":
+            raise RuntimeError(
+                f"modurile cot/cot_sc cer backend transformers, nu {self.backend!r}. "
+                "Semnalele B si C ale bake-off-ului nu au nevoie de generare.")
+        ids = self.torch.tensor([self._encode_chat(msgs)], device=self.dev)
         with self.torch.no_grad():
-            logits = self.model(ids).logits[0, -1].float()
-        probs = self.F.softmax(logits, dim=-1)
-        p = np.array([float(probs[self.digit[d]].sum()) for d in "12345"])
-        if p.sum() < 1e-9:
-            return None
-        p /= p.sum()
-        return (float((p * np.arange(1, 6)).sum()) - 1.0) / 4.0
+            gen = self.model.generate(ids, pad_token_id=self.tok.eos_token_id, **gen_kw)
+        return self.tok.decode(gen[0, ids.shape[1]:], skip_special_tokens=True).strip()
 
     def rate_fewshot(self, sent, tok_str, shots):
         ex = "\n".join(f'- cuvant "{w}" in "{s}" -> {sc}' for (s, w, sc) in shots)
@@ -63,11 +68,7 @@ class PromptRater(LLMRater):
         ask = ({"role": "user",
                 "content": f'In propozitia: "{sent}"\nAnalizeaza pe scurt factorii de complexitate ai '
                            f'cuvantului "{tok_str}" ({RUBRIC}). Maxim 2 propozitii. NU da scorul inca.'})
-        ids = self.tok.apply_chat_template([ask], add_generation_prompt=True, return_tensors="pt").to(self.dev)
-        with self.torch.no_grad():
-            gen = self.model.generate(ids, max_new_tokens=70, do_sample=False,
-                                      pad_token_id=self.tok.eos_token_id)
-        rationale = self.tok.decode(gen[0, ids.shape[1]:], skip_special_tokens=True).strip()
+        rationale = self._gen_ids([ask], max_new_tokens=70, do_sample=False)
         msgs = [ask, {"role": "assistant", "content": rationale},
                 {"role": "user", "content": "Pe baza analizei, pe scara 1-5 (1=foarte familiar, "
                                             "5=foarte dificil) raspunde DOAR cu cifra:"}]
@@ -82,15 +83,11 @@ class PromptRater(LLMRater):
         ask = ({"role": "user",
                 "content": f'In propozitia: "{sent}"\nAnalizeaza pe scurt factorii de complexitate ai '
                            f'cuvantului "{tok_str}" ({RUBRIC}). Maxim 2 propozitii. NU da scorul inca.'})
-        ids = self.tok.apply_chat_template([ask], add_generation_prompt=True, return_tensors="pt").to(self.dev)
         scores = []
         for i in range(k):
             self.torch.manual_seed(SEED + i)          # reproductibil per esantion
-            with self.torch.no_grad():
-                gen = self.model.generate(ids, max_new_tokens=70, do_sample=True,
-                                          temperature=temperature, top_p=top_p,
-                                          pad_token_id=self.tok.eos_token_id)
-            rationale = self.tok.decode(gen[0, ids.shape[1]:], skip_special_tokens=True).strip()
+            rationale = self._gen_ids([ask], max_new_tokens=70, do_sample=True,
+                                      temperature=temperature, top_p=top_p)
             msgs = [ask, {"role": "assistant", "content": rationale},
                     {"role": "user", "content": "Pe baza analizei, pe scara 1-5 (1=foarte familiar, "
                                                 "5=foarte dificil) raspunde DOAR cu cifra:"}]
@@ -174,9 +171,13 @@ def main():
     ap.add_argument("--n", type=int, default=300)
     ap.add_argument("--cot-k", type=int, default=5, dest="cot_k",
                     help="nr. esantioane self-consistency pt cot_sc (mai mic = mai rapid)")
+    ap.add_argument("--model", default=RO_LEGACY_LLM,
+                    help="cheie din mlsp_common.LLM_POOL sau repo id; implicit bratul romanesc")
+    ap.add_argument("--backend", default=None, choices=[None, "transformers", "mlx"],
+                    help="doar pentru repo id brut; cheile din LLM_POOL isi aduc backend-ul")
     args = ap.parse_args()
 
-    rater = PromptRater()
+    rater = PromptRater(args.model, backend=args.backend)
     rater.cot_k = args.cot_k
     if args.gate:
         llm_gate(rater, [m.strip() for m in args.modes.split(",")], n=args.n)

@@ -45,7 +45,12 @@ SEED = 42
 W_CL, W_LLM = 0.6, 0.4
 CALIB_MEAN, CALIB_STD = 0.27, 0.125
 
-LLM_NAME = "OpenLLM-Ro/RoLlama3-8b-Instruct"
+# Bratul romanesc inghetat. NU e un default: LLMRater cere numele modelului explicit, iar constanta
+# asta se trece o singura data, la apelantul din recalculeaza_semnale(). E RoLlama3 (peste Llama-3),
+# nu RoLlama3.1: corectia ceruta de planul de bake-off §7.2 servea Δ_controlat, iar Δ_controlat a
+# murit prin criteriul §5.2 (σ_Δ = 0.0369 > 0.030), deci nu mai are obiect. Bazinul multilingv e in
+# mlsp_common.LLM_POOL.
+RO_LEGACY_LLM = "OpenLLM-Ro/RoLlama3-8b-Instruct"
 XLMR_NAME = "xlm-roberta-base"
 # Encodere cross-lingual de probat (Lever A). xlmr = baseline. LaBSE/e5 = aliniate cross-lingual prin
 # design; incarcate via AutoModel (FARA pachetul sentence-transformers => pinul transformers ramane 4.46.3).
@@ -140,32 +145,57 @@ FEAT_ORDER = ("oov", "phon", "morph")  # ordine deterministica a coloanelor extr
 FEAT_WIDTH = {"oov": 1, "phon": 2, "morph": 1}
 
 
-def lexical(tokens, langs, feats=(), lemmas=None):
+def lexical(tokens, langs, feats=(), lemmas=None, na_policy=None):
     """Trasaturi lexicale per token. Baza (4): zipf (pe limba data), lungime, silabe, majuscula.
     `feats` adauga coloane extra (oov/phon/morph) in ordinea FEAT_ORDER. Default = baza, neschimbat.
-    `lemmas` (optional): frecventa = max(zipf_token, zipf_lema) — repara forme flexionate OOV (RO)."""
+    `lemmas` (optional): frecventa = max(zipf_token, zipf_lema) — repara forme flexionate OOV (RO).
+
+    `na_policy` (A.3 + A.4, calea multilingva):
+      None    = comportament original, bit-exact. Calea romaneasca trece pe aici.
+      "mlsp"  = frecventa prin garda `zipf_safe` (sinhaleza nu mai primeste tacut o valoare
+                englezeasca), trasaturile de suprafata latine devin NaN pe limbile unde nu au sens
+                (ja, si), si se adauga DOUA coloane indicator la coada: freq_na, surface_na.
+                La coada, ca indicii coloanelor existente sa nu se mute."""
     from wordfreq import zipf_frequency
+    from mlsp_common import surface_applicable, zipf_safe
+    if na_policy not in (None, "mlsp"):
+        raise ValueError(f"na_policy necunoscut: {na_policy!r}")
     feats = set(feats)
     extra = sum(FEAT_WIDTH[f] for f in FEAT_ORDER if f in feats)
-    out = np.zeros((len(tokens), 4 + extra), np.float32)
+    ind = 2 if na_policy == "mlsp" else 0
+    out = np.zeros((len(tokens), 4 + extra + ind), np.float32)
     for i, (tok, lg) in enumerate(zip(tokens, langs)):
         t = normalize_token(tok)
-        lg = lg if isinstance(lg, str) else "en"
-        z = zipf_frequency(t.lower(), lg) if t else 0.0
-        if lemmas is not None:                    # frecventa constienta de lema (flexiune RO)
-            lem = normalize_token(lemmas[i])
-            if lem:
-                z = max(z, zipf_frequency(lem.lower(), lg))
-        row = [z, len(t), n_syllables(t), 1.0 if t[:1].isupper() else 0.0]
+        if not isinstance(lg, str):    # fallback tacit la "en" (A.1): devine eroare, nu presupunere
+            raise ValueError(f"limba nemapata pentru tokenul {tok!r}: {lg!r}")
+        if na_policy == "mlsp":
+            z, freq_ok = zipf_safe(t, lg)
+            surf_ok = surface_applicable(lg)
+            if lemmas is not None:
+                lem = normalize_token(lemmas[i])
+                if lem:
+                    zl, ok_l = zipf_safe(lem, lg)
+                    z = max(z, zl) if ok_l else z
+        else:
+            z = zipf_frequency(t.lower(), lg) if t else 0.0
+            if lemmas is not None:                # frecventa constienta de lema (flexiune RO)
+                lem = normalize_token(lemmas[i])
+                if lem:
+                    z = max(z, zipf_frequency(lem.lower(), lg))
+            freq_ok = surf_ok = True
+        row = ([z, len(t), n_syllables(t), 1.0 if t[:1].isupper() else 0.0] if surf_ok
+               else [z, len(t), np.nan, np.nan])
         for name in FEAT_ORDER:
             if name not in feats:
                 continue
             if name == "oov":
                 row.append(1.0 if z == 0.0 else 0.0)
             elif name == "phon":
-                row += [max_consonant_run(t), vowel_ratio(t)]
+                row += [max_consonant_run(t), vowel_ratio(t)] if surf_ok else [np.nan, np.nan]
             elif name == "morph":
                 row.append(latinate_suffix(t))
+        if ind:
+            row += [0.0 if freq_ok else 1.0, 0.0 if surf_ok else 1.0]
         out[i] = row
     return out
 
@@ -176,7 +206,10 @@ class XLMR:
         import torch
         from transformers import AutoTokenizer, AutoModel
         self.torch = torch
-        self.dev = "cuda" if torch.cuda.is_available() else "cpu"
+        # mps pe Mac: E1 face ~14.000 de treceri, iar pe CPU costul e cel mai mare din tot pipeline-ul.
+        # float32 si pe mps, nu float16: MPS in fp16 ar introduce o a treia precizie in acelasi tabel.
+        self.dev = ("cuda" if torch.cuda.is_available()
+                    else "mps" if torch.backends.mps.is_available() else "cpu")
         dt = torch.float16 if self.dev == "cuda" else torch.float32
         name = ENCODERS[encoder]
         self.enc = encoder
@@ -241,22 +274,44 @@ class XLMR:
 
 # ----------------------------------------------------------------------------- LLM rating
 class LLMRater:
-    def __init__(self):
-        import torch
-        import torch.nn.functional as F
-        from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
-        self.torch = torch; self.F = F
-        self.dev = "cuda" if torch.cuda.is_available() else "cpu"
-        bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.float16,
-                                 bnb_4bit_quant_type="nf4", bnb_4bit_use_double_quant=True)
-        self.tok = AutoTokenizer.from_pretrained(LLM_NAME)
-        self.model = AutoModelForCausalLM.from_pretrained(
-            LLM_NAME, quantization_config=bnb, device_map=self.dev).eval()
+    """Nota de dificultate (semnal B) si surprisal (semnal C) dintr-un LLM cauzal.
+
+    `model` e o cheie din mlsp_common.LLM_POOL (si atunci repo/revision/backend vin de acolo) sau un
+    repo id brut, si atunci `backend` si `revision` se dau explicit. Nu exista default: numele
+    modelului decide cifrele, deci se trece intotdeauna de la apelant.
+    """
+
+    def __init__(self, model, backend=None, revision=None):
+        from mlsp_common import llm_entry
+        ent = llm_entry(model)
+        if ent is not None:
+            repo, revision, backend = ent["repo"], ent["revision"], ent["backend"]
+        else:
+            repo = str(model)
+            backend = backend or "transformers"
+        self.name, self.repo, self.revision, self.backend = str(model), repo, revision, backend
+
+        if backend == "mlx":
+            self._init_mlx()
+        elif backend == "transformers":
+            self._init_hf()
+        else:
+            raise ValueError(f"backend necunoscut: {backend!r} (transformers sau mlx)")
+
+        # Capcana SentencePiece: "1" si "▁1" sunt id-uri diferite, iar unele tokenizere dau cifra doar
+        # cu spatiu in fata. Se incearca ambele variante si se verifica prin decode. NESCHIMBAT: merge
+        # pe ambele backend-uri, fiindca TokenizerWrapper-ul MLX deleaga encode/decode la tokenizerul HF.
+        # Deduplicare, adaugata la D.4 pe 16 august. La tokenizerele BPE (Qwen) encode("1") si
+        # encode(" 1") dau ACELASI id, deci varianta originala punea [16, 16] si masa iesea 2.0, adica
+        # o "probabilitate" peste 1. La Qwen dublarea e simetrica pe toate cele 5 cifre si normalizarea
+        # o anuleaza, dar pe un tokenizer unde "▁1" e id distinct doar pentru unele cifre raportul
+        # dintre cifre se distorsioneaza si scorul iese gresit in tacere. Nu schimba nicio cifra deja
+        # produsa: semnalele romanesti se citesc din data/*.csv, nu se recalculeaza.
         self.digit = {d: [] for d in "12345"}
         for d in "12345":
             for variant in (d, " " + d):
                 for tid in self.tok.encode(variant, add_special_tokens=False):
-                    if self.tok.decode([tid]).strip() == d:
+                    if self.tok.decode([tid]).strip() == d and tid not in self.digit[d]:
                         self.digit[d].append(tid)
         self.prompts = [
             ("Esti expert in lingvistica romana. Pe o scara 1-5 (1=foarte familiar, 2=simplu, "
@@ -266,19 +321,127 @@ class LLMRater:
             ("In propozitia: \"{sent}\"\nEvalueaza dificultatea lexicala a cuvantului \"{tok}\" "
              "pe o scara de la 1 (foarte familiar) la 5 (foarte dificil). Raspunde doar cu cifra."),
         ]
+        # Qwen3 si Qwen3.5 injecteaza un bloc <think> la add_generation_prompt. Fara enable_thinking
+        # =False, logits[-1] da distributia peste deschiderea blocului de rationament, nu peste cifre:
+        # nu crapa, da cifre plauzibile si gresite. Kwarg-ul se trece doar cand sablonul il declara,
+        # ca sa nu depindem de faptul ca Jinja ignora tacut variabilele nefolosite.
+        try:
+            tmpl = self.tok.get_chat_template() or ""
+        except Exception:
+            tmpl = ""
+        self.thinking = "enable_thinking" in tmpl
+
+    # ------------------------------------------------------------------ backend
+    def _init_hf(self):
+        import torch
+        import torch.nn.functional as F
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        self.torch = torch; self.F = F
+        # Acelasi tipar ca XLMR.__init__, ca dispozitivul sa se aleaga la fel in tot fisierul.
+        self.dev = ("cuda" if torch.cuda.is_available()
+                    else "mps" if torch.backends.mps.is_available() else "cpu")
+        kw = {}
+        if self.dev == "cuda":
+            # NF4 prin bitsandbytes e CUDA-only. Pe mps sau cpu constructia asta ar crapa, de aceea
+            # si importul sta inauntru.
+            from transformers import BitsAndBytesConfig
+            kw["quantization_config"] = BitsAndBytesConfig(
+                load_in_4bit=True, bnb_4bit_compute_dtype=torch.float16,
+                bnb_4bit_quant_type="nf4", bnb_4bit_use_double_quant=True)
+        else:
+            # float16 pe mps, spre deosebire de float32 ales deliberat in XLMR: acolo encoderul e base
+            # si incape, aici un 8B in float32 ar cere ~32 GB si nu intra in cele 24 ale Mac-ului.
+            # `dtype=`, nu `torch_dtype=`, depreciat in transformers 5.13.1.
+            kw["dtype"] = torch.float16 if self.dev == "mps" else torch.float32
+        self.tok = AutoTokenizer.from_pretrained(self.repo, revision=self.revision)
+        self.hf_tok = self.tok
+        self.model = AutoModelForCausalLM.from_pretrained(
+            self.repo, revision=self.revision, device_map=self.dev, **kw).eval()
+
+    def _init_mlx(self):
+        import mlx.core as mx
+        from mlx_lm import load as mlx_load
+        self.mx = mx
+        self.dev = "mlx"
+        self.model, self.tok = mlx_load(self.repo, revision=self.revision)
+        # TokenizerWrapper deleaga prin __getattr__, dar __call__ e dunder si se cauta pe TIP, nu pe
+        # instanta, deci wrapper-ul nu e apelabil. surprisal() are nevoie de apelul direct, cu
+        # return_offsets_mapping, deci tine si tokenizerul HF brut de dedesubt.
+        self.hf_tok = self.tok._tokenizer
+
+    def _logits_last(self, ids):
+        """Vectorul COMPLET de logits la ultima pozitie, float32, ca np.ndarray(vocab,).
+
+        Complet, nu top-N: semnalul B cere masa peste toate id-urile care se decodeaza ca "1".."5",
+        iar capcana SentencePiece inseamna mai multe id-uri per cifra. De aici si regula ca nu se
+        trece prin Ollama sau prin serverul mlx_lm, care trunchiaza amandoua.
+        """
+        if self.backend == "mlx":
+            # bfloat16 -> float32 inainte de orice reducere, oglinda lui .float() de pe calea torch:
+            # masa de pe cifre e mica si un softmax in bf16 ar pierde exact ce masuram.
+            out = self.model(self.mx.array([ids]))[0, -1].astype(self.mx.float32)
+            return np.array(out, copy=False)
+        t = self.torch.tensor([ids], device=self.dev)
+        with self.torch.no_grad():
+            return self.model(t).logits[0, -1].float().cpu().numpy()
+
+    def _logprobs_at(self, ids, tgt):
+        """-log P(ids[i] | ids[:i]) pentru fiecare i din `tgt`.
+
+        Reducerea se face in framework, nu pe host: un (seq, vocab) float32 ar fi ~537 MB la Gemma
+        (512 x 262144) copiati degeaba, cand ne trebuie len(tgt) numere.
+        """
+        if self.backend == "mlx":
+            mx = self.mx
+            lg = self.model(mx.array([ids]))[0].astype(mx.float32)
+            lp = lg - mx.logsumexp(lg, axis=-1, keepdims=True)
+            return [-float(lp[i - 1, ids[i]]) for i in tgt]
+        t = self.torch.tensor([ids], device=self.dev)
+        with self.torch.no_grad():
+            lg = self.model(t).logits[0].float()
+        lp = self.F.log_softmax(lg, dim=-1)
+        return [-float(lp[i - 1, ids[i]]) for i in tgt]
+
+    # ------------------------------------------------------------------ prompt
+    def _render_chat(self, msgs):
+        """Promptul randat ca text. Serveste garda de gandire din d4_sanity.py."""
+        kw = {"enable_thinking": False} if self.thinking else {}
+        return self.tok.apply_chat_template(msgs, add_generation_prompt=True, tokenize=False, **kw)
+
+    def _encode_chat(self, msgs):
+        """Sablonul de chat -> lista de id-uri.
+
+        `return_dict=False` e obligatoriu: in transformers 5.13.1 default-ul a devenit True, deci
+        apelul vechi cu return_tensors="pt" intorcea un BatchEncoding, iar model(ids) il primea ca
+        input_ids. Fara return_tensors iese o lista de int, deci neutra fata de backend.
+        """
+        kw = {"enable_thinking": False} if self.thinking else {}
+        return self.tok.apply_chat_template(msgs, add_generation_prompt=True,
+                                            tokenize=True, return_dict=False, **kw)
+
+    def _score_msgs(self, msgs):
+        """Soft-read P(1..5) la ultima pozitie -> scor in [0,1], sau None daca masa e degenerata.
+        Corpul comun al lui _once si al lui PromptRater._soft_msgs."""
+        p, _ = self.digit_mass(msgs)
+        if p is None:
+            return None
+        return (float((p * np.arange(1, 6)).sum()) - 1.0) / 4.0
+
+    def digit_mass(self, msgs):
+        """(p_normalizat, masa_bruta). Masa bruta e ce verifica testul de sanatate D.4: daca modul de
+        gandire e activ, aproape toata probabilitatea pleaca pe <think> si masa iese ~0."""
+        logits = self._logits_last(self._encode_chat(msgs))
+        e = np.exp(logits - logits.max())
+        probs = e / e.sum()
+        p = np.array([float(probs[self.digit[d]].sum()) for d in "12345"])
+        raw = float(p.sum())
+        if raw < 1e-9:
+            return None, raw
+        return p / raw, raw
 
     def _once(self, sent, tok_str, ptmpl):
         prompt = ptmpl.format(tok=tok_str, sent=str(sent).replace("\n", " ").strip())
-        ids = self.tok.apply_chat_template([{"role": "user", "content": prompt}],
-                                           add_generation_prompt=True, return_tensors="pt").to(self.dev)
-        with self.torch.no_grad():
-            logits = self.model(ids).logits[0, -1].float()
-        probs = self.F.softmax(logits, dim=-1)
-        p = np.array([float(probs[self.digit[d]].sum()) for d in "12345"])
-        if p.sum() < 1e-9:
-            return None
-        p /= p.sum()
-        return (float((p * np.arange(1, 6)).sum()) - 1.0) / 4.0
+        return self._score_msgs([{"role": "user", "content": prompt}])
 
     def rate(self, sent, tok_str):
         tok_str = str(tok_str).strip()
@@ -287,7 +450,11 @@ class LLMRater:
 
     def surprisal(self, sent, tok_str):
         """Semnal C: surprisal per-token al cuvantului tinta in context = -log P(tok | context stanga),
-        mediat pe subword-uri. Statistica bruta din RoLlama3 (nu antrenata) => independenta de rating."""
+        mediat pe subword-uri. Statistica bruta din model (nu antrenata) => independenta de rating.
+
+        Fara sablon de chat, deliberat: se scoreaza o secventa DATA, nu se genereaza una noua. E si
+        motivul pentru care semnalul asta nu poate trece prin Ollama.
+        """
         text = str(sent).replace("\n", " ").strip()
         tok = str(tok_str).strip()
         idx = text.find(tok)
@@ -296,29 +463,32 @@ class LLMRater:
             if idx < 0:
                 return np.nan
         ctx, cs, ce = crop_around(text, idx, idx + len(tok))
-        enc = self.tok(ctx, return_offsets_mapping=True, return_tensors="pt",
-                       truncation=True, max_length=512)
-        offs = enc["offset_mapping"][0].tolist()
-        ids = enc["input_ids"][0].to(self.dev)
+        # Fara return_tensors: liste de int, deci acelasi cod pe ambele backend-uri.
+        enc = self.hf_tok(ctx, return_offsets_mapping=True, truncation=True, max_length=512)
+        offs, ids = enc["offset_mapping"], enc["input_ids"]
         if len(ids) < 2:
             return np.nan
-        with self.torch.no_grad():
-            logits = self.model(ids.unsqueeze(0)).logits[0].float()
-        lp = self.F.log_softmax(logits, dim=-1)
         tgt = [i for i, (a, b) in enumerate(offs) if b > a and a < ce and b > cs and i >= 1]
         if not tgt:
             return np.nan
-        return float(sum(-lp[i - 1, ids[i]].item() for i in tgt)) / len(tgt)
+        return float(np.mean(self._logprobs_at(ids, tgt)))
 
 
 def blend_ridge_hgb(Xtr, ytr, Xpredict):
-    """Blend liniar (Ridge) + neliniar (HistGradientBoosting): media e robusta cross-lingual."""
+    """Blend liniar (Ridge) + neliniar (HistGradientBoosting): media e robusta cross-lingual.
+
+    Imputerul (A.4): HGB trateaza NaN nativ, StandardScaler crapa pe NaN. Deci bratul Ridge primeste
+    imputare la mediana calculata PE SETUL DE ANTRENARE, niciodata pe test, fiindca e in Pipeline si
+    se potriveste doar la fit. Cand nu exista NaN, imputerul e trecere directa, deci reproducerea
+    bit-exacta a caii romanesti nu e atinsa."""
+    from sklearn.impute import SimpleImputer
     from sklearn.linear_model import Ridge
     from sklearn.preprocessing import StandardScaler
     from sklearn.pipeline import Pipeline
     from sklearn.ensemble import HistGradientBoostingRegressor
     preds = []
-    for mk in (lambda: Pipeline([("s", StandardScaler()), ("r", Ridge(alpha=300, random_state=SEED))]),
+    for mk in (lambda: Pipeline([("i", SimpleImputer(strategy="median", keep_empty_features=True)),
+                                 ("s", StandardScaler()), ("r", Ridge(alpha=300, random_state=SEED))]),
                lambda: HistGradientBoostingRegressor(max_depth=3, learning_rate=0.05, max_iter=400,
                                                      l2_regularization=1.0, random_state=SEED)):
         m = mk(); m.fit(Xtr, ytr); preds.append(m.predict(Xpredict))
@@ -493,7 +663,10 @@ def recompute_signals(test, emb_cfg="last4", feats=(), reuse_llm=False, tag="", 
     surp = (test.merge(pd.read_csv(surp_path), on="datapointID", how="left")["surp"].values
             if reuse_llm and os.path.exists(surp_path) else None)
     if llm is None or surp is None:
-        rater = LLMRater()
+        # Calea romaneasca mostenita, pe transformers. Reproducerea bit-exacta a lui 64.81 vine din
+        # CSV-urile din cache (load_cached_signals), nu de aici: ramura asta se atinge doar cand
+        # cache-ul lipseste.
+        rater = LLMRater(RO_LEGACY_LLM, backend="transformers")
         if llm is None:
             llm = np.array([rater.rate(r.text, r.token) for r in test.itertuples()])
             pd.DataFrame({"datapointID": test["datapointID"], "llm_cx": llm}).to_csv(llm_path, index=False)

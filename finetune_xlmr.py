@@ -44,27 +44,20 @@ def set_seed(s):
 
 # ----------------------------------------------------------------------------- date brute (local)
 def load_complex_en():
-    en = []
-    for k in ("train", "trial", "test"):
-        p = os.path.join(DATA, "complex_en", f"lcp_single_{k}.tsv")
-        en.append(pd.read_csv(p, sep="\t").dropna(subset=["sentence", "token", "complexity"]))
-    en = pd.concat(en, ignore_index=True)
-    return en.rename(columns={"sentence": "sent"})[["sent", "token", "complexity"]]
+    """CompLex EN. Descarca daca lipseste (A.0): varianta veche doar citea, deci --frozenmulti crapa
+    cu FileNotFoundError pe orice masina fara data/complex_en/."""
+    from mlsp_common import ensure_complex_en
+    return ensure_complex_en()
 
 
-def load_mlsp():
-    dfs = []
-    for f in glob.glob(os.path.join(DATA, "mlsp", "*.tsv")):
-        x = pd.read_csv(f, sep="\t")
-        if {"context", "target", "complexity"}.issubset(x.columns):
-            x = x.rename(columns={"context": "sent", "target": "token"})
-            x["lang"] = os.path.basename(f).split("_")[0].lower()    # cod limba din numele fisierului
-            dfs.append(x)
-    if not dfs:
-        return None
-    ml = pd.concat(dfs, ignore_index=True)
-    ml = ml[~ml["token"].astype(str).str.contains(" ", na=False)].reset_index(drop=True)
-    return ml[["sent", "token", "complexity", "lang"]].dropna(subset=["sent", "token", "complexity"])
+def load_mlsp(split="test"):
+    """MLSP pe cele 10 limbi, din data/mlsp_full/ (A.1 + A.2).
+
+    Varianta veche deriva limba din numele fisierului cu split("_")[0], ceea ce pe fisierele care
+    exista azi da "multils" pentru toate zece: bucla de holdout ar sari toate limbile si ar scrie
+    tacut un CSV gol. Limba vine acum din coloana `language`, cu eroare la nemapare."""
+    from mlsp_common import load_mlsp as _load
+    return _load(split)
 
 
 # ----------------------------------------------------------------------------- dataset
@@ -257,28 +250,113 @@ def multilingual_gate(en, ml, tok, cfg, holdout=("it", "pt", "es")):
           f"Intrebare: ajuta multilingual peste EN-only? bate frozen-ul?")
 
 
-def frozen_multi_gate(en, ml, holdout=("it", "pt", "es")):
-    """Baseline FROZEN pe acelasi split held-out-language: embedding inghetat + blend Ridge/HGB,
-    train EN+MLSP(fara L) -> test L. Comparatie directa cu LoRA-multilingual."""
-    from solution_bert import XLMR, lexical as slex, _Xc, blend_ridge_hgb
-    xr = XLMR("last4", "xlmr")
-    Een, oken = xr.embed_frame(list(en["sent"]), list(en["token"]))
-    lex_en = slex(list(en["token"]), ["en"] * len(en)); yen = en["complexity"].values.astype(float)
-    Em, okm = xr.embed_frame(list(ml["sent"]), list(ml["token"]))
-    lex_ml = slex(list(ml["token"]), list(ml["lang"])); yml = ml["complexity"].values.astype(float)
-    langs = ml["lang"].values
+def _center_per_lang(E, lex, langs):
+    """_Xc pe blocuri: FIECARE limba centrata pe media EI (C.2).
+
+    Varianta veche dadea o singura medie pentru tot MLSP∖L, deci doar testul era centrat per limba,
+    iar antrenarea amesteca deplasarile de limba intr-un singur centru."""
+    from solution_bert import _Xc
+    X = None
+    for lg in pd.unique(langs):
+        m = (langs == lg)
+        blk = _Xc(E[m], lex[m], E[m].mean(0, keepdims=True))
+        if X is None:
+            X = np.zeros((len(E), blk.shape[1]), np.float32)
+        X[m] = blk
+    return X
+
+
+def _boot_delta(y, p_en, p_multi, groups, n_boot=1000, seed=SEED):
+    """CI si sigma pentru Δ, prin reesantionarea CONTEXTELOR, nu a itemilor (C.2).
+
+    Sapte limbi din zece au in medie 3 tinte per context, iar fil/pt/si au practic una. Un bootstrap
+    pe itemi ar da CI-uri prea inguste la primul grup si corecte la al doilea, adica ar denatura exact
+    comparatia intre limbi care e obiectul lucrarii.
+
+    Aceeasi reesantionare se aplica ambelor brate, deci intervalul lui Δ e PERECHE: zgomotul comun al
+    esantionului se anuleaza. Nu cere nicio refitare, doar recalcularea lui r pe predictiile facute."""
+    rng = np.random.default_rng(seed)
+    codes = pd.factorize(groups)[0]
+    idx_by_g = [np.flatnonzero(codes == k) for k in range(codes.max() + 1)]
+    G = len(idx_by_g)
+    d, re_, rm_ = [], [], []
+    for _ in range(n_boot):
+        sel = np.concatenate([idx_by_g[k] for k in rng.integers(0, G, G)])
+        if np.unique(y[sel]).size < 2:
+            continue
+        a = pearson(p_en[sel], y[sel]); b = pearson(p_multi[sel], y[sel])
+        re_.append(a); rm_.append(b); d.append(b - a)
+    d = np.asarray(d)
+    return dict(delta_lo=float(np.percentile(d, 2.5)), delta_hi=float(np.percentile(d, 97.5)),
+                sigma_delta=float(d.std(ddof=1)), n_boot_ok=len(d),
+                r_en_lo=float(np.percentile(re_, 2.5)), r_en_hi=float(np.percentile(re_, 97.5)),
+                r_multi_lo=float(np.percentile(rm_, 2.5)), r_multi_hi=float(np.percentile(rm_, 97.5)))
+
+
+def frozen_multi_gate(en, ml, holdout=None, emb_cfg="last4", encoder="xlmr", n_boot=1000,
+                      out=os.path.join(HERE, "output", "e1_lolo_frozen.csv")):
+    """E1: Δ_frozen(L) = r(EN+MLSP∖L → L) − r(EN-only → L), pe toate cele 10 limbi.
+
+    Trei diferente fata de varianta veche, toate necesare ca sa produca un Δ, nu un r:
+      1. holdout pe toate cele 10 limbi, nu doar ("it","pt","es");
+      2. embedding prin `_embed_cached`, nu `embed_frame` direct, deci rularile urmatoare sunt aproape
+         instantanee;
+      3. al doilea brat, antrenat DOAR pe EN, care da termenul de scazut.
+
+    Bratul EN-only se potriveste O SINGURA DATA si prezice toate limbile deodata: modelul nu depinde de
+    L, doar partitia de test depinde. 11 potriviri in loc de 20, cifre identice.
+    """
+    from solution_bert import XLMR, lexical as slex, _Xc, blend_ridge_hgb, _embed_cached
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    t0 = time.time()
+    xr = XLMR(emb_cfg, encoder)
+    print(f"[E1] device={xr.dev} encoder={encoder} cfg={emb_cfg} dim={xr.dim}", flush=True)
+
+    Een, oken = _embed_cached(xr, list(en["sent"]), list(en["token"]), "en")
+    Em, okm = _embed_cached(xr, list(ml["sent"]), list(ml["token"]), "mlsp10")
+    print(f"[E1] embedding gata in {time.time()-t0:.0f}s | EN {oken.sum()}/{len(en)} "
+          f"MLSP {okm.sum()}/{len(ml)}", flush=True)
+
+    # na_policy="mlsp": garda de frecventa pe sinhaleza (A.3) + NaN pe suprafata la ja/si (A.4).
+    lex_en = slex(list(en["token"]), ["en"] * len(en), na_policy="mlsp")
+    lex_ml = slex(list(ml["token"]), list(ml["lang"]), na_policy="mlsp")
+    yen = en["complexity"].values.astype(float)[oken]
+    Xen = _Xc(Een[oken], lex_en[oken], Een[oken].mean(0, keepdims=True))
+
+    y = ml["complexity"].values.astype(float)[okm]
+    lang = ml["lang"].values[okm]
+    ctx = ml["context_id"].values[okm]
+    Xml = _center_per_lang(Em[okm], lex_ml[okm], lang)
+
+    p_en_all = blend_ridge_hgb(Xen, yen, Xml)          # bratul EN-only, o singura potrivire
+    print(f"[E1] brat EN-only potrivit ({time.time()-t0:.0f}s)", flush=True)
+
     rows = []
-    for L in holdout:
-        te = (langs == L) & okm; tr = (langs != L) & okm
-        Xtr = np.vstack([_Xc(Een[oken], lex_en[oken], Een.mean(0, keepdims=True)),
-                         _Xc(Em[tr], lex_ml[tr], Em[tr].mean(0, keepdims=True))])
-        ytr = np.concatenate([yen[oken], yml[tr]])
-        Xte = _Xc(Em[te], lex_ml[te], Em[te].mean(0, keepdims=True))
-        r = pearson(blend_ridge_hgb(Xtr, ytr, Xte), yml[te])
-        print(f"  FROZEN held-out {L}: r={r:.4f} (n={int(te.sum())})", flush=True)
-        rows.append({"holdout": L, "n": int(te.sum()), "r_frozen_multi": round(r, 4)})
-    pd.DataFrame(rows).to_csv(os.path.join(DATA, "frozen_multi.csv"), index=False)
-    print("-> data/frozen_multi.csv")
+    for L in (holdout or sorted(pd.unique(lang))):
+        te = (lang == L); tr = ~te
+        Xtr = np.vstack([Xen, Xml[tr]]); ytr = np.concatenate([yen, y[tr]])
+        p_multi = blend_ridge_hgb(Xtr, ytr, Xml[te])
+        r_en = pearson(p_en_all[te], y[te]); r_multi = pearson(p_multi, y[te])
+        b = _boot_delta(y[te], p_en_all[te], p_multi, ctx[te], n_boot=n_boot)
+        rows.append({"lang": L, "n": int(te.sum()), "n_contexte": int(pd.unique(ctx[te]).size),
+                     "r_en_only": round(r_en, 4), "r_multi": round(r_multi, 4),
+                     "delta": round(r_multi - r_en, 4),
+                     "delta_lo": round(b["delta_lo"], 4), "delta_hi": round(b["delta_hi"], 4),
+                     "sigma_delta": round(b["sigma_delta"], 4),
+                     "r_en_lo": round(b["r_en_lo"], 4), "r_en_hi": round(b["r_en_hi"], 4),
+                     "r_multi_lo": round(b["r_multi_lo"], 4), "r_multi_hi": round(b["r_multi_hi"], 4)})
+        pd.DataFrame(rows).to_csv(out, index=False)     # scris dupa FIECARE limba, nu la final
+        print(f"  {L:4s} n={te.sum():4d} ctx={pd.unique(ctx[te]).size:4d} | EN-only {r_en:+.4f} | "
+              f"+MLSP∖L {r_multi:+.4f} | Δ {r_multi-r_en:+.4f} "
+              f"[{b['delta_lo']:+.4f},{b['delta_hi']:+.4f}] σ={b['sigma_delta']:.4f} "
+              f"({time.time()-t0:.0f}s)", flush=True)
+
+    d = pd.DataFrame(rows)
+    print(f"\n-> {out}")
+    print(f"[E1] Δ mediu {d['delta'].mean():+.4f} | σ intre limbi {d['delta'].std(ddof=1):.4f} | "
+          f"σ_Δ mediu in interiorul limbii {d['sigma_delta'].mean():.4f} | "
+          f"limbi cu Δ>0: {(d['delta'] > 0).sum()}/{len(d)}")
+    return d
 
 
 def main():

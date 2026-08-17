@@ -5,6 +5,7 @@
 
 # --- MLSP/MultiLS gated pe HuggingFace (nu se redistribuie) ---
 data/mlsp/
+data/mlsp_full/
 
 # --- CompLex EN: public oricum (descarcabil din cod), nu-l versionam ---
 data/complex_en/
@@ -54,3 +55,6 @@ nitro*
 *.synctex.gz
 *.fls
 *.fdb_latexmk
+
+# tokensave local index (generated, machine-specific)
+.tokensave/
