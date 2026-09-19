@@ -56,6 +56,9 @@ CONTROL_8BIT = [
     dict(repo="mlx-community/Qwen3.5-9B-MLX-8bit",
          revision="84f7c2deea248d8df56240f88102def51c7ed5d6", allow=None, gb=10.45,
          note="control, candidat de robustete"),
+    dict(repo="mlx-community/gemma-4-12B-it-qat-8bit",
+         revision="eafed06893a6ee299315ebe0e0feb82f435e92fe", allow=None, gb=12.72,
+         note="control, modelul lui B din sistem"),
 ]
 
 

@@ -1,0 +1,8 @@
+componenta,nume,n,dim,sec_incarcare,sec_forward,ms_per_rand
+encoder,xlmr,5624,768,4.9,49.5,8.8
+encoder,labse,5624,768,2.1,50.4,8.96
+encoder,e5,5624,768,2.3,49.6,8.82
+encoder,xlmr-large,5624,1024,3.4,131.8,23.43
+llm,gemma4-12b-4bit,5624,,,6138.5,1091.48
+llm,qwen3-8b-4bit,5624,,,4720.6,839.37
+llm,qwen35-9b-8bit,569,,,441.4,775.67

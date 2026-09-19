@@ -1,0 +1,1006 @@
+% =====================================================================
+% Template-ul ACL exact cum a fost trimis, cu Introduction si Related Work
+% ale noastre in el. Un singur fisier, de dat copy-paste in Overleaf.
+%
+% ABATERILE DE LA TEMPLATE, toate patru, si nimic altceva:
+%
+%   1. Corpul lui \section{Introduction} e inlocuit cu introducerea noastra
+%      (paste_intro.tex, revizia 11), si dupa el s-a adaugat
+%      \section{Related Work}. Asta era cererea.
+%
+%   2. Bibliografia. Blocul filecontents de mai jos scrie custom.bib cu cele
+%      7 intrari ale template-ului PLUS cele 18 ale lucrarii. Template-ul isi
+%      citeaza propriile exemple (Gusfield:97 in Citations, si Ando2005,
+%      andrew2007scalable, rasooli-tetrault-2015 prin \nocite in References),
+%      deci ambele seturi trebuie sa existe, altfel apar citari nerezolvate.
+%
+%   3. Blocul \pinlabel, opt linii inainte de Introduction. Introducerea
+%      trimite inainte la Approach, Results si Negative Results, care in
+%      fisierul asta nu exista; fara el ar aparea "Section ??" in patru
+%      locuri. Nu tipareste nimic. Se poate sterge, cu pretul celor patru ??.
+%
+%   4. Acest comentariu.
+%
+% CE NU S-A ATINS, desi ar trebui schimbat inainte de orice trimitere:
+% \title e tot "Instructions for *ACL Proceedings", blocul de autori e tot
+% "First Author / Second Author", abstractul e tot al template-ului, si au
+% ramas si sectiunile lui de manual (Engines, Preamble, Document Body,
+% BibTeX Files) cu tabelele si imaginile lor. Numerotarea iese deci:
+% 1 Introduction, 2 Related Work, 3 Engines, 4 Preamble, 5 Document Body,
+% 6 BibTeX Files. Zi cand vrei schimbate si alea.
+% =====================================================================
+
+% ---------------------------------------------------------------------
+% Abaterea 2: bibliografia, scrisa pe disc la fiecare compilare, ca
+% fisierul sa fie autonom. 25 de intrari: 7 ale template-ului, neatinse,
+% urmate de cele 18 ale lucrarii, toate preluate literal de pe
+% aclanthology.org. Numele fisierului e custom.bib, deci linia
+% \bibliography{custom} a template-ului ramane exact cum era.
+%
+% ATENTIE, consecinta lui [overwrite]: custom.bib se rescrie la fiecare
+% compilare, deci intrari noi se adauga AICI, nu editand custom.bib in
+% Overleaf, unde s-ar pierde. In schimb, fisierul merge lipit si intr-un
+% proiect ACL nemodificat, care are deja un custom.bib.
+%
+% Doua reguli verificate, de nu incalcat la adaugari: niciun caracter arond
+% in comentarii, ca BibTeX il citeste ca inceput de intrare; si niciun
+% caracter Unicode in intrari, de aceea "Vorbesti Romaneste" e scris cu
+% {\c s} la masala-etal-2024-vorbesti.
+% ---------------------------------------------------------------------
+\begin{filecontents*}[overwrite]{custom.bib}
+% Use this file for citations not found in the ACL Anthology (contained in "anthology.bib").
+
+@book{Aho:72,
+    author  = {Alfred V. Aho and Jeffrey D. Ullman},
+    title   = {The Theory of Parsing, Translation and Compiling},
+    year    = "1972",
+    volume  = "1",
+    publisher = {Prentice-Hall},
+    address = {Englewood Cliffs, NJ}
+}
+
+@book{APA:83,
+    author  = {{American Psychological Association}},
+    title   = {Publications Manual},
+    year    = "1983",
+    publisher = {American Psychological Association},
+    address = {Washington, DC}
+}
+
+@article{Chandra:81,
+	author = {Ashok K. Chandra and Dexter C. Kozen and Larry J. Stockmeyer},
+	year = "1981",
+	title = {Alternation},
+	journal = {Journal of the Association for Computing Machinery},
+	volume = "28",
+	number = "1",
+	pages = "114--133",
+	doi = "10.1145/322234.322243",
+}
+
+@inproceedings{andrew2007scalable,
+  title={Scalable training of {L1}-regularized log-linear models},
+  author={Andrew, Galen and Gao, Jianfeng},
+  booktitle={Proceedings of the 24th International Conference on Machine Learning},
+  pages={33--40},
+  year={2007},
+}
+
+@book{Gusfield:97,
+    author  = {Dan Gusfield},
+    title   = {Algorithms on Strings, Trees and Sequences},
+    year    = "1997",
+    publisher = {Cambridge University Press},
+    address = {Cambridge, UK}
+}
+
+@article{rasooli-tetrault-2015,
+    author    = {Mohammad Sadegh Rasooli and Joel R. Tetreault},
+    title     = {Yara Parser: {A} Fast and Accurate Dependency Parser},
+    journal   = {Computing Research Repository},
+    volume    = {arXiv:1503.06733},
+    year      = {2015},
+    url       = {http://arxiv.org/abs/1503.06733},
+    note    = {version 2}
+}
+
+@article{Ando2005,
+	Acmid = {1194905},
+	Author = {Ando, Rie Kubota and Zhang, Tong},
+	Issn = {1532-4435},
+	Issue_Date = {12/1/2005},
+	Journal = {Journal of Machine Learning Research},
+	Month = dec,
+	Numpages = {37},
+	Pages = {1817--1853},
+	Publisher = {JMLR.org},
+	Title = {A Framework for Learning Predictive Structures from Multiple Tasks and Unlabeled Data},
+	Volume = {6},
+	Year = {2005}
+}
+
+% ---- De aici incolo, cele 18 intrari ale lucrarii. ----
+
+@inproceedings{shardlow-etal-2021-semeval,
+    title = "{S}em{E}val-2021 Task 1: Lexical Complexity Prediction",
+    author = "Shardlow, Matthew  and
+      Evans, Richard  and
+      Paetzold, Gustavo Henrique  and
+      Zampieri, Marcos",
+    editor = "Palmer, Alexis  and
+      Schneider, Nathan  and
+      Schluter, Natalie  and
+      Emerson, Guy  and
+      Herbelot, Aurelie  and
+      Zhu, Xiaodan",
+    booktitle = "Proceedings of the 15th International Workshop on Semantic Evaluation (SemEval-2021)",
+    month = aug,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.semeval-1.1/",
+    doi = "10.18653/v1/2021.semeval-1.1",
+    pages = "1--16"
+}
+
+@inproceedings{yimam-etal-2018-report,
+    title = "A Report on the Complex Word Identification Shared Task 2018",
+    author = {Yimam, Seid Muhie  and
+      Biemann, Chris  and
+      Malmasi, Shervin  and
+      Paetzold, Gustavo  and
+      Specia, Lucia  and
+      {\v{S}}tajner, Sanja  and
+      Tack, Ana{\"i}s  and
+      Zampieri, Marcos},
+    editor = "Tetreault, Joel  and
+      Burstein, Jill  and
+      Kochmar, Ekaterina  and
+      Leacock, Claudia  and
+      Yannakoudakis, Helen",
+    booktitle = "Proceedings of the Thirteenth Workshop on Innovative Use of {NLP} for Building Educational Applications",
+    month = jun,
+    year = "2018",
+    address = "New Orleans, Louisiana",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/W18-0507/",
+    doi = "10.18653/v1/W18-0507",
+    pages = "66--78"
+}
+
+@inproceedings{shardlow-etal-2024-multilingual,
+    title = "Multilingual Resources for Lexical Complexity Prediction: A Review",
+    author = "Shardlow, Matthew  and
+      North, Kai  and
+      Zampieri, Marcos",
+    editor = "Nunzio, Giorgio Maria Di  and
+      Vezzani, Federica  and
+      Ermakova, Liana  and
+      Azarbonyad, Hosein  and
+      Kamps, Jaap",
+    booktitle = "Proceedings of the Workshop on DeTermIt! Evaluating Text Difficulty in a Multilingual Context @ LREC-COLING 2024",
+    month = may,
+    year = "2024",
+    address = "Torino, Italia",
+    publisher = "ELRA and ICCL",
+    url = "https://aclanthology.org/2024.determit-1.5/",
+    pages = "51--59"
+}
+
+@inproceedings{shardlow-etal-2024-bea,
+    title = "The {BEA} 2024 Shared Task on the Multilingual Lexical Simplification Pipeline",
+    author = {Shardlow, Matthew  and
+      Alva-Manchego, Fernando  and
+      Batista-Navarro, Riza  and
+      Bott, Stefan  and
+      Calderon Ramirez, Saul  and
+      Cardon, R{\'e}mi  and
+      Fran{\c{c}}ois, Thomas  and
+      Hayakawa, Akio  and
+      Horbach, Andrea  and
+      H{\"u}lsing, Anna  and
+      Ide, Yusuke  and
+      Imperial, Joseph Marvin  and
+      Nohejl, Adam  and
+      North, Kai  and
+      Occhipinti, Laura  and
+      Rojas, Nelson Per{\'e}z  and
+      Raihan, Nishat  and
+      Ranasinghe, Tharindu  and
+      Salazar, Martin Solis  and
+      {\v{S}}tajner, Sanja  and
+      Zampieri, Marcos  and
+      Saggion, Horacio},
+    editor = {Kochmar, Ekaterina  and
+      Bexte, Marie  and
+      Burstein, Jill  and
+      Horbach, Andrea  and
+      Laarmann-Quante, Ronja  and
+      Tack, Ana{\"i}s  and
+      Yaneva, Victoria  and
+      Yuan, Zheng},
+    booktitle = "Proceedings of the 19th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2024)",
+    month = jun,
+    year = "2024",
+    address = "Mexico City, Mexico",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.bea-1.51/",
+    pages = "571--589"
+}
+
+@inproceedings{qiu-etal-2024-complex,
+    title = "{C}omp{L}ex-{ZH}: A New Dataset for Lexical Complexity Prediction in {M}andarin and {C}antonese",
+    author = "Qiu, Le  and
+      Guo, Shanyue  and
+      Wong, Tak-Sum  and
+      Chersoni, Emmanuele  and
+      Lee, John  and
+      Huang, Chu-Ren",
+    editor = "Shardlow, Matthew  and
+      Saggion, Horacio  and
+      Alva-Manchego, Fernando  and
+      Zampieri, Marcos  and
+      North, Kai  and
+      {\v{S}}tajner, Sanja  and
+      Stodden, Regina",
+    booktitle = "Proceedings of the Third Workshop on Text Simplification, Accessibility and Readability (TSAR 2024)",
+    month = nov,
+    year = "2024",
+    address = "Miami, Florida, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.tsar-1.3/",
+    doi = "10.18653/v1/2024.tsar-1.3",
+    pages = "20--26"
+}
+
+@inproceedings{saggion-etal-2024-lexical,
+    title = "Lexical Complexity Prediction and Lexical Simplification for {C}atalan and {S}panish: Resource Creation, Quality Assessment, and Ethical Considerations",
+    author = "Saggion, Horacio  and
+      Bott, Stefan  and
+      Szasz, Sandra  and
+      P{\'e}rez, Nelson  and
+      Calder{\'o}n, Sa{\'u}l  and
+      Sol{\'i}s, Mart{\'i}n",
+    editor = "Shardlow, Matthew  and
+      Saggion, Horacio  and
+      Alva-Manchego, Fernando  and
+      Zampieri, Marcos  and
+      North, Kai  and
+      {\v{S}}tajner, Sanja  and
+      Stodden, Regina",
+    booktitle = "Proceedings of the Third Workshop on Text Simplification, Accessibility and Readability (TSAR 2024)",
+    month = nov,
+    year = "2024",
+    address = "Miami, Florida, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.tsar-1.9/",
+    doi = "10.18653/v1/2024.tsar-1.9",
+    pages = "82--94"
+}
+
+@inproceedings{conneau2020xlmr,
+  title        = {Unsupervised Cross-lingual Representation Learning at Scale},
+  author       = {Conneau, Alexis and Khandelwal, Kartikay and Goyal, Naman and Chaudhary, Vishrav and Wenzek, Guillaume and Guzm{\'a}n, Francisco and Grave, Edouard and Ott, Myle and Zettlemoyer, Luke and Stoyanov, Veselin},
+  booktitle    = {Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics (ACL)},
+  pages        = {8440--8451},
+  year         = {2020},
+  url          = {https://aclanthology.org/2020.acl-main.747}
+}
+
+@inproceedings{pires-etal-2019-multilingual,
+    title = "How Multilingual is Multilingual {BERT}?",
+    author = "Pires, Telmo  and
+      Schlinger, Eva  and
+      Garrette, Dan",
+    editor = "Korhonen, Anna  and
+      Traum, David  and
+      M{\`a}rquez, Llu{\'i}s",
+    booktitle = "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P19-1493/",
+    doi = "10.18653/v1/P19-1493",
+    pages = "4996--5001"
+}
+
+@inproceedings{wu-dredze-2020-languages,
+    title = "Are All Languages Created Equal in Multilingual {BERT}?",
+    author = "Wu, Shijie  and
+      Dredze, Mark",
+    editor = "Gella, Spandana  and
+      Welbl, Johannes  and
+      Rei, Marek  and
+      Petroni, Fabio  and
+      Lewis, Patrick  and
+      Strubell, Emma  and
+      Seo, Minjoon  and
+      Hajishirzi, Hannaneh",
+    booktitle = "Proceedings of the 5th Workshop on Representation Learning for NLP",
+    month = jul,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2020.repl4nlp-1.16/",
+    doi = "10.18653/v1/2020.repl4nlp-1.16",
+    pages = "120--130"
+}
+
+@inproceedings{peters-etal-2019-tune,
+    title = "To Tune or Not to Tune? Adapting Pretrained Representations to Diverse Tasks",
+    author = "Peters, Matthew E.  and
+      Ruder, Sebastian  and
+      Smith, Noah A.",
+    editor = "Augenstein, Isabelle  and
+      Gella, Spandana  and
+      Ruder, Sebastian  and
+      Kann, Katharina  and
+      Can, Burcu  and
+      Welbl, Johannes  and
+      Conneau, Alexis  and
+      Ren, Xiang  and
+      Rei, Marek",
+    booktitle = "Proceedings of the 4th Workshop on Representation Learning for NLP (RepL4NLP-2019)",
+    month = aug,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/W19-4302/",
+    doi = "10.18653/v1/W19-4302",
+    pages = "7--14"
+}
+
+@inproceedings{hale2001probabilistic,
+  title        = {A Probabilistic {Earley} Parser as a Psycholinguistic Model},
+  author       = {Hale, John},
+  booktitle    = {Proceedings of the Second Meeting of the North American Chapter of the Association for Computational Linguistics (NAACL)},
+  year         = {2001},
+  url          = {https://aclanthology.org/N01-1021}
+}
+
+@article{rayner1998eye,
+  title        = {Eye movements in reading and information processing: 20 years of research},
+  author       = {Rayner, Keith},
+  journal      = {Psychological Bulletin},
+  volume       = {124},
+  number       = {3},
+  pages        = {372--422},
+  year         = {1998},
+  doi          = {10.1037/0033-2909.124.3.372}
+}
+
+@inproceedings{hollenstein-etal-2021-multilingual,
+    title = "Multilingual Language Models Predict Human Reading Behavior",
+    author = {Hollenstein, Nora  and
+      Pirovano, Federico  and
+      Zhang, Ce  and
+      J{\"a}ger, Lena  and
+      Beinborn, Lisa},
+    editor = "Toutanova, Kristina  and
+      Rumshisky, Anna  and
+      Zettlemoyer, Luke  and
+      Hakkani-Tur, Dilek  and
+      Beltagy, Iz  and
+      Bethard, Steven  and
+      Cotterell, Ryan  and
+      Chakraborty, Tanmoy  and
+      Zhou, Yichao",
+    booktitle = "Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies",
+    month = jun,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.naacl-main.10/",
+    doi = "10.18653/v1/2021.naacl-main.10",
+    pages = "106--123"
+}
+
+@inproceedings{alves-2025-benchmarking,
+    title = "Benchmarking Language Model Surprisal for Eye-Tracking Predictions in {B}razilian {P}ortuguese",
+    author = "Alves, Diego",
+    editor = "Acarturk, Cengiz  and
+      Nasir, Jamal  and
+      Can, Burcu  and
+      Coltekin, Cagr{\i}",
+    booktitle = "Proceedings of the First International Workshop on Gaze Data and Natural Language Processing",
+    month = sep,
+    year = "2025",
+    address = "Varna, Bulgaria",
+    publisher = "INCOMA Ltd., Shoumen, BULGARIA",
+    url = "https://aclanthology.org/2025.gaze4nlp-1.2/",
+    pages = "7--17"
+}
+
+@inproceedings{gorman-bedrick-2019-need,
+    title = "We Need to Talk about Standard Splits",
+    author = "Gorman, Kyle  and
+      Bedrick, Steven",
+    editor = "Korhonen, Anna  and
+      Traum, David  and
+      M{\`a}rquez, Llu{\'i}s",
+    booktitle = "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P19-1267/",
+    doi = "10.18653/v1/P19-1267",
+    pages = "2786--2791"
+}
+
+% Urmatoarele trei nu sunt citate in fisierul asta. Sunt citate in
+% paste_body.tex (SHAP, chain-of-thought) si erau citate in subsectiunea
+% 2.5 Romanian Resources, scoasa la revizia 7. Lasate aici ca sa nu mai
+% fie atins nimic la asamblarea lucrarii complete.
+
+@inproceedings{lundberg2017shap,
+  title        = {A Unified Approach to Interpreting Model Predictions},
+  author       = {Lundberg, Scott M. and Lee, Su-In},
+  booktitle    = {Advances in Neural Information Processing Systems (NeurIPS)},
+  pages        = {4765--4774},
+  year         = {2017},
+  url          = {https://arxiv.org/abs/1705.07874}
+}
+
+@inproceedings{wei2022cot,
+  title        = {Chain-of-Thought Prompting Elicits Reasoning in Large Language Models},
+  author       = {Wei, Jason and Wang, Xuezhi and Schuurmans, Dale and Bosma, Maarten and Ichter, Brian and Xia, Fei and Chi, Ed H. and Le, Quoc V. and Zhou, Denny},
+  booktitle    = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year         = {2022},
+  url          = {https://arxiv.org/abs/2201.11903}
+}
+
+@inproceedings{masala-etal-2024-vorbesti,
+    title = "``Vorbe{\c s}ti Rom{\^a}ne{\c s}te?'' A Recipe to Train Powerful {R}omanian {LLM}s with {E}nglish Instructions",
+    author = "Masala, Mihai  and
+      Ilie-Ablachim, Denis  and
+      Dima, Alexandru  and
+      Corlatescu, Dragos Georgian  and
+      Zavelca, Miruna-Andreea  and
+      Olaru, Ovio  and
+      Terian, Simina-Maria  and
+      Terian, Andrei  and
+      Leordeanu, Marius  and
+      Velicu, Horia  and
+      Popescu, Marius  and
+      Dascalu, Mihai  and
+      Rebedea, Traian",
+    editor = "Al-Onaizan, Yaser  and
+      Bansal, Mohit  and
+      Chen, Yun-Nung",
+    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2024",
+    month = nov,
+    year = "2024",
+    address = "Miami, Florida, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.findings-emnlp.681/",
+    doi = "10.18653/v1/2024.findings-emnlp.681",
+    pages = "11632--11647"
+}
+\end{filecontents*}
+
+\documentclass[11pt]{article}
+
+% Change "review" to "final" to generate the final (sometimes called camera-ready) version.
+% Change to "preprint" to generate a non-anonymous version with page numbers.
+\usepackage[review]{acl}
+
+% Standard package includes
+\usepackage{times}
+\usepackage{latexsym}
+
+% For proper rendering and hyphenation of words containing Latin characters (including in bib files)
+\usepackage[T1]{fontenc}
+% For Vietnamese characters
+% \usepackage[T5]{fontenc}
+% See https://www.latex-project.org/help/documentation/encguide.pdf for other character sets
+
+% This assumes your files are encoded as UTF8
+\usepackage[utf8]{inputenc}
+
+% This is not strictly necessary, and may be commented out,
+% but it will improve the layout of the manuscript,
+% and will typically save some space.
+\usepackage{microtype}
+
+% This is also not strictly necessary, and may be commented out.
+% However, it will improve the aesthetics of text in
+% the typewriter font.
+\usepackage{inconsolata}
+
+%Including images in your LaTeX document requires adding
+%additional package(s)
+\usepackage{graphicx}
+
+% If the title and author information does not fit in the area allocated, uncomment the following
+%
+%\setlength\titlebox{<dim>}
+%
+% and set <dim> to something 5cm or larger.
+
+\title{Instructions for *ACL Proceedings}
+
+% Author information can be set in various styles:
+% For several authors from the same institution:
+% \author{Author 1 \and ... \and Author n \\
+%         Address line \\ ... \\ Address line}
+% if the names do not fit well on one line use
+%         Author 1 \\ {\bf Author 2} \\ ... \\ {\bf Author n} \\
+% For authors from different institutions:
+% \author{Author 1 \\ Address line \\  ... \\ Address line
+%         \And  ... \And
+%         Author n \\ Address line \\ ... \\ Address line}
+% To start a separate ``row'' of authors use \AND, as in
+% \author{Author 1 \\ Address line \\  ... \\ Address line
+%         \AND
+%         Author 2 \\ Address line \\ ... \\ Address line \And
+%         Author 3 \\ Address line \\ ... \\ Address line}
+
+\author{First Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  \texttt{email@domain} \\\And
+  Second Author \\
+  Affiliation / Address line 1 \\
+  Affiliation / Address line 2 \\
+  Affiliation / Address line 3 \\
+  \texttt{email@domain} \\}
+
+%\author{
+%  \textbf{First Author\textsuperscript{1}},
+%  \textbf{Second Author\textsuperscript{1,2}},
+%  \textbf{Third T. Author\textsuperscript{1}},
+%  \textbf{Fourth Author\textsuperscript{1}},
+%\\
+%  \textbf{Fifth Author\textsuperscript{1,2}},
+%  \textbf{Sixth Author\textsuperscript{1}},
+%  \textbf{Seventh Author\textsuperscript{1}},
+%  \textbf{Eighth Author \textsuperscript{1,2,3,4}},
+%\\
+%  \textbf{Ninth Author\textsuperscript{1}},
+%  \textbf{Tenth Author\textsuperscript{1}},
+%  \textbf{Eleventh E. Author\textsuperscript{1,2,3,4,5}},
+%  \textbf{Twelfth Author\textsuperscript{1}},
+%\\
+%  \textbf{Thirteenth Author\textsuperscript{3}},
+%  \textbf{Fourteenth F. Author\textsuperscript{2,4}},
+%  \textbf{Fifteenth Author\textsuperscript{1}},
+%  \textbf{Sixteenth Author\textsuperscript{1}},
+%\\
+%  \textbf{Seventeenth S. Author\textsuperscript{4,5}},
+%  \textbf{Eighteenth Author\textsuperscript{3,4}},
+%  \textbf{Nineteenth N. Author\textsuperscript{2,5}},
+%  \textbf{Twentieth Author\textsuperscript{1}}
+%\\
+%\\
+%  \textsuperscript{1}Affiliation 1,
+%  \textsuperscript{2}Affiliation 2,
+%  \textsuperscript{3}Affiliation 3,
+%  \textsuperscript{4}Affiliation 4,
+%  \textsuperscript{5}Affiliation 5
+%\\
+%  \small{
+%    \textbf{Correspondence:} \href{mailto:email@domain}{email@domain}
+%  }
+%}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This document is a supplement to the general instructions for *ACL authors. It contains instructions for using the \LaTeX{} style files for ACL conferences.
+The document itself conforms to its own specifications, and is therefore an example of what your manuscript should look like.
+These instructions should be used both for papers submitted for review and for final versions of accepted papers.
+\end{abstract}
+
+% ---------------------------------------------------------------------
+% Abaterea 3. Introducerea trimite inainte la Approach, la tuning, la
+% Results si la Negative Results, care in fisierul asta nu exista; fara
+% fixarea de mai jos ar aparea "Section ??" in patru locuri. Valorile sunt
+% numerele pe care sectiunile le au in lucrarea completa. Nu tipareste
+% nimic. Se sterge cand se lipeste si restul lucrarii.
+% ---------------------------------------------------------------------
+\makeatletter
+\def\pinlabel#1#2{\expandafter\gdef\csname r@#1\endcsname{{#2}{1}{}{}{}}}
+\pinlabel{section:approach}{3}
+\pinlabel{sec:tuning}{3.5}
+\pinlabel{sec:results}{4}
+\pinlabel{sec:negative}{5}
+\makeatother
+
+% =====================================================================
+% Abaterea 1: de aici pana la \section{Engines} e textul nostru, adica
+% paste_intro.tex la revizia 11, integral. Structura introducerii urmeaza
+% modelul hgs: P1 motivatie, P2 reteta standard si presupozitia ei,
+% P3 problema specifica, P4 contributii, P5 diferentiere, P6 roadmap.
+% =====================================================================
+
+\section{Introduction}
+\label{section:intro}
+
+Making a text usable by a given audience depends, before anything else,
+on its vocabulary. A word that is routine for a specialist can stop a
+language learner or a reader from outside the field, taking the
+surrounding sentence with it. Deciding which
+words will cause this, and for whom, is what lexical complexity
+prediction (LCP) does: it assigns a word in context a score on a
+continuous scale \citep{shardlow-etal-2021-semeval}. Text simplification
+uses those scores to choose what to replace, readability assessment to
+aggregate difficulty over a document, and language-teaching material to
+keep vocabulary within a learner's range; complexity prediction is for
+this reason typically the first stage of a simplification pipeline
+\citep{qiu-etal-2024-complex}.
+
+Nearly every LCP system is built the same way: a pretrained encoder is
+fine-tuned on complexity annotations in the language of interest. The
+recipe works wherever those annotations exist, and it quietly assumes the
+one resource most languages do not have. Surveying the datasets published
+between 2018 and 2024, \citet{shardlow-etal-2024-multilingual} find nine
+of them, covering eight languages. A language outside that set has
+nothing to fine-tune on, and buying its way in means paying for a new
+annotation effort of its own.
+
+Our target language is Romanian, and we use no Romanian complexity
+labels at any point, whether for training, validation or model
+selection. Working without them means no design decision can be checked
+on Romanian itself, so every choice has to be justified on other
+languages. Romanian adds a problem of its own: the most reliable
+predictor of word difficulty misfires on it. Word frequency governs how
+long readers fixate a word \citep{rayner1998eye} and ranks first in our
+own attribution analysis (Section~\ref{sec:results}), but Romanian
+inflects heavily and the frequency lists available for it cover
+inflected forms poorly: of the 1587 Romanian target tokens in our test
+set, $11.7\%$ are absent from the list and would be scored as maximally
+rare, and for a further $36.0\%$ the listed form is rarer than its own
+lemma. A method for Romanian therefore needs complexity knowledge
+imported from other languages, and a frequency estimate that survives
+inflection.
+
+In this paper, we predict the lexical complexity of Romanian words in
+context without a single Romanian training label, and we make four
+contributions. First, we combine four label-free signals into a single
+predictor: cross-lingual transfer through a frozen multilingual encoder,
+a language-model complexity rating, surprisal, and a reading-effort
+score derived from eye-tracking. It scores $69.74$ on our test set,
+under a metric that combines Pearson correlation with $R^2$.
+Second, we introduce a lemma-frequency correction for
+morphologically rich languages, substituting the lemma frequency when the
+inflected form is missing or rarer; it is worth $+4.09$, the largest
+single gain we measure, and applies to any inflected language served
+by the same frequency lists. Third, we show that the four signals are
+complementary rather than redundant: the cross-lingual signal acts mainly
+as a frequency detector, the rating and surprisal are near-independent,
+and eye-tracking captures a difficulty the others miss, the effort of
+fitting a word into its context, which shows up only in \emph{late} gaze
+measures.
+Fourth, we report two negative results: fine-tuning the encoder, full or
+LoRA, is consistently \emph{worse} than leaving it frozen, and in-source
+validation is an unreliable guide, since three configurations that win on
+English-to-Romance transfer lose on Romanian.
+
+Our setting differs from the LCP literature in the resource it assumes
+rather than in the model it uses: where that literature trains on
+target-language annotations, we treat complexity as knowledge to be
+imported. We also invert two conventions: gaze becomes evidence about
+complexity rather than something to predict from text, and the encoder
+stays frozen rather than fine-tuned. Section~\ref{sec:related} sets all
+three differences against the work they concern.
+
+The rest of the paper describes the four signals and their fusion
+(Section~\ref{section:approach}), reports the ablation and the analysis
+(Section~\ref{sec:results}), and collects what did not work
+(Section~\ref{sec:negative}).
+
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Lexical complexity prediction.}
+Annotated complexity data exists for only a handful of languages, and
+Romanian is not among them. The task itself began as classification over
+annotated target words \citep{yimam-etal-2018-report}; SemEval-2021
+Task~1 replaced it with a continuous scale on the CompLex corpus
+\citep{shardlow-etal-2021-semeval}, which is the formulation we adopt.
+Zero-shot evaluation is not itself new: the 2018 task already had a
+multilingual track whose French test set came with no French training
+data, though it asked only for binary classification and supplied
+training data in three languages, one of them Romance. Coverage has since
+grown to
+Catalan, Spanish, Mandarin and Cantonese
+\citep{saggion-etal-2024-lexical, qiu-etal-2024-complex} and to the ten
+languages of the MLSP shared task \citep{shardlow-etal-2024-bea}, but the
+review of \citet{shardlow-etal-2024-multilingual} shows annotated LCP
+data still concentrated in a few high-resource languages. Romanian
+appears in none of these resources. We use the English and Romance
+portions of them as the source side of our transfer.
+
+\paragraph{Cross-lingual transfer without target labels.}
+Multilingual encoders such as XLM-R \citep{conneau2020xlmr} place
+translation-equivalent words close together, which makes zero-shot
+transfer of a regressor trained on one language plausible. Transfer
+quality is far from uniform across languages, however, and degrades for
+languages with less pretraining data and richer morphology
+\citep{pires-etal-2019-multilingual, wu-dredze-2020-languages}, which is
+precisely the regime Romanian occupies. Transfer is moreover normally
+realised by fine-tuning the encoder on the source language; that feature
+extraction can outperform fine-tuning when the target task is distant
+from the source is known \citep{peters-etal-2019-tune}, but we are aware
+of no prior report of it for cross-lingual complexity transfer. This
+motivates our frozen-encoder design, and the lemma-frequency correction
+completes it: the encoder supplies cross-lingual semantics, the
+correction repairs the lexical feature that morphology corrupts.
+
+\paragraph{Surprisal and eye movements as difficulty signals.}
+Surprisal theory predicts that processing effort scales with the
+negative log probability of a word in context \citep{hale2001probabilistic},
+and gaze measures such as longer fixations, re-reading and regressions
+are the standard behavioural correlate of that effort
+\citep{rayner1998eye}. Language-model surprisal predicts reading times
+across languages \citep{hollenstein-etal-2021-multilingual}, including
+in Romance languages \citep{alves-2025-benchmarking}. Both literatures
+run from text to behaviour; we take the converse view, reading surprisal
+and gaze as label-free evidence about complexity.
+
+\paragraph{Evaluation without a development set.}
+Selecting a model against the same data used to report its score inflates
+that score \citep{gorman-bedrick-2019-need}. With no development set to
+tune on, we state our selection procedure explicitly and quantify its
+effect (Section~\ref{sec:tuning}).
+
+% =====================================================================
+% De aici incolo, template-ul neatins.
+% =====================================================================
+
+\section{Engines}
+
+To produce a PDF file, pdf\LaTeX{} is strongly recommended (over original \LaTeX{} plus dvips+ps2pdf or dvipdf).
+The style file \texttt{acl.sty} can also be used with
+lua\LaTeX{} and
+Xe\LaTeX{}, which are especially suitable for text in non-Latin scripts.
+The file \texttt{acl\_lualatex.tex} in this repository provides
+an example of how to use \texttt{acl.sty} with either
+lua\LaTeX{} or
+Xe\LaTeX{}.
+
+\section{Preamble}
+
+The first line of the file must be
+\begin{quote}
+\begin{verbatim}
+\documentclass[11pt]{article}
+\end{verbatim}
+\end{quote}
+
+To load the style file in the review version:
+\begin{quote}
+\begin{verbatim}
+\usepackage[review]{acl}
+\end{verbatim}
+\end{quote}
+For the final version, omit the \verb|review| option:
+\begin{quote}
+\begin{verbatim}
+\usepackage{acl}
+\end{verbatim}
+\end{quote}
+
+To use Times Roman, put the following in the preamble:
+\begin{quote}
+\begin{verbatim}
+\usepackage{times}
+\end{verbatim}
+\end{quote}
+(Alternatives like txfonts or newtx are also acceptable.)
+
+Please see the \LaTeX{} source of this document for comments on other packages that may be useful.
+
+Set the title and author using \verb|\title| and \verb|\author|. Within the author list, format multiple authors using \verb|\and| and \verb|\And| and \verb|\AND|; please see the \LaTeX{} source for examples.
+
+By default, the box containing the title and author names is set to the minimum of 5 cm. If you need more space, include the following in the preamble:
+\begin{quote}
+\begin{verbatim}
+\setlength\titlebox{<dim>}
+\end{verbatim}
+\end{quote}
+where \verb|<dim>| is replaced with a length. Do not set this length smaller than 5 cm.
+
+\section{Document Body}
+
+\subsection{Footnotes}
+
+Footnotes are inserted with the \verb|\footnote| command.\footnote{This is a footnote.}
+
+\subsection{Tables and figures}
+
+See Table~\ref{tab:accents} for an example of a table and its caption.
+\textbf{Do not override the default caption sizes.}
+
+\begin{table}
+  \centering
+  \begin{tabular}{lc}
+    \hline
+    \textbf{Command} & \textbf{Output} \\
+    \hline
+    \verb|{\"a}|     & {\"a}           \\
+    \verb|{\^e}|     & {\^e}           \\
+    \verb|{\`i}|     & {\`i}           \\
+    \verb|{\.I}|     & {\.I}           \\
+    \verb|{\o}|      & {\o}            \\
+    \verb|{\'u}|     & {\'u}           \\
+    \verb|{\aa}|     & {\aa}           \\\hline
+  \end{tabular}
+  \begin{tabular}{lc}
+    \hline
+    \textbf{Command} & \textbf{Output} \\
+    \hline
+    \verb|{\c c}|    & {\c c}          \\
+    \verb|{\u g}|    & {\u g}          \\
+    \verb|{\l}|      & {\l}            \\
+    \verb|{\~n}|     & {\~n}           \\
+    \verb|{\H o}|    & {\H o}          \\
+    \verb|{\v r}|    & {\v r}          \\
+    \verb|{\ss}|     & {\ss}           \\
+    \hline
+  \end{tabular}
+  \caption{Example commands for accented characters, to be used in, \emph{e.g.}, Bib\TeX{} entries.}
+  \label{tab:accents}
+\end{table}
+
+As much as possible, fonts in figures should conform
+to the document fonts. See Figure~\ref{fig:experiments} for an example of a figure and its caption.
+
+Using the \verb|graphicx| package graphics files can be included within figure
+environment at an appropriate point within the text.
+The \verb|graphicx| package supports various optional arguments to control the
+appearance of the figure.
+You must include it explicitly in the \LaTeX{} preamble (after the
+\verb|\documentclass| declaration and before \verb|\begin{document}|) using
+\verb|\usepackage{graphicx}|.
+
+\begin{figure}[t]
+  \includegraphics[width=\columnwidth]{example-image-golden}
+  \caption{A figure with a caption that runs for more than one line.
+    Example image is usually available through the \texttt{mwe} package
+    without even mentioning it in the preamble.}
+  \label{fig:experiments}
+\end{figure}
+
+\begin{figure*}[t]
+  \includegraphics[width=0.48\linewidth]{example-image-a} \hfill
+  \includegraphics[width=0.48\linewidth]{example-image-b}
+  \caption {A minimal working example to demonstrate how to place
+    two images side-by-side.}
+\end{figure*}
+
+\subsection{Hyperlinks}
+
+Users of older versions of \LaTeX{} may encounter the following error during compilation:
+\begin{quote}
+\verb|\pdfendlink| ended up in different nesting level than \verb|\pdfstartlink|.
+\end{quote}
+This happens when pdf\LaTeX{} is used and a citation splits across a page boundary. The best way to fix this is to upgrade \LaTeX{} to 2018-12-01 or later.
+
+\subsection{Citations}
+
+\begin{table*}
+  \centering
+  \begin{tabular}{lll}
+    \hline
+    \textbf{Output}           & \textbf{natbib command} & \textbf{ACL only command} \\
+    \hline
+    \citep{Gusfield:97}       & \verb|\citep|           &                           \\
+    \citealp{Gusfield:97}     & \verb|\citealp|         &                           \\
+    \citet{Gusfield:97}       & \verb|\citet|           &                           \\
+    \citeyearpar{Gusfield:97} & \verb|\citeyearpar|     &                           \\
+    \citeposs{Gusfield:97}    &                         & \verb|\citeposs|          \\
+    \hline
+  \end{tabular}
+  \caption{\label{citation-guide}
+    Citation commands supported by the style file.
+    The style is based on the natbib package and supports all natbib citation commands.
+    It also supports commands defined in previous ACL style files for compatibility.
+  }
+\end{table*}
+
+Table~\ref{citation-guide} shows the syntax supported by the style files.
+We encourage you to use the natbib styles.
+You can use the command \verb|\citet| (cite in text) to get ``author (year)'' citations, like this citation to a paper by \citet{Gusfield:97}.
+You can use the command \verb|\citep| (cite in parentheses) to get ``(author, year)'' citations \citep{Gusfield:97}.
+You can use the command \verb|\citealp| (alternative cite without parentheses) to get ``author, year'' citations, which is useful for using citations within parentheses (e.g. \citealp{Gusfield:97}).
+
+A possessive citation can be made with the command \verb|\citeposs|.
+This is not a standard natbib command, so it is generally not compatible
+with other style files.
+
+\subsection{References}
+
+\nocite{Ando2005,andrew2007scalable,rasooli-tetrault-2015}
+
+The \LaTeX{} and Bib\TeX{} style files provided roughly follow the American Psychological Association format.
+If your own bib file is named \texttt{custom.bib}, then placing the following before any appendices in your \LaTeX{} file will generate the references section for you:
+\begin{quote}
+\begin{verbatim}
+\bibliography{custom}
+\end{verbatim}
+\end{quote}
+
+You can obtain the complete ACL Anthology as a Bib\TeX{} file from \url{https://aclweb.org/anthology/anthology.bib.gz}.
+To include both the Anthology and your own .bib file, use the following instead of the above.
+\begin{quote}
+\begin{verbatim}
+\bibliography{anthology,custom}
+\end{verbatim}
+\end{quote}
+
+Please see Section~\ref{sec:bibtex} for information on preparing Bib\TeX{} files.
+
+\subsection{Equations}
+
+An example equation is shown below:
+\begin{equation}
+  \label{eq:example}
+  A = \pi r^2
+\end{equation}
+
+Labels for equation numbers, sections, subsections, figures and tables
+are all defined with the \verb|\label{label}| command and cross references
+to them are made with the \verb|\ref{label}| command.
+
+This an example cross-reference to Equation~\ref{eq:example}.
+
+\subsection{Appendices}
+
+Use \verb|\appendix| before any appendix section to switch the section numbering over to letters. See Appendix~\ref{sec:appendix} for an example.
+
+\section{Bib\TeX{} Files}
+\label{sec:bibtex}
+
+Unicode cannot be used in Bib\TeX{} entries, and some ways of typing special characters can disrupt Bib\TeX's alphabetization. The recommended way of typing special characters is shown in Table~\ref{tab:accents}.
+
+Please ensure that Bib\TeX{} records contain DOIs or URLs when possible, and for all the ACL materials that you reference.
+Use the \verb|doi| field for DOIs and the \verb|url| field for URLs.
+If a Bib\TeX{} entry has a URL or DOI field, the paper title in the references section will appear as a hyperlink to the paper, using the hyperref \LaTeX{} package.
+
+\section*{Limitations}
+
+This document does not cover the content requirements for ACL or any
+other specific venue.  Check the author instructions for
+information on
+maximum page lengths, the required ``Limitations'' section,
+and so on.
+
+\section*{Acknowledgments}
+
+This document has been adapted
+by Steven Bethard, Ryan Cotterell and Rui Yan
+from the instructions for earlier ACL and NAACL proceedings, including those for
+ACL 2019 by Douwe Kiela and Ivan Vuli\'{c},
+NAACL 2019 by Stephanie Lukin and Alla Roskovskaya,
+ACL 2018 by Shay Cohen, Kevin Gimpel, and Wei Lu,
+NAACL 2018 by Margaret Mitchell and Stephanie Lukin,
+Bib\TeX{} suggestions for (NA)ACL 2017/2018 from Jason Eisner,
+ACL 2017 by Dan Gildea and Min-Yen Kan,
+NAACL 2017 by Margaret Mitchell,
+ACL 2012 by Maggie Li and Michael White,
+ACL 2010 by Jing-Shin Chang and Philipp Koehn,
+ACL 2008 by Johanna D. Moore, Simone Teufel, James Allan, and Sadaoki Furui,
+ACL 2005 by Hwee Tou Ng and Kemal Oflazer,
+ACL 2002 by Eugene Charniak and Dekang Lin,
+and earlier ACL and EACL formats written by several people, including
+John Chen, Henry S. Thompson and Donald Walker.
+Additional elements were taken from the formatting instructions of the \emph{International Joint Conference on Artificial Intelligence} and the \emph{Conference on Computer Vision and Pattern Recognition}.
+
+% Bibliography entries for the entire Anthology, followed by custom entries
+%\bibliography{custom,anthology-overleaf-1,anthology-overleaf-2}
+
+% Custom bibliography entries only
+\bibliography{custom}
+
+\appendix
+
+\section{Example Appendix}
+\label{sec:appendix}
+
+This is an appendix.
+
+\end{document}

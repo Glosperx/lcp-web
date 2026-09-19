@@ -1,0 +1,177 @@
+Sesiune de research pe AL TREILEA SEMNAL: se mai poate pune ceva peste A si B?
+
+Citeste intai fisele de memorie semnalul-c-surprisal-stare, transmisia-a-fuziune-masurata,
+frontiera-e-identitate-nu-aproximare, eye-tracking-cat-a-adus-in-r, ponderea-per-item-inchisa,
+criteriu-plat-mediaza-nu-alege, transferul-se-masoara-pe-limba, agregare-medie-pe-limbi-nu-pooled,
+prioritate-contributie-si-drumul-la-07 si cifra-de-raportat-in-paper.
+Apoi output/e_encoder2.md cap la cap (raportul sesiunii precedente), output/e_frontiera_enc.md,
+sectiunea "Semnalul C, surprisal" din output/e_bakeoff_test.md, si docstring-ul lui analysis_shap.py.
+
+=== PUNCTUL DE PLECARE ===
+
+Sistemul e r = 0.683849 pe n = 5624, din output/e_fusion_lolo_adoptat_temp.md. Doua semnale:
+  A, media a trei encodere inghetate, r 0.6011
+  B, nota de complexitate de la un LLM, r 0.6592
+Fuziunea e z(w*zA + (1-w)*zB), cu w ales LOLO, w mediu 0.37.
+
+Per limba, fuziunea: en .8700, pt .8450, ja .7877, es .7641, de .7468, it .6750, fr .6590,
+ca .5566, fil .5091, si .4251.
+
+Bara ramane +0.0045, castigul onest dupa scaderea optimismului de selectie de +0.001937.
+
+Doua cifre din sesiunea precedenta guverneaza si sesiunea asta, si trebuie citite INAINTE de a
+propune ceva:
+
+  1. TRANSMISIA. Un castig pe un semnal ajunge in fuziune inmultit cu 0.09 pana la 0.26. Masurat pe
+     trei rulari controlate, in output/e_frontiera_enc.md. Deci "am imbunatatit semnalul" nu inseamna
+     nimic pana nu trece prin fuziune, iar fuse_ab.py costa 11 SECUNDE, deci nu exista scuza.
+  2. FRONTIERA. r_ens = (suma r_i) / sqrt(n + 2*suma rho_ij) e o IDENTITATE, verificata pe fiecare
+     limba la 1.11e-16, nu o aproximare. Consecinta directa pentru sesiunea asta: ce leaga nu e
+     calitatea unui semnal nou, e DECORELAREA lui fata de A si B. Un semnal cu r mic dar rho mic
+     poate bate un semnal cu r mare si rho mare. Toata sesiunea trecuta a esuat exact aici: toti
+     candidatii aveau rho 0.85-0.89 si niciunul n-a trecut.
+
+=== CE E DEJA MASURAT DESPRE SURPRISAL, SI DE CE NU E INCHIS ===
+
+Semnalul C exista DEJA calculat pe test, coloana `C` din output/bakeoff_test_Text/*.csv, langa `B`.
+5593 din 5624 de randuri au valoare finita. Deci toata analiza costa ZERO inferenta de LLM.
+
+r al lui C cu eticheta, pe test, mediat pe zece limbi (output/e_bakeoff_test.md):
+  qwen3-8b-4bit    +0.094
+  qwen35-9b-8bit   +0.003
+  gemma4-12b-4bit  -0.065     <- exact modelul adoptat pentru B
+
+Semnul se schimba si intre modele si intre limbi. La qwen3-8b-4bit: de +0.265, si +0.186, en -0.055.
+La gemma: ja -0.143, fil -0.136, en +0.043.
+
+Pe romana, in solutie_finala.py, W_SURP = 0.08 peste A+B a produs 68.90, deci acolo a ajutat.
+
+DE CE NU E INCHIS, desi r e aproape zero: corelatia lui C cu A si cu B n-a fost masurata NICIODATA,
+deci C n-a trecut niciodata prin frontiera. C e o cantitate fundamental diferita de celelalte doua:
+previzibilitate contextuala dintr-un LM cauzal, nu trasaturi dintr-un encoder inghetat si nici o nota
+explicita ceruta unui model. Profilul "r mic, rho probabil mic" e exact profilul pe care frontiera
+spune ca merita masurat. Costul de a afla e zero.
+
+Atentie la o distinctie care poate arde o sesiune intreaga: dezacordul intre modele si entropia au
+fost deja testate, dar ca PONDERE PER ITEM (fuse_ab.py --h entropie/dezacord/zgomot), si s-au inchis
+cu a = 0. A folosi aceleasi cantitati ca SEMNAL ADITIV, adica al treilea termen in amestec, e alt
+lucru si nu e inchis. Daca le propui, spune explicit ca stii ca varianta-pondere e moarta.
+
+=== INCHISE CU CIFRE. NU SE RELUA ===
+
+  eye-tracking prin distilare: inchis definitiv, embeddingul singur prezice privirea mai prost decat
+    doua coloane
+  distributia intreaga a lui B ca trasaturi in A: -0.0185
+  ponderea per item pe entropie/dezacord/zgomot: a = 0 ales pe 10/10, plus pe zgomot
+  toate parghiile de encoder din sesiunea din 23 august: pooling, straturi, izotropie, Glot500,
+    ctxiso, isoonly, e5 cu prefix, ponderare per limba fara etichete. Vezi output/e_encoder2.md
+  frecventa de coada din Wikipedia pentru si si fil: pierde pe fuziune, -0.0009
+  encoderele monolingve: incompatibile structural cu LOLO zero-label
+
+=== CE VREAU EXPLORAT, IN ORDINEA ASTA ===
+
+PAS 1, literatura, si asta e partea pe care o vreau cel mai mult. Cauta DINCOLO de complexitatea
+lexicala. Intrebarea generala: cand ai doua semnale bune si vrei un al treilea, ce s-a publicat despre
+de unde vine un semnal cu adevarat nou.
+
+Concret, cauta si spune ce a masurat fiecare, pe ce sarcina, si ce NU se transfera la cazul nostru:
+
+  - teoria surprisal-ului si timpul de citire: relatia e logaritmica sau liniara, si mai ales
+    rezultatele care arata ca modelele MAI MARI prezic timpii de citire MAI PROST. Daca asta se
+    transfera, atunci surprisal-ul de la un model mic ar putea bate pe cel de la gemma, si avem
+    deja sapte modele masurate;
+  - disocierea frecventa fata de previzibilitate: sunt doua lucruri diferite sau unul singur;
+  - predictori psiholingvistici in afara frecventei: varsta de achizitie, concretete, prevalenta,
+    densitatea vecinatatii semantice. Care exista multilingv si care doar pe engleza;
+  - atribuire de trasaturi: SHAP si limitele lui pe trasaturi CORELATE, plus criticile aduse
+    importantei prin permutare cand trasaturile sunt dependente. Vreau sa stiu inainte de a ma uita
+    la un grafic cat de mult pot sa cred ce vad;
+  - reducere de dimensiune pentru inspectie: ce distorsioneaza t-SNE si UMAP, ce structura NU se
+    poate citi din ele, si care sunt alternativele daca vreau sa trag o concluzie, nu doar o poza;
+  - diversitatea in ansambluri: cum se masoara si ce masuri prezic castigul, dincolo de corelatie;
+  - incertitudine si detectie de out-of-distribution ca semnal, nu ca diagnostic.
+
+Vreau referinte reale, cu cifre, nu o lista de titluri.
+
+PAS 2, C prin frontiera. Costa zero, deci se face primul dintre masuratori. Pentru fiecare din cele
+sapte modele de bake-off: r al lui C pe limba, rho al lui C cu zA si cu zB pe limba, si ce prezice
+frontiera pentru un amestec de trei. Spune INAINTE de a rula fuziunea ce castig ar trebui sa iasa,
+apoi ruleaza si compara. Poarta de frontiera din analysis_frontiera_enc.py s-a validat cap la cap in
+sesiunea trecuta, deci foloseste-o, nu o rescrie.
+
+Atentie la semn: C se raporteaza cu semn, si semnul difera pe limbi. Un semnal caruia trebuie sa-i
+alegi semnul per limba e selectie, si trebuie tratat ca atare.
+
+PAS 3, SHAP pe sistemul MULTILINGV. Artefactele din output/shap/ sunt din 23 iulie si sunt pe
+conducta ROMANEASCA: antetul spune Pearson 0.7898, care e cifra romaneasca, nu 0.683849. Nu se
+citeaza nimic de acolo pana nu se reface. Vreau: ce trasaturi duc predictia pe fiecare limba, unde
+difera coada (si, fil, ca) de restul, si mai ales unde A si B sunt AMANDOUA slabe pe acelasi item,
+fiindca acolo ar avea loc un al treilea semnal. Un SHAP care doar confirma ca zipf conteaza mult nu
+foloseste la nimic.
+
+PAS 4, distributia. t-SNE si UMAP pe embeddinguri, colorate dupa eroarea fuziunii, dupa limba, si
+dupa dezacordul A fata de B. Intrebarea nu e "cum arata", e "exista o regiune cu eroare mare care se
+poate identifica FARA etichete". Daca da, calitatea de a fi in acea regiune e un semnal. Daca nu, se
+spune ca nu si se trece mai departe. Vreau sa mi se spuna dinainte ce anume ar constitui o
+descoperire si ce ar fi doar o poza frumoasa, altfel o sa ne uitam la nori.
+
+PAS 5, candidati de semnal nou. Vreau o lista cu preturi, nu o singura idee. Cele care imi vin mie,
+completeaza si taie:
+  - C surprisal, de la fiecare din cele sapte modele, nu doar de la gemma
+  - dezacordul intre cele sapte modele ca semnal aditiv (nu ca pondere, aia e moarta)
+  - imprastierea intre membrii ansamblului de prompturi, care e deja calculata
+  - densitatea vecinatatii semantice in spatiul de embedding, care se calculeaza din cache, deci gratis
+  - numarul de contexte distincte in care apare cuvantul, acum ca avem corpusuri pentru si si tl
+  - norme psiholingvistice, unde exista
+
+=== CUM VREAU CONDUSA SESIUNEA ===
+
+Gandeste-o pas cu pas si spune-mi planul inainte sa rulezi ceva.
+
+Pentru fiecare idee vreau, la final, un tabel de prioritizare pe raportul castig/cost, cu coloanele:
+ce se masoara, ce dovada e (masurat, plafon, proxy, cost declarat), castigul asteptat cu justificarea
+lui prin frontiera, costul in minute de calcul si in linii de cod, ce se inchide daca iese negativ,
+si daca bate bara. Ordoneaza dupa RAPORT, nu dupa castig.
+
+Foloseste frontiera ca poarta: pentru fiecare candidat, spune r si rho de care ar avea nevoie ca sa
+treaca, INAINTE de a-l masura. Sesiunea trecuta a aratat ca poarta prezice ΔA la a patra zecimala si
+castigul pe fuziune in interval, deci e ieftin sa respingi ceva pe hartie.
+
+=== PROTOCOL, ACELASI ===
+
+  agregarea e media pe cele zece limbi, nu pooled
+  nimic nu devine sistem fara interval PERECHE fata de 0.683849 care exclude zero, si fara ca nicio
+    limba sa fie stricata cu interval care exclude zero. A doua conditie se citeste INAINTEA mediei
+  orice hiperparametru se alege LOLO
+  statistica pe care cerni se valideaza PE LIMBA, nu pe medie
+  un castig pe un semnal nu inseamna un castig pe fuziune; se duce pana la capat, si costa 11 secunde
+  orice plafon in-sample se calibreaza pe zgomot, cu acelasi numar de candidati si mai multe seminte
+  declara multiplicitatea. Jurnalul are acum 151 de randuri neadaugate, plus 102 adaugate, plus 84 in
+    arhiva
+  nu adopta nimic. Raporteaza si intreaba
+  fara diacritice si fara tabele markdown in ce imi scrii mie
+
+=== COD SI CAPCANE PLATITE ===
+
+Fisiere: fuse_ab.py (zA_of, fit_choice, _moments, h_from_dist, --h, --a-set),
+bakeoff_trial.py (load_runs, with_context), analysis_frontiera_enc.py (poarta de frontiera, se
+refoloseste), analysis_shap.py (de refacut pe multilingv), solution_bert.py (LLMRater, surprisal),
+make_bt_runs.py (coloanele B si C), solutie_finala.py (W_SURP, calea romaneasca, NU se atinge).
+
+Capcane:
+  - coloana C are 31 de randuri NEfinite din 5624. zscore-ul din fuse_ab pune NaN pe zero, adica pe
+    medie, deci nu crapa, dar trebuie declarat cate randuri nu au semnal
+  - artefactele din output/shap/ sunt romanesti si vechi; orice cifra citata de acolo va contrazice
+    raportul multilingv
+  - t-SNE si UMAP au seminte; o structura care nu supravietuieste schimbarii semintei nu e structura
+  - constantele hardcodate mint dupa renumerotare: cifra de referinta se citeste din fisier. In
+    output/e_encoder.md celula de total spune 5606 desi coloana n insumeaza 5624
+  - prompturile romanesti din solution_bert.self.prompts nu se ating
+  - orice rulare noua trebuie sa aiba sufix propriu de fisier, altfel suprascrie semnalul adoptat in
+    tacere. Vezi ce s-a intamplat cu _p() in finetune_xlmr.py
+
+=== CE VREAU LA FINAL ===
+
+Un raport in output/, separat sinteza de literatura cu referinte si cu ce se transfera la cazul
+nostru, si tabelul de prioritizare ordonat dupa raport. Plus un raspuns clar la intrebarea care a
+pornit sesiunea: exista sau nu loc pentru al treilea semnal, si daca da, care e si cat aduce.

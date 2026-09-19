@@ -1,0 +1,2701 @@
+lang,token,complexity,variant,score,sec
+ca,successius ,0.450000,v0_zeroshot,0.56079922,0.6024
+ca,deteriorant ,0.525000,v0_zeroshot,0.56112088,0.5988
+ca,desmantellament ,0.625000,v0_zeroshot,0.58480238,0.6106
+ca,eclesiàstica ,0.425000,v0_zeroshot,0.56896526,0.5378
+ca,jerarquia ,0.525000,v0_zeroshot,0.52691969,0.5485
+ca,interlocució ,0.650000,v0_zeroshot,0.54181940,0.5531
+ca,minoritzada ,0.550000,v0_zeroshot,0.61604920,0.5314
+ca,claudicació ,0.600000,v0_zeroshot,0.59187929,0.5393
+ca,sociolingüística ,0.650000,v0_zeroshot,0.59881441,0.5381
+ca,planificades ,0.350000,v0_zeroshot,0.55637759,0.4588
+ca,estival ,0.475000,v0_zeroshot,0.55060131,0.4595
+ca,envergadura ,0.500000,v0_zeroshot,0.58115577,0.5261
+ca,escolaritzar ,0.350000,v0_zeroshot,0.62468468,0.8056
+ca,imprès ,0.425000,v0_zeroshot,0.58056925,0.6807
+ca,vehicular ,0.625000,v0_zeroshot,0.58760619,0.6402
+ca,transmissor ,0.425000,v0_zeroshot,0.51748811,0.4820
+ca,inculcar ,0.525000,v0_zeroshot,0.54401465,0.4894
+ca,efímer ,0.700000,v0_zeroshot,0.57410221,0.4808
+ca,inútil ,0.175000,v0_zeroshot,0.53289262,0.4678
+ca,oceà ,0.325000,v0_zeroshot,0.52150002,0.4723
+ca,burocràcia ,0.425000,v0_zeroshot,0.53941348,0.4757
+ca,didàctics ,0.475000,v0_zeroshot,0.54763692,0.4930
+ca,controvertits ,0.600000,v0_zeroshot,0.55067642,0.4881
+ca,decàleg ,0.650000,v0_zeroshot,0.56926009,0.4876
+ca,numèriques ,0.300000,v0_zeroshot,0.54654391,0.5766
+ca,arrodonida ,0.375000,v0_zeroshot,0.55193308,0.5700
+ca,decimals ,0.400000,v0_zeroshot,0.53974651,0.5704
+ca,antiracista ,0.425000,v0_zeroshot,0.52507227,0.4752
+ca,multicultural ,0.450000,v0_zeroshot,0.51802669,0.3999
+ca,decàleg ,0.625000,v0_zeroshot,0.55956658,0.3892
+en,external,0.050000,v0_zeroshot,0.49953513,1.2065
+en,pulled,0.075000,v0_zeroshot,0.49697187,0.3868
+en,robot,0.100000,v0_zeroshot,0.48795299,0.3990
+en,bank,0.050000,v0_zeroshot,0.49362047,0.4823
+en,recommended,0.100000,v0_zeroshot,0.49967204,0.4953
+en,declared,0.050000,v0_zeroshot,0.49847653,0.5386
+en,remainder,0.100000,v0_zeroshot,0.50120786,0.8066
+en,controlling,0.175000,v0_zeroshot,0.50190155,0.3990
+en,conditional,0.175000,v0_zeroshot,0.50235848,0.3946
+en,gone,0.075000,v0_zeroshot,0.48785067,0.4231
+en,prerequisite,0.400000,v0_zeroshot,0.50489104,0.4061
+en,relates,0.075000,v0_zeroshot,0.50002091,0.3994
+en,micro,0.227273,v0_zeroshot,0.49213245,0.3934
+en,controllers,0.181818,v0_zeroshot,0.49952924,0.3934
+en,hardware,0.181818,v0_zeroshot,0.49840248,0.3935
+en,wrapped,0.025000,v0_zeroshot,0.49927629,0.4156
+en,coil,0.150000,v0_zeroshot,0.49763243,0.4116
+en,pickup,0.475000,v0_zeroshot,0.49813171,0.4110
+en,reagent,0.681818,v0_zeroshot,0.50718168,0.3967
+en,electrons,0.272727,v0_zeroshot,0.49338658,0.3967
+en,neutrally,0.227273,v0_zeroshot,0.50171247,0.3992
+en,beautiful,0.050000,v0_zeroshot,0.49323215,0.4002
+en,undertake,0.225000,v0_zeroshot,0.50205255,0.4212
+en,discover,0.100000,v0_zeroshot,0.48521178,0.4169
+en,seventh,0.022727,v0_zeroshot,0.49936736,0.4268
+en,eliminated,0.318182,v0_zeroshot,0.49968061,0.4166
+en,erstwhile,0.931818,v0_zeroshot,0.54053185,0.4122
+en,magnitude,0.175000,v0_zeroshot,0.50036019,0.4218
+en,quantity,0.075000,v0_zeroshot,0.49965755,0.4164
+en,vector,0.250000,v0_zeroshot,0.49948098,0.4302
+fil,agaw,0.075000,v0_zeroshot,0.50838926,0.4725
+fil,agila,0.125000,v0_zeroshot,0.49701548,0.8058
+fil,agos,0.150000,v0_zeroshot,0.51569143,0.4203
+fil,akay,0.250000,v0_zeroshot,0.50594384,0.4306
+fil,ale,0.150000,v0_zeroshot,0.50154461,0.4056
+fil,alin,0.050000,v0_zeroshot,0.50478244,0.4304
+fil,alkansiya,0.375000,v0_zeroshot,0.52888135,0.4099
+fil,amin,0.025000,v0_zeroshot,0.49349143,0.4103
+fil,angkan,0.275000,v0_zeroshot,0.54568664,0.4093
+fil,anuman,0.250000,v0_zeroshot,0.50870053,0.7346
+fil,aparador,0.325000,v0_zeroshot,0.51326267,0.4149
+fil,armas,0.250000,v0_zeroshot,0.51459914,0.4183
+fil,atay,0.100000,v0_zeroshot,0.51529732,0.4128
+fil,ate,0.025000,v0_zeroshot,0.48282958,0.4101
+fil,atin,0.025000,v0_zeroshot,0.49848611,0.4169
+fil,ayan,0.050000,v0_zeroshot,0.49891935,0.4142
+fil,ayaw,0.025000,v0_zeroshot,0.49714496,0.4900
+fil,babala,0.225000,v0_zeroshot,0.49906711,0.8948
+fil,bahagya,0.475000,v0_zeroshot,0.50797199,0.4194
+fil,bakasyon,0.200000,v0_zeroshot,0.50351832,0.4151
+fil,balon,0.150000,v0_zeroshot,0.49991249,0.4084
+fil,bandera,0.300000,v0_zeroshot,0.49847978,0.4292
+fil,bangkay,0.325000,v0_zeroshot,0.50934854,0.4212
+fil,bansa,0.075000,v0_zeroshot,0.50200756,0.4436
+fil,baril,0.050000,v0_zeroshot,0.50217478,0.4707
+fil,bawal,0.025000,v0_zeroshot,0.50326821,0.4156
+fil,bayong,0.175000,v0_zeroshot,0.49875072,0.4288
+fil,bibig,0.025000,v0_zeroshot,0.50005036,0.4306
+fil,blusa,0.325000,v0_zeroshot,0.50183527,0.4161
+fil,bruha,0.250000,v0_zeroshot,0.50311246,0.4354
+fr,entretien,0.675000,v0_zeroshot,0.53904397,0.5616
+fr,consacrée,0.650000,v0_zeroshot,0.55716081,0.5554
+fr,stocke,0.350000,v0_zeroshot,0.50966036,0.4626
+fr,traite,0.375000,v0_zeroshot,0.51007218,0.4362
+fr,récepteurs,0.325000,v0_zeroshot,0.50684866,0.4264
+fr,prospère,0.400000,v0_zeroshot,0.51113627,0.4267
+fr,bâtie,0.750000,v0_zeroshot,0.52211253,0.4291
+fr,partant,0.525000,v0_zeroshot,0.51363380,0.4298
+fr,courant,0.475000,v0_zeroshot,0.51014392,1.3502
+fr,entraînerait,0.625000,v0_zeroshot,0.53968651,0.7106
+fr,garantit,0.075000,v0_zeroshot,0.51330189,0.5829
+fr,cité,0.275000,v0_zeroshot,0.51256166,0.5211
+fr,davantage,0.525000,v0_zeroshot,0.50943039,0.5204
+fr,réclamer,0.400000,v0_zeroshot,0.51648558,0.5144
+fr,notice,0.100000,v0_zeroshot,0.50442055,0.5197
+fr,responsables,0.075000,v0_zeroshot,0.50807010,0.5119
+fr,tendance,0.350000,v0_zeroshot,0.51117067,0.5133
+fr,orgueilleux,0.750000,v0_zeroshot,0.52304725,0.5150
+fr,établi,0.350000,v0_zeroshot,0.52069282,0.5113
+fr,sorte,0.250000,v0_zeroshot,0.52023672,0.5168
+fr,disposition,0.225000,v0_zeroshot,0.50867929,0.4312
+fr,renseignement,0.500000,v0_zeroshot,0.52326593,0.4253
+fr,complémentaire,0.100000,v0_zeroshot,0.53731244,0.4179
+fr,conséquences,0.100000,v0_zeroshot,0.50511408,0.4318
+fr,interroge,0.300000,v0_zeroshot,0.50885216,0.4274
+fr,question,0.000000,v0_zeroshot,0.50802357,0.4315
+fr,pneumatique,0.550000,v0_zeroshot,0.50653623,0.4147
+fr,essor,0.800000,v0_zeroshot,0.50337824,0.4282
+fr,coach,0.100000,v0_zeroshot,0.50653453,0.4194
+fr,impose,0.150000,v0_zeroshot,0.50700555,0.4217
+de,Grausen,0.600000,v0_zeroshot,0.58430836,0.5041
+de,verworren,0.550000,v0_zeroshot,0.58075225,0.5118
+de,überwältigen,0.325000,v0_zeroshot,0.59420651,0.5009
+de,Gemütsbewegung,0.650000,v0_zeroshot,0.60514779,0.5230
+de,durchschüttern,0.650000,v0_zeroshot,0.64708716,0.8429
+de,Heiterkeit,0.400000,v0_zeroshot,0.56295721,0.5205
+de,recht,0.275000,v0_zeroshot,0.52608390,0.7357
+de,Bangigkeit,0.650000,v0_zeroshot,0.59637603,0.5281
+de,Abendglut,0.750000,v0_zeroshot,0.61103460,0.8553
+de,drastisch,0.375000,v0_zeroshot,0.53435621,0.5851
+de,Gewährsleute,0.875000,v0_zeroshot,0.58936426,0.7208
+de,Ausmaß,0.275000,v0_zeroshot,0.54887927,0.5260
+de,Gleichwohl,0.425000,v0_zeroshot,0.54919563,0.5310
+de,Schmuggler,0.225000,v0_zeroshot,0.52321337,0.5268
+de,aufgreifen,0.275000,v0_zeroshot,0.55790110,1.1716
+de,lautstark,0.225000,v0_zeroshot,0.53147034,0.5089
+de,Unmut,0.400000,v0_zeroshot,0.52823572,0.5220
+de,artikulieren,0.250000,v0_zeroshot,0.55117674,0.5098
+de,Verhältnis,0.250000,v0_zeroshot,0.52272250,1.5640
+de,zusehends,0.475000,v0_zeroshot,0.58224816,0.5568
+de,nominieren,0.250000,v0_zeroshot,0.53625214,0.5401
+de,Lage,0.150000,v0_zeroshot,0.52182920,0.9943
+de,konzipieren,0.475000,v0_zeroshot,0.58067417,1.0193
+de,Maßnahme,0.275000,v0_zeroshot,0.54072103,0.6442
+de,zwiespältig,0.550000,v0_zeroshot,0.59875746,1.8773
+de,Haltung,0.325000,v0_zeroshot,0.54687301,0.5922
+de,Sicht,0.175000,v0_zeroshot,0.54676254,0.5581
+de,toben,0.250000,v0_zeroshot,0.52810835,0.4722
+de,avisieren,0.700000,v0_zeroshot,0.57275211,0.4559
+de,Kontroverse,0.350000,v0_zeroshot,0.54268366,0.6812
+it,perduta,0.080000,v0_zeroshot,0.50679476,0.5461
+it,miseria,0.080000,v0_zeroshot,0.50096162,0.5218
+it,sbrindellata,0.300000,v0_zeroshot,0.52153634,0.5385
+it,anonimi,0.030000,v0_zeroshot,0.50645141,0.5753
+it,giunte,0.080000,v0_zeroshot,0.51062578,0.5403
+it,profitto,0.150000,v0_zeroshot,0.51719609,0.5188
+it,ampollose,0.430000,v0_zeroshot,0.51976306,1.0347
+it,costellate,0.280000,v0_zeroshot,0.51065913,0.4949
+it,parole,0.030000,v0_zeroshot,0.49461918,0.5524
+it,giovinezza,0.030000,v0_zeroshot,0.50510057,0.6266
+it,angustiata,0.380000,v0_zeroshot,0.50892677,0.6185
+it,grazie,0.180000,v0_zeroshot,0.48523211,0.6180
+it,sottrarre,0.080000,v0_zeroshot,0.51951885,0.4970
+it,apparente,0.120000,v0_zeroshot,0.51096571,0.4893
+it,mancanza,0.030000,v0_zeroshot,0.52141474,0.4891
+it,singolari,0.220000,v0_zeroshot,0.50260902,0.5170
+it,giocoso,0.100000,v0_zeroshot,0.50142113,0.4968
+it,mirabolanti,0.480000,v0_zeroshot,0.52545621,0.4955
+it,popolareggiante,0.300000,v0_zeroshot,0.58993559,0.7696
+it,ostentazione,0.120000,v0_zeroshot,0.52950061,0.7556
+it,affettato,0.520000,v0_zeroshot,0.51369998,0.7045
+it,tardo,0.320000,v0_zeroshot,0.53622985,0.9566
+it,livore,0.520000,v0_zeroshot,0.57153357,0.5272
+it,sicario,0.480000,v0_zeroshot,0.59956967,0.5245
+it,estendere,0.250000,v0_zeroshot,0.51727548,0.5993
+it,indefinitamente,0.320000,v0_zeroshot,0.55040416,0.5444
+it,condizionamenti,0.430000,v0_zeroshot,0.55399843,0.5424
+it,immensi,0.180000,v0_zeroshot,0.51828155,1.3068
+it,folgoranti,0.430000,v0_zeroshot,0.53228262,0.6927
+it,stagnavano,0.480000,v0_zeroshot,0.53519136,0.7279
+ja,連れ戻す,0.300000,v0_zeroshot,0.51539424,0.4283
+ja,恩を売り,0.700000,v0_zeroshot,0.56273224,0.4274
+ja,なおかつ,0.500000,v0_zeroshot,0.51145193,0.4304
+ja,各種の,0.200000,v0_zeroshot,0.50482407,0.4283
+ja,市電,0.475000,v0_zeroshot,0.50381651,0.4201
+ja,気にかけない,0.475000,v0_zeroshot,0.50836520,0.4216
+ja,募集し,0.100000,v0_zeroshot,0.50656901,0.4221
+ja,ピックアップして,0.050000,v0_zeroshot,0.50819698,0.4231
+ja,掲載した,0.400000,v0_zeroshot,0.50748046,0.4214
+ja,再び,0.075000,v0_zeroshot,0.50397336,0.4261
+ja,はじめ,0.025000,v0_zeroshot,0.50518290,0.6500
+ja,または,0.075000,v0_zeroshot,0.50678673,0.4163
+ja,旧,0.150000,v0_zeroshot,0.50100667,0.4330
+ja,ロック,0.025000,v0_zeroshot,0.49865263,0.4283
+ja,直ちに,0.275000,v0_zeroshot,0.50436892,0.7574
+ja,長大な,0.475000,v0_zeroshot,0.50927972,0.5444
+ja,標題,0.375000,v0_zeroshot,0.50432000,0.6841
+ja,書き添えられて,0.600000,v0_zeroshot,0.58767381,0.4158
+ja,馴染み深かった,0.500000,v0_zeroshot,0.51404322,0.7222
+ja,変更されて,0.100000,v0_zeroshot,0.50705945,0.4972
+ja,戦闘曲,0.425000,v0_zeroshot,0.50562551,0.4258
+ja,小物,0.225000,v0_zeroshot,0.50032113,0.5202
+ja,応用した,0.225000,v0_zeroshot,0.50340453,0.4296
+ja,随所,0.725000,v0_zeroshot,0.53110677,0.4245
+ja,繰り返し,0.200000,v0_zeroshot,0.51504408,0.4408
+ja,強盗被害,0.400000,v0_zeroshot,0.52854358,0.4289
+ja,考慮した,0.400000,v0_zeroshot,0.51838580,0.4301
+ja,キレさせる,0.375000,v0_zeroshot,0.51492348,0.7256
+ja,諫める,0.775000,v0_zeroshot,0.51562441,0.5089
+ja,コーナー,0.100000,v0_zeroshot,0.50275711,0.5097
+pt,estradas,0.080000,v0_zeroshot,0.50799505,0.6344
+pt,transparência,0.240000,v0_zeroshot,0.51354075,0.5325
+pt,expiação,0.550000,v0_zeroshot,0.57767597,0.6261
+pt,rigor,0.310000,v0_zeroshot,0.50653000,0.4234
+pt,empreiteiros,0.360000,v0_zeroshot,0.54701295,0.5273
+pt,atos,0.120000,v0_zeroshot,0.52606290,2.1642
+pt,aldeias,0.060000,v0_zeroshot,0.51982499,0.9595
+pt,perigos,0.130000,v0_zeroshot,0.51057184,0.8666
+pt,navegando,0.180000,v0_zeroshot,0.51317146,0.5105
+pt,produtos,0.060000,v0_zeroshot,0.47418224,0.4280
+pt,moratória,0.550000,v0_zeroshot,0.51492687,0.6244
+pt,democracia,0.230000,v0_zeroshot,0.50568953,0.6467
+pt,subsistência,0.480000,v0_zeroshot,0.52967912,0.4276
+pt,ativador,0.250000,v0_zeroshot,0.52512603,0.7587
+pt,misericórdias,0.380000,v0_zeroshot,0.53036270,0.6243
+pt,bases,0.290000,v0_zeroshot,0.50326306,0.5279
+pt,rudimentos,0.580000,v0_zeroshot,0.53381748,0.5286
+pt,novilho,0.380000,v0_zeroshot,0.52282187,0.5129
+pt,cabelo,0.100000,v0_zeroshot,0.49248984,0.4219
+pt,puberdade,0.320000,v0_zeroshot,0.50362246,0.8939
+pt,ataque,0.250000,v0_zeroshot,0.50485808,0.4190
+pt,margens,0.230000,v0_zeroshot,0.50455730,0.4299
+pt,samaritanos,0.480000,v0_zeroshot,0.50848719,0.4347
+pt,beneficências,0.490000,v0_zeroshot,0.58052926,1.0474
+pt,incertezas,0.080000,v0_zeroshot,0.51274085,0.6243
+pt,pais,0.070000,v0_zeroshot,0.50413719,0.4253
+pt,gentios,0.460000,v0_zeroshot,0.55935055,0.8727
+pt,colegas,0.130000,v0_zeroshot,0.49009892,0.5135
+pt,podridão,0.200000,v0_zeroshot,0.54149796,0.4294
+pt,coluna,0.150000,v0_zeroshot,0.50935693,1.4401
+si,තථාගතයන්,0.670000,v0_zeroshot,0.65880018,1.0989
+si,අනුශාසකත්වයෙන්,0.520000,v0_zeroshot,0.64216601,1.3924
+si,නිර්වාණය,0.910000,v0_zeroshot,0.69638648,1.5269
+si,පිටිවහල,0.240000,v0_zeroshot,0.60327852,1.4184
+si,දරිද්‍රතා,0.160000,v0_zeroshot,0.57592715,1.0889
+si,වනිතාව,0.120000,v0_zeroshot,0.62008472,1.0499
+si,සියොතුන්,0.060000,v0_zeroshot,0.54005274,0.7687
+si,පාඨශාලාව,0.050000,v0_zeroshot,0.60336749,1.0411
+si,වෘක්ෂය,0.190000,v0_zeroshot,0.52321596,0.9418
+si,චන්ද්‍රයා,0.090000,v0_zeroshot,0.59930006,1.4662
+si,ලොල්බව,0.120000,v0_zeroshot,0.64918307,0.8549
+si,දැකුම්කළුව,0.090000,v0_zeroshot,0.65697913,1.0486
+si,හසුන්,0.080000,v0_zeroshot,0.53915481,1.0614
+si,කෘශ,0.070000,v0_zeroshot,0.56858580,0.7402
+si,ප්‍රකට,0.070000,v0_zeroshot,0.55413493,0.9183
+si,නිග්‍රහය,0.050000,v0_zeroshot,0.61728826,1.2487
+si,පෞරාණික,0.120000,v0_zeroshot,0.59736335,0.9578
+si,නරනිදු,0.420000,v0_zeroshot,0.63795676,1.1672
+si,ප්‍රවීණතා,0.140000,v0_zeroshot,0.61804659,1.0714
+si,ගෘහය,0.230000,v0_zeroshot,0.53224908,0.8829
+si,අසබඩ,0.180000,v0_zeroshot,0.63006529,1.1764
+si,භූමිය,0.190000,v0_zeroshot,0.57520913,1.4508
+si,පුණ්‍ය,0.260000,v0_zeroshot,0.56770921,1.1322
+si,දර්ශනීය,0.080000,v0_zeroshot,0.60900892,1.2840
+si,වයෝවෘද්ධ,0.430000,v0_zeroshot,0.68405523,1.1710
+si,ධජය,0.350000,v0_zeroshot,0.60003413,1.0688
+si,ප්‍රතිමාව,0.260000,v0_zeroshot,0.61525047,1.2623
+si,යටගිය,0.390000,v0_zeroshot,0.56860352,0.9832
+si,ප්‍රතිමල්ලවයා,0.650000,v0_zeroshot,0.67248127,2.9976
+si,යුහුසුලව,0.110000,v0_zeroshot,0.64025071,0.7641
+es,notifique,0.450000,v0_zeroshot,0.51646688,1.1530
+es,sueldos ,0.225000,v0_zeroshot,0.50435403,0.5644
+es,amenazar ,0.575000,v0_zeroshot,0.51481719,0.5427
+es,ocasiona ,0.575000,v0_zeroshot,0.51829100,0.5441
+es,norteamericanos ,0.150000,v0_zeroshot,0.54554492,0.7453
+es,desvíos ,0.725000,v0_zeroshot,0.54055542,0.5551
+es,legistas ,0.875000,v0_zeroshot,0.55018800,0.5547
+es,sustituto ,0.450000,v0_zeroshot,0.51453031,0.5426
+es,vinculada ,0.500000,v0_zeroshot,0.52743916,0.5358
+es,dicha ,0.675000,v0_zeroshot,0.53111181,0.5320
+es,fondos ,0.250000,v0_zeroshot,0.50272333,0.5414
+es,exige ,0.250000,v0_zeroshot,0.51216049,0.5377
+es,demuestren ,0.350000,v0_zeroshot,0.51210702,0.5363
+es,producidos ,0.150000,v0_zeroshot,0.50592643,0.4529
+es,comunidades ,0.175000,v0_zeroshot,0.50206070,0.4420
+es,equilibradamente ,0.325000,v0_zeroshot,0.54194215,0.4479
+es,carpeta ,0.100000,v0_zeroshot,0.50926764,0.5444
+es,archivarlo ,0.550000,v0_zeroshot,0.51849712,0.5350
+es,archivador ,0.650000,v0_zeroshot,0.52763730,0.5326
+es,prevenir ,0.375000,v0_zeroshot,0.52658560,0.5479
+es,modalidad ,0.600000,v0_zeroshot,0.52262112,0.5377
+es,descalabros ,0.725000,v0_zeroshot,0.55937084,0.5444
+es,utilizando ,0.075000,v0_zeroshot,0.50709209,0.5386
+es,chequeras ,0.700000,v0_zeroshot,0.50743675,0.5418
+es,acostumbraron ,0.200000,v0_zeroshot,0.50697715,0.5380
+es,colmados ,0.675000,v0_zeroshot,0.51738591,0.5343
+es,desbarajustes ,0.800000,v0_zeroshot,0.61545134,0.5631
+es,esperaría ,0.200000,v0_zeroshot,0.51115526,0.5179
+es,retos ,0.450000,v0_zeroshot,0.50232369,0.5116
+es,lúgubre ,0.675000,v0_zeroshot,0.51204513,0.5161
+ca,successius ,0.450000,v1_learner,0.54533161,0.4075
+ca,deteriorant ,0.525000,v1_learner,0.56679695,0.3816
+ca,desmantellament ,0.625000,v1_learner,0.57981808,0.3786
+ca,eclesiàstica ,0.425000,v1_learner,0.55473270,0.3911
+ca,jerarquia ,0.525000,v1_learner,0.52880393,0.3926
+ca,interlocució ,0.650000,v1_learner,0.54466206,0.3650
+ca,minoritzada ,0.550000,v1_learner,0.56546371,0.5007
+ca,claudicació ,0.600000,v1_learner,0.56581560,0.8777
+ca,sociolingüística ,0.650000,v1_learner,0.55369402,0.3399
+ca,planificades ,0.350000,v1_learner,0.54484291,0.6599
+ca,estival ,0.475000,v1_learner,0.55409790,0.3930
+ca,envergadura ,0.500000,v1_learner,0.56634021,0.3830
+ca,escolaritzar ,0.350000,v1_learner,0.67253134,0.4363
+ca,imprès ,0.425000,v1_learner,0.62284944,0.4359
+ca,vehicular ,0.625000,v1_learner,0.64034713,0.4624
+ca,transmissor ,0.425000,v1_learner,0.51859172,0.3421
+ca,inculcar ,0.525000,v1_learner,0.55541273,0.3342
+ca,efímer ,0.700000,v1_learner,0.55494635,0.3438
+ca,inútil ,0.175000,v1_learner,0.53545239,0.3311
+ca,oceà ,0.325000,v1_learner,0.52038037,0.3216
+ca,burocràcia ,0.425000,v1_learner,0.51818762,0.3275
+ca,didàctics ,0.475000,v1_learner,0.53538187,0.3388
+ca,controvertits ,0.600000,v1_learner,0.53602974,0.3287
+ca,decàleg ,0.650000,v1_learner,0.53624213,0.3250
+ca,numèriques ,0.300000,v1_learner,0.52346805,0.3376
+ca,arrodonida ,0.375000,v1_learner,0.52932994,0.3395
+ca,decimals ,0.400000,v1_learner,0.52361250,0.3415
+ca,antiracista ,0.425000,v1_learner,0.52254898,0.3049
+ca,multicultural ,0.450000,v1_learner,0.52283070,0.2394
+ca,decàleg ,0.625000,v1_learner,0.54356474,0.2373
+en,external,0.050000,v1_learner,0.50028750,0.2309
+en,pulled,0.075000,v1_learner,0.49296405,1.2095
+en,robot,0.100000,v1_learner,0.45439841,0.2261
+en,bank,0.050000,v1_learner,0.50060242,0.8230
+en,recommended,0.100000,v1_learner,0.50078978,0.2207
+en,declared,0.050000,v1_learner,0.50420427,0.3173
+en,remainder,0.100000,v1_learner,0.50065570,0.4189
+en,controlling,0.175000,v1_learner,0.50176910,0.2224
+en,conditional,0.175000,v1_learner,0.50653552,0.2459
+en,gone,0.075000,v1_learner,0.46299316,0.2296
+en,prerequisite,0.400000,v1_learner,0.51885759,0.2307
+en,relates,0.075000,v1_learner,0.50030427,0.2283
+en,micro,0.227273,v1_learner,0.49568073,0.2253
+en,controllers,0.181818,v1_learner,0.50000000,0.2233
+en,hardware,0.181818,v1_learner,0.49823090,0.2235
+en,wrapped,0.025000,v1_learner,0.49960062,0.2221
+en,coil,0.150000,v1_learner,0.49917664,0.2189
+en,pickup,0.475000,v1_learner,0.49935776,0.2185
+en,reagent,0.681818,v1_learner,0.50895695,0.2226
+en,electrons,0.272727,v1_learner,0.49948813,0.2232
+en,neutrally,0.227273,v1_learner,0.50885070,0.2230
+en,beautiful,0.050000,v1_learner,0.49269594,0.2399
+en,undertake,0.225000,v1_learner,0.52966453,0.8607
+en,discover,0.100000,v1_learner,0.50039938,0.2419
+en,seventh,0.022727,v1_learner,0.50152623,0.2561
+en,eliminated,0.318182,v1_learner,0.50166272,0.2536
+en,erstwhile,0.931818,v1_learner,0.62465248,0.2538
+en,magnitude,0.175000,v1_learner,0.50718999,0.2240
+en,quantity,0.075000,v1_learner,0.50129793,0.2225
+en,vector,0.250000,v1_learner,0.50101266,0.2206
+fil,agaw,0.075000,v1_learner,0.54535807,0.2292
+fil,agila,0.125000,v1_learner,0.50061576,0.2285
+fil,agos,0.150000,v1_learner,0.54528863,0.2309
+fil,akay,0.250000,v1_learner,0.56570296,0.2391
+fil,ale,0.150000,v1_learner,0.52254537,0.2278
+fil,alin,0.050000,v1_learner,0.51167958,0.2365
+fil,alkansiya,0.375000,v1_learner,0.54550326,0.2309
+fil,amin,0.025000,v1_learner,0.50684696,0.2303
+fil,angkan,0.275000,v1_learner,0.57903929,0.5609
+fil,anuman,0.250000,v1_learner,0.52932794,0.2301
+fil,aparador,0.325000,v1_learner,0.54399435,0.3207
+fil,armas,0.250000,v1_learner,0.53537850,0.2227
+fil,atay,0.100000,v1_learner,0.52254631,0.2574
+fil,ate,0.025000,v1_learner,0.50684695,0.2325
+fil,atin,0.025000,v1_learner,0.50885083,0.2314
+fil,ayan,0.050000,v1_learner,0.51084138,0.2245
+fil,ayaw,0.025000,v1_learner,0.51859200,0.2213
+fil,babala,0.225000,v1_learner,0.50245445,0.2229
+fil,bahagya,0.475000,v1_learner,0.55522276,0.2295
+fil,bakasyon,0.200000,v1_learner,0.50919384,0.2301
+fil,balon,0.150000,v1_learner,0.50895710,0.2284
+fil,bandera,0.300000,v1_learner,0.50226519,0.2410
+fil,bangkay,0.325000,v1_learner,0.52971842,0.2353
+fil,bansa,0.075000,v1_learner,0.50545220,0.2337
+fil,baril,0.050000,v1_learner,0.50915462,0.3739
+fil,bawal,0.025000,v1_learner,0.50895704,0.2230
+fil,bayong,0.175000,v1_learner,0.50245446,0.2209
+fil,bibig,0.025000,v1_learner,0.50420440,0.2212
+fil,blusa,0.325000,v1_learner,0.50401504,0.2234
+fil,bruha,0.250000,v1_learner,0.52851670,0.2216
+fr,entretien,0.675000,v1_learner,0.54418914,0.3682
+fr,consacrée,0.650000,v1_learner,0.59337234,0.3217
+fr,stocke,0.350000,v1_learner,0.51683189,0.2334
+fr,traite,0.375000,v1_learner,0.51192318,0.2323
+fr,récepteurs,0.325000,v1_learner,0.50458300,0.2332
+fr,prospère,0.400000,v1_learner,0.51459819,0.2267
+fr,bâtie,0.750000,v1_learner,0.51412687,0.2259
+fr,partant,0.525000,v1_learner,0.52217959,0.2244
+fr,courant,0.475000,v1_learner,0.51749518,0.7823
+fr,entraînerait,0.625000,v1_learner,0.54484246,0.3251
+fr,garantit,0.075000,v1_learner,0.51795342,0.5188
+fr,cité,0.275000,v1_learner,0.50785618,0.4636
+fr,davantage,0.525000,v1_learner,0.50743992,0.3191
+fr,réclamer,0.400000,v1_learner,0.52851757,0.3153
+fr,notice,0.100000,v1_learner,0.50299851,0.3862
+fr,responsables,0.075000,v1_learner,0.51335451,0.4028
+fr,tendance,0.350000,v1_learner,0.51440605,0.3116
+fr,orgueilleux,0.750000,v1_learner,0.54501276,0.3131
+fr,établi,0.350000,v1_learner,0.54175578,0.3130
+fr,sorte,0.250000,v1_learner,0.52237308,0.3139
+fr,disposition,0.225000,v1_learner,0.50249856,0.2203
+fr,renseignement,0.500000,v1_learner,0.51162937,0.2205
+fr,complémentaire,0.100000,v1_learner,0.50907412,0.2241
+fr,conséquences,0.100000,v1_learner,0.50166276,0.2354
+fr,interroge,0.300000,v1_learner,0.51124009,0.2312
+fr,question,0.000000,v1_learner,0.50065571,0.2646
+fr,pneumatique,0.550000,v1_learner,0.50152626,0.2195
+fr,essor,0.800000,v1_learner,0.50395115,0.2325
+fr,coach,0.100000,v1_learner,0.50303439,0.2285
+fr,impose,0.150000,v1_learner,0.50188636,0.2316
+de,Grausen,0.600000,v1_learner,0.59387597,0.3169
+de,verworren,0.550000,v1_learner,0.57994620,0.3199
+de,überwältigen,0.325000,v1_learner,0.62481423,0.3189
+de,Gemütsbewegung,0.650000,v1_learner,0.62384407,0.3341
+de,durchschüttern,0.650000,v1_learner,0.65534275,0.9461
+de,Heiterkeit,0.400000,v1_learner,0.59355629,0.3151
+de,recht,0.275000,v1_learner,0.52217907,0.4402
+de,Bangigkeit,0.650000,v1_learner,0.62427318,0.3199
+de,Abendglut,0.750000,v1_learner,0.60897414,0.3445
+de,drastisch,0.375000,v1_learner,0.52932649,0.5346
+de,Gewährsleute,0.875000,v1_learner,0.59298597,0.3208
+de,Ausmaß,0.275000,v1_learner,0.53640808,0.3212
+de,Gleichwohl,0.425000,v1_learner,0.55444502,0.3244
+de,Schmuggler,0.225000,v1_learner,0.51372130,0.3201
+de,aufgreifen,0.275000,v1_learner,0.57905661,0.3239
+de,lautstark,0.225000,v1_learner,0.51878825,0.3179
+de,Unmut,0.400000,v1_learner,0.51867395,0.3136
+de,artikulieren,0.250000,v1_learner,0.54543549,0.3123
+de,Verhältnis,0.250000,v1_learner,0.50924806,0.3218
+de,zusehends,0.475000,v1_learner,0.52962608,0.3192
+de,nominieren,0.250000,v1_learner,0.52354792,0.3585
+de,Lage,0.150000,v1_learner,0.52879865,0.3258
+de,konzipieren,0.475000,v1_learner,0.62450723,0.3252
+de,Maßnahme,0.275000,v1_learner,0.52346578,0.3234
+de,zwiespältig,0.550000,v1_learner,0.64018848,0.3253
+de,Haltung,0.325000,v1_learner,0.54524639,0.3184
+de,Sicht,0.175000,v1_learner,0.53640860,0.3128
+de,toben,0.250000,v1_learner,0.52336015,0.2257
+de,avisieren,0.700000,v1_learner,0.62465073,0.2248
+de,Kontroverse,0.350000,v1_learner,0.53690680,0.2264
+it,perduta,0.080000,v1_learner,0.51335524,0.3162
+it,miseria,0.080000,v1_learner,0.50653589,0.3122
+it,sbrindellata,0.300000,v1_learner,0.52868472,0.3133
+it,anonimi,0.030000,v1_learner,0.50565629,0.3137
+it,giunte,0.080000,v1_learner,0.51038244,0.3228
+it,profitto,0.150000,v1_learner,0.51795374,0.3134
+it,ampollose,0.430000,v1_learner,0.52851650,0.2273
+it,costellate,0.280000,v1_learner,0.51115814,0.2265
+it,parole,0.030000,v1_learner,0.49963177,0.2669
+it,giovinezza,0.030000,v1_learner,0.50387865,0.3227
+it,angustiata,0.380000,v1_learner,0.51423166,0.3227
+it,grazie,0.180000,v1_learner,0.48120678,0.3272
+it,sottrarre,0.080000,v1_learner,0.53632965,0.2300
+it,apparente,0.120000,v1_learner,0.51432436,0.2389
+it,mancanza,0.030000,v1_learner,0.52851554,0.2264
+it,singolari,0.220000,v1_learner,0.50000000,0.2291
+it,giocoso,0.100000,v1_learner,0.50112762,0.2273
+it,mirabolanti,0.480000,v1_learner,0.51162931,0.2267
+it,popolareggiante,0.300000,v1_learner,0.62441501,1.1959
+it,ostentazione,0.120000,v1_learner,0.56679354,0.3306
+it,affettato,0.520000,v1_learner,0.51228324,0.3286
+it,tardo,0.320000,v1_learner,0.59178085,0.7671
+it,livore,0.520000,v1_learner,0.57847749,0.3126
+it,sicario,0.480000,v1_learner,0.56541538,0.3131
+it,estendere,0.250000,v1_learner,0.52943322,0.3284
+it,indefinitamente,0.320000,v1_learner,0.54524964,0.3222
+it,condizionamenti,0.430000,v1_learner,0.55474445,0.3217
+it,immensi,0.180000,v1_learner,0.51084143,0.5949
+it,folgoranti,0.430000,v1_learner,0.55473620,0.3112
+it,stagnavano,0.480000,v1_learner,0.55471534,0.3160
+ja,連れ戻す,0.300000,v1_learner,0.55559699,0.2277
+ja,恩を売り,0.700000,v1_learner,0.58005395,0.2257
+ja,なおかつ,0.500000,v1_learner,0.55554436,0.2239
+ja,各種の,0.200000,v1_learner,0.50441276,0.3000
+ja,市電,0.475000,v1_learner,0.50206054,0.2217
+ja,気にかけない,0.475000,v1_learner,0.51891406,0.2243
+ja,募集し,0.100000,v1_learner,0.54532522,0.2257
+ja,ピックアップして,0.050000,v1_learner,0.51867422,0.2242
+ja,掲載した,0.400000,v1_learner,0.51484507,0.2233
+ja,再び,0.075000,v1_learner,0.50695315,0.2241
+ja,はじめ,0.025000,v1_learner,0.50971619,0.2204
+ja,または,0.075000,v1_learner,0.51084108,0.2204
+ja,旧,0.150000,v1_learner,0.50551676,0.2310
+ja,ロック,0.025000,v1_learner,0.50105507,0.2307
+ja,直ちに,0.275000,v1_learner,0.50895711,0.2333
+ja,長大な,0.475000,v1_learner,0.50719003,0.2433
+ja,標題,0.375000,v1_learner,0.50061577,0.2209
+ja,書き添えられて,0.600000,v1_learner,0.59414128,0.2211
+ja,馴染み深かった,0.500000,v1_learner,0.59413852,0.2296
+ja,変更されて,0.100000,v1_learner,0.51873831,0.2262
+ja,戦闘曲,0.425000,v1_learner,0.52943102,0.2272
+ja,小物,0.225000,v1_learner,0.50122121,0.2318
+ja,応用した,0.225000,v1_learner,0.51174923,0.2239
+ja,随所,0.725000,v1_learner,0.52962616,0.2233
+ja,繰り返し,0.200000,v1_learner,0.52370063,0.2234
+ja,強盗被害,0.400000,v1_learner,0.51484505,0.2217
+ja,考慮した,0.400000,v1_learner,0.52354801,0.2207
+ja,キレさせる,0.375000,v1_learner,0.56696812,0.2325
+ja,諫める,0.775000,v1_learner,0.52346663,0.2288
+ja,コーナー,0.100000,v1_learner,0.50602393,0.2279
+pt,estradas,0.080000,v1_learner,0.51683160,0.3304
+pt,transparência,0.240000,v1_learner,0.51400784,0.3700
+pt,expiação,0.550000,v1_learner,0.56505885,0.3268
+pt,rigor,0.310000,v1_learner,0.51454188,0.2228
+pt,empreiteiros,0.360000,v1_learner,0.55409768,0.3229
+pt,atos,0.120000,v1_learner,0.52815259,0.3203
+pt,aldeias,0.060000,v1_learner,0.52709143,0.4678
+pt,perigos,0.130000,v1_learner,0.51400779,0.2307
+pt,navegando,0.180000,v1_learner,0.52322575,0.3193
+pt,produtos,0.060000,v1_learner,0.49986352,0.2299
+pt,moratória,0.550000,v1_learner,0.52632961,0.3363
+pt,democracia,0.230000,v1_learner,0.50412138,0.3197
+pt,subsistência,0.480000,v1_learner,0.53672655,0.2280
+pt,ativador,0.250000,v1_learner,0.53640825,0.3220
+pt,misericórdias,0.380000,v1_learner,0.52217914,0.3317
+pt,bases,0.290000,v1_learner,0.50443981,0.3274
+pt,rudimentos,0.580000,v1_learner,0.54484205,0.3252
+pt,novilho,0.380000,v1_learner,0.53601781,0.3173
+pt,cabelo,0.100000,v1_learner,0.49974608,0.2246
+pt,puberdade,0.320000,v1_learner,0.50710063,0.3154
+pt,ataque,0.250000,v1_learner,0.50166272,0.2235
+pt,margens,0.230000,v1_learner,0.51084113,0.2285
+pt,samaritanos,0.480000,v1_learner,0.50272282,0.2292
+pt,beneficências,0.490000,v1_learner,0.59299784,0.3198
+pt,incertezas,0.080000,v1_learner,0.52111335,0.3271
+pt,pais,0.070000,v1_learner,0.50671041,0.2260
+pt,gentios,0.460000,v1_learner,0.54220256,0.3159
+pt,colegas,0.130000,v1_learner,0.49883316,0.2234
+pt,podridão,0.200000,v1_learner,0.54463194,0.2307
+pt,coluna,0.150000,v1_learner,0.50695315,0.3249
+si,තථාගතයන්,0.670000,v1_learner,0.69736325,0.6070
+si,අනුශාසකත්වයෙන්,0.520000,v1_learner,0.69584860,0.8599
+si,නිර්වාණය,0.910000,v1_learner,0.71864761,0.7736
+si,පිටිවහල,0.240000,v1_learner,0.68666862,0.7727
+si,දරිද්‍රතා,0.160000,v1_learner,0.62476536,0.4935
+si,වනිතාව,0.120000,v1_learner,0.71554712,0.5860
+si,සියොතුන්,0.060000,v1_learner,0.64050501,0.5025
+si,පාඨශාලාව,0.050000,v1_learner,0.70295583,0.5984
+si,වෘක්ෂය,0.190000,v1_learner,0.57991351,0.7916
+si,චන්ද්‍රයා,0.090000,v1_learner,0.67101809,0.6001
+si,ලොල්බව,0.120000,v1_learner,0.69617629,0.4444
+si,දැකුම්කළුව,0.090000,v1_learner,0.68428320,0.5837
+si,හසුන්,0.080000,v1_learner,0.60936974,0.4893
+si,කෘශ,0.070000,v1_learner,0.60937170,0.4292
+si,ප්‍රකට,0.070000,v1_learner,0.62485120,0.4985
+si,නිග්‍රහය,0.050000,v1_learner,0.69551376,0.6037
+si,පෞරාණික,0.120000,v1_learner,0.62499997,0.4965
+si,නරනිදු,0.420000,v1_learner,0.69584826,0.6083
+si,ප්‍රවීණතා,0.140000,v1_learner,0.65572586,0.5966
+si,ගෘහය,0.230000,v1_learner,0.57965640,0.7085
+si,අසබඩ,0.180000,v1_learner,0.68336660,0.5884
+si,භූමිය,0.190000,v1_learner,0.67129481,0.7831
+si,පුණ්‍ය,0.260000,v1_learner,0.64077786,0.5167
+si,දර්ශනීය,0.080000,v1_learner,0.69482257,0.6983
+si,වයෝවෘද්ධ,0.430000,v1_learner,0.70620656,0.5925
+si,ධජය,0.350000,v1_learner,0.69504787,0.6095
+si,ප්‍රතිමාව,0.260000,v1_learner,0.71990914,0.6906
+si,යටගිය,0.390000,v1_learner,0.64049048,0.5141
+si,ප්‍රතිමල්ලවයා,0.650000,v1_learner,0.70567397,0.4964
+si,යුහුසුලව,0.110000,v1_learner,0.67080982,0.4437
+es,notifique,0.450000,v1_learner,0.52322700,0.4267
+es,sueldos ,0.225000,v1_learner,0.50153503,0.3364
+es,amenazar ,0.575000,v1_learner,0.50567909,0.3291
+es,ocasiona ,0.575000,v1_learner,0.50566056,0.3284
+es,norteamericanos ,0.150000,v1_learner,0.51835056,0.3409
+es,desvíos ,0.725000,v1_learner,0.55366176,0.3357
+es,legistas ,0.875000,v1_learner,0.55366138,0.3334
+es,sustituto ,0.450000,v1_learner,0.51766706,0.3303
+es,vinculada ,0.500000,v1_learner,0.52932731,0.2253
+es,dicha ,0.675000,v1_learner,0.52305293,0.2385
+es,fondos ,0.250000,v1_learner,0.50221109,0.3294
+es,exige ,0.250000,v1_learner,0.51795331,0.3244
+es,demuestren ,0.350000,v1_learner,0.51848593,0.3226
+es,producidos ,0.150000,v1_learner,0.50563678,0.2344
+es,comunidades ,0.175000,v1_learner,0.50144546,0.2318
+es,equilibradamente ,0.325000,v1_learner,0.52370066,0.6004
+es,carpeta ,0.100000,v1_learner,0.50028750,0.3246
+es,archivarlo ,0.550000,v1_learner,0.51106538,0.3209
+es,archivador ,0.650000,v1_learner,0.50671051,0.3204
+es,prevenir ,0.375000,v1_learner,0.54514956,0.3262
+es,modalidad ,0.600000,v1_learner,0.54502160,0.3232
+es,descalabros ,0.725000,v1_learner,0.57879594,0.3294
+es,utilizando ,0.075000,v1_learner,0.51137608,0.3182
+es,chequeras ,0.700000,v1_learner,0.51124008,0.3164
+es,acostumbraron ,0.200000,v1_learner,0.51859189,0.3190
+es,colmados ,0.675000,v1_learner,0.52305373,0.2404
+es,desbarajustes ,0.800000,v1_learner,0.60918578,0.3211
+es,esperaría ,0.200000,v1_learner,0.50551675,0.7395
+es,retos ,0.450000,v1_learner,0.50015419,0.2251
+es,lúgubre ,0.675000,v1_learner,0.51174916,0.2288
+ca,successius ,0.450000,v2_rubrica,0.58017594,0.3703
+ca,deteriorant ,0.525000,v2_rubrica,0.65560590,0.3478
+ca,desmantellament ,0.625000,v2_rubrica,0.65561309,0.3467
+ca,eclesiàstica ,0.425000,v2_rubrica,0.56719952,0.3457
+ca,jerarquia ,0.525000,v2_rubrica,0.50926654,0.3452
+ca,interlocució ,0.650000,v2_rubrica,0.54557289,0.3424
+ca,minoritzada ,0.550000,v2_rubrica,0.65559505,0.3379
+ca,claudicació ,0.600000,v2_rubrica,0.72626114,0.3353
+ca,sociolingüística ,0.650000,v2_rubrica,0.72029072,0.3341
+ca,planificades ,0.350000,v2_rubrica,0.57994761,0.3356
+ca,estival ,0.475000,v2_rubrica,0.55536151,0.3339
+ca,envergadura ,0.500000,v2_rubrica,0.58010004,0.3357
+ca,escolaritzar ,0.350000,v2_rubrica,0.74515015,1.0129
+ca,imprès ,0.425000,v2_rubrica,0.68300465,0.4258
+ca,vehicular ,0.625000,v2_rubrica,0.69494788,0.4229
+ca,transmissor ,0.425000,v2_rubrica,0.54551515,0.3418
+ca,inculcar ,0.525000,v2_rubrica,0.64053179,0.3359
+ca,efímer ,0.700000,v2_rubrica,0.59433863,0.3228
+ca,inútil ,0.175000,v2_rubrica,0.52919130,0.3252
+ca,oceà ,0.325000,v2_rubrica,0.57998350,0.3216
+ca,burocràcia ,0.425000,v2_rubrica,0.60936596,0.3208
+ca,didàctics ,0.475000,v2_rubrica,0.58003781,0.3342
+ca,controvertits ,0.600000,v2_rubrica,0.56708181,0.3269
+ca,decàleg ,0.650000,v2_rubrica,0.60926394,0.3271
+ca,numèriques ,0.300000,v2_rubrica,0.62498200,0.3355
+ca,arrodonida ,0.375000,v2_rubrica,0.60942323,0.3298
+ca,decimals ,0.400000,v2_rubrica,0.59431694,0.3218
+ca,antiracista ,0.425000,v2_rubrica,0.50340828,0.2354
+ca,multicultural ,0.450000,v2_rubrica,0.51479479,0.2325
+ca,decàleg ,0.625000,v2_rubrica,0.51873828,0.2323
+en,external,0.050000,v2_rubrica,0.49835763,0.2272
+en,pulled,0.075000,v2_rubrica,0.48106580,0.2247
+en,robot,0.100000,v2_rubrica,0.49876026,0.2243
+en,bank,0.050000,v2_rubrica,0.46300017,0.5705
+en,recommended,0.100000,v2_rubrica,0.48104210,0.2347
+en,declared,0.050000,v2_rubrica,0.48105133,0.7481
+en,remainder,0.100000,v2_rubrica,0.50138085,0.2225
+en,controlling,0.175000,v2_rubrica,0.50245439,0.2200
+en,conditional,0.175000,v2_rubrica,0.50567909,0.2187
+en,gone,0.075000,v2_rubrica,0.31722233,0.2293
+en,prerequisite,0.400000,v2_rubrica,0.49985607,0.2248
+en,relates,0.075000,v2_rubrica,0.49425610,0.2240
+en,micro,0.227273,v2_rubrica,0.49272271,0.2203
+en,controllers,0.181818,v2_rubrica,0.49991708,0.2210
+en,hardware,0.181818,v2_rubrica,0.50263911,0.2219
+en,wrapped,0.025000,v2_rubrica,0.41979490,0.2279
+en,coil,0.150000,v2_rubrica,0.49267666,0.2221
+en,pickup,0.475000,v2_rubrica,0.48498297,0.2201
+en,reagent,0.681818,v2_rubrica,0.75024284,0.2205
+en,electrons,0.272727,v2_rubrica,0.73116708,0.2200
+en,neutrally,0.227273,v2_rubrica,0.58017799,0.2327
+en,beautiful,0.050000,v2_rubrica,0.48103732,0.2667
+en,undertake,0.225000,v2_rubrica,0.49963078,0.2786
+en,discover,0.100000,v2_rubrica,0.49550669,0.2630
+en,seventh,0.022727,v2_rubrica,0.49748033,0.2555
+en,eliminated,0.318182,v2_rubrica,0.49796321,0.2697
+en,erstwhile,0.931818,v2_rubrica,0.62497775,0.2712
+en,magnitude,0.175000,v2_rubrica,0.52979088,0.2398
+en,quantity,0.075000,v2_rubrica,0.49727197,0.2324
+en,vector,0.250000,v2_rubrica,0.50349189,0.2729
+fil,agaw,0.075000,v2_rubrica,0.49629601,0.2594
+fil,agila,0.125000,v2_rubrica,0.48104508,0.9707
+fil,agos,0.150000,v2_rubrica,0.49999969,0.2385
+fil,akay,0.250000,v2_rubrica,0.50358677,0.2392
+fil,ale,0.150000,v2_rubrica,0.48802690,0.2318
+fil,alin,0.050000,v2_rubrica,0.49526722,0.2349
+fil,alkansiya,0.375000,v2_rubrica,0.49862764,0.2303
+fil,amin,0.025000,v2_rubrica,0.49127950,0.2282
+fil,angkan,0.275000,v2_rubrica,0.53537351,0.2291
+fil,anuman,0.250000,v2_rubrica,0.50064214,0.2312
+fil,aparador,0.325000,v2_rubrica,0.51018606,0.5760
+fil,armas,0.250000,v2_rubrica,0.50911397,0.2248
+fil,atay,0.100000,v2_rubrica,0.50174910,0.2292
+fil,ate,0.025000,v2_rubrica,0.47023476,0.2298
+fil,atin,0.025000,v2_rubrica,0.49579414,0.2322
+fil,ayan,0.050000,v2_rubrica,0.48843241,0.2304
+fil,ayaw,0.025000,v2_rubrica,0.49073193,0.2294
+fil,babala,0.225000,v2_rubrica,0.49448272,0.2249
+fil,bahagya,0.475000,v2_rubrica,0.49815673,0.2591
+fil,bakasyon,0.200000,v2_rubrica,0.49564108,0.2288
+fil,balon,0.150000,v2_rubrica,0.49666126,0.2265
+fil,bandera,0.300000,v2_rubrica,0.49289154,0.2423
+fil,bangkay,0.325000,v2_rubrica,0.49960051,0.2337
+fil,bansa,0.075000,v2_rubrica,0.49911987,0.2407
+fil,baril,0.050000,v2_rubrica,0.49833707,0.2228
+fil,bawal,0.025000,v2_rubrica,0.49677566,0.2307
+fil,bayong,0.175000,v2_rubrica,0.48104412,0.2608
+fil,bibig,0.025000,v2_rubrica,0.48822351,0.2258
+fil,blusa,0.325000,v2_rubrica,0.48149159,0.2263
+fil,bruha,0.250000,v2_rubrica,0.49233067,0.2276
+fr,entretien,0.675000,v2_rubrica,0.55554479,0.6508
+fr,consacrée,0.650000,v2_rubrica,0.62488911,0.2230
+fr,stocke,0.350000,v2_rubrica,0.51859172,0.2345
+fr,traite,0.375000,v2_rubrica,0.52361179,0.2360
+fr,récepteurs,0.325000,v2_rubrica,0.50256935,0.2421
+fr,prospère,0.400000,v2_rubrica,0.50191661,0.2335
+fr,bâtie,0.750000,v2_rubrica,0.51137587,0.2293
+fr,partant,0.525000,v2_rubrica,0.50249834,0.2598
+fr,courant,0.475000,v2_rubrica,0.51464786,0.3311
+fr,entraînerait,0.625000,v2_rubrica,0.54547452,0.3395
+fr,garantit,0.075000,v2_rubrica,0.50340830,0.3326
+fr,cité,0.275000,v2_rubrica,0.50545216,0.2386
+fr,davantage,0.525000,v2_rubrica,0.50903978,0.3256
+fr,réclamer,0.400000,v2_rubrica,0.50722060,0.3210
+fr,notice,0.100000,v2_rubrica,0.49912064,0.2558
+fr,responsables,0.075000,v2_rubrica,0.50144546,0.2412
+fr,tendance,0.350000,v2_rubrica,0.50031149,0.2363
+fr,orgueilleux,0.750000,v2_rubrica,0.53623821,0.2371
+fr,établi,0.350000,v2_rubrica,0.54294890,0.2365
+fr,sorte,0.250000,v2_rubrica,0.50518467,0.2401
+fr,disposition,0.225000,v2_rubrica,0.50068686,0.2276
+fr,renseignement,0.500000,v2_rubrica,0.50272283,0.2259
+fr,complémentaire,0.100000,v2_rubrica,0.50431921,0.2253
+fr,conséquences,0.100000,v2_rubrica,0.50401497,0.2361
+fr,interroge,0.300000,v2_rubrica,0.50922427,0.2327
+fr,question,0.000000,v2_rubrica,0.50671019,0.2351
+fr,pneumatique,0.550000,v2_rubrica,0.50028749,0.2248
+fr,essor,0.800000,v2_rubrica,0.50041787,0.2370
+fr,coach,0.100000,v2_rubrica,0.50119154,0.2314
+fr,impose,0.150000,v2_rubrica,0.49968850,0.2323
+de,Grausen,0.600000,v2_rubrica,0.64052081,0.2305
+de,verworren,0.550000,v2_rubrica,0.58009139,0.2363
+de,überwältigen,0.325000,v2_rubrica,0.66980511,0.2331
+de,Gemütsbewegung,0.650000,v2_rubrica,0.69449883,0.3425
+de,durchschüttern,0.650000,v2_rubrica,0.66997263,0.7656
+de,Heiterkeit,0.400000,v2_rubrica,0.54550456,0.3271
+de,recht,0.275000,v2_rubrica,0.52282853,0.3368
+de,Bangigkeit,0.650000,v2_rubrica,0.68303662,0.3378
+de,Abendglut,0.750000,v2_rubrica,0.64048231,0.3383
+de,drastisch,0.375000,v2_rubrica,0.50871435,0.3452
+de,Gewährsleute,0.875000,v2_rubrica,0.68323374,0.3388
+de,Ausmaß,0.275000,v2_rubrica,0.51156480,0.3312
+de,Gleichwohl,0.425000,v2_rubrica,0.52346588,0.3333
+de,Schmuggler,0.225000,v2_rubrica,0.50871442,0.3307
+de,aufgreifen,0.275000,v2_rubrica,0.53679104,0.3301
+de,lautstark,0.225000,v2_rubrica,0.50871439,0.2379
+de,Unmut,0.400000,v2_rubrica,0.50347905,0.2404
+de,artikulieren,0.250000,v2_rubrica,0.51123978,0.2352
+de,Verhältnis,0.250000,v2_rubrica,0.50203674,0.4769
+de,zusehends,0.475000,v2_rubrica,0.55564684,0.3294
+de,nominieren,0.250000,v2_rubrica,0.51180577,0.7511
+de,Lage,0.150000,v2_rubrica,0.54555804,0.3931
+de,konzipieren,0.475000,v2_rubrica,0.73116976,0.4255
+de,Maßnahme,0.275000,v2_rubrica,0.70440687,0.3627
+de,zwiespältig,0.550000,v2_rubrica,0.68276666,0.6432
+de,Haltung,0.325000,v2_rubrica,0.54557739,0.2260
+de,Sicht,0.175000,v2_rubrica,0.52962617,0.2253
+de,toben,0.250000,v2_rubrica,0.52336015,0.2295
+de,avisieren,0.700000,v2_rubrica,0.55539862,0.2268
+de,Kontroverse,0.350000,v2_rubrica,0.50551671,0.2290
+it,perduta,0.080000,v2_rubrica,0.50337773,0.2371
+it,miseria,0.080000,v2_rubrica,0.50010633,0.2352
+it,sbrindellata,0.300000,v2_rubrica,0.50703592,0.2364
+it,anonimi,0.030000,v2_rubrica,0.50112760,0.3208
+it,giunte,0.080000,v2_rubrica,0.50322357,0.3181
+it,profitto,0.150000,v2_rubrica,0.50149579,0.3198
+it,ampollose,0.430000,v2_rubrica,0.53689294,0.2360
+it,costellate,0.280000,v2_rubrica,0.50722052,0.2317
+it,parole,0.030000,v2_rubrica,0.50053582,0.2338
+it,giovinezza,0.030000,v2_rubrica,0.50346506,0.3322
+it,angustiata,0.380000,v2_rubrica,0.50345062,0.4084
+it,grazie,0.180000,v2_rubrica,0.49742980,0.3747
+it,sottrarre,0.080000,v2_rubrica,0.52354777,0.3016
+it,apparente,0.120000,v2_rubrica,0.50495142,0.2560
+it,mancanza,0.030000,v2_rubrica,0.50420426,0.2635
+it,singolari,0.220000,v2_rubrica,0.50138084,0.2584
+it,giocoso,0.100000,v2_rubrica,0.50019788,0.2536
+it,mirabolanti,0.480000,v2_rubrica,0.50551670,0.2474
+it,popolareggiante,0.300000,v2_rubrica,0.65561094,0.3646
+it,ostentazione,0.120000,v2_rubrica,0.50572034,0.3412
+it,affettato,0.520000,v2_rubrica,0.50907397,0.3425
+it,tardo,0.320000,v2_rubrica,0.56696914,0.7900
+it,livore,0.520000,v2_rubrica,0.66980537,0.3314
+it,sicario,0.480000,v2_rubrica,0.70452942,0.3382
+it,estendere,0.250000,v2_rubrica,0.55561349,0.3862
+it,indefinitamente,0.320000,v2_rubrica,0.66977841,0.3306
+it,condizionamenti,0.430000,v2_rubrica,0.58011160,0.3320
+it,immensi,0.180000,v2_rubrica,0.59429654,0.3491
+it,folgoranti,0.430000,v2_rubrica,0.62483250,0.3988
+it,stagnavano,0.480000,v2_rubrica,0.62476709,0.3218
+ja,連れ戻す,0.300000,v2_rubrica,0.52377277,0.2340
+ja,恩を売り,0.700000,v2_rubrica,0.62496332,0.2311
+ja,なおかつ,0.500000,v2_rubrica,0.51171859,0.2309
+ja,各種の,0.200000,v2_rubrica,0.49864790,0.2378
+ja,市電,0.475000,v2_rubrica,0.49598358,0.2474
+ja,気にかけない,0.475000,v2_rubrica,0.49887236,0.2339
+ja,募集し,0.100000,v2_rubrica,0.50495138,0.2325
+ja,ピックアップして,0.050000,v2_rubrica,0.50602346,0.2422
+ja,掲載した,0.400000,v2_rubrica,0.50370346,0.2340
+ja,再び,0.075000,v2_rubrica,0.49862272,0.2274
+ja,はじめ,0.025000,v2_rubrica,0.49415988,0.2665
+ja,または,0.075000,v2_rubrica,0.49855557,0.2277
+ja,旧,0.150000,v2_rubrica,0.53623969,0.2368
+ja,ロック,0.025000,v2_rubrica,0.50359870,0.2314
+ja,直ちに,0.275000,v2_rubrica,0.51454170,0.2350
+ja,長大な,0.475000,v2_rubrica,0.52957641,0.2305
+ja,標題,0.375000,v2_rubrica,0.50710048,0.3524
+ja,書き添えられて,0.600000,v2_rubrica,0.62487138,0.2284
+ja,馴染み深かった,0.500000,v2_rubrica,0.51423045,0.2357
+ja,変更されて,0.100000,v2_rubrica,0.50272268,0.2338
+ja,戦闘曲,0.425000,v2_rubrica,0.50695295,0.2397
+ja,小物,0.225000,v2_rubrica,0.49685913,0.2468
+ja,応用した,0.225000,v2_rubrica,0.50684671,0.2421
+ja,随所,0.725000,v2_rubrica,0.50282348,0.2304
+ja,繰り返し,0.200000,v2_rubrica,0.50152617,0.2309
+ja,強盗被害,0.400000,v2_rubrica,0.50671026,0.2293
+ja,考慮した,0.400000,v2_rubrica,0.51084076,0.2282
+ja,キレさせる,0.375000,v2_rubrica,0.50853898,0.4130
+ja,諫める,0.775000,v2_rubrica,0.50166253,0.2329
+ja,コーナー,0.100000,v2_rubrica,0.49892202,0.2342
+pt,estradas,0.080000,v2_rubrica,0.50853912,0.3423
+pt,transparência,0.240000,v2_rubrica,0.50710046,0.4377
+pt,expiação,0.550000,v2_rubrica,0.59432214,0.3314
+pt,rigor,0.310000,v2_rubrica,0.50144163,0.2303
+pt,empreiteiros,0.360000,v2_rubrica,0.52962722,0.3302
+pt,atos,0.120000,v2_rubrica,0.52373092,0.3290
+pt,aldeias,0.060000,v2_rubrica,0.51156488,0.3433
+pt,perigos,0.130000,v2_rubrica,0.50026765,0.2352
+pt,navegando,0.180000,v2_rubrica,0.50092969,0.3363
+pt,produtos,0.060000,v2_rubrica,0.49986345,0.2480
+pt,moratória,0.550000,v2_rubrica,0.50563679,0.3900
+pt,democracia,0.230000,v2_rubrica,0.50056537,0.3526
+pt,subsistência,0.480000,v2_rubrica,0.50570477,0.2339
+pt,ativador,0.250000,v2_rubrica,0.75802728,0.9490
+pt,misericórdias,0.380000,v2_rubrica,0.50715081,0.3444
+pt,bases,0.290000,v2_rubrica,0.53690809,0.3296
+pt,rudimentos,0.580000,v2_rubrica,0.58014314,0.3316
+pt,novilho,0.380000,v2_rubrica,0.51148186,0.4506
+pt,cabelo,0.100000,v2_rubrica,0.49843414,0.2316
+pt,puberdade,0.320000,v2_rubrica,0.52361197,0.2426
+pt,ataque,0.250000,v2_rubrica,0.49861894,0.2291
+pt,margens,0.230000,v2_rubrica,0.49960037,0.2343
+pt,samaritanos,0.480000,v2_rubrica,0.50076882,0.2684
+pt,beneficências,0.490000,v2_rubrica,0.56703036,0.3472
+pt,incertezas,0.080000,v2_rubrica,0.50083842,0.3437
+pt,pais,0.070000,v2_rubrica,0.49999933,0.2364
+pt,gentios,0.460000,v2_rubrica,0.55532047,0.2422
+pt,colegas,0.130000,v2_rubrica,0.49902188,0.2392
+pt,podridão,0.200000,v2_rubrica,0.55540083,0.9467
+pt,coluna,0.150000,v2_rubrica,0.59422964,0.3266
+si,තථාගතයන්,0.670000,v2_rubrica,0.74635830,0.6738
+si,අනුශාසකත්වයෙන්,0.520000,v2_rubrica,0.72136345,0.8159
+si,නිර්වාණය,0.910000,v2_rubrica,0.84047568,0.7952
+si,පිටිවහල,0.240000,v2_rubrica,0.78999713,1.2272
+si,දරිද්‍රතා,0.160000,v2_rubrica,0.60866461,0.7948
+si,වනිතාව,0.120000,v2_rubrica,0.73622927,0.5935
+si,සියොතුන්,0.060000,v2_rubrica,0.50910979,0.5001
+si,පාඨශාලාව,0.050000,v2_rubrica,0.69411681,0.6104
+si,වෘක්ෂය,0.190000,v2_rubrica,0.59352102,0.5011
+si,චන්ද්‍රයා,0.090000,v2_rubrica,0.63975745,0.7585
+si,ලොල්බව,0.120000,v2_rubrica,0.73195690,0.4524
+si,දැකුම්කළුව,0.090000,v2_rubrica,0.72938017,0.5949
+si,හසුන්,0.080000,v2_rubrica,0.62448242,0.5057
+si,කෘශ,0.070000,v2_rubrica,0.53537457,0.4362
+si,ප්‍රකට,0.070000,v2_rubrica,0.62466062,0.4983
+si,නිග්‍රහය,0.050000,v2_rubrica,0.70455555,0.6893
+si,පෞරාණික,0.120000,v2_rubrica,0.71322289,0.8312
+si,නරනිදු,0.420000,v2_rubrica,0.74006302,0.6850
+si,ප්‍රවීණතා,0.140000,v2_rubrica,0.72208443,0.6338
+si,ගෘහය,0.230000,v2_rubrica,0.51729769,0.5609
+si,අසබඩ,0.180000,v2_rubrica,0.73142004,0.6293
+si,භූමිය,0.190000,v2_rubrica,0.68283988,0.8212
+si,පුණ්‍ය,0.260000,v2_rubrica,0.68267926,0.5423
+si,දර්ශනීය,0.080000,v2_rubrica,0.64000302,0.8393
+si,වයෝවෘද්ධ,0.430000,v2_rubrica,0.73655314,0.6077
+si,ධජය,0.350000,v2_rubrica,0.68279140,0.6139
+si,ප්‍රතිමාව,0.260000,v2_rubrica,0.74978881,0.7175
+si,යටගිය,0.390000,v2_rubrica,0.62426727,0.7918
+si,ප්‍රතිමල්ලවයා,0.650000,v2_rubrica,0.73529504,0.5164
+si,යුහුසුලව,0.110000,v2_rubrica,0.56525166,0.4592
+es,notifique,0.450000,v2_rubrica,0.50919375,1.3518
+es,sueldos ,0.225000,v2_rubrica,0.50095223,0.3389
+es,amenazar ,0.575000,v2_rubrica,0.50031000,0.3330
+es,ocasiona ,0.575000,v2_rubrica,0.50128101,0.3326
+es,norteamericanos ,0.150000,v2_rubrica,0.55560597,0.3450
+es,desvíos ,0.725000,v2_rubrica,0.56715130,0.3430
+es,legistas ,0.875000,v2_rubrica,0.72047289,0.3399
+es,sustituto ,0.450000,v2_rubrica,0.50251899,0.2425
+es,vinculada ,0.500000,v2_rubrica,0.50263911,0.2419
+es,dicha ,0.675000,v2_rubrica,0.50545210,0.3560
+es,fondos ,0.250000,v2_rubrica,0.50105504,0.3298
+es,exige ,0.250000,v2_rubrica,0.50314062,0.3258
+es,demuestren ,0.350000,v2_rubrica,0.50556701,0.3257
+es,producidos ,0.150000,v2_rubrica,0.50343209,0.2394
+es,comunidades ,0.175000,v2_rubrica,0.50087934,0.2364
+es,equilibradamente ,0.325000,v2_rubrica,0.51888133,0.4224
+es,carpeta ,0.100000,v2_rubrica,0.50420424,0.3311
+es,archivarlo ,0.550000,v2_rubrica,0.50684687,0.3260
+es,archivador ,0.650000,v2_rubrica,0.51859183,0.3255
+es,prevenir ,0.375000,v2_rubrica,0.50926658,0.3309
+es,modalidad ,0.600000,v2_rubrica,0.58019180,0.3312
+es,descalabros ,0.725000,v2_rubrica,0.60936798,0.3476
+es,utilizando ,0.075000,v2_rubrica,0.50337771,0.2480
+es,chequeras ,0.700000,v2_rubrica,0.50013634,0.2457
+es,acostumbraron ,0.200000,v2_rubrica,0.50203673,0.2436
+es,colmados ,0.675000,v2_rubrica,0.50671032,0.2445
+es,desbarajustes ,0.800000,v2_rubrica,0.62499971,0.2410
+es,esperaría ,0.200000,v2_rubrica,0.50203673,0.2350
+es,retos ,0.450000,v2_rubrica,0.49988503,0.2324
+es,lúgubre ,0.675000,v2_rubrica,0.50093369,0.2356
+ca,successius ,0.450000,v3_fewshot,0.49084545,0.9704
+ca,deteriorant ,0.525000,v3_fewshot,0.49439378,0.8016
+ca,desmantellament ,0.625000,v3_fewshot,0.49733709,0.7985
+ca,eclesiàstica ,0.425000,v3_fewshot,0.49733709,0.8100
+ca,jerarquia ,0.525000,v3_fewshot,0.45440025,0.8087
+ca,interlocució ,0.650000,v3_fewshot,0.49558726,0.7990
+ca,minoritzada ,0.550000,v3_fewshot,0.49564160,0.7182
+ca,claudicació ,0.600000,v3_fewshot,0.48508556,0.7174
+ca,sociolingüística ,0.650000,v3_fewshot,0.49273718,0.7144
+ca,planificades ,0.350000,v3_fewshot,0.48515510,0.7171
+ca,estival ,0.475000,v3_fewshot,0.44454122,0.7034
+ca,envergadura ,0.500000,v3_fewshot,0.48822717,0.7074
+ca,escolaritzar ,0.350000,v3_fewshot,0.49907029,0.8102
+ca,imprès ,0.425000,v3_fewshot,0.48132613,0.8038
+ca,vehicular ,0.625000,v3_fewshot,0.47663994,0.8108
+ca,transmissor ,0.425000,v3_fewshot,0.39055902,0.7507
+ca,inculcar ,0.525000,v3_fewshot,0.49835763,0.7230
+ca,efímer ,0.700000,v3_fewshot,0.49796326,0.7247
+ca,inútil ,0.175000,v3_fewshot,0.48508554,0.7669
+ca,oceà ,0.325000,v3_fewshot,0.47645225,0.7241
+ca,burocràcia ,0.425000,v3_fewshot,0.49659171,1.0113
+ca,didàctics ,0.475000,v3_fewshot,0.49073348,0.7357
+ca,controvertits ,0.600000,v3_fewshot,0.49551802,0.7069
+ca,decàleg ,0.650000,v3_fewshot,0.49084545,0.7077
+ca,numèriques ,0.300000,v3_fewshot,0.45461353,0.7180
+ca,arrodonida ,0.375000,v3_fewshot,0.45447453,0.7144
+ca,decimals ,0.400000,v3_fewshot,0.46316159,0.7153
+ca,antiracista ,0.425000,v3_fewshot,0.48114244,0.7414
+ca,multicultural ,0.450000,v3_fewshot,0.47042370,0.7163
+ca,decàleg ,0.625000,v3_fewshot,0.49114930,0.7074
+en,external,0.050000,v3_fewshot,0.43279175,0.7037
+en,pulled,0.075000,v3_fewshot,0.41986385,0.7033
+en,robot,0.100000,v3_fewshot,0.31691746,0.6919
+en,bank,0.050000,v3_fewshot,0.34438752,0.7048
+en,recommended,0.100000,v3_fewshot,0.33020650,0.6990
+en,declared,0.050000,v3_fewshot,0.39055022,0.7181
+en,remainder,0.100000,v3_fewshot,0.49273714,0.6313
+en,controlling,0.175000,v3_fewshot,0.49080621,0.6057
+en,conditional,0.175000,v3_fewshot,0.49659170,0.6199
+en,gone,0.075000,v3_fewshot,0.30555109,0.7255
+en,prerequisite,0.400000,v3_fewshot,0.49068281,0.7084
+en,relates,0.075000,v3_fewshot,0.47617134,0.6977
+en,micro,0.227273,v3_fewshot,0.41982732,0.6001
+en,controllers,0.181818,v3_fewshot,0.45445497,0.6115
+en,hardware,0.181818,v3_fewshot,0.46300156,0.6021
+en,wrapped,0.025000,v3_fewshot,0.34439819,0.6405
+en,coil,0.150000,v3_fewshot,0.37501651,0.6139
+en,pickup,0.475000,v3_fewshot,0.39060586,0.6205
+en,reagent,0.681818,v3_fewshot,0.49077573,0.6049
+en,electrons,0.272727,v3_fewshot,0.47653348,0.6044
+en,neutrally,0.227273,v3_fewshot,0.48111874,0.6993
+en,beautiful,0.050000,v3_fewshot,0.37499570,0.6939
+en,undertake,0.225000,v3_fewshot,0.49650810,0.6936
+en,discover,0.100000,v3_fewshot,0.40562281,0.6893
+en,seventh,0.022727,v3_fewshot,0.49743059,0.7111
+en,eliminated,0.318182,v3_fewshot,0.48818294,0.7016
+en,erstwhile,0.931818,v3_fewshot,0.50000000,0.7177
+en,magnitude,0.175000,v3_fewshot,0.41979798,0.6230
+en,quantity,0.075000,v3_fewshot,0.34438676,0.6190
+en,vector,0.250000,v3_fewshot,0.44432964,0.6343
+fil,agaw,0.075000,v3_fewshot,0.48269931,0.6100
+fil,agila,0.125000,v3_fewshot,0.38937402,0.6457
+fil,agos,0.150000,v3_fewshot,0.47097973,0.8244
+fil,akay,0.250000,v3_fewshot,0.46461985,0.7668
+fil,ale,0.150000,v3_fewshot,0.43389445,0.7860
+fil,alin,0.050000,v3_fewshot,0.45600521,0.7279
+fil,alkansiya,0.375000,v3_fewshot,0.46642613,0.7320
+fil,amin,0.025000,v3_fewshot,0.39116803,0.7143
+fil,angkan,0.275000,v3_fewshot,0.47828768,0.7243
+fil,anuman,0.250000,v3_fewshot,0.47694725,0.7270
+fil,aparador,0.325000,v3_fewshot,0.47120066,0.7155
+fil,armas,0.250000,v3_fewshot,0.45646445,0.6327
+fil,atay,0.100000,v3_fewshot,0.46425908,0.7292
+fil,ate,0.025000,v3_fewshot,0.37476579,0.7374
+fil,atin,0.025000,v3_fewshot,0.37500002,0.7212
+fil,ayan,0.050000,v3_fewshot,0.40580911,0.7100
+fil,ayaw,0.025000,v3_fewshot,0.35950931,0.6873
+fil,babala,0.225000,v3_fewshot,0.45484259,0.6912
+fil,bahagya,0.475000,v3_fewshot,0.48599223,0.7348
+fil,bakasyon,0.200000,v3_fewshot,0.34431767,0.7243
+fil,balon,0.150000,v3_fewshot,0.39011241,0.6593
+fil,bandera,0.300000,v3_fewshot,0.27933269,0.7478
+fil,bangkay,0.325000,v3_fewshot,0.49487350,0.7315
+fil,bansa,0.075000,v3_fewshot,0.43292248,0.7286
+fil,baril,0.050000,v3_fewshot,0.44452135,0.6566
+fil,bawal,0.025000,v3_fewshot,0.43339504,0.7289
+fil,bayong,0.175000,v3_fewshot,0.43289023,0.6557
+fil,bibig,0.025000,v3_fewshot,0.43286359,0.6544
+fil,blusa,0.325000,v3_fewshot,0.43308927,0.7155
+fil,bruha,0.250000,v3_fewshot,0.43369848,0.6357
+fr,entretien,0.675000,v3_fewshot,0.46312312,0.7153
+fr,consacrée,0.650000,v3_fewshot,0.48126187,0.7095
+fr,stocke,0.350000,v3_fewshot,0.47048697,0.7279
+fr,traite,0.375000,v3_fewshot,0.48843519,0.7200
+fr,récepteurs,0.325000,v3_fewshot,0.48114223,0.7232
+fr,prospère,0.400000,v3_fewshot,0.49277946,0.6302
+fr,bâtie,0.750000,v3_fewshot,0.48828134,0.6256
+fr,partant,0.525000,v3_fewshot,0.48502896,0.6227
+fr,courant,0.475000,v3_fewshot,0.45441681,1.8687
+fr,entraînerait,0.625000,v3_fewshot,0.49273718,1.4465
+fr,garantit,0.075000,v3_fewshot,0.47624569,0.7139
+fr,cité,0.275000,v3_fewshot,0.41986955,0.7073
+fr,davantage,0.525000,v3_fewshot,0.47624568,0.7044
+fr,réclamer,0.400000,v3_fewshot,0.46303784,0.7006
+fr,notice,0.100000,v3_fewshot,0.34440726,0.8765
+fr,responsables,0.075000,v3_fewshot,0.37503700,0.7024
+fr,tendance,0.350000,v3_fewshot,0.40567048,0.7007
+fr,orgueilleux,0.750000,v3_fewshot,0.49281001,0.7081
+fr,établi,0.350000,v3_fewshot,0.46321088,0.7056
+fr,sorte,0.250000,v3_fewshot,0.41982216,0.8064
+fr,disposition,0.225000,v3_fewshot,0.40570515,0.6160
+fr,renseignement,0.500000,v3_fewshot,0.46306998,0.6311
+fr,complémentaire,0.100000,v3_fewshot,0.46307001,0.6159
+fr,conséquences,0.100000,v3_fewshot,0.44435381,0.7060
+fr,interroge,0.300000,v3_fewshot,0.48504336,0.7018
+fr,question,0.000000,v3_fewshot,0.41982732,0.7044
+fr,pneumatique,0.550000,v3_fewshot,0.40568518,0.6109
+fr,essor,0.800000,v3_fewshot,0.46301163,0.6184
+fr,coach,0.100000,v3_fewshot,0.41981040,0.6129
+fr,impose,0.150000,v3_fewshot,0.41981566,0.6114
+de,Grausen,0.600000,v3_fewshot,0.49934432,0.6120
+de,verworren,0.550000,v3_fewshot,0.50022438,0.6626
+de,überwältigen,0.325000,v3_fewshot,0.50053586,0.6096
+de,Gemütsbewegung,0.650000,v3_fewshot,0.50191663,1.4942
+de,durchschüttern,0.650000,v3_fewshot,0.50703609,0.6337
+de,Heiterkeit,0.400000,v3_fewshot,0.49787136,0.6149
+de,recht,0.275000,v3_fewshot,0.39068676,1.9888
+de,Bangigkeit,0.650000,v3_fewshot,0.49487352,0.6996
+de,Abendglut,0.750000,v3_fewshot,0.49304693,2.2497
+de,drastisch,0.375000,v3_fewshot,0.49656791,0.6998
+de,Gewährsleute,0.875000,v3_fewshot,0.50166276,0.7018
+de,Ausmaß,0.275000,v3_fewshot,0.49799381,0.6946
+de,Gleichwohl,0.425000,v3_fewshot,0.49962596,0.7030
+de,Schmuggler,0.225000,v3_fewshot,0.49268650,0.6988
+de,aufgreifen,0.275000,v3_fewshot,0.49430649,0.7785
+de,lautstark,0.225000,v3_fewshot,0.49754561,0.6157
+de,Unmut,0.400000,v3_fewshot,0.49284921,0.6061
+de,artikulieren,0.250000,v3_fewshot,0.49975714,0.6055
+de,Verhältnis,0.250000,v3_fewshot,0.49960961,0.7027
+de,zusehends,0.475000,v3_fewshot,0.49971250,0.6899
+de,nominieren,0.250000,v3_fewshot,0.49892273,1.2409
+de,Lage,0.150000,v3_fewshot,0.46307009,2.9108
+de,konzipieren,0.475000,v3_fewshot,0.49989361,1.5915
+de,Maßnahme,0.275000,v3_fewshot,0.49733709,0.6838
+de,zwiespältig,0.550000,v3_fewshot,0.50001854,0.6136
+de,Haltung,0.325000,v3_fewshot,0.49906630,0.6117
+de,Sicht,0.175000,v3_fewshot,0.49443298,0.5990
+de,toben,0.250000,v3_fewshot,0.48520520,0.6103
+de,avisieren,0.700000,v3_fewshot,0.49993539,0.6253
+de,Kontroverse,0.350000,v3_fewshot,0.49938425,0.6333
+it,perduta,0.080000,v3_fewshot,0.44468176,0.7180
+it,miseria,0.080000,v3_fewshot,0.29562778,0.6986
+it,sbrindellata,0.300000,v3_fewshot,0.47828926,0.7080
+it,anonimi,0.030000,v3_fewshot,0.27384273,0.7305
+it,giunte,0.080000,v3_fewshot,0.35948294,0.7039
+it,profitto,0.150000,v3_fewshot,0.34440936,0.7148
+it,ampollose,0.430000,v3_fewshot,0.44491279,0.7375
+it,costellate,0.280000,v3_fewshot,0.37513309,0.7071
+it,parole,0.030000,v3_fewshot,0.27981935,0.7055
+it,giovinezza,0.030000,v3_fewshot,0.31725370,0.7351
+it,angustiata,0.380000,v3_fewshot,0.37510364,0.7341
+it,grazie,0.180000,v3_fewshot,0.25730528,0.7452
+it,sottrarre,0.080000,v3_fewshot,0.45705435,0.7083
+it,apparente,0.120000,v3_fewshot,0.35951322,0.7035
+it,mancanza,0.030000,v3_fewshot,0.43284242,0.7026
+it,singolari,0.220000,v3_fewshot,0.40570714,0.7124
+it,giocoso,0.100000,v3_fewshot,0.33021540,0.7059
+it,mirabolanti,0.480000,v3_fewshot,0.44460291,0.7042
+it,popolareggiante,0.300000,v3_fewshot,0.47677532,0.8010
+it,ostentazione,0.120000,v3_fewshot,0.35946584,0.7978
+it,affettato,0.520000,v3_fewshot,0.35946867,0.7960
+it,tardo,0.320000,v3_fewshot,0.40614535,0.7066
+it,livore,0.520000,v3_fewshot,0.48771699,0.7031
+it,sicario,0.480000,v3_fewshot,0.48664620,0.7076
+it,estendere,0.250000,v3_fewshot,0.34439211,0.8141
+it,indefinitamente,0.320000,v3_fewshot,0.46307021,0.7938
+it,condizionamenti,0.430000,v3_fewshot,0.49114933,0.7935
+it,immensi,0.180000,v3_fewshot,0.47653457,0.7060
+it,folgoranti,0.430000,v3_fewshot,0.49146044,0.7047
+it,stagnavano,0.480000,v3_fewshot,0.47120284,0.7033
+ja,連れ戻す,0.300000,v3_fewshot,0.43370935,0.7125
+ja,恩を売り,0.700000,v3_fewshot,0.44694173,0.7031
+ja,なおかつ,0.500000,v3_fewshot,0.31760497,0.7160
+ja,各種の,0.200000,v3_fewshot,0.29568005,0.7144
+ja,市電,0.475000,v3_fewshot,0.34467942,0.7006
+ja,気にかけない,0.475000,v3_fewshot,0.30591777,0.7021
+ja,募集し,0.100000,v3_fewshot,0.33053752,0.7029
+ja,ピックアップして,0.050000,v3_fewshot,0.31752206,0.7002
+ja,掲載した,0.400000,v3_fewshot,0.28704016,0.6992
+ja,再び,0.075000,v3_fewshot,0.33062049,0.7037
+ja,はじめ,0.025000,v3_fewshot,0.29603960,0.7103
+ja,または,0.075000,v3_fewshot,0.26187561,0.6978
+ja,旧,0.150000,v3_fewshot,0.34500249,0.7102
+ja,ロック,0.025000,v3_fewshot,0.28717492,0.7024
+ja,直ちに,0.275000,v3_fewshot,0.29572742,0.7042
+ja,長大な,0.475000,v3_fewshot,0.39072767,0.7014
+ja,標題,0.375000,v3_fewshot,0.34461068,0.7103
+ja,書き添えられて,0.600000,v3_fewshot,0.44636668,0.7112
+ja,馴染み深かった,0.500000,v3_fewshot,0.34461412,0.7128
+ja,変更されて,0.100000,v3_fewshot,0.31731617,0.7093
+ja,戦闘曲,0.425000,v3_fewshot,0.37521753,0.7149
+ja,小物,0.225000,v3_fewshot,0.29562613,0.7250
+ja,応用した,0.225000,v3_fewshot,0.29568048,0.7139
+ja,随所,0.725000,v3_fewshot,0.40586555,0.7170
+ja,繰り返し,0.200000,v3_fewshot,0.33027842,0.7218
+ja,強盗被害,0.400000,v3_fewshot,0.40648764,0.7317
+ja,考慮した,0.400000,v3_fewshot,0.34461448,0.7045
+ja,キレさせる,0.375000,v3_fewshot,0.36092256,0.7737
+ja,諫める,0.775000,v3_fewshot,0.35999884,0.7085
+ja,コーナー,0.100000,v3_fewshot,0.28709963,0.7098
+pt,estradas,0.080000,v3_fewshot,0.34486610,0.7334
+pt,transparência,0.240000,v3_fewshot,0.47120273,0.7220
+pt,expiação,0.550000,v3_fewshot,0.50000329,0.7126
+pt,rigor,0.310000,v3_fewshot,0.43333767,0.6410
+pt,empreiteiros,0.360000,v3_fewshot,0.50570417,0.7086
+pt,atos,0.120000,v3_fewshot,0.35999380,0.7174
+pt,aldeias,0.060000,v3_fewshot,0.37535499,1.3401
+pt,perigos,0.130000,v3_fewshot,0.43333818,0.6289
+pt,navegando,0.180000,v3_fewshot,0.44442718,0.6228
+pt,produtos,0.060000,v3_fewshot,0.26184649,0.6107
+pt,moratória,0.550000,v3_fewshot,0.50222942,0.7191
+pt,democracia,0.230000,v3_fewshot,0.34442462,0.6428
+pt,subsistência,0.480000,v3_fewshot,0.47717125,0.6201
+pt,ativador,0.250000,v3_fewshot,0.50658825,0.7110
+pt,misericórdias,0.380000,v3_fewshot,0.47587795,0.7171
+pt,bases,0.290000,v3_fewshot,0.31737355,0.7370
+pt,rudimentos,0.580000,v3_fewshot,0.50929074,0.7115
+pt,novilho,0.380000,v3_fewshot,0.49592816,0.6457
+pt,cabelo,0.100000,v3_fewshot,0.27968329,0.6131
+pt,puberdade,0.320000,v3_fewshot,0.47067388,0.6269
+pt,ataque,0.250000,v3_fewshot,0.30573593,0.6071
+pt,margens,0.230000,v3_fewshot,0.46426522,0.6245
+pt,samaritanos,0.480000,v3_fewshot,0.39068562,0.6399
+pt,beneficências,0.490000,v3_fewshot,0.50771065,0.7197
+pt,incertezas,0.080000,v3_fewshot,0.48316890,0.7146
+pt,pais,0.070000,v3_fewshot,0.33028247,0.6165
+pt,gentios,0.460000,v3_fewshot,0.51166499,0.6304
+pt,colegas,0.130000,v3_fewshot,0.29559112,0.6094
+pt,podridão,0.200000,v3_fewshot,0.51228329,0.6165
+pt,coluna,0.150000,v3_fewshot,0.43321081,0.6472
+si,තථාගතයන්,0.670000,v3_fewshot,0.53420163,1.0287
+si,අනුශාසකත්වයෙන්,0.520000,v3_fewshot,0.46326478,1.2299
+si,නිර්වාණය,0.910000,v3_fewshot,0.55883306,1.2574
+si,පිටිවහල,0.240000,v3_fewshot,0.51068347,1.2259
+si,දරිද්‍රතා,0.160000,v3_fewshot,0.50014105,0.9304
+si,වනිතාව,0.120000,v3_fewshot,0.42826128,1.0163
+si,සියොතුන්,0.060000,v3_fewshot,0.38858638,0.7373
+si,පාඨශාලාව,0.050000,v3_fewshot,0.47782841,1.0322
+si,වෘක්ෂය,0.190000,v3_fewshot,0.37804544,0.9402
+si,චන්ද්‍රයා,0.090000,v3_fewshot,0.47299390,1.0452
+si,ලොල්බව,0.120000,v3_fewshot,0.49273110,0.8379
+si,දැකුම්කළුව,0.090000,v3_fewshot,0.50767850,1.0224
+si,හසුන්,0.080000,v3_fewshot,0.43811769,0.9873
+si,කෘශ,0.070000,v3_fewshot,0.43210844,0.7457
+si,ප්‍රකට,0.070000,v3_fewshot,0.46151792,0.9498
+si,නිග්‍රහය,0.050000,v3_fewshot,0.48196058,1.0739
+si,පෞරාණික,0.120000,v3_fewshot,0.47781509,0.9773
+si,නරනිදු,0.420000,v3_fewshot,0.48393461,1.0943
+si,ප්‍රවීණතා,0.140000,v3_fewshot,0.47793388,1.0553
+si,ගෘහය,0.230000,v3_fewshot,0.34450614,0.8393
+si,අසබඩ,0.180000,v3_fewshot,0.51967603,1.0392
+si,භූමිය,0.190000,v3_fewshot,0.42677215,1.2420
+si,පුණ්‍ය,0.260000,v3_fewshot,0.44695781,0.9558
+si,දර්ශනීය,0.080000,v3_fewshot,0.43695577,1.1384
+si,වයෝවෘද්ධ,0.430000,v3_fewshot,0.57263208,1.0524
+si,ධජය,0.350000,v3_fewshot,0.52283816,1.0522
+si,ප්‍රතිමාව,0.260000,v3_fewshot,0.53924989,1.1604
+si,යටගිය,0.390000,v3_fewshot,0.40948121,0.9519
+si,ප්‍රතිමල්ලවයා,0.650000,v3_fewshot,0.54615185,0.9350
+si,යුහුසුලව,0.110000,v3_fewshot,0.51345574,0.8228
+es,notifique,0.450000,v3_fewshot,0.45516076,0.6462
+es,sueldos ,0.225000,v3_fewshot,0.35965301,0.7244
+es,amenazar ,0.575000,v3_fewshot,0.49028396,0.7106
+es,ocasiona ,0.575000,v3_fewshot,0.47120281,0.7068
+es,norteamericanos ,0.150000,v3_fewshot,0.45516035,0.7772
+es,desvíos ,0.725000,v3_fewshot,0.50736645,0.7315
+es,legistas ,0.875000,v3_fewshot,0.52255367,0.7205
+es,sustituto ,0.450000,v3_fewshot,0.43289283,0.6362
+es,vinculada ,0.500000,v3_fewshot,0.48526968,0.6425
+es,dicha ,0.675000,v3_fewshot,0.45475648,0.6317
+es,fondos ,0.250000,v3_fewshot,0.39084730,0.6389
+es,exige ,0.250000,v3_fewshot,0.45601289,0.6331
+es,demuestren ,0.350000,v3_fewshot,0.48711609,0.6316
+es,producidos ,0.150000,v3_fewshot,0.40629484,0.6313
+es,comunidades ,0.175000,v3_fewshot,0.33023759,0.6191
+es,equilibradamente ,0.325000,v3_fewshot,0.47694880,0.6217
+es,carpeta ,0.100000,v3_fewshot,0.28701430,0.6426
+es,archivarlo ,0.550000,v3_fewshot,0.43333834,0.6330
+es,archivador ,0.650000,v3_fewshot,0.47067416,0.6315
+es,prevenir ,0.375000,v3_fewshot,0.42013140,0.7235
+es,modalidad ,0.600000,v3_fewshot,0.48944595,0.7230
+es,descalabros ,0.725000,v3_fewshot,0.51456166,0.7487
+es,utilizando ,0.075000,v3_fewshot,0.43321164,0.7299
+es,chequeras ,0.700000,v3_fewshot,0.39093246,0.7492
+es,acostumbraron ,0.200000,v3_fewshot,0.46316172,0.7936
+es,colmados ,0.675000,v3_fewshot,0.49263381,0.6882
+es,desbarajustes ,0.800000,v3_fewshot,0.56525987,0.6605
+es,esperaría ,0.200000,v3_fewshot,0.40602804,0.6363
+es,retos ,0.450000,v3_fewshot,0.31728366,0.6275
+es,lúgubre ,0.675000,v3_fewshot,0.48851800,0.6467
+ca,successius ,0.450000,v4_cot,0.50214437,29.6896
+ca,deteriorant ,0.525000,v4_cot,0.50000021,3.5572
+ca,desmantellament ,0.625000,v4_cot,0.50101753,3.2459
+ca,eclesiàstica ,0.425000,v4_cot,0.51896455,3.0985
+ca,jerarquia ,0.525000,v4_cot,0.50000884,3.0433
+ca,interlocució ,0.650000,v4_cot,0.74997069,2.7351
+ca,minoritzada ,0.550000,v4_cot,0.50274673,3.2216
+ca,claudicació ,0.600000,v4_cot,0.50732806,3.1202
+ca,sociolingüística ,0.650000,v4_cot,0.74971015,3.5148
+ca,planificades ,0.350000,v4_cot,0.50000012,3.3570
+ca,estival ,0.475000,v4_cot,0.50000119,2.8709
+ca,envergadura ,0.500000,v4_cot,0.50000153,3.3475
+ca,escolaritzar ,0.350000,v4_cot,0.50001135,3.4863
+ca,imprès ,0.425000,v4_cot,0.50006530,2.9091
+ca,vehicular ,0.625000,v4_cot,0.50001871,2.9749
+ca,transmissor ,0.425000,v4_cot,0.50000004,2.9438
+ca,inculcar ,0.525000,v4_cot,0.50000003,3.4256
+ca,efímer ,0.700000,v4_cot,0.49999992,3.4072
+ca,inútil ,0.175000,v4_cot,0.49999781,3.3606
+ca,oceà ,0.325000,v4_cot,0.50000536,3.5407
+ca,burocràcia ,0.425000,v4_cot,0.50005086,3.5572
+ca,didàctics ,0.475000,v4_cot,0.50001456,3.2258
+ca,controvertits ,0.600000,v4_cot,0.50000688,2.7156
+ca,decàleg ,0.650000,v4_cot,0.50001868,3.4035
+ca,numèriques ,0.300000,v4_cot,0.50000151,2.9185
+ca,arrodonida ,0.375000,v4_cot,0.51502166,2.5390
+ca,decimals ,0.400000,v4_cot,0.50002402,2.7958
+ca,antiracista ,0.425000,v4_cot,0.50000119,2.5225
+ca,multicultural ,0.450000,v4_cot,0.50000536,2.4914
+ca,decàleg ,0.625000,v4_cot,0.74785656,3.3263
+en,external,0.050000,v4_cot,0.50000323,2.6870
+en,pulled,0.075000,v4_cot,0.50000401,2.6881
+en,robot,0.100000,v4_cot,0.49998866,2.8255
+en,bank,0.050000,v4_cot,0.49425568,3.1403
+en,recommended,0.100000,v4_cot,0.50000000,2.9994
+en,declared,0.050000,v4_cot,0.50000000,2.8128
+en,remainder,0.100000,v4_cot,0.49999959,2.5617
+en,controlling,0.175000,v4_cot,0.50022773,3.2649
+en,conditional,0.175000,v4_cot,0.50013817,2.5608
+en,gone,0.075000,v4_cot,0.30567649,3.1885
+en,prerequisite,0.400000,v4_cot,0.50000117,2.7559
+en,relates,0.075000,v4_cot,0.49999987,2.9463
+en,micro,0.227273,v4_cot,0.50001859,2.4566
+en,controllers,0.181818,v4_cot,0.50000405,3.0987
+en,hardware,0.181818,v4_cot,0.50000323,2.5136
+en,wrapped,0.025000,v4_cot,0.50000000,2.6801
+en,coil,0.150000,v4_cot,0.50000014,2.3762
+en,pickup,0.475000,v4_cot,0.49999945,2.6071
+en,reagent,0.681818,v4_cot,0.50037529,2.5189
+en,electrons,0.272727,v4_cot,0.50214437,2.8263
+en,neutrally,0.227273,v4_cot,0.50002401,2.9878
+en,beautiful,0.050000,v4_cot,0.49999583,3.1979
+en,undertake,0.225000,v4_cot,0.50000002,3.2835
+en,discover,0.100000,v4_cot,0.50000001,2.4622
+en,seventh,0.022727,v4_cot,0.50000014,2.6976
+en,eliminated,0.318182,v4_cot,0.50000020,3.3070
+en,erstwhile,0.931818,v4_cot,0.50037525,3.2064
+en,magnitude,0.175000,v4_cot,0.50003083,2.8139
+en,quantity,0.075000,v4_cot,0.50005085,2.7552
+en,vector,0.250000,v4_cot,0.50001867,2.8411
+fil,agaw,0.075000,v4_cot,0.49998286,3.0288
+fil,agila,0.125000,v4_cot,0.49977549,2.7332
+fil,agos,0.150000,v4_cot,0.49999872,2.3332
+fil,akay,0.250000,v4_cot,0.51896455,2.5150
+fil,ale,0.150000,v4_cot,0.49998938,2.6140
+fil,alin,0.050000,v4_cot,0.49998865,2.6690
+fil,alkansiya,0.375000,v4_cot,0.50005076,2.8875
+fil,amin,0.025000,v4_cot,0.50005981,2.8267
+fil,angkan,0.275000,v4_cot,0.52980074,2.4553
+fil,anuman,0.250000,v4_cot,0.50001827,3.2787
+fil,aparador,0.325000,v4_cot,0.50000190,2.8183
+fil,armas,0.250000,v4_cot,0.49970765,2.9495
+fil,atay,0.100000,v4_cot,0.50022623,3.1602
+fil,ate,0.025000,v4_cot,0.50078433,2.8305
+fil,atin,0.025000,v4_cot,0.50351437,2.6378
+fil,ayan,0.050000,v4_cot,0.50010707,2.5676
+fil,ayaw,0.025000,v4_cot,0.49073347,2.3502
+fil,babala,0.225000,v4_cot,0.50000827,2.7735
+fil,bahagya,0.475000,v4_cot,0.50001042,3.1073
+fil,bakasyon,0.200000,v4_cot,0.50001129,2.5979
+fil,balon,0.150000,v4_cot,0.49999946,2.8503
+fil,bandera,0.300000,v4_cot,0.49832695,3.2661
+fil,bangkay,0.325000,v4_cot,0.50000031,3.2018
+fil,bansa,0.075000,v4_cot,0.50079311,2.7752
+fil,baril,0.050000,v4_cot,0.49998546,3.1983
+fil,bawal,0.025000,v4_cot,0.49993543,2.3146
+fil,bayong,0.175000,v4_cot,0.50000000,2.5314
+fil,bibig,0.025000,v4_cot,0.50002569,2.5347
+fil,blusa,0.325000,v4_cot,0.50000011,2.6352
+fil,bruha,0.250000,v4_cot,0.50000119,3.0248
+fr,entretien,0.675000,v4_cot,0.49999999,2.9039
+fr,consacrée,0.650000,v4_cot,0.50010764,2.7158
+fr,stocke,0.350000,v4_cot,0.50000023,2.6684
+fr,traite,0.375000,v4_cot,0.49999983,3.3291
+fr,récepteurs,0.325000,v4_cot,0.50000688,3.3054
+fr,prospère,0.400000,v4_cot,0.49999998,2.5806
+fr,bâtie,0.750000,v4_cot,0.50008384,2.4357
+fr,partant,0.525000,v4_cot,0.50000405,3.2997
+fr,courant,0.475000,v4_cot,0.50000067,3.3943
+fr,entraînerait,0.625000,v4_cot,0.50002402,3.1187
+fr,garantit,0.075000,v4_cot,0.49999992,3.1148
+fr,cité,0.275000,v4_cot,0.50061815,2.9515
+fr,davantage,0.525000,v4_cot,0.49999807,3.2740
+fr,réclamer,0.400000,v4_cot,0.49999997,3.1568
+fr,notice,0.100000,v4_cot,0.50000116,2.9101
+fr,responsables,0.075000,v4_cot,0.50000002,3.3519
+fr,tendance,0.350000,v4_cot,0.49999996,2.6503
+fr,orgueilleux,0.750000,v4_cot,0.50022776,3.3192
+fr,établi,0.350000,v4_cot,0.50001436,3.2711
+fr,sorte,0.250000,v4_cot,0.49996916,2.9538
+fr,disposition,0.225000,v4_cot,0.50000253,2.6177
+fr,renseignement,0.500000,v4_cot,0.50214437,2.4379
+fr,complémentaire,0.100000,v4_cot,0.50449655,2.8563
+fr,conséquences,0.100000,v4_cot,0.49999979,3.1020
+fr,interroge,0.300000,v4_cot,0.50000033,2.6596
+fr,question,0.000000,v4_cot,0.44432497,2.9832
+fr,pneumatique,0.550000,v4_cot,0.50003958,2.7753
+fr,essor,0.800000,v4_cot,0.50006530,2.9794
+fr,coach,0.100000,v4_cot,0.49999968,3.2899
+fr,impose,0.150000,v4_cot,0.50000009,3.2691
+de,Grausen,0.600000,v4_cot,0.54560638,3.0591
+de,verworren,0.550000,v4_cot,0.50732806,2.9442
+de,überwältigen,0.325000,v4_cot,0.50000884,3.1535
+de,Gemütsbewegung,0.650000,v4_cot,0.58020533,2.9440
+de,durchschüttern,0.650000,v4_cot,0.51502166,2.8923
+de,Heiterkeit,0.400000,v4_cot,0.50574434,3.1348
+de,recht,0.275000,v4_cot,0.49999996,3.2996
+de,Bangigkeit,0.650000,v4_cot,0.58020537,3.0797
+de,Abendglut,0.750000,v4_cot,0.50002402,2.8504
+de,drastisch,0.375000,v4_cot,0.50000012,3.4243
+de,Gewährsleute,0.875000,v4_cot,0.74066862,3.0384
+de,Ausmaß,0.275000,v4_cot,0.50010763,3.3820
+de,Gleichwohl,0.425000,v4_cot,0.50000417,3.3751
+de,Schmuggler,0.225000,v4_cot,0.50000685,2.8363
+de,aufgreifen,0.275000,v4_cot,0.50000056,2.6967
+de,lautstark,0.225000,v4_cot,0.50010763,3.0187
+de,Unmut,0.400000,v4_cot,0.50101753,2.8439
+de,artikulieren,0.250000,v4_cot,0.50000535,2.9597
+de,Verhältnis,0.250000,v4_cot,0.49999984,3.3794
+de,zusehends,0.475000,v4_cot,0.50079317,2.5782
+de,nominieren,0.250000,v4_cot,0.50000034,3.3704
+de,Lage,0.150000,v4_cot,0.49999747,3.4384
+de,konzipieren,0.475000,v4_cot,0.74982378,2.4967
+de,Maßnahme,0.275000,v4_cot,0.50079317,2.8423
+de,zwiespältig,0.550000,v4_cot,0.50002402,2.6663
+de,Haltung,0.325000,v4_cot,0.50000008,2.9249
+de,Sicht,0.175000,v4_cot,0.50000107,3.3963
+de,toben,0.250000,v4_cot,0.50000026,3.2162
+de,avisieren,0.700000,v4_cot,0.65561485,2.6504
+de,Kontroverse,0.350000,v4_cot,0.50000009,2.6535
+it,perduta,0.080000,v4_cot,0.50000197,3.3338
+it,miseria,0.080000,v4_cot,0.49989237,3.0818
+it,sbrindellata,0.300000,v4_cot,0.50351591,3.3912
+it,anonimi,0.030000,v4_cot,0.49999932,3.5028
+it,giunte,0.080000,v4_cot,0.49989237,3.0211
+it,profitto,0.150000,v4_cot,0.50000003,3.4525
+it,ampollose,0.430000,v4_cot,0.50002402,2.7437
+it,costellate,0.280000,v4_cot,0.50037530,2.1856
+it,parole,0.030000,v4_cot,0.49997333,2.4501
+it,giovinezza,0.030000,v4_cot,0.50000884,3.1610
+it,angustiata,0.380000,v4_cot,0.50000002,3.4093
+it,grazie,0.180000,v4_cot,0.50000013,2.9208
+it,sottrarre,0.080000,v4_cot,0.50029238,3.3637
+it,apparente,0.120000,v4_cot,0.50000001,3.5620
+it,mancanza,0.030000,v4_cot,0.50000016,3.3359
+it,singolari,0.220000,v4_cot,0.50000007,2.9232
+it,giocoso,0.100000,v4_cot,0.50000536,3.1278
+it,mirabolanti,0.480000,v4_cot,0.50003959,3.0955
+it,popolareggiante,0.300000,v4_cot,0.50048168,3.5655
+it,ostentazione,0.120000,v4_cot,0.51185647,3.0415
+it,affettato,0.520000,v4_cot,0.50003084,3.2039
+it,tardo,0.320000,v4_cot,0.50000072,3.4187
+it,livore,0.520000,v4_cot,0.50274672,3.2858
+it,sicario,0.480000,v4_cot,0.58020534,3.3117
+it,estendere,0.250000,v4_cot,0.49999999,3.4034
+it,indefinitamente,0.320000,v4_cot,0.50017742,2.9559
+it,condizionamenti,0.430000,v4_cot,0.50003961,3.1557
+it,immensi,0.180000,v4_cot,0.50001135,2.9856
+it,folgoranti,0.430000,v4_cot,0.50079317,2.7481
+it,stagnavano,0.480000,v4_cot,0.50000688,2.7586
+ja,連れ戻す,0.300000,v4_cot,0.50010751,3.2865
+ja,恩を売り,0.700000,v4_cot,0.54560639,3.3482
+ja,なおかつ,0.500000,v4_cot,0.50013819,2.8649
+ja,各種の,0.200000,v4_cot,0.49999994,3.4134
+ja,市電,0.475000,v4_cot,0.50000072,3.3410
+ja,気にかけない,0.475000,v4_cot,0.50004127,2.4468
+ja,募集し,0.100000,v4_cot,0.50001864,3.2737
+ja,ピックアップして,0.050000,v4_cot,0.50001445,3.2768
+ja,掲載した,0.400000,v4_cot,0.50010567,2.2427
+ja,再び,0.075000,v4_cot,0.51502013,2.3682
+ja,はじめ,0.025000,v4_cot,0.50003951,3.3612
+ja,または,0.075000,v4_cot,0.49999866,2.9265
+ja,旧,0.150000,v4_cot,0.50000047,2.9704
+ja,ロック,0.025000,v4_cot,0.50000160,3.1083
+ja,直ちに,0.275000,v4_cot,0.50001385,2.8316
+ja,長大な,0.475000,v4_cot,0.50000015,3.1563
+ja,標題,0.375000,v4_cot,0.50037530,3.1674
+ja,書き添えられて,0.600000,v4_cot,0.50000417,3.2505
+ja,馴染み深かった,0.500000,v4_cot,0.50003085,2.9781
+ja,変更されて,0.100000,v4_cot,0.49999966,2.2889
+ja,戦闘曲,0.425000,v4_cot,0.50002402,2.8303
+ja,小物,0.225000,v4_cot,0.50001042,2.5266
+ja,応用した,0.225000,v4_cot,0.49999972,2.6287
+ja,随所,0.725000,v4_cot,0.50061815,2.9308
+ja,繰り返し,0.200000,v4_cot,0.50000003,2.9945
+ja,強盗被害,0.400000,v4_cot,0.50000291,3.6251
+ja,考慮した,0.400000,v4_cot,0.49999960,2.5431
+ja,キレさせる,0.375000,v4_cot,0.50002397,3.2476
+ja,諫める,0.775000,v4_cot,0.50000034,3.3546
+ja,コーナー,0.100000,v4_cot,0.49996959,3.0062
+pt,estradas,0.080000,v4_cot,0.43276465,3.5003
+pt,transparência,0.240000,v4_cot,0.49999944,3.2480
+pt,expiação,0.550000,v4_cot,0.54560638,3.4443
+pt,rigor,0.310000,v4_cot,0.50000002,3.4292
+pt,empreiteiros,0.360000,v4_cot,0.50101753,3.6697
+pt,atos,0.120000,v4_cot,0.49425566,3.6187
+pt,aldeias,0.060000,v4_cot,0.50001457,3.5553
+pt,perigos,0.130000,v4_cot,0.50003927,3.7252
+pt,navegando,0.180000,v4_cot,0.49999881,3.2708
+pt,produtos,0.060000,v4_cot,0.49998130,2.9901
+pt,moratória,0.550000,v4_cot,0.50214437,3.4979
+pt,democracia,0.230000,v4_cot,0.49999999,3.1392
+pt,subsistência,0.480000,v4_cot,0.50449655,3.9820
+pt,ativador,0.250000,v4_cot,0.50732806,3.8604
+pt,misericórdias,0.380000,v4_cot,0.50029238,3.6836
+pt,bases,0.290000,v4_cot,0.49996132,4.0041
+pt,rudimentos,0.580000,v4_cot,0.50732806,3.3470
+pt,novilho,0.380000,v4_cot,0.50079317,3.4093
+pt,cabelo,0.100000,v4_cot,0.43276472,3.1026
+pt,puberdade,0.320000,v4_cot,0.50006530,3.2938
+pt,ataque,0.250000,v4_cot,0.50000031,3.3484
+pt,margens,0.230000,v4_cot,0.49996925,3.3565
+pt,samaritanos,0.480000,v4_cot,0.50000070,2.7899
+pt,beneficências,0.490000,v4_cot,0.50167321,3.1548
+pt,incertezas,0.080000,v4_cot,0.49999999,2.9226
+pt,pais,0.070000,v4_cot,0.52383665,2.4382
+pt,gentios,0.460000,v4_cot,0.52383736,2.6147
+pt,colegas,0.130000,v4_cot,0.49999431,2.9415
+pt,podridão,0.200000,v4_cot,0.50000688,2.8100
+pt,coluna,0.150000,v4_cot,0.49550345,2.7406
+si,තථාගතයන්,0.670000,v4_cot,0.74425622,3.9705
+si,අනුශාසකත්වයෙන්,0.520000,v4_cot,0.74952520,4.1797
+si,නිර්වාණය,0.910000,v4_cot,0.62500054,4.0889
+si,පිටිවහල,0.240000,v4_cot,0.74869541,3.9562
+si,දරිද්‍රතා,0.160000,v4_cot,0.50351591,3.5201
+si,වනිතාව,0.120000,v4_cot,0.50004993,3.4379
+si,සියොතුන්,0.060000,v4_cot,0.49999934,3.0595
+si,පාඨශාලාව,0.050000,v4_cot,0.49898291,3.8578
+si,වෘක්ෂය,0.190000,v4_cot,0.49987064,3.7325
+si,චන්ද්‍රයා,0.090000,v4_cot,0.49997431,3.3990
+si,ලොල්බව,0.120000,v4_cot,0.74550379,3.2971
+si,දැකුම්කළුව,0.090000,v4_cot,0.73497841,3.7798
+si,හසුන්,0.080000,v4_cot,0.49952520,3.2950
+si,කෘශ,0.070000,v4_cot,0.50001130,3.1909
+si,ප්‍රකට,0.070000,v4_cot,0.50101697,3.6780
+si,නිග්‍රහය,0.050000,v4_cot,0.51185647,3.6567
+si,පෞරාණික,0.120000,v4_cot,0.50449655,3.4890
+si,නරනිදු,0.420000,v4_cot,0.50000148,3.8088
+si,ප්‍රවීණතා,0.140000,v4_cot,0.50101753,3.8470
+si,ගෘහය,0.230000,v4_cot,0.50274657,3.7187
+si,අසබඩ,0.180000,v4_cot,0.50000313,3.8382
+si,භූමිය,0.190000,v4_cot,0.50000405,3.9597
+si,පුණ්‍ය,0.260000,v4_cot,0.50002395,3.6974
+si,දර්ශනීය,0.080000,v4_cot,0.50037529,4.0396
+si,වයෝවෘද්ධ,0.430000,v4_cot,0.72020078,3.9188
+si,ධජය,0.350000,v4_cot,0.50003082,3.1854
+si,ප්‍රතිමාව,0.260000,v4_cot,0.50574434,4.1353
+si,යටගිය,0.390000,v4_cot,0.50002760,3.4094
+si,ප්‍රතිමල්ලවයා,0.650000,v4_cot,0.70439365,3.5028
+si,යුහුසුලව,0.110000,v4_cot,0.50214436,3.1493
+es,notifique,0.450000,v4_cot,0.50000687,2.6351
+es,sueldos ,0.225000,v4_cot,0.26185647,3.3706
+es,amenazar ,0.575000,v4_cot,0.49999928,3.0497
+es,ocasiona ,0.575000,v4_cot,0.49938185,3.3234
+es,norteamericanos ,0.150000,v4_cot,0.50000009,3.3497
+es,desvíos ,0.725000,v4_cot,0.50029238,2.9798
+es,legistas ,0.875000,v4_cot,0.66979469,2.8884
+es,sustituto ,0.450000,v4_cot,0.50000004,3.1335
+es,vinculada ,0.500000,v4_cot,0.50000009,2.7597
+es,dicha ,0.675000,v4_cot,0.50000033,3.1537
+es,fondos ,0.250000,v4_cot,0.50000081,3.3039
+es,exige ,0.250000,v4_cot,0.49999931,2.7057
+es,demuestren ,0.350000,v4_cot,0.50000012,3.3466
+es,producidos ,0.150000,v4_cot,0.50000007,3.1633
+es,comunidades ,0.175000,v4_cot,0.50013814,2.8731
+es,equilibradamente ,0.325000,v4_cot,0.50008384,3.0181
+es,carpeta ,0.100000,v4_cot,0.49999804,3.3646
+es,archivarlo ,0.550000,v4_cot,0.49999997,3.2619
+es,archivador ,0.650000,v4_cot,0.50000252,2.6211
+es,prevenir ,0.375000,v4_cot,0.50000012,3.3152
+es,modalidad ,0.600000,v4_cot,0.50000884,2.8550
+es,descalabros ,0.725000,v4_cot,0.71298827,2.9608
+es,utilizando ,0.075000,v4_cot,0.50000197,2.4724
+es,chequeras ,0.700000,v4_cot,0.50079315,2.8571
+es,acostumbraron ,0.200000,v4_cot,0.50000688,3.2318
+es,colmados ,0.675000,v4_cot,0.50079317,2.8373
+es,desbarajustes ,0.800000,v4_cot,0.50013819,3.1767
+es,esperaría ,0.200000,v4_cot,0.49999979,2.8243
+es,retos ,0.450000,v4_cot,0.50130476,3.1974
+es,lúgubre ,0.675000,v4_cot,0.50000253,3.1000
+ca,successius ,0.450000,v0a_expert,0.60661070,0.3618
+ca,deteriorant ,0.525000,v0a_expert,0.60724865,0.3596
+ca,desmantellament ,0.625000,v0a_expert,0.62399197,0.3557
+ca,eclesiàstica ,0.425000,v0a_expert,0.59232370,0.2830
+ca,jerarquia ,0.525000,v0a_expert,0.55306077,0.2929
+ca,interlocució ,0.650000,v0a_expert,0.56468643,0.2943
+ca,minoritzada ,0.550000,v0a_expert,0.62251491,0.2870
+ca,claudicació ,0.600000,v0a_expert,0.65397293,0.2884
+ca,sociolingüística ,0.650000,v0a_expert,0.58806194,0.2873
+ca,planificades ,0.350000,v0a_expert,0.60347397,0.2843
+ca,estival ,0.475000,v0a_expert,0.58942932,0.2871
+ca,envergadura ,0.500000,v0a_expert,0.60663080,0.2882
+ca,escolaritzar ,0.350000,v0a_expert,0.69361790,0.3731
+ca,imprès ,0.425000,v0a_expert,0.65347657,0.3776
+ca,vehicular ,0.625000,v0a_expert,0.65145572,0.3741
+ca,transmissor ,0.425000,v0a_expert,0.53432125,0.2961
+ca,inculcar ,0.525000,v0a_expert,0.57870434,0.2931
+ca,efímer ,0.700000,v0a_expert,0.59255187,0.2938
+ca,inútil ,0.175000,v0a_expert,0.56602811,0.2875
+ca,oceà ,0.325000,v0a_expert,0.54353590,0.2893
+ca,burocràcia ,0.425000,v0a_expert,0.57829263,0.2874
+ca,didàctics ,0.475000,v0a_expert,0.59254580,0.3042
+ca,controvertits ,0.600000,v0a_expert,0.59202784,0.3076
+ca,decàleg ,0.650000,v0a_expert,0.59295463,0.3100
+ca,numèriques ,0.300000,v0a_expert,0.59230922,0.3207
+ca,arrodonida ,0.375000,v0a_expert,0.59202792,0.3038
+ca,decimals ,0.400000,v0a_expert,0.57741386,0.3054
+ca,antiracista ,0.425000,v0a_expert,0.52632959,0.2894
+ca,multicultural ,0.450000,v0a_expert,0.53260270,0.2171
+ca,decàleg ,0.625000,v0a_expert,0.55188443,0.2015
+en,external,0.050000,v0a_expert,0.49907026,0.2060
+en,pulled,0.075000,v0a_expert,0.49487352,0.2036
+en,robot,0.100000,v0a_expert,0.48515492,0.2037
+en,bank,0.050000,v0a_expert,0.49434400,0.2956
+en,recommended,0.100000,v0a_expert,0.49971250,0.2929
+en,declared,0.050000,v0a_expert,0.49968851,0.2898
+en,remainder,0.100000,v0a_expert,0.50237148,0.2060
+en,controlling,0.175000,v0a_expert,0.50319183,0.2048
+en,conditional,0.175000,v0a_expert,0.50370360,0.2051
+en,gone,0.075000,v0a_expert,0.49071895,0.2102
+en,prerequisite,0.400000,v0a_expert,0.50245439,0.2095
+en,relates,0.075000,v0a_expert,0.50010639,0.2132
+en,micro,0.227273,v0a_expert,0.48876031,0.2110
+en,controllers,0.181818,v0a_expert,0.49952881,0.2095
+en,hardware,0.181818,v0a_expert,0.49685932,0.2116
+en,wrapped,0.025000,v0a_expert,0.49877880,0.2115
+en,coil,0.150000,v0a_expert,0.49877880,0.2149
+en,pickup,0.475000,v0a_expert,0.49823090,0.2210
+en,reagent,0.681818,v0a_expert,0.51440571,0.2134
+en,electrons,0.272727,v0a_expert,0.49862829,0.2073
+en,neutrally,0.227273,v0a_expert,0.50347929,0.2084
+en,beautiful,0.050000,v0a_expert,0.49579572,0.2086
+en,undertake,0.225000,v0a_expert,0.50412137,0.2466
+en,discover,0.100000,v0a_expert,0.50022437,0.2281
+en,seventh,0.022727,v0a_expert,0.50319182,0.2391
+en,eliminated,0.318182,v0a_expert,0.49971250,0.2376
+en,erstwhile,0.931818,v0a_expert,0.56604355,0.2372
+en,magnitude,0.175000,v0a_expert,0.50024286,0.2214
+en,quantity,0.075000,v0a_expert,0.49943459,0.2122
+en,vector,0.250000,v0a_expert,0.49887238,0.2133
+fil,agaw,0.075000,v0a_expert,0.51151555,0.2112
+fil,agila,0.125000,v0a_expert,0.49629633,0.2093
+fil,agos,0.150000,v0a_expert,0.52535886,0.2158
+fil,akay,0.250000,v0a_expert,0.50965968,0.2200
+fil,ale,0.150000,v0a_expert,0.50317188,0.2109
+fil,alin,0.050000,v0a_expert,0.50483774,0.2164
+fil,alkansiya,0.375000,v0a_expert,0.52111296,0.2194
+fil,amin,0.025000,v0a_expert,0.49715457,0.2249
+fil,angkan,0.275000,v0a_expert,0.53652364,0.2157
+fil,anuman,0.250000,v0a_expert,0.50602397,1.1455
+fil,aparador,0.325000,v0a_expert,0.51937417,0.2119
+fil,armas,0.250000,v0a_expert,0.51813312,0.2105
+fil,atay,0.100000,v0a_expert,0.50736633,0.2154
+fil,ate,0.025000,v0a_expert,0.49418041,0.2161
+fil,atin,0.025000,v0a_expert,0.49892612,0.2220
+fil,ayan,0.050000,v0a_expert,0.49747060,0.2172
+fil,ayaw,0.025000,v0a_expert,0.49541696,0.2149
+fil,babala,0.225000,v0a_expert,0.49827071,0.6894
+fil,bahagya,0.475000,v0a_expert,0.51623149,0.2148
+fil,bakasyon,0.200000,v0a_expert,0.50602398,0.2131
+fil,balon,0.150000,v0a_expert,0.49999999,0.2103
+fil,bandera,0.300000,v0a_expert,0.49815706,0.2215
+fil,bangkay,0.325000,v0a_expert,0.51423128,0.2141
+fil,bansa,0.075000,v0a_expert,0.50347928,0.2186
+fil,baril,0.050000,v0a_expert,0.50381371,0.2103
+fil,bawal,0.025000,v0a_expert,0.50283285,0.2135
+fil,bayong,0.175000,v0a_expert,0.49750146,0.2194
+fil,bibig,0.025000,v0a_expert,0.50098084,0.2239
+fil,blusa,0.325000,v0a_expert,0.50222892,0.2299
+fil,bruha,0.250000,v0a_expert,0.49515955,0.2243
+fr,entretien,0.675000,v0a_expert,0.57708176,1.1295
+fr,consacrée,0.650000,v0a_expert,0.60699469,0.3048
+fr,stocke,0.350000,v0a_expert,0.51937507,0.2233
+fr,traite,0.375000,v0a_expert,0.51989159,0.2207
+fr,récepteurs,0.325000,v0a_expert,0.51379090,0.2125
+fr,prospère,0.400000,v0a_expert,0.52217895,0.2225
+fr,bâtie,0.750000,v0a_expert,0.54325837,0.2151
+fr,partant,0.525000,v0a_expert,0.52673328,0.2154
+fr,courant,0.475000,v0a_expert,0.52075495,0.3097
+fr,entraînerait,0.625000,v0a_expert,0.57663100,0.3091
+fr,garantit,0.075000,v0a_expert,0.52633011,0.3125
+fr,cité,0.275000,v0a_expert,0.52477887,0.3046
+fr,davantage,0.525000,v0a_expert,0.51879151,0.4796
+fr,réclamer,0.400000,v0a_expert,0.53260470,0.3078
+fr,notice,0.100000,v0a_expert,0.50911477,0.4998
+fr,responsables,0.075000,v0a_expert,0.51587253,0.3074
+fr,tendance,0.350000,v0a_expert,0.52217888,0.3108
+fr,orgueilleux,0.750000,v0a_expert,0.54259729,0.3133
+fr,établi,0.350000,v0a_expert,0.53930653,0.3146
+fr,sorte,0.250000,v0a_expert,0.54067718,0.3077
+fr,disposition,0.225000,v0a_expert,0.50802835,0.2485
+fr,renseignement,0.500000,v0a_expert,0.52269530,0.2132
+fr,complémentaire,0.100000,v0a_expert,0.52901883,0.2120
+fr,conséquences,0.100000,v0a_expert,0.51018688,0.2240
+fr,interroge,0.300000,v0a_expert,0.51749527,0.2209
+fr,question,0.000000,v0a_expert,0.51879239,0.2252
+fr,pneumatique,0.550000,v0a_expert,0.50585138,0.2291
+fr,essor,0.800000,v0a_expert,0.50653560,0.2381
+fr,coach,0.100000,v0a_expert,0.51354903,0.2216
+fr,impose,0.150000,v0a_expert,0.51372126,0.2342
+de,Grausen,0.600000,v0a_expert,0.62300902,0.3296
+de,verworren,0.550000,v0a_expert,0.62449447,0.3405
+de,überwältigen,0.325000,v0a_expert,0.66944999,0.3304
+de,Gemütsbewegung,0.650000,v0a_expert,0.65462115,0.3309
+de,durchschüttern,0.650000,v0a_expert,0.65362237,0.3449
+de,Heiterkeit,0.400000,v0a_expert,0.62377888,0.3656
+de,recht,0.275000,v0a_expert,0.55020082,0.3754
+de,Bangigkeit,0.650000,v0a_expert,0.66893226,0.3513
+de,Abendglut,0.750000,v0a_expert,0.65483617,0.3362
+de,drastisch,0.375000,v0a_expert,0.56524734,0.3242
+de,Gewährsleute,0.875000,v0a_expert,0.62306078,0.3260
+de,Ausmaß,0.275000,v0a_expert,0.59327080,0.3210
+de,Gleichwohl,0.425000,v0a_expert,0.59302099,0.3292
+de,Schmuggler,0.225000,v0a_expert,0.54434764,0.3271
+de,aufgreifen,0.275000,v0a_expert,0.60855706,0.8043
+de,lautstark,0.225000,v0a_expert,0.54398963,0.3136
+de,Unmut,0.400000,v0a_expert,0.54462345,0.3136
+de,artikulieren,0.250000,v0a_expert,0.57852029,0.3136
+de,Verhältnis,0.250000,v0a_expert,0.54484141,0.9333
+de,zusehends,0.475000,v0a_expert,0.60882510,0.3257
+de,nominieren,0.250000,v0a_expert,0.56684356,0.3235
+de,Lage,0.150000,v0a_expert,0.54326056,0.3293
+de,konzipieren,0.475000,v0a_expert,0.62433874,0.3256
+de,Maßnahme,0.275000,v0a_expert,0.57940531,0.3236
+de,zwiespältig,0.550000,v0a_expert,0.68249439,0.8987
+de,Haltung,0.325000,v0a_expert,0.59312985,0.3145
+de,Sicht,0.175000,v0a_expert,0.59295967,0.3150
+de,toben,0.250000,v0a_expert,0.55408367,0.2277
+de,avisieren,0.700000,v0a_expert,0.60853371,0.2292
+de,Kontroverse,0.350000,v0a_expert,0.57965360,0.2310
+it,perduta,0.080000,v0a_expert,0.51192319,0.3175
+it,miseria,0.080000,v0a_expert,0.50283316,0.3152
+it,sbrindellata,0.300000,v0a_expert,0.52412460,0.3145
+it,anonimi,0.030000,v0a_expert,0.51288428,0.3201
+it,giunte,0.080000,v0a_expert,0.52111375,0.3333
+it,profitto,0.150000,v0a_expert,0.53432239,0.3327
+it,ampollose,0.430000,v0a_expert,0.52768563,0.2322
+it,costellate,0.280000,v0a_expert,0.51781878,0.2267
+it,parole,0.030000,v0a_expert,0.50426727,0.4900
+it,giovinezza,0.030000,v0a_expert,0.51018671,0.3320
+it,angustiata,0.380000,v0a_expert,0.51655024,0.3312
+it,grazie,0.180000,v0a_expert,0.47096502,0.3367
+it,sottrarre,0.080000,v0a_expert,0.53556659,0.2270
+it,apparente,0.120000,v0a_expert,0.52143061,0.2315
+it,mancanza,0.030000,v0a_expert,0.53556642,0.2247
+it,singolari,0.220000,v0a_expert,0.50518506,0.2305
+it,giocoso,0.100000,v0a_expert,0.50282371,0.2290
+it,mirabolanti,0.480000,v0a_expert,0.52111316,0.2306
+it,popolareggiante,0.300000,v0a_expert,0.62418916,0.9848
+it,ostentazione,0.120000,v0a_expert,0.54398823,0.3256
+it,affettato,0.520000,v0a_expert,0.51813301,0.3290
+it,tardo,0.320000,v0a_expert,0.57073056,0.3187
+it,livore,0.520000,v0a_expert,0.60604849,0.3166
+it,sicario,0.480000,v0a_expert,0.58959449,0.3187
+it,estendere,0.250000,v0a_expert,0.53432388,0.3716
+it,indefinitamente,0.320000,v0a_expert,0.59353013,0.3205
+it,condizionamenti,0.430000,v0a_expert,0.59298670,0.3219
+it,immensi,0.180000,v0a_expert,0.53491384,0.7105
+it,folgoranti,0.430000,v0a_expert,0.55272238,0.3130
+it,stagnavano,0.480000,v0a_expert,0.56470307,0.3139
+ja,連れ戻す,0.300000,v0a_expert,0.52346573,0.2311
+ja,恩を売り,0.700000,v0a_expert,0.54524483,0.2281
+ja,なおかつ,0.500000,v0a_expert,0.51106502,0.2632
+ja,各種の,0.200000,v0a_expert,0.50871442,0.2248
+ja,市電,0.475000,v0a_expert,0.50495152,0.2223
+ja,気にかけない,0.475000,v0a_expert,0.51400760,0.2224
+ja,募集し,0.100000,v0a_expert,0.51288410,0.2240
+ja,ピックアップして,0.050000,v0a_expert,0.51623150,0.2245
+ja,掲載した,0.400000,v0a_expert,0.51372115,0.2228
+ja,再び,0.075000,v0a_expert,0.50971610,0.2252
+ja,はじめ,0.025000,v0a_expert,0.51448756,0.2230
+ja,または,0.075000,v0a_expert,0.51372100,0.2221
+ja,旧,0.150000,v0a_expert,0.50458275,0.2288
+ja,ロック,0.025000,v0a_expert,0.49875073,0.2271
+ja,直ちに,0.275000,v0a_expert,0.50766052,0.2286
+ja,長大な,0.475000,v0a_expert,0.50671045,0.2234
+ja,標題,0.375000,v0a_expert,0.50831556,0.3696
+ja,書き添えられて,0.600000,v0a_expert,0.56586506,0.2194
+ja,馴染み深かった,0.500000,v0a_expert,0.51623150,0.2699
+ja,変更されて,0.100000,v0a_expert,0.51372106,0.2284
+ja,戦闘曲,0.425000,v0a_expert,0.50971598,0.2266
+ja,小物,0.225000,v0a_expert,0.50064225,0.2255
+ja,応用した,0.225000,v0a_expert,0.50671047,0.2261
+ja,随所,0.725000,v0a_expert,0.50653553,0.2232
+ja,繰り返し,0.200000,v0a_expert,0.52879769,0.2256
+ja,強盗被害,0.400000,v0a_expert,0.54524441,0.2426
+ja,考慮した,0.400000,v0a_expert,0.53640764,0.2261
+ja,キレさせる,0.375000,v0a_expert,0.52535914,0.4442
+ja,諫める,0.775000,v0a_expert,0.51623179,0.3065
+ja,コーナー,0.100000,v0a_expert,0.50611785,0.3066
+pt,estradas,0.080000,v0a_expert,0.52034909,0.3316
+pt,transparência,0.240000,v0a_expert,0.52783508,0.3557
+pt,expiação,0.550000,v0a_expert,0.58811481,0.3241
+pt,rigor,0.310000,v0a_expert,0.50736636,0.2223
+pt,empreiteiros,0.360000,v0a_expert,0.59053398,0.3219
+pt,atos,0.120000,v0a_expert,0.55305951,0.3165
+pt,aldeias,0.060000,v0a_expert,0.53930648,0.3348
+pt,perigos,0.130000,v0a_expert,0.52171100,0.2185
+pt,navegando,0.180000,v0a_expert,0.52673332,0.3163
+pt,produtos,0.060000,v0a_expert,0.50407182,0.2286
+pt,moratória,0.550000,v0a_expert,0.52255237,0.3821
+pt,democracia,0.230000,v0a_expert,0.51151555,0.3116
+pt,subsistência,0.480000,v0a_expert,0.54434423,0.2995
+pt,ativador,0.250000,v0a_expert,0.54294726,0.3248
+pt,misericórdias,0.380000,v0a_expert,0.53092694,0.3291
+pt,bases,0.290000,v0a_expert,0.50736626,0.3257
+pt,rudimentos,0.580000,v0a_expert,0.54867093,0.3256
+pt,novilho,0.380000,v0a_expert,0.54294784,0.5017
+pt,cabelo,0.100000,v0a_expert,0.50000000,0.2227
+pt,puberdade,0.320000,v0a_expert,0.50653559,0.3113
+pt,ataque,0.250000,v0a_expert,0.50971616,0.2228
+pt,margens,0.230000,v0a_expert,0.50911459,0.2274
+pt,samaritanos,0.480000,v0a_expert,0.50770730,0.2274
+pt,beneficências,0.490000,v0a_expert,0.60538350,0.3206
+pt,incertezas,0.080000,v0a_expert,0.52533417,0.3289
+pt,pais,0.070000,v0a_expert,0.50911457,0.2260
+pt,gentios,0.460000,v0a_expert,0.53848709,0.3126
+pt,colegas,0.130000,v0a_expert,0.49916063,0.2226
+pt,podridão,0.200000,v0a_expert,0.56805317,0.5819
+pt,coluna,0.150000,v0a_expert,0.52217902,0.3128
+si,තථාගතයන්,0.670000,v0a_expert,0.72337839,0.5691
+si,අනුශාසකත්වයෙන්,0.520000,v0a_expert,0.70452099,0.7594
+si,නිර්වාණය,0.910000,v0a_expert,0.74956936,0.7611
+si,පිටිවහල,0.240000,v0a_expert,0.68350206,0.7563
+si,දරිද්‍රතා,0.160000,v0a_expert,0.60663460,0.8604
+si,වනිතාව,0.120000,v0a_expert,0.73250880,0.5863
+si,සියොතුන්,0.060000,v0a_expert,0.57773389,0.5545
+si,පාඨශාලාව,0.050000,v0a_expert,0.70575492,0.7314
+si,වෘක්ෂය,0.190000,v0a_expert,0.54124657,0.4822
+si,චන්ද්‍රයා,0.090000,v0a_expert,0.69401601,0.6650
+si,ලොල්බව,0.120000,v0a_expert,0.73136766,0.4417
+si,දැකුම්කළුව,0.090000,v0a_expert,0.70509424,0.5850
+si,හසුන්,0.080000,v0a_expert,0.56602701,0.4869
+si,කෘශ,0.070000,v0a_expert,0.62293600,0.4249
+si,ප්‍රකට,0.070000,v0a_expert,0.59203629,0.4861
+si,නිග්‍රහය,0.050000,v0a_expert,0.70494379,0.6653
+si,පෞරාණික,0.120000,v0a_expert,0.63915718,0.4916
+si,නරනිදු,0.420000,v0a_expert,0.68242009,0.5950
+si,ප්‍රවීණතා,0.140000,v0a_expert,0.66915068,0.5825
+si,ගෘහය,0.230000,v0a_expert,0.56602450,0.4565
+si,අසබඩ,0.180000,v0a_expert,0.68168305,0.5856
+si,භූමිය,0.190000,v0a_expert,0.62406747,0.7685
+si,පුණ්‍ය,0.260000,v0a_expert,0.62404168,0.6904
+si,දර්ශනීය,0.080000,v0a_expert,0.69446817,0.6829
+si,වයෝවෘද්ධ,0.430000,v0a_expert,0.72715105,0.5876
+si,ධජය,0.350000,v0a_expert,0.68210838,0.7050
+si,ප්‍රතිමාව,0.260000,v0a_expert,0.71943284,0.6904
+si,යටගිය,0.390000,v0a_expert,0.60840623,0.4932
+si,ප්‍රතිමල්ලවයා,0.650000,v0a_expert,0.70447305,0.4943
+si,යුහුසුලව,0.110000,v0a_expert,0.63946311,0.4370
+es,notifique,0.450000,v0a_expert,0.52111357,1.0696
+es,sueldos ,0.225000,v0a_expert,0.51084109,0.4061
+es,amenazar ,0.575000,v0a_expert,0.52901876,0.3232
+es,ocasiona ,0.575000,v0a_expert,0.53654074,0.3218
+es,norteamericanos ,0.150000,v0a_expert,0.59055395,1.1894
+es,desvíos ,0.725000,v0a_expert,0.57663815,0.3291
+es,legistas ,0.875000,v0a_expert,0.59105008,0.3307
+es,sustituto ,0.450000,v0a_expert,0.52740610,0.3213
+es,vinculada ,0.500000,v0a_expert,0.55408549,0.3178
+es,dicha ,0.675000,v0a_expert,0.56187918,0.3184
+es,fondos ,0.250000,v0a_expert,0.50518513,0.3232
+es,exige ,0.250000,v0a_expert,0.52412405,0.3182
+es,demuestren ,0.350000,v0a_expert,0.52254406,0.3170
+es,producidos ,0.150000,v0a_expert,0.51106504,0.7569
+es,comunidades ,0.175000,v0a_expert,0.50412139,0.2279
+es,equilibradamente ,0.325000,v0a_expert,0.55408370,0.2285
+es,carpeta ,0.100000,v0a_expert,0.51937540,0.3243
+es,archivarlo ,0.550000,v0a_expert,0.53260471,0.3175
+es,archivador ,0.650000,v0a_expert,0.55082836,0.3168
+es,prevenir ,0.375000,v0a_expert,0.55272035,0.3239
+es,modalidad ,0.600000,v0a_expert,0.54462528,0.3181
+es,descalabros ,0.725000,v0a_expert,0.56306175,0.3230
+es,utilizando ,0.075000,v0a_expert,0.51372122,0.3163
+es,chequeras ,0.700000,v0a_expert,0.51055421,0.3167
+es,acostumbraron ,0.200000,v0a_expert,0.51228360,0.3161
+es,colmados ,0.675000,v0a_expert,0.53202759,0.3161
+es,desbarajustes ,0.800000,v0a_expert,0.56040583,0.3136
+es,esperaría ,0.200000,v0a_expert,0.52143112,0.2301
+es,retos ,0.450000,v0a_expert,0.50512654,0.2288
+es,lúgubre ,0.675000,v0a_expert,0.51835007,0.2355
+ca,successius ,0.450000,v0b_short,0.51498774,0.3257
+ca,deteriorant ,0.525000,v0b_short,0.51499311,0.3268
+ca,desmantellament ,0.625000,v0b_short,0.54561279,0.3239
+ca,eclesiàstica ,0.425000,v0b_short,0.54560681,0.3247
+ca,jerarquia ,0.525000,v0b_short,0.50077861,0.3226
+ca,interlocució ,0.650000,v0b_short,0.51895237,0.3221
+ca,minoritzada ,0.550000,v0b_short,0.60958348,0.3155
+ca,claudicació ,0.600000,v0b_short,0.52978565,0.3152
+ca,sociolingüística ,0.650000,v0b_short,0.60956687,0.3162
+ca,planificades ,0.350000,v0b_short,0.50928120,0.7499
+ca,estival ,0.475000,v0b_short,0.51177331,0.2227
+ca,envergadura ,0.500000,v0b_short,0.55568073,0.2257
+ca,escolaritzar ,0.350000,v0b_short,0.55575147,0.3329
+ca,imprès ,0.425000,v0b_short,0.50766192,0.3301
+ca,vehicular ,0.625000,v0b_short,0.52375667,0.3284
+ca,transmissor ,0.425000,v0b_short,0.50065498,0.2372
+ca,inculcar ,0.525000,v0b_short,0.50932496,0.2328
+ca,efímer ,0.700000,v0b_short,0.55565255,0.4674
+ca,inútil ,0.175000,v0b_short,0.49975714,0.2204
+ca,oceà ,0.325000,v0b_short,0.49946415,1.2190
+ca,burocràcia ,0.425000,v0b_short,0.50053433,0.2215
+ca,didàctics ,0.475000,v0b_short,0.50272805,0.5489
+ca,controvertits ,0.600000,v0b_short,0.50932499,0.2303
+ca,decàleg ,0.650000,v0b_short,0.54556555,0.2309
+ca,numèriques ,0.300000,v0b_short,0.50077860,0.3207
+ca,arrodonida ,0.375000,v0b_short,0.51183824,0.3196
+ca,decimals ,0.400000,v0b_short,0.50207915,0.4330
+ca,antiracista ,0.425000,v0b_short,0.52381495,0.2750
+ca,multicultural ,0.450000,v0b_short,0.50345068,0.2188
+ca,decàleg ,0.625000,v0b_short,0.56724873,0.2182
+en,external,0.050000,v0b_short,0.50000000,0.2169
+en,pulled,0.075000,v0b_short,0.49907022,0.2230
+en,robot,0.100000,v0b_short,0.49075106,0.2200
+en,bank,0.050000,v0b_short,0.49289693,0.3446
+en,recommended,0.100000,v0b_short,0.49963159,0.2230
+en,declared,0.050000,v0b_short,0.49726455,1.0575
+en,remainder,0.100000,v0b_short,0.50004423,0.2139
+en,controlling,0.175000,v0b_short,0.50061128,0.2148
+en,conditional,0.175000,v0b_short,0.50101336,0.2130
+en,gone,0.075000,v0b_short,0.48498239,0.2184
+en,prerequisite,0.400000,v0b_short,0.50732770,0.2175
+en,relates,0.075000,v0b_short,0.49993543,0.2155
+en,micro,0.227273,v0b_short,0.49550459,0.2133
+en,controllers,0.181818,v0b_short,0.49952966,0.2128
+en,hardware,0.181818,v0b_short,0.49994564,0.2118
+en,wrapped,0.025000,v0b_short,0.49977377,0.2761
+en,coil,0.150000,v0b_short,0.49648605,0.2313
+en,pickup,0.475000,v0b_short,0.49803251,0.2319
+en,reagent,0.681818,v0b_short,0.49995766,0.2120
+en,electrons,0.272727,v0b_short,0.48814486,0.2111
+en,neutrally,0.227273,v0b_short,0.49994564,0.2115
+en,beautiful,0.050000,v0b_short,0.49066858,0.2127
+en,undertake,0.225000,v0b_short,0.49998372,0.2139
+en,discover,0.100000,v0b_short,0.47019919,0.2121
+en,seventh,0.022727,v0b_short,0.49554291,0.5916
+en,eliminated,0.318182,v0b_short,0.49964873,0.2402
+en,erstwhile,0.931818,v0b_short,0.51502014,0.2151
+en,magnitude,0.175000,v0b_short,0.50047751,0.2286
+en,quantity,0.075000,v0b_short,0.49988052,0.2279
+en,vector,0.250000,v0b_short,0.50008957,0.2286
+fil,agaw,0.075000,v0b_short,0.50526297,0.2110
+fil,agila,0.125000,v0b_short,0.49773462,0.2136
+fil,agos,0.150000,v0b_short,0.50602400,0.2130
+fil,akay,0.250000,v0b_short,0.50222800,0.2163
+fil,ale,0.150000,v0b_short,0.49991733,0.2118
+fil,alin,0.050000,v0b_short,0.50472715,0.2152
+fil,alkansiya,0.375000,v0b_short,0.53664974,0.2143
+fil,amin,0.025000,v0b_short,0.48982829,0.2134
+fil,angkan,0.275000,v0b_short,0.55484965,0.2139
+fil,anuman,0.250000,v0b_short,0.51137708,0.2170
+fil,aparador,0.325000,v0b_short,0.50715117,0.2152
+fil,armas,0.250000,v0b_short,0.51106516,0.2132
+fil,atay,0.100000,v0b_short,0.52322832,0.2135
+fil,ate,0.025000,v0b_short,0.47147875,0.2141
+fil,atin,0.025000,v0b_short,0.49804609,0.2201
+fil,ayan,0.050000,v0b_short,0.50036810,0.2112
+fil,ayaw,0.025000,v0b_short,0.49887296,0.2241
+fil,babala,0.225000,v0b_short,0.49986352,0.2096
+fil,bahagya,0.475000,v0b_short,0.49971248,0.2169
+fil,bakasyon,0.200000,v0b_short,0.50101267,0.2123
+fil,balon,0.150000,v0b_short,0.49982498,0.2133
+fil,bandera,0.300000,v0b_short,0.49880250,0.2171
+fil,bangkay,0.325000,v0b_short,0.50446579,0.2156
+fil,bansa,0.075000,v0b_short,0.50053583,0.2166
+fil,baril,0.050000,v0b_short,0.50053584,0.2236
+fil,bawal,0.025000,v0b_short,0.50370356,0.2151
+fil,bayong,0.175000,v0b_short,0.49999998,0.2105
+fil,bibig,0.025000,v0b_short,0.49911987,0.2123
+fil,blusa,0.325000,v0b_short,0.50144163,0.2135
+fil,bruha,0.250000,v0b_short,0.51106537,0.2312
+fr,entretien,0.675000,v0b_short,0.50100619,0.2126
+fr,consacrée,0.650000,v0b_short,0.50732692,0.2107
+fr,stocke,0.350000,v0b_short,0.49994564,0.2182
+fr,traite,0.375000,v0b_short,0.50025277,0.2163
+fr,récepteurs,0.325000,v0b_short,0.49990642,0.2184
+fr,prospère,0.400000,v0b_short,0.50009358,0.2140
+fr,bâtie,0.750000,v0b_short,0.50096668,0.2129
+fr,partant,0.525000,v0b_short,0.50053432,0.2132
+fr,courant,0.475000,v0b_short,0.49953289,0.2247
+fr,entraînerait,0.625000,v0b_short,0.50274201,0.2272
+fr,garantit,0.075000,v0b_short,0.50027367,0.8128
+fr,cité,0.275000,v0b_short,0.50034445,0.2252
+fr,davantage,0.525000,v0b_short,0.50006926,0.2205
+fr,réclamer,0.400000,v0b_short,0.50036646,0.2180
+fr,notice,0.100000,v0b_short,0.49972633,0.2217
+fr,responsables,0.075000,v0b_short,0.50026766,0.2198
+fr,tendance,0.350000,v0b_short,0.50016247,0.2187
+fr,orgueilleux,0.750000,v0b_short,0.50349721,0.2248
+fr,établi,0.350000,v0b_short,0.50207910,0.2184
+fr,sorte,0.250000,v0b_short,0.49979626,0.2204
+fr,disposition,0.225000,v0b_short,0.50933024,0.2127
+fr,renseignement,0.500000,v0b_short,0.52383657,0.2111
+fr,complémentaire,0.100000,v0b_short,0.54560604,0.2110
+fr,conséquences,0.100000,v0b_short,0.50004127,0.2184
+fr,interroge,0.300000,v0b_short,0.50020905,0.2167
+fr,question,0.000000,v0b_short,0.49725474,0.2172
+fr,pneumatique,0.550000,v0b_short,0.50722109,0.2116
+fr,essor,0.800000,v0b_short,0.50022088,0.2138
+fr,coach,0.100000,v0b_short,0.49952003,0.2121
+fr,impose,0.150000,v0b_short,0.50028985,0.2134
+de,Grausen,0.600000,v0b_short,0.54560769,0.2106
+de,verworren,0.550000,v0b_short,0.53701002,0.2225
+de,überwältigen,0.325000,v0b_short,0.51896303,0.2131
+de,Gemütsbewegung,0.650000,v0b_short,0.55567443,0.2259
+de,durchschüttern,0.650000,v0b_short,0.64055195,0.2258
+de,Heiterkeit,0.400000,v0b_short,0.50213554,0.2937
+de,recht,0.275000,v0b_short,0.50196698,0.2370
+de,Bangigkeit,0.650000,v0b_short,0.52381980,0.2320
+de,Abendglut,0.750000,v0b_short,0.56723302,0.2342
+de,drastisch,0.375000,v0b_short,0.50346507,0.2958
+de,Gewährsleute,0.875000,v0b_short,0.55566775,0.2391
+de,Ausmaß,0.275000,v0b_short,0.50448773,0.2321
+de,Gleichwohl,0.425000,v0b_short,0.50537027,0.2350
+de,Schmuggler,0.225000,v0b_short,0.50207911,0.2297
+de,aufgreifen,0.275000,v0b_short,0.50724513,0.2297
+de,lautstark,0.225000,v0b_short,0.51895106,0.2132
+de,Unmut,0.400000,v0b_short,0.51184799,0.2216
+de,artikulieren,0.250000,v0b_short,0.52383319,0.2096
+de,Verhältnis,0.250000,v0b_short,0.50060358,0.2297
+de,zusehends,0.475000,v0b_short,0.55567123,0.2286
+de,nominieren,0.250000,v0b_short,0.50566071,0.2682
+de,Lage,0.150000,v0b_short,0.50039785,0.3177
+de,konzipieren,0.475000,v0b_short,0.53700960,0.3150
+de,Maßnahme,0.275000,v0b_short,0.50203676,0.3152
+de,zwiespältig,0.550000,v0b_short,0.51502053,0.3938
+de,Haltung,0.325000,v0b_short,0.50061618,0.2097
+de,Sicht,0.175000,v0b_short,0.50056541,0.2090
+de,toben,0.250000,v0b_short,0.50213304,0.2162
+de,avisieren,0.700000,v0b_short,0.53697051,0.2133
+de,Kontroverse,0.350000,v0b_short,0.50571372,0.2154
+it,perduta,0.080000,v0b_short,0.50166634,0.2216
+it,miseria,0.080000,v0b_short,0.49909008,0.2191
+it,sbrindellata,0.300000,v0b_short,0.51894807,0.2470
+it,anonimi,0.030000,v0b_short,0.50001854,0.7170
+it,giunte,0.080000,v0b_short,0.50013781,0.3503
+it,profitto,0.150000,v0b_short,0.50006978,0.2170
+it,ampollose,0.430000,v0b_short,0.51184049,0.2489
+it,costellate,0.280000,v0b_short,0.50349949,0.2159
+it,parole,0.030000,v0b_short,0.48497109,0.3430
+it,giovinezza,0.030000,v0b_short,0.50001444,0.2294
+it,angustiata,0.380000,v0b_short,0.50130329,0.2275
+it,grazie,0.180000,v0b_short,0.49949920,0.2291
+it,sottrarre,0.080000,v0b_short,0.50347111,0.2170
+it,apparente,0.120000,v0b_short,0.50050080,0.4951
+it,mancanza,0.030000,v0b_short,0.50726306,0.2135
+it,singolari,0.220000,v0b_short,0.50003298,0.2177
+it,giocoso,0.100000,v0b_short,0.50001854,0.2162
+it,mirabolanti,0.480000,v0b_short,0.52979925,0.2163
+it,popolareggiante,0.300000,v0b_short,0.55568202,0.7414
+it,ostentazione,0.120000,v0b_short,0.51501299,0.5030
+it,affettato,0.520000,v0b_short,0.50926696,0.3425
+it,tardo,0.320000,v0b_short,0.50172913,0.2260
+it,livore,0.520000,v0b_short,0.53701864,0.2223
+it,sicario,0.480000,v0b_short,0.60954486,0.2224
+it,estendere,0.250000,v0b_short,0.50022708,0.2509
+it,indefinitamente,0.320000,v0b_short,0.50727820,0.2345
+it,condizionamenti,0.430000,v0b_short,0.51501017,0.2347
+it,immensi,0.180000,v0b_short,0.50164925,0.2608
+it,folgoranti,0.430000,v0b_short,0.51184286,0.2253
+it,stagnavano,0.480000,v0b_short,0.50567966,0.2245
+ja,連れ戻す,0.300000,v0b_short,0.50732274,0.2191
+ja,恩を売り,0.700000,v0b_short,0.58021965,0.2164
+ja,なおかつ,0.500000,v0b_short,0.51183885,0.2161
+ja,各種の,0.200000,v0b_short,0.50093371,0.2221
+ja,市電,0.475000,v0b_short,0.50268149,0.2136
+ja,気にかけない,0.475000,v0b_short,0.50272279,0.2146
+ja,募集し,0.100000,v0b_short,0.50025392,0.2181
+ja,ピックアップして,0.050000,v0b_short,0.50016247,0.2140
+ja,掲載した,0.400000,v0b_short,0.50123976,0.2140
+ja,再び,0.075000,v0b_short,0.49823062,0.2181
+ja,はじめ,0.025000,v0b_short,0.49587823,0.2168
+ja,または,0.075000,v0b_short,0.49985246,0.2130
+ja,旧,0.150000,v0b_short,0.49743058,0.2261
+ja,ロック,0.025000,v0b_short,0.49855453,0.2169
+ja,直ちに,0.275000,v0b_short,0.50107732,0.2195
+ja,長大な,0.475000,v0b_short,0.51184899,0.2143
+ja,標題,0.375000,v0b_short,0.50032444,0.2158
+ja,書き添えられて,0.600000,v0b_short,0.60948256,0.2143
+ja,馴染み深かった,0.500000,v0b_short,0.51185495,0.2267
+ja,変更されて,0.100000,v0b_short,0.50039785,0.2183
+ja,戦闘曲,0.425000,v0b_short,0.50153503,0.2160
+ja,小物,0.225000,v0b_short,0.50000000,0.2839
+ja,応用した,0.225000,v0b_short,0.50009859,0.2162
+ja,随所,0.725000,v0b_short,0.55567800,0.2141
+ja,繰り返し,0.200000,v0b_short,0.50129046,0.2148
+ja,強盗被害,0.400000,v0b_short,0.51184275,0.2132
+ja,考慮した,0.400000,v0b_short,0.50036395,0.2139
+ja,キレさせる,0.375000,v0b_short,0.50448782,0.2425
+ja,諫める,0.775000,v0b_short,0.51501703,0.2192
+ja,コーナー,0.100000,v0b_short,0.49939637,0.2181
+pt,estradas,0.080000,v0b_short,0.49564102,0.3222
+pt,transparência,0.240000,v0b_short,0.49924643,0.2295
+pt,expiação,0.550000,v0b_short,0.56723712,0.3223
+pt,rigor,0.310000,v0b_short,0.50569364,0.2136
+pt,empreiteiros,0.360000,v0b_short,0.50349193,0.2352
+pt,atos,0.120000,v0b_short,0.49906628,0.2261
+pt,aldeias,0.060000,v0b_short,0.50034350,1.3582
+pt,perigos,0.130000,v0b_short,0.49943268,0.2248
+pt,navegando,0.180000,v0b_short,0.49960961,0.2198
+pt,produtos,0.060000,v0b_short,0.44429266,0.2181
+pt,moratória,0.550000,v0b_short,0.50730137,0.3156
+pt,democracia,0.230000,v0b_short,0.49986351,0.2195
+pt,subsistência,0.480000,v0b_short,0.51501402,0.2148
+pt,ativador,0.250000,v0b_short,0.50730480,0.2221
+pt,misericórdias,0.380000,v0b_short,0.52979846,0.3182
+pt,bases,0.290000,v0b_short,0.49915985,0.2898
+pt,rudimentos,0.580000,v0b_short,0.51896403,0.5794
+pt,novilho,0.380000,v0b_short,0.50269590,0.2184
+pt,cabelo,0.100000,v0b_short,0.48497968,0.2143
+pt,puberdade,0.320000,v0b_short,0.50070934,0.2205
+pt,ataque,0.250000,v0b_short,0.50000000,0.2138
+pt,margens,0.230000,v0b_short,0.50000000,0.2174
+pt,samaritanos,0.480000,v0b_short,0.50926708,0.2174
+pt,beneficências,0.490000,v0b_short,0.55567503,0.2287
+pt,incertezas,0.080000,v0b_short,0.50014753,0.3161
+pt,pais,0.070000,v0b_short,0.49915981,0.2148
+pt,gentios,0.460000,v0b_short,0.58021401,0.2385
+pt,colegas,0.130000,v0b_short,0.48103722,0.2147
+pt,podridão,0.200000,v0b_short,0.51494274,0.2156
+pt,coluna,0.150000,v0b_short,0.49653484,0.2188
+si,තථාගතයන්,0.670000,v0b_short,0.59422198,0.5782
+si,අනුශාසකත්වයෙන්,0.520000,v0b_short,0.57981104,0.6763
+si,නිර්වාණය,0.910000,v0b_short,0.64320360,1.1469
+si,පිටිවහල,0.240000,v0b_short,0.52305497,1.1341
+si,දරිද්‍රතා,0.160000,v0b_short,0.54521970,0.4828
+si,වනිතාව,0.120000,v0b_short,0.50766065,0.4923
+si,සියොතුන්,0.060000,v0b_short,0.50237159,0.5716
+si,පාඨශාලාව,0.050000,v0b_short,0.50098005,0.4935
+si,වෘක්ෂය,0.190000,v0b_short,0.50518535,0.4879
+si,චන්ද්‍රයා,0.090000,v0b_short,0.50458411,1.1107
+si,ලොල්බව,0.120000,v0b_short,0.56699848,0.6020
+si,දැකුම්කළුව,0.090000,v0b_short,0.60886402,0.4980
+si,හසුන්,0.080000,v0b_short,0.51228261,0.6461
+si,කෘශ,0.070000,v0b_short,0.51423560,0.3348
+si,ප්‍රකට,0.070000,v0b_short,0.51623356,0.6905
+si,නිග්‍රහය,0.050000,v0b_short,0.52963272,0.5876
+si,පෞරාණික,0.120000,v0b_short,0.55556953,0.6419
+si,නරනිදු,0.420000,v0b_short,0.59349342,0.5826
+si,ප්‍රවීණතා,0.140000,v0b_short,0.56694251,0.4941
+si,ගෘහය,0.230000,v0b_short,0.49847366,0.4358
+si,අසබඩ,0.180000,v0b_short,0.57844753,0.5762
+si,භූමිය,0.190000,v0b_short,0.52635079,0.6920
+si,පුණ්‍ය,0.260000,v0b_short,0.51137673,0.6096
+si,දර්ශනීය,0.080000,v0b_short,0.52354967,0.5978
+si,වයෝවෘද්ධ,0.430000,v0b_short,0.64095941,0.5875
+si,ධජය,0.350000,v0b_short,0.51795988,0.5159
+si,ප්‍රතිමාව,0.260000,v0b_short,0.51106811,1.4215
+si,යටගිය,0.390000,v0b_short,0.52880080,0.5106
+si,ප්‍රතිමල්ලවයා,0.650000,v0b_short,0.64048948,0.4646
+si,යුහුසුලව,0.110000,v0b_short,0.64103830,0.3507
+es,notifique,0.450000,v0b_short,0.51182018,0.5371
+es,sueldos ,0.225000,v0b_short,0.49786696,0.3392
+es,amenazar ,0.575000,v0b_short,0.50061563,0.2934
+es,ocasiona ,0.575000,v0b_short,0.50004127,0.2302
+es,norteamericanos ,0.150000,v0b_short,0.50053589,0.3564
+es,desvíos ,0.725000,v0b_short,0.50447268,0.2596
+es,legistas ,0.875000,v0b_short,0.50932591,0.2327
+es,sustituto ,0.450000,v0b_short,0.50165452,0.2268
+es,vinculada ,0.500000,v0b_short,0.50079283,0.3372
+es,dicha ,0.675000,v0b_short,0.50034445,0.2247
+es,fondos ,0.250000,v0b_short,0.50026153,0.4177
+es,exige ,0.250000,v0b_short,0.50019692,0.2247
+es,demuestren ,0.350000,v0b_short,0.50166998,0.2222
+es,producidos ,0.150000,v0b_short,0.50078782,0.3768
+es,comunidades ,0.175000,v0b_short,0.50000000,0.2172
+es,equilibradamente ,0.325000,v0b_short,0.52980061,0.2169
+es,carpeta ,0.100000,v0b_short,0.49915988,0.2305
+es,archivarlo ,0.550000,v0b_short,0.50438953,0.2264
+es,archivador ,0.650000,v0b_short,0.50444623,0.2239
+es,prevenir ,0.375000,v0b_short,0.50045084,0.2299
+es,modalidad ,0.600000,v0b_short,0.50061696,0.2268
+es,descalabros ,0.725000,v0b_short,0.55567993,0.3673
+es,utilizando ,0.075000,v0b_short,0.50046297,0.2245
+es,chequeras ,0.700000,v0b_short,0.50431928,0.2235
+es,acostumbraron ,0.200000,v0b_short,0.50167070,0.2347
+es,colmados ,0.675000,v0b_short,0.50274423,0.2265
+es,desbarajustes ,0.800000,v0b_short,0.67049685,0.2268
+es,esperaría ,0.200000,v0b_short,0.50087940,0.2242
+es,retos ,0.450000,v0b_short,0.49952085,0.2321
+es,lúgubre ,0.675000,v0b_short,0.50574020,0.2216
+ca,successius ,0.450000,v7_proportie,0.51203158,0.2997
+ca,deteriorant ,0.525000,v7_proportie,0.50903785,0.3037
+ca,desmantellament ,0.625000,v7_proportie,0.54807435,0.3018
+ca,eclesiàstica ,0.425000,v7_proportie,0.58853943,0.3032
+ca,jerarquia ,0.525000,v7_proportie,0.52751311,0.3055
+ca,interlocució ,0.650000,v7_proportie,0.58754675,0.3063
+ca,minoritzada ,0.550000,v7_proportie,0.52788871,0.2995
+ca,claudicació ,0.600000,v7_proportie,0.54493380,0.3036
+ca,sociolingüística ,0.650000,v7_proportie,0.50005310,0.3028
+ca,planificades ,0.350000,v7_proportie,0.51626899,0.3024
+ca,estival ,0.475000,v7_proportie,0.45873864,0.2994
+ca,envergadura ,0.500000,v7_proportie,0.51351269,0.3071
+ca,escolaritzar ,0.350000,v7_proportie,0.72966567,0.3281
+ca,imprès ,0.425000,v7_proportie,0.57976464,0.3266
+ca,vehicular ,0.625000,v7_proportie,0.61104763,0.3261
+ca,transmissor ,0.425000,v7_proportie,0.46864416,0.3157
+ca,inculcar ,0.525000,v7_proportie,0.52552818,0.3145
+ca,efímer ,0.700000,v7_proportie,0.50011196,0.3183
+ca,inútil ,0.175000,v7_proportie,0.49035819,0.2296
+ca,oceà ,0.325000,v7_proportie,0.43683677,0.2244
+ca,burocràcia ,0.425000,v7_proportie,0.49120718,0.2273
+ca,didàctics ,0.475000,v7_proportie,0.46722617,0.3206
+ca,controvertits ,0.600000,v7_proportie,0.47767104,0.3236
+ca,decàleg ,0.650000,v7_proportie,0.53809791,0.3165
+ca,numèriques ,0.300000,v7_proportie,0.48170978,0.3323
+ca,arrodonida ,0.375000,v7_proportie,0.47757427,0.3260
+ca,decimals ,0.400000,v7_proportie,0.46588439,0.3286
+ca,antiracista ,0.425000,v7_proportie,0.48181815,0.2323
+ca,multicultural ,0.450000,v7_proportie,0.43059095,0.2210
+ca,decàleg ,0.625000,v7_proportie,0.50026353,0.2253
+en,external,0.050000,v7_proportie,0.34526676,0.2232
+en,pulled,0.075000,v7_proportie,0.38564035,0.2292
+en,robot,0.100000,v7_proportie,0.31789844,0.2253
+en,bank,0.050000,v7_proportie,0.41494599,0.2357
+en,recommended,0.100000,v7_proportie,0.39366485,0.2301
+en,declared,0.050000,v7_proportie,0.36192061,0.2339
+en,remainder,0.100000,v7_proportie,0.42224347,0.2294
+en,controlling,0.175000,v7_proportie,0.44144139,0.2528
+en,conditional,0.175000,v7_proportie,0.46642609,0.2395
+en,gone,0.075000,v7_proportie,0.33209008,0.2326
+en,prerequisite,0.400000,v7_proportie,0.48194942,0.2335
+en,relates,0.075000,v7_proportie,0.37527979,0.2296
+en,micro,0.227273,v7_proportie,0.40662766,0.2293
+en,controllers,0.181818,v7_proportie,0.42221709,0.2265
+en,hardware,0.181818,v7_proportie,0.42289032,0.2364
+en,wrapped,0.025000,v7_proportie,0.33156213,0.2426
+en,coil,0.150000,v7_proportie,0.33372611,0.2283
+en,pickup,0.475000,v7_proportie,0.41350482,0.2288
+en,reagent,0.681818,v7_proportie,0.44765734,0.2324
+en,electrons,0.272727,v7_proportie,0.39224494,0.2325
+en,neutrally,0.227273,v7_proportie,0.39275139,0.2320
+en,beautiful,0.050000,v7_proportie,0.34808194,0.2391
+en,undertake,0.225000,v7_proportie,0.38196115,0.2358
+en,discover,0.100000,v7_proportie,0.28662298,0.2342
+en,seventh,0.022727,v7_proportie,0.33418752,0.2378
+en,eliminated,0.318182,v7_proportie,0.33087156,0.2377
+en,erstwhile,0.931818,v7_proportie,0.49850556,0.2369
+en,magnitude,0.175000,v7_proportie,0.34542144,0.2334
+en,quantity,0.075000,v7_proportie,0.28559123,0.2312
+en,vector,0.250000,v7_proportie,0.33156218,0.2322
+fil,agaw,0.075000,v7_proportie,0.51229253,0.2443
+fil,agila,0.125000,v7_proportie,0.41786088,0.2364
+fil,agos,0.150000,v7_proportie,0.47972603,0.2458
+fil,akay,0.250000,v7_proportie,0.48618997,0.2470
+fil,ale,0.150000,v7_proportie,0.49312211,0.2859
+fil,alin,0.050000,v7_proportie,0.46052301,0.3024
+fil,alkansiya,0.375000,v7_proportie,0.59575562,0.2884
+fil,amin,0.025000,v7_proportie,0.49969047,0.2858
+fil,angkan,0.275000,v7_proportie,0.56945556,0.2840
+fil,anuman,0.250000,v7_proportie,0.48026005,0.2833
+fil,aparador,0.325000,v7_proportie,0.52067089,0.3991
+fil,armas,0.250000,v7_proportie,0.49964935,0.2414
+fil,atay,0.100000,v7_proportie,0.52287422,0.2413
+fil,ate,0.025000,v7_proportie,0.48912702,0.2446
+fil,atin,0.025000,v7_proportie,0.44349006,0.2409
+fil,ayan,0.050000,v7_proportie,0.51944575,0.2395
+fil,ayaw,0.025000,v7_proportie,0.53455178,0.2363
+fil,babala,0.225000,v7_proportie,0.51337438,0.3509
+fil,bahagya,0.475000,v7_proportie,0.48943268,0.2521
+fil,bakasyon,0.200000,v7_proportie,0.43007772,0.2459
+fil,balon,0.150000,v7_proportie,0.50602307,0.2422
+fil,bandera,0.300000,v7_proportie,0.47427810,0.2533
+fil,bangkay,0.325000,v7_proportie,0.53817273,0.2454
+fil,bansa,0.075000,v7_proportie,0.46037560,0.2449
+fil,baril,0.050000,v7_proportie,0.56117591,0.2566
+fil,bawal,0.025000,v7_proportie,0.53312560,0.2642
+fil,bayong,0.175000,v7_proportie,0.51318299,0.2439
+fil,bibig,0.025000,v7_proportie,0.47211510,0.2387
+fil,blusa,0.325000,v7_proportie,0.54690520,0.2412
+fil,bruha,0.250000,v7_proportie,0.59003467,0.2394
+fr,entretien,0.675000,v7_proportie,0.55382823,1.0238
+fr,consacrée,0.650000,v7_proportie,0.55450278,0.2663
+fr,stocke,0.350000,v7_proportie,0.50003292,0.2561
+fr,traite,0.375000,v7_proportie,0.49252996,0.2484
+fr,récepteurs,0.325000,v7_proportie,0.48651213,0.2551
+fr,prospère,0.400000,v7_proportie,0.52215838,0.2464
+fr,bâtie,0.750000,v7_proportie,0.50883088,0.2483
+fr,partant,0.525000,v7_proportie,0.49104460,0.2446
+fr,courant,0.475000,v7_proportie,0.48145584,0.2633
+fr,entraînerait,0.625000,v7_proportie,0.49509831,0.3567
+fr,garantit,0.075000,v7_proportie,0.46584297,0.2628
+fr,cité,0.275000,v7_proportie,0.50493400,0.5543
+fr,davantage,0.525000,v7_proportie,0.50612717,0.2492
+fr,réclamer,0.400000,v7_proportie,0.52228903,0.2534
+fr,notice,0.100000,v7_proportie,0.45550777,0.2608
+fr,responsables,0.075000,v7_proportie,0.45872117,0.2518
+fr,tendance,0.350000,v7_proportie,0.48902053,0.2552
+fr,orgueilleux,0.750000,v7_proportie,0.59328579,0.2624
+fr,établi,0.350000,v7_proportie,0.56182736,0.2520
+fr,sorte,0.250000,v7_proportie,0.48060193,0.2863
+fr,disposition,0.225000,v7_proportie,0.41731053,0.2469
+fr,renseignement,0.500000,v7_proportie,0.59000239,0.2481
+fr,complémentaire,0.100000,v7_proportie,0.51929264,0.2446
+fr,conséquences,0.100000,v7_proportie,0.48195009,0.2546
+fr,interroge,0.300000,v7_proportie,0.47776335,0.2539
+fr,question,0.000000,v7_proportie,0.36028892,0.2567
+fr,pneumatique,0.550000,v7_proportie,0.55008754,0.2482
+fr,essor,0.800000,v7_proportie,0.45873828,0.2565
+fr,coach,0.100000,v7_proportie,0.39507951,0.2479
+fr,impose,0.150000,v7_proportie,0.43809277,0.2482
+de,Grausen,0.600000,v7_proportie,0.62204826,0.2597
+de,verworren,0.550000,v7_proportie,0.60291898,0.2575
+de,überwältigen,0.325000,v7_proportie,0.62139785,0.2581
+de,Gemütsbewegung,0.650000,v7_proportie,0.67307581,0.2686
+de,durchschüttern,0.650000,v7_proportie,0.66238131,0.2667
+de,Heiterkeit,0.400000,v7_proportie,0.63829013,0.2673
+de,recht,0.275000,v7_proportie,0.53275657,0.3787
+de,Bangigkeit,0.650000,v7_proportie,0.66966166,0.3673
+de,Abendglut,0.750000,v7_proportie,0.63015727,0.3674
+de,drastisch,0.375000,v7_proportie,0.57543242,0.5096
+de,Gewährsleute,0.875000,v7_proportie,0.63878698,0.3654
+de,Ausmaß,0.275000,v7_proportie,0.55855689,0.3649
+de,Gleichwohl,0.425000,v7_proportie,0.60264496,0.3681
+de,Schmuggler,0.225000,v7_proportie,0.63622048,0.3626
+de,aufgreifen,0.275000,v7_proportie,0.56708829,0.3628
+de,lautstark,0.225000,v7_proportie,0.53869756,0.2596
+de,Unmut,0.400000,v7_proportie,0.55666475,0.2592
+de,artikulieren,0.250000,v7_proportie,0.55720062,0.2568
+de,Verhältnis,0.250000,v7_proportie,0.55024296,0.3682
+de,zusehends,0.475000,v7_proportie,0.57543132,0.3623
+de,nominieren,0.250000,v7_proportie,0.54007097,0.2581
+de,Lage,0.150000,v7_proportie,0.53256749,0.3721
+de,konzipieren,0.475000,v7_proportie,0.65369656,0.3701
+de,Maßnahme,0.275000,v7_proportie,0.57543339,0.3686
+de,zwiespältig,0.550000,v7_proportie,0.62310506,0.2624
+de,Haltung,0.325000,v7_proportie,0.52256825,0.2617
+de,Sicht,0.175000,v7_proportie,0.51482103,0.2565
+de,toben,0.250000,v7_proportie,0.51923014,0.2548
+de,avisieren,0.700000,v7_proportie,0.70238160,0.2558
+de,Kontroverse,0.350000,v7_proportie,0.61838439,0.2573
+it,perduta,0.080000,v7_proportie,0.51501091,0.2673
+it,miseria,0.080000,v7_proportie,0.50005254,0.2638
+it,sbrindellata,0.300000,v7_proportie,0.58037192,0.2638
+it,anonimi,0.030000,v7_proportie,0.48376201,0.2589
+it,giunte,0.080000,v7_proportie,0.48549967,0.2588
+it,profitto,0.150000,v7_proportie,0.45703564,0.2605
+it,ampollose,0.430000,v7_proportie,0.57411444,0.2557
+it,costellate,0.280000,v7_proportie,0.51806836,0.2521
+it,parole,0.030000,v7_proportie,0.50888575,0.2492
+it,giovinezza,0.030000,v7_proportie,0.50000411,0.3681
+it,angustiata,0.380000,v7_proportie,0.52061019,0.3658
+it,grazie,0.180000,v7_proportie,0.45321538,0.3649
+it,sottrarre,0.080000,v7_proportie,0.55327741,0.2420
+it,apparente,0.120000,v7_proportie,0.54132106,0.2586
+it,mancanza,0.030000,v7_proportie,0.52787136,0.2573
+it,singolari,0.220000,v7_proportie,0.48543537,0.2560
+it,giocoso,0.100000,v7_proportie,0.47215637,0.2534
+it,mirabolanti,0.480000,v7_proportie,0.54678400,0.2534
+it,popolareggiante,0.300000,v7_proportie,0.58268455,0.5747
+it,ostentazione,0.120000,v7_proportie,0.55864205,0.3728
+it,affettato,0.520000,v7_proportie,0.51625690,0.3704
+it,tardo,0.320000,v7_proportie,0.51339039,0.6616
+it,livore,0.520000,v7_proportie,0.55321113,0.2608
+it,sicario,0.480000,v7_proportie,0.60006473,0.2618
+it,estendere,0.250000,v7_proportie,0.47771714,0.3688
+it,indefinitamente,0.320000,v7_proportie,0.50396681,0.3706
+it,condizionamenti,0.430000,v7_proportie,0.51343593,0.3690
+it,immensi,0.180000,v7_proportie,0.49517520,0.2612
+it,folgoranti,0.430000,v7_proportie,0.55771126,0.2623
+it,stagnavano,0.480000,v7_proportie,0.54296003,0.2638
+ja,連れ戻す,0.300000,v7_proportie,0.59308150,0.2598
+ja,恩を売り,0.700000,v7_proportie,0.71051271,0.2457
+ja,なおかつ,0.500000,v7_proportie,0.58013871,0.2529
+ja,各種の,0.200000,v7_proportie,0.63289706,0.2555
+ja,市電,0.475000,v7_proportie,0.66565648,0.2525
+ja,気にかけない,0.475000,v7_proportie,0.71563851,0.2547
+ja,募集し,0.100000,v7_proportie,0.51301293,0.2519
+ja,ピックアップして,0.050000,v7_proportie,0.57258390,0.2536
+ja,掲載した,0.400000,v7_proportie,0.55424834,0.2522
+ja,再び,0.075000,v7_proportie,0.65092371,0.2517
+ja,はじめ,0.025000,v7_proportie,0.57155110,0.2524
+ja,または,0.075000,v7_proportie,0.60521268,0.2649
+ja,旧,0.150000,v7_proportie,0.62496589,0.2564
+ja,ロック,0.025000,v7_proportie,0.58611546,0.2519
+ja,直ちに,0.275000,v7_proportie,0.59737872,0.2557
+ja,長大な,0.475000,v7_proportie,0.62450784,0.2526
+ja,標題,0.375000,v7_proportie,0.67345738,0.2490
+ja,書き添えられて,0.600000,v7_proportie,0.63083099,0.2513
+ja,馴染み深かった,0.500000,v7_proportie,0.61236893,0.2536
+ja,変更されて,0.100000,v7_proportie,0.53118592,0.2548
+ja,戦闘曲,0.425000,v7_proportie,0.62619953,0.2516
+ja,小物,0.225000,v7_proportie,0.59035438,0.2592
+ja,応用した,0.225000,v7_proportie,0.54134894,0.2423
+ja,随所,0.725000,v7_proportie,0.68032678,0.2525
+ja,繰り返し,0.200000,v7_proportie,0.59369847,0.2522
+ja,強盗被害,0.400000,v7_proportie,0.58878533,0.2532
+ja,考慮した,0.400000,v7_proportie,0.55383441,0.2507
+ja,キレさせる,0.375000,v7_proportie,0.74511953,0.2629
+ja,諫める,0.775000,v7_proportie,0.60765192,0.2533
+ja,コーナー,0.100000,v7_proportie,0.68129792,0.2524
+pt,estradas,0.080000,v7_proportie,0.49984246,0.3749
+pt,transparência,0.240000,v7_proportie,0.49950218,0.7195
+pt,expiação,0.550000,v7_proportie,0.60828207,0.3632
+pt,rigor,0.310000,v7_proportie,0.44116615,0.2498
+pt,empreiteiros,0.360000,v7_proportie,0.61528362,0.3620
+pt,atos,0.120000,v7_proportie,0.44074576,0.2703
+pt,aldeias,0.060000,v7_proportie,0.53219793,0.3736
+pt,perigos,0.130000,v7_proportie,0.46906513,0.2534
+pt,navegando,0.180000,v7_proportie,0.39907189,0.2641
+pt,produtos,0.060000,v7_proportie,0.40816005,0.2585
+pt,moratória,0.550000,v7_proportie,0.53896058,0.7961
+pt,democracia,0.230000,v7_proportie,0.44973385,0.2543
+pt,subsistência,0.480000,v7_proportie,0.52022574,0.2593
+pt,ativador,0.250000,v7_proportie,0.47835325,0.8859
+pt,misericórdias,0.380000,v7_proportie,0.53783021,0.3851
+pt,bases,0.290000,v7_proportie,0.43615044,0.3867
+pt,rudimentos,0.580000,v7_proportie,0.54329861,0.3975
+pt,novilho,0.380000,v7_proportie,0.49943897,0.2782
+pt,cabelo,0.100000,v7_proportie,0.36309279,0.2502
+pt,puberdade,0.320000,v7_proportie,0.51836919,0.2578
+pt,ataque,0.250000,v7_proportie,0.37104126,0.2495
+pt,margens,0.230000,v7_proportie,0.44168892,0.2407
+pt,samaritanos,0.480000,v7_proportie,0.39589224,0.2530
+pt,beneficências,0.490000,v7_proportie,0.53821323,0.2673
+pt,incertezas,0.080000,v7_proportie,0.52370904,0.3708
+pt,pais,0.070000,v7_proportie,0.42556646,0.2421
+pt,gentios,0.460000,v7_proportie,0.51357840,0.2828
+pt,colegas,0.130000,v7_proportie,0.41831305,0.2485
+pt,podridão,0.200000,v7_proportie,0.51441930,0.3937
+pt,coluna,0.150000,v7_proportie,0.46175423,0.2572
+si,තථාගතයන්,0.670000,v7_proportie,0.70929773,0.6511
+si,අනුශාසකත්වයෙන්,0.520000,v7_proportie,0.71853541,0.7688
+si,නිර්වාණය,0.910000,v7_proportie,0.71252565,0.8638
+si,පිටිවහල,0.240000,v7_proportie,0.78603604,0.9908
+si,දරිද්‍රතා,0.160000,v7_proportie,0.61545622,0.5518
+si,වනිතාව,0.120000,v7_proportie,0.67799910,1.1895
+si,සියොතුන්,0.060000,v7_proportie,0.71557040,0.6529
+si,පාඨශාලාව,0.050000,v7_proportie,0.66800670,1.0516
+si,වෘක්ෂය,0.190000,v7_proportie,0.64692743,0.5407
+si,චන්ද්‍රයා,0.090000,v7_proportie,0.64395562,0.9313
+si,ලොල්බව,0.120000,v7_proportie,0.70500692,0.4810
+si,දැකුම්කළුව,0.090000,v7_proportie,0.72708673,0.5653
+si,හසුන්,0.080000,v7_proportie,0.62217072,0.6436
+si,කෘශ,0.070000,v7_proportie,0.59738518,0.3782
+si,ප්‍රකට,0.070000,v7_proportie,0.65700938,0.5412
+si,නිග්‍රහය,0.050000,v7_proportie,0.75555029,0.6456
+si,පෞරාණික,0.120000,v7_proportie,0.71038968,0.7244
+si,නරනිදු,0.420000,v7_proportie,0.72210638,1.0973
+si,ප්‍රවීණතා,0.140000,v7_proportie,0.74311368,0.5540
+si,ගෘහය,0.230000,v7_proportie,0.58475795,0.4773
+si,අසබඩ,0.180000,v7_proportie,0.68793589,0.6470
+si,භූමිය,0.190000,v7_proportie,0.70275172,0.7627
+si,පුණ්‍ය,0.260000,v7_proportie,0.64310146,0.7127
+si,දර්ශනීය,0.080000,v7_proportie,0.66959430,1.3308
+si,වයෝවෘද්ධ,0.430000,v7_proportie,0.65413416,0.6469
+si,ධජය,0.350000,v7_proportie,0.61128042,0.8393
+si,ප්‍රතිමාව,0.260000,v7_proportie,0.75972281,0.9257
+si,යටගිය,0.390000,v7_proportie,0.67493488,0.5309
+si,ප්‍රතිමල්ලවයා,0.650000,v7_proportie,0.72210639,0.5284
+si,යුහුසුලව,0.110000,v7_proportie,0.70275712,0.4669
+es,notifique,0.450000,v7_proportie,0.52555785,0.7832
+es,sueldos ,0.225000,v7_proportie,0.48939268,0.2679
+es,amenazar ,0.575000,v7_proportie,0.50770450,0.2534
+es,ocasiona ,0.575000,v7_proportie,0.49997350,0.2573
+es,norteamericanos ,0.150000,v7_proportie,0.51391781,0.3586
+es,desvíos ,0.725000,v7_proportie,0.50802384,0.3418
+es,legistas ,0.875000,v7_proportie,0.55107025,0.3461
+es,sustituto ,0.450000,v7_proportie,0.47770464,0.2597
+es,vinculada ,0.500000,v7_proportie,0.47278084,0.2394
+es,dicha ,0.675000,v7_proportie,0.44627242,0.2385
+es,fondos ,0.250000,v7_proportie,0.46340680,0.5708
+es,exige ,0.250000,v7_proportie,0.42779552,0.2426
+es,demuestren ,0.350000,v7_proportie,0.46147763,0.2458
+es,producidos ,0.150000,v7_proportie,0.48340597,0.2433
+es,comunidades ,0.175000,v7_proportie,0.44493080,0.2243
+es,equilibradamente ,0.325000,v7_proportie,0.51656787,0.2342
+es,carpeta ,0.100000,v7_proportie,0.47257648,0.3112
+es,archivarlo ,0.550000,v7_proportie,0.52312721,0.2594
+es,archivador ,0.650000,v7_proportie,0.51635941,0.2609
+es,prevenir ,0.375000,v7_proportie,0.48894702,0.2491
+es,modalidad ,0.600000,v7_proportie,0.49381303,0.2468
+es,descalabros ,0.725000,v7_proportie,0.59713090,0.2512
+es,utilizando ,0.075000,v7_proportie,0.46278040,0.2407
+es,chequeras ,0.700000,v7_proportie,0.51461049,0.9919
+es,acostumbraron ,0.200000,v7_proportie,0.51661420,0.3002
+es,colmados ,0.675000,v7_proportie,0.51676308,0.2410
+es,desbarajustes ,0.800000,v7_proportie,0.61039083,0.2400
+es,esperaría ,0.200000,v7_proportie,0.46335642,0.9861
+es,retos ,0.450000,v7_proportie,0.40595530,0.2640
+es,lúgubre ,0.675000,v7_proportie,0.50000400,0.2275
+ca,successius ,0.450000,v8_marcat,0.48915891,0.4946
+ca,deteriorant ,0.525000,v8_marcat,0.48182405,0.4861
+ca,desmantellament ,0.625000,v8_marcat,0.48545797,0.3605
+ca,eclesiàstica ,0.425000,v8_marcat,0.50565927,0.3527
+ca,jerarquia ,0.525000,v8_marcat,0.48851797,0.3528
+ca,interlocució ,0.650000,v8_marcat,0.51019180,0.3501
+ca,minoritzada ,0.550000,v8_marcat,0.50587675,0.3439
+ca,claudicació ,0.600000,v8_marcat,0.49700492,0.3444
+ca,sociolingüística ,0.650000,v8_marcat,0.52948178,0.3447
+ca,planificades ,0.350000,v8_marcat,0.48961881,0.3390
+ca,estival ,0.475000,v8_marcat,0.48186867,0.3388
+ca,envergadura ,0.500000,v8_marcat,0.49842066,0.3364
+ca,escolaritzar ,0.350000,v8_marcat,0.52061705,0.3648
+ca,imprès ,0.425000,v8_marcat,0.49547744,0.3573
+ca,vehicular ,0.625000,v8_marcat,0.51705320,0.3575
+ca,transmissor ,0.425000,v8_marcat,0.47626908,1.0192
+ca,inculcar ,0.525000,v8_marcat,0.49454789,0.3454
+ca,efímer ,0.700000,v8_marcat,0.50000120,0.3473
+ca,inútil ,0.175000,v8_marcat,0.37500078,0.9617
+ca,oceà ,0.325000,v8_marcat,0.44432748,0.7839
+ca,burocràcia ,0.425000,v8_marcat,0.40562477,0.2463
+ca,didàctics ,0.475000,v8_marcat,0.48828143,0.3463
+ca,controvertits ,0.600000,v8_marcat,0.48828144,0.3368
+ca,decàleg ,0.650000,v8_marcat,0.50098644,0.3381
+ca,numèriques ,0.300000,v8_marcat,0.48132071,0.3446
+ca,arrodonida ,0.375000,v8_marcat,0.48862479,0.3404
+ca,decimals ,0.400000,v8_marcat,0.45474659,0.3379
+ca,antiracista ,0.425000,v8_marcat,0.48506186,0.5624
+ca,multicultural ,0.450000,v8_marcat,0.43278422,0.2384
+ca,decàleg ,0.625000,v8_marcat,0.50348003,0.2362
+en,external,0.050000,v8_marcat,0.49803304,0.5487
+en,pulled,0.075000,v8_marcat,0.49368875,0.2332
+en,robot,0.100000,v8_marcat,0.48109274,0.2286
+en,bank,0.050000,v8_marcat,0.43284193,0.2351
+en,recommended,0.100000,v8_marcat,0.49883316,0.2351
+en,declared,0.050000,v8_marcat,0.41985307,0.4915
+en,remainder,0.100000,v8_marcat,0.49974608,0.3171
+en,controlling,0.175000,v8_marcat,0.49652073,0.2326
+en,conditional,0.175000,v8_marcat,0.49982499,0.2286
+en,gone,0.075000,v8_marcat,0.40562072,0.2223
+en,prerequisite,0.400000,v8_marcat,0.48814770,0.4162
+en,relates,0.075000,v8_marcat,0.37500190,0.2306
+en,micro,0.227273,v8_marcat,0.47021770,0.2313
+en,controllers,0.181818,v8_marcat,0.48104424,0.2289
+en,hardware,0.181818,v8_marcat,0.43276764,0.2287
+en,wrapped,0.025000,v8_marcat,0.49653494,0.2680
+en,coil,0.150000,v8_marcat,0.46300077,0.2260
+en,pickup,0.475000,v8_marcat,0.45441408,0.2257
+en,reagent,0.681818,v8_marcat,0.49725744,0.2281
+en,electrons,0.272727,v8_marcat,0.48502897,0.2310
+en,neutrally,0.227273,v8_marcat,0.47617537,0.2317
+en,beautiful,0.050000,v8_marcat,0.47148580,0.2295
+en,undertake,0.225000,v8_marcat,0.48818305,0.2270
+en,discover,0.100000,v8_marcat,0.48151435,0.2298
+en,seventh,0.022727,v8_marcat,0.46397761,0.8890
+en,eliminated,0.318182,v8_marcat,0.48822718,0.2867
+en,erstwhile,0.931818,v8_marcat,0.55472735,0.2376
+en,magnitude,0.175000,v8_marcat,0.35950525,0.2369
+en,quantity,0.075000,v8_marcat,0.40564873,0.2345
+en,vector,0.250000,v8_marcat,0.39054437,0.2281
+fil,agaw,0.075000,v8_marcat,0.47694893,0.2344
+fil,agila,0.125000,v8_marcat,0.46312324,0.7273
+fil,agos,0.150000,v8_marcat,0.43812868,0.2364
+fil,akay,0.250000,v8_marcat,0.44767883,0.2420
+fil,ale,0.150000,v8_marcat,0.45224714,0.2298
+fil,alin,0.050000,v8_marcat,0.48408297,0.2383
+fil,alkansiya,0.375000,v8_marcat,0.50001252,0.3876
+fil,amin,0.025000,v8_marcat,0.46246655,0.2389
+fil,angkan,0.275000,v8_marcat,0.51542167,0.2384
+fil,anuman,0.250000,v8_marcat,0.47148736,0.2406
+fil,aparador,0.325000,v8_marcat,0.51327624,0.2416
+fil,armas,0.250000,v8_marcat,0.44811912,0.2399
+fil,atay,0.100000,v8_marcat,0.47231584,0.2595
+fil,ate,0.025000,v8_marcat,0.40745970,0.2713
+fil,atin,0.025000,v8_marcat,0.46508930,0.2681
+fil,ayan,0.050000,v8_marcat,0.45705882,0.2717
+fil,ayaw,0.025000,v8_marcat,0.46318461,0.2688
+fil,babala,0.225000,v8_marcat,0.48517866,0.2654
+fil,bahagya,0.475000,v8_marcat,0.45499152,0.2695
+fil,bakasyon,0.200000,v8_marcat,0.46335537,0.2702
+fil,balon,0.150000,v8_marcat,0.47649094,0.2673
+fil,bandera,0.300000,v8_marcat,0.39072636,1.1638
+fil,bangkay,0.325000,v8_marcat,0.48377194,0.2716
+fil,bansa,0.075000,v8_marcat,0.49128575,0.2758
+fil,baril,0.050000,v8_marcat,0.47638847,0.2668
+fil,bawal,0.025000,v8_marcat,0.45458792,0.2723
+fil,bayong,0.175000,v8_marcat,0.49084548,0.2636
+fil,bibig,0.025000,v8_marcat,0.46327421,0.2551
+fil,blusa,0.325000,v8_marcat,0.45467637,0.2353
+fil,bruha,0.250000,v8_marcat,0.47206993,0.2296
+fr,entretien,0.675000,v8_marcat,0.49556033,0.8488
+fr,consacrée,0.650000,v8_marcat,0.50082341,0.2401
+fr,stocke,0.350000,v8_marcat,0.49994966,0.2388
+fr,traite,0.375000,v8_marcat,0.50019789,0.2353
+fr,récepteurs,0.325000,v8_marcat,0.49785980,0.2361
+fr,prospère,0.400000,v8_marcat,0.49803304,0.2353
+fr,bâtie,0.750000,v8_marcat,0.49982500,0.2322
+fr,partant,0.525000,v8_marcat,0.49612145,0.7858
+fr,courant,0.475000,v8_marcat,0.44432572,0.3374
+fr,entraînerait,0.625000,v8_marcat,0.46312327,0.5126
+fr,garantit,0.075000,v8_marcat,0.46299797,1.1953
+fr,cité,0.275000,v8_marcat,0.49762853,0.3356
+fr,davantage,0.525000,v8_marcat,0.48843528,0.2450
+fr,réclamer,0.400000,v8_marcat,0.49553840,0.2431
+fr,notice,0.100000,v8_marcat,0.48106612,0.2389
+fr,responsables,0.075000,v8_marcat,0.49284922,0.2386
+fr,tendance,0.350000,v8_marcat,0.49568082,0.2378
+fr,orgueilleux,0.750000,v8_marcat,0.49076314,0.2373
+fr,établi,0.350000,v8_marcat,0.49509795,0.2385
+fr,sorte,0.250000,v8_marcat,0.49315324,0.2369
+fr,disposition,0.225000,v8_marcat,0.49743071,0.2290
+fr,renseignement,0.500000,v8_marcat,0.50008297,0.2322
+fr,complémentaire,0.100000,v8_marcat,0.49268328,0.2295
+fr,conséquences,0.100000,v8_marcat,0.48103650,0.2422
+fr,interroge,0.300000,v8_marcat,0.49425934,0.2356
+fr,question,0.000000,v8_marcat,0.39054487,0.2359
+fr,pneumatique,0.550000,v8_marcat,0.48893568,0.2291
+fr,essor,0.800000,v8_marcat,0.49656792,0.2483
+fr,coach,0.100000,v8_marcat,0.46299798,0.2307
+fr,impose,0.150000,v8_marcat,0.48508560,0.2320
+de,Grausen,0.600000,v8_marcat,0.50971826,0.2421
+de,verworren,0.550000,v8_marcat,0.50719017,0.7964
+de,überwältigen,0.325000,v8_marcat,0.49861916,0.2507
+de,Gemütsbewegung,0.650000,v8_marcat,0.51464901,0.3384
+de,durchschüttern,0.650000,v8_marcat,0.54527127,1.1061
+de,Heiterkeit,0.400000,v8_marcat,0.49315325,0.2341
+de,recht,0.275000,v8_marcat,0.50175064,0.3466
+de,Bangigkeit,0.650000,v8_marcat,0.51229276,0.3370
+de,Abendglut,0.750000,v8_marcat,0.50472810,0.3397
+de,drastisch,0.375000,v8_marcat,0.48837080,0.3822
+de,Gewährsleute,0.875000,v8_marcat,0.49640985,0.3366
+de,Ausmaß,0.275000,v8_marcat,0.49804638,0.3366
+de,Gleichwohl,0.425000,v8_marcat,0.49328963,0.3404
+de,Schmuggler,0.225000,v8_marcat,0.49907027,0.3355
+de,aufgreifen,0.275000,v8_marcat,0.49894494,0.3555
+de,lautstark,0.225000,v8_marcat,0.50360103,0.2394
+de,Unmut,0.400000,v8_marcat,0.49939762,0.2415
+de,artikulieren,0.250000,v8_marcat,0.50022438,0.2414
+de,Verhältnis,0.250000,v8_marcat,0.49612147,0.3314
+de,zusehends,0.475000,v8_marcat,0.59408467,0.5335
+de,nominieren,0.250000,v8_marcat,0.49727719,0.3319
+de,Lage,0.150000,v8_marcat,0.49815723,0.3659
+de,konzipieren,0.475000,v8_marcat,0.53679413,0.3448
+de,Maßnahme,0.275000,v8_marcat,0.48771695,0.3388
+de,zwiespältig,0.550000,v8_marcat,0.49907026,1.1310
+de,Haltung,0.325000,v8_marcat,0.49907026,0.2430
+de,Sicht,0.175000,v8_marcat,0.49710216,0.2464
+de,toben,0.250000,v8_marcat,0.49850420,0.2361
+de,avisieren,0.700000,v8_marcat,0.50512693,0.2324
+de,Kontroverse,0.350000,v8_marcat,0.49855454,0.2321
+it,perduta,0.080000,v8_marcat,0.49931313,0.2416
+it,miseria,0.080000,v8_marcat,0.46301837,0.2372
+it,sbrindellata,0.300000,v8_marcat,0.59420190,0.2399
+it,anonimi,0.030000,v8_marcat,0.49425891,0.2395
+it,giunte,0.080000,v8_marcat,0.49080629,0.2416
+it,profitto,0.150000,v8_marcat,0.48843528,0.2379
+it,ampollose,0.430000,v8_marcat,0.49887320,0.2323
+it,costellate,0.280000,v8_marcat,0.49804648,0.2316
+it,parole,0.030000,v8_marcat,0.49430650,0.2329
+it,giovinezza,0.030000,v8_marcat,0.49268077,0.3372
+it,angustiata,0.380000,v8_marcat,0.49558726,0.3344
+it,grazie,0.180000,v8_marcat,0.48204801,0.3373
+it,sottrarre,0.080000,v8_marcat,0.51018705,0.2323
+it,apparente,0.120000,v8_marcat,0.49612144,0.2331
+it,mancanza,0.030000,v8_marcat,0.50551674,0.2324
+it,singolari,0.220000,v8_marcat,0.49650280,0.2388
+it,giocoso,0.100000,v8_marcat,0.49792092,0.2361
+it,mirabolanti,0.480000,v8_marcat,0.50185223,0.2329
+it,popolareggiante,0.300000,v8_marcat,0.73371406,0.3520
+it,ostentazione,0.120000,v8_marcat,0.59468796,0.3406
+it,affettato,0.520000,v8_marcat,0.62581044,0.3406
+it,tardo,0.320000,v8_marcat,0.44437325,0.2494
+it,livore,0.520000,v8_marcat,0.49717678,1.3293
+it,sicario,0.480000,v8_marcat,0.52270691,0.2532
+it,estendere,0.250000,v8_marcat,0.47026364,0.6032
+it,indefinitamente,0.320000,v8_marcat,0.48151449,0.3431
+it,condizionamenti,0.430000,v8_marcat,0.49894501,0.3728
+it,immensi,0.180000,v8_marcat,0.49651494,0.4514
+it,folgoranti,0.430000,v8_marcat,0.49977566,0.2466
+it,stagnavano,0.480000,v8_marcat,0.49677644,0.5172
+ja,連れ戻す,0.300000,v8_marcat,0.49855827,0.2419
+ja,恩を売り,0.700000,v8_marcat,0.49911996,0.2362
+ja,なおかつ,0.500000,v8_marcat,0.49458675,0.2404
+ja,各種の,0.200000,v8_marcat,0.44435730,0.2354
+ja,市電,0.475000,v8_marcat,0.43332879,0.2332
+ja,気にかけない,0.475000,v8_marcat,0.46316082,0.2214
+ja,募集し,0.100000,v8_marcat,0.37504382,0.2341
+ja,ピックアップして,0.050000,v8_marcat,0.43288967,0.2484
+ja,掲載した,0.400000,v8_marcat,0.42009133,0.2295
+ja,再び,0.075000,v8_marcat,0.35978301,0.2434
+ja,はじめ,0.025000,v8_marcat,0.43809700,0.2322
+ja,または,0.075000,v8_marcat,0.47670170,0.2408
+ja,旧,0.150000,v8_marcat,0.49028380,0.2356
+ja,ロック,0.025000,v8_marcat,0.47663970,0.2337
+ja,直ちに,0.275000,v8_marcat,0.48204751,0.2349
+ja,長大な,0.475000,v8_marcat,0.49313086,0.2337
+ja,標題,0.375000,v8_marcat,0.46788980,0.4214
+ja,書き添えられて,0.600000,v8_marcat,0.50094630,0.2331
+ja,馴染み深かった,0.500000,v8_marcat,0.48204744,0.2359
+ja,変更されて,0.100000,v8_marcat,0.41981896,0.3027
+ja,戦闘曲,0.425000,v8_marcat,0.31724741,0.2342
+ja,小物,0.225000,v8_marcat,0.48820868,0.2396
+ja,応用した,0.225000,v8_marcat,0.49960062,0.2337
+ja,随所,0.725000,v8_marcat,0.50710067,0.2304
+ja,繰り返し,0.200000,v8_marcat,0.50000120,0.2295
+ja,強盗被害,0.400000,v8_marcat,0.50175040,0.2327
+ja,考慮した,0.400000,v8_marcat,0.50282375,0.2317
+ja,キレさせる,0.375000,v8_marcat,0.49088565,0.7610
+ja,諫める,0.775000,v8_marcat,0.49875185,0.2384
+ja,コーナー,0.100000,v8_marcat,0.48739853,0.2364
+pt,estradas,0.080000,v8_marcat,0.48862394,0.3453
+pt,transparência,0.240000,v8_marcat,0.40561573,0.3382
+pt,expiação,0.550000,v8_marcat,0.50571362,0.3429
+pt,rigor,0.310000,v8_marcat,0.47073738,0.2325
+pt,empreiteiros,0.360000,v8_marcat,0.49304693,0.3353
+pt,atos,0.120000,v8_marcat,0.49618666,0.2469
+pt,aldeias,0.060000,v8_marcat,0.46567422,0.3387
+pt,perigos,0.130000,v8_marcat,0.47020286,0.2759
+pt,navegando,0.180000,v8_marcat,0.43277800,0.2469
+pt,produtos,0.060000,v8_marcat,0.48103905,0.2388
+pt,moratória,0.550000,v8_marcat,0.46320973,0.4026
+pt,democracia,0.230000,v8_marcat,0.39045578,0.2947
+pt,subsistência,0.480000,v8_marcat,0.58016808,0.2322
+pt,ativador,0.250000,v8_marcat,0.49368875,0.2846
+pt,misericórdias,0.380000,v8_marcat,0.49939763,1.0922
+pt,bases,0.290000,v8_marcat,0.49096027,0.3530
+pt,rudimentos,0.580000,v8_marcat,0.50000174,0.8888
+pt,novilho,0.380000,v8_marcat,0.48204742,0.2489
+pt,cabelo,0.100000,v8_marcat,0.39055240,0.2368
+pt,puberdade,0.320000,v8_marcat,0.27372285,0.2471
+pt,ataque,0.250000,v8_marcat,0.47717127,0.2333
+pt,margens,0.230000,v8_marcat,0.48820868,0.2333
+pt,samaritanos,0.480000,v8_marcat,0.48576882,0.2723
+pt,beneficências,0.490000,v8_marcat,0.50719220,0.3339
+pt,incertezas,0.080000,v8_marcat,0.44436022,0.3472
+pt,pais,0.070000,v8_marcat,0.47638812,0.2327
+pt,gentios,0.460000,v8_marcat,0.50381745,0.2567
+pt,colegas,0.130000,v8_marcat,0.44433068,0.2336
+pt,podridão,0.200000,v8_marcat,0.49639972,0.2347
+pt,coluna,0.150000,v8_marcat,0.37410787,0.2464
+si,තථාගතයන්,0.670000,v8_marcat,0.49515883,0.6781
+si,අනුශාසකත්වයෙන්,0.520000,v8_marcat,0.51211556,0.7153
+si,නිර්වාණය,0.910000,v8_marcat,0.54909694,0.8025
+si,පිටිවහල,0.240000,v8_marcat,0.52098203,0.7962
+si,දරිද්‍රතා,0.160000,v8_marcat,0.49084785,0.5099
+si,වනිතාව,0.120000,v8_marcat,0.51908908,0.5999
+si,සියොතුන්,0.060000,v8_marcat,0.49689665,0.3674
+si,පාඨශාලාව,0.050000,v8_marcat,0.48252704,0.6000
+si,වෘක්ෂය,0.190000,v8_marcat,0.50332370,0.5156
+si,චන්ද්‍රයා,0.090000,v8_marcat,0.49742526,1.2492
+si,ලොල්බව,0.120000,v8_marcat,0.57452432,0.4594
+si,දැකුම්කළුව,0.090000,v8_marcat,0.54875630,0.6110
+si,හසුන්,0.080000,v8_marcat,0.50435479,0.5061
+si,කෘශ,0.070000,v8_marcat,0.54585990,0.3635
+si,ප්‍රකට,0.070000,v8_marcat,0.48065758,0.8316
+si,නිග්‍රහය,0.050000,v8_marcat,0.49433596,0.6101
+si,පෞරාණික,0.120000,v8_marcat,0.50458463,0.5006
+si,නරනිදු,0.420000,v8_marcat,0.53446832,1.1948
+si,ප්‍රවීණතා,0.140000,v8_marcat,0.49295241,0.6057
+si,ගෘහය,0.230000,v8_marcat,0.47413123,0.4538
+si,අසබඩ,0.180000,v8_marcat,0.54734124,0.6004
+si,භූමිය,0.190000,v8_marcat,0.51505310,0.7194
+si,පුණ්‍ය,0.260000,v8_marcat,0.49601852,0.5753
+si,දර්ශනීය,0.080000,v8_marcat,0.47023268,1.1033
+si,වයෝවෘද්ධ,0.430000,v8_marcat,0.64170621,0.6099
+si,ධජය,0.350000,v8_marcat,0.50329058,0.5197
+si,ප්‍රතිමාව,0.260000,v8_marcat,0.53538651,0.9371
+si,යටගිය,0.390000,v8_marcat,0.47472473,0.5058
+si,ප්‍රතිමල්ලවයා,0.650000,v8_marcat,0.51653255,0.5092
+si,යුහුසුලව,0.110000,v8_marcat,0.58017418,0.6384
+es,notifique,0.450000,v8_marcat,0.49273719,0.2551
+es,sueldos ,0.225000,v8_marcat,0.45442287,1.1344
+es,amenazar ,0.575000,v8_marcat,0.49551630,0.3398
+es,ocasiona ,0.575000,v8_marcat,0.41979623,0.3383
+es,norteamericanos ,0.150000,v8_marcat,0.35946520,0.3998
+es,desvíos ,0.725000,v8_marcat,0.49541775,0.3402
+es,legistas ,0.875000,v8_marcat,0.50835143,0.3373
+es,sustituto ,0.450000,v8_marcat,0.47067414,1.3904
+es,vinculada ,0.500000,v8_marcat,0.48500908,0.3543
+es,dicha ,0.675000,v8_marcat,0.49426173,0.2405
+es,fondos ,0.250000,v8_marcat,0.49855455,1.3950
+es,exige ,0.250000,v8_marcat,0.49561106,0.2553
+es,demuestren ,0.350000,v8_marcat,0.49921024,0.2511
+es,producidos ,0.150000,v8_marcat,0.49988504,0.2419
+es,comunidades ,0.175000,v8_marcat,0.49652369,0.2397
+es,equilibradamente ,0.325000,v8_marcat,0.50431928,0.2340
+es,carpeta ,0.100000,v8_marcat,0.49071906,0.2457
+es,archivarlo ,0.550000,v8_marcat,0.49579575,0.2445
+es,archivador ,0.650000,v8_marcat,0.49887239,0.2968
+es,prevenir ,0.375000,v8_marcat,0.48502901,0.2507
+es,modalidad ,0.600000,v8_marcat,0.49969574,0.2438
+es,descalabros ,0.725000,v8_marcat,0.50407355,0.2372
+es,utilizando ,0.075000,v8_marcat,0.49649544,0.2430
+es,chequeras ,0.700000,v8_marcat,0.49275572,0.2400
+es,acostumbraron ,0.200000,v8_marcat,0.48502902,0.2398
+es,colmados ,0.675000,v8_marcat,0.49433945,0.2862
+es,desbarajustes ,0.800000,v8_marcat,0.56683636,0.2422
+es,esperaría ,0.200000,v8_marcat,0.48848535,0.2372
+es,retos ,0.450000,v8_marcat,0.49733709,0.2325
+es,lúgubre ,0.675000,v8_marcat,0.50426938,0.2389

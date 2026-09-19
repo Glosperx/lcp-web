@@ -4,7 +4,7 @@ Proiect pentru competitia **unibuc/ia-cti-2026** (Nitro AI Judge). Pentru un cuv
 propozitie romaneasca estimam un scor de complexitate lexicala in `[0, 1]` (0 = familiar, 1 = dificil).
 
 Autori: Alexandru Cojoaca, Mihai-Alexandru Preoteasa.
-Raportul complet (engleza, format ACL): `Cross-Lingual Transfer for Romanian Lexical Complexity Prediction.pdf`, sursa LaTeX in `report/`.
+Raportul complet (engleza, format ACL): `docs/papers/Cross-Lingual Transfer for Romanian Lexical Complexity Prediction.pdf`, sursa LaTeX in `report/`.
 
 ## Problema
 
@@ -63,13 +63,18 @@ surprisal; trasaturile de suprafata conteaza aproape deloc.
 ## Structura
 
 ```
-solutie_finala.py / .ipynb   cod final (CPU, citeste semnalele din data/)
+solutie_finala.py            cod final (CPU, citeste semnalele din data/); varianta notebook in notebooks/
 recompute_gpu.py             recalculeaza semnalele A/B/C de la zero (GPU)
 data/                        input competitie + semnalele cache
 output/                      submisii generate, inclusiv cele 3 finale
 report/                      sursa LaTeX a raportului (report.tex, custom.bib, figures/)
+Paper/                       sursa articolului ACL/MRL (paper_full.tex si derivate)
 analysis_*.py, shap_*.py     analize si interpretabilitate
 make_*figures.py             generarea figurilor din raport
+docs/                        documentatie, prompturi de sesiune, PDF-uri de referinta (docs/papers/)
+logs/                        loguri de rulare arhivate
+notebooks/                   notebook-uri (.ipynb)
+legacy/                      artefacte din solutia initiala (source_code.zip)
 ```
 
 Cele 3 submisii finale (acoperire fata de leaderboard-ul privat, cu alt split):

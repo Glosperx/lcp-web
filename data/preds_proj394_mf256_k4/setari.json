@@ -1,0 +1,24 @@
+{
+ "n_estimators": 4,
+ "max_rows": null,
+ "dtype": "torch.bfloat16",
+ "n_cereri": 12,
+ "norm_methods": [
+  "none",
+  "power",
+  "quantile_rtdl",
+  "robust"
+ ],
+ "max_num_features": 256,
+ "n_feature_crosses": "sqrt",
+ "n_svd_features": 0,
+ "enable_nnls": false,
+ "outlier_threshold": 4.0,
+ "_ablatie_din": "data/preds_proj394_maxfeat256",
+ "_membri": [
+  0,
+  2,
+  4,
+  6
+ ]
+}

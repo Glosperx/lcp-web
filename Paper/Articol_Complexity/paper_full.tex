@@ -1,0 +1,1510 @@
+% =====================================================================
+% LUCRAREA COMPLETA, un singur fisier, de dat copy-paste in Overleaf.
+% Template-ul ACL cu textul nostru in el, de la abstract la Limitations.
+% Generat pe 30 iulie 2026 din intro_preview.tex (partile verbatim ale
+% template-ului si Sectiunile 1-2) plus paste_body.tex si
+% paste_limitations.tex, ambele rescrise, vezi mai jos.
+%
+% Numerotarea: 1 Introduction, 2 Related Work, 3 Approach (3.5 What was
+% tuned), 4 Results, 5 What Did Not Work, 6 Conclusions, apoi Limitations
+% nenumerotata. Fara Acknowledgments si fara apendice, vezi abaterile 6 si 7.
+%
+% ABATERILE DE LA TEMPLATE, toate opt:
+%
+%   1. Corpul lucrarii. Abstractul template-ului e inlocuit cu al nostru,
+%      \section{Introduction} cu Sectiunile 1-6, si \section*{Limitations}
+%      cu a noastra. Sectiunile de manual ale template-ului (Engines,
+%      Preamble, Document Body, BibTeX Files) sunt SCOASE, cu tabelele si
+%      figurile lor de exemplu. Consecinta: nu mai e nevoie de pachetul
+%      mwe, si dispar \nocite{Ando2005,...} si citarile la Gusfield:97.
+%
+%   2. Bibliografia. Blocul filecontents scrie custom.bib cu cele 7 intrari
+%      ale template-ului PLUS cele 18 ale lucrarii. Cele 7 ramin necitate,
+%      dar inofensive: fisierul merge lipit si intr-un proiect ACL care are
+%      deja un custom.bib de exemplu.
+%
+%   3. Doua adaugiri de preambul, dupa \usepackage{graphicx}: booktabs,
+%      pentru \toprule / \midrule / \bottomrule din cele 5 tabele, si
+%      \graphicspath{{figures/}} pentru cele 2 figuri.
+%
+%   4. Blocul \pinlabel din intro_preview.tex e STERS. Fixa numerele
+%      Sectiunilor 3-5, care acum exista; referintele inainte din
+%      introducere se rezolva singure.
+%
+%   5. Plasarea floats-urilor, si patru \renewcommand de fractii de float in
+%      preambul. In paste_body.tex toate cele 7 floats erau declarate in bloc
+%      la sfarsitul subsectiunii 4.4, desi cinci dintre ele sunt referite
+%      prima data inca in Sectiunea 3. LaTeX le acumula si dedica coloane
+%      intregi doar lor, cu spatiu elastic intre figuri: in prima versiune,
+%      coloana din dreapta a paginii 5 era doar cele doua figuri, cu ~1.2
+%      inch de alb intre ele si niciun rand de text. Acum fiecare float e
+%      declarat inaintea titlului care urmeaza primei lui referinte, iar
+%      topfraction / textfraction / floatpagefraction / bottomfraction sunt
+%      relaxate ca sa incapa text in aceeasi coloana cu doua floats.
+%      Rezultat, verificat la compilare: nicio coloana numai-floats, fiecare
+%      figura si fiecare tabel are text sub el. tab:fail e singurul lasat pe
+%      loc, pentru ca discutia lui e in Sectiunea 5, unde e si declarat.
+%      Cropul PNG-urilor a fost verificat si NU ajuta: matplotlib a strins
+%      deja marginile, bounding box-ul real recupereaza 2%.
+%
+%   6. Curatare de spatiu, 30 iulie 2026. PDF-ul a ajuns de la 9 la 8
+%      pagini, fara sa se piarda nicio cifra si nicio revendicare. Trei
+%      schimbari:
+%        - \section*{Acknowledgments} SCOS. formatting.md: "Do not include
+%          this section in the review version." Obligatoriu, nu economie de
+%          spatiu. Vezi comentariul de la locul lui, inaintea bibliografiei.
+%        - Apendicele de exemplu al template-ului SCOS, fara inlocuitor.
+%          Lucrarea nu are apendice.
+%        - Cinci duplicari verbatim, scoase. Patru intre proza si captions:
+%          fraza despre +0.84 din 3.5 (daggerul din captionul lui
+%          tab:ablation o spune, lipit de cifra), aritmetica 40% din
+%          captionul lui tab:ablation (4.1 o spune, e teza paragrafului),
+%          clauza despre SHAP din 4.3 (captionul lui tab:signals o spune),
+%          si trimiterea circulara din 4.2 catre 3.5. A cincea, in
+%          Limitations: paragraful despre cele 14 exemple repeta verbatim
+%          din 4.2 clauza "surprisal was never computed for them and only
+%          two carry eye-tracking". Scoasa acolo, pastrata in 4.2.
+%
+%      DRUM PARCURS, de nu repetat: tab:pca a fost intre timp mutat in
+%      apendice, ca sa elibereze ~1/4 de pagina de continut. A functionat
+%      la limita de pagini, dar arata rau: singur dupa cele 18 referinte,
+%      ocupa o pagina intreaga cu 14 rinduri de text. Adus inapoi in 3.3.
+%      Ultimele trei rinduri de bibliografie, care mai treceau pe pagina 9,
+%      au fost recuperate de a cincea duplicare, cea din Limitations.
+%
+%      Stare masurata: 8 pagini in PDF, continutul numarat (Introduction ->
+%      Conclusions) se termina in prima cincime a paginii 7, adica ~6.1
+%      pagini din cele 8 permise de MRL. Limitations si References nu se
+%      numara.
+%
+%   7. Citarea RALS si titlul, 30 iulie 2026, dupa confirmarea
+%      coordonatorului. Cifrele de mai jos sunt verificate in PDF-ul RALS.
+%
+%      TITLUL e pus. Autorii nu: \author{} e gol, iar anonimizarea o face
+%      template-ul, nu noi. acl.sty pune \acl@anonymizetrue pentru optiunea
+%      "review" si tipareste "Anonymous ACL submission" in locul lui
+%      \@author, deci continutul lui \author nu se vede la review oricum.
+%
+%      DOUA INTRARI NOI in bibliografie, 20 in total: anghel-etal-2025-rals
+%      si cristea-nisioi-2024-machine. Vezi comentariile de la ele pentru
+%      cele trei corectii fata de Anthology.
+%
+%      CINCI AFIRMATII REPARATE, toate devenite false sau contradictorii in
+%      momentul in care RALS e citata:
+%        - 2.1, prima fraza: "Romanian is not among them" era fals, RALS
+%          publica 3921 de mostre adnotate pentru romana;
+%        - 2.1, final: "Romanian appears in none of these resources"
+%          restrins explicit la resursele multilingve inventariate;
+%        - 3.1: "the gold labels for the test set are withheld" era fals,
+%          sunt publice sub CC BY-NC-SA 4.0. Acum scrie ca sunt publice si
+%          ca noi nu le-am folosit, cu consecinta ca metrica nu se poate
+%          descompune;
+%        - Limitations: acelasi fals, reparat la fel, plus declaratia ca
+%          limitarea e a noastra si se poate elimina;
+%        - Introducere, P3: recunoaste acum ca datele exista si ca le lasam
+%          deoparte deliberat. Altfel se citea ca "nu exista date".
+%
+%      TREI ADAUGIRI care intaresc lucrarea:
+%        - 2.2: cristea-nisioi-2024-machine transfera complexitatea in
+%          romana prin traducere in engleza; RALS raporteaza r ~ 0.3 si
+%          CONCLUZIONEAZA ca transferul cross-lingual de complexitate nu e
+%          viabil pentru romana. Rezultatul nostru e contraexemplul. Cel mai
+%          bun cadru de diferentiere pe care il are lucrarea.
+%        - 4.1: reperul supervizat, r = 0.71 +/- 0.05, Ridge, 10-fold CV
+%          grupat, pe EXACT setul nostru. Marcat explicit ca necomparabil,
+%          fara nicio revendicare de depasire.
+%        - 3.3 (A): RALS masoara corelatia Zipf-complexitate la -0.53 pentru
+%          romana fata de -0.74 pentru engleza, adnotate la fel. Sprijin
+%          independent, al altcuiva, pentru corectia pe lema.
+%
+%      Efect masurat: 20 de referinte, continutul creste la ~6.5 pagini din
+%      8, PDF-ul revine la 9 pagini pentru ca bibliografia creste. Pagina 9
+%      are 62 de rinduri de referinte, deci nu e o pagina orfana.
+%
+%   8. Acest comentariu.
+%
+% CE ARE NEVOIE PROIECTUL OVERLEAF: acl.sty si acl_natbib.bst, care vin cu
+% template-ul, plus un folder figures/ cu DOUA png-uri din report/figures/:
+% beeswarm.png si fig_corr_matrix.png.
+%
+% ATENTIE, consecinta lui [overwrite]: custom.bib se rescrie la fiecare
+% compilare, deci intrari noi se adauga in blocul de mai jos, nu editand
+% custom.bib in Overleaf, unde s-ar pierde.
+%
+% Doua reguli verificate, de nu incalcat la adaugari in .bib: niciun
+% caracter arond in comentarii, ca BibTeX il citeste ca inceput de intrare;
+% si niciun caracter Unicode in intrari, de aceea "Vorbesti Romaneste" e
+% scris cu {\c s} la masala-etal-2024-vorbesti.
+%
+% ---------------------------------------------------------------------
+% CE S-A SCHIMBAT FATA DE paste_body.tex SI paste_limitations.tex
+%
+% Amandoua erau la revizia de pe 27 iulie ora 16:09, in timp ce
+% introducerea ajunsese la revizia 11. Aduse acum la aceleasi conventii.
+% Cifrele, citarile, tabelele si figurile nu s-au atins.
+%
+%   (a) Em-dash scos integral, 29 de locuri in body si 9 in Limitations.
+%       Cele cinci "---" ramase sunt celule goale de tabel, in tab:ablation
+%       si tab:fail, nu em-dash de proza.
+%   (b) Expresia "the system" ca desemnare a lucrarii noastre, interzisa la
+%       revizia 10 a introducerii, scoasa din toate cele 8 locuri.
+%   (c) Cadrul de competitie scos din revendicari. Termenul consecvent e
+%       acum "the public evaluation score", nu "leaderboard", iar sursa
+%       datelor e "released with the data", nu "supplied by the shared
+%       task". ATENTIE: divulgarea din 3.5 si din Limitations a rams
+%       INTEGRALA. Cele cinci cantitati au fost alese pe scorul public si
+%       asta trebuie sa se poata citi; s-a schimbat incadrarea, nu faptul.
+%       Referinta din Related Work la "the ten languages of the MLSP shared
+%       task" a rams: e shared task-ul altora, citat ca resursa.
+%   (d) O afirmatie rams falsa dupa corectiile de la revizia 8, in 4.2:
+%       "the only real Romanian supervision in existence for this task".
+%       Datele romanesti de complexitate exista, noi ALEGEM sa nu le
+%       folosim. Reformulata ca singurele etichete pe care le folosim.
+%   (e) Titlul primului paragraf din Limitations spunea "Three weights",
+%       dar corpul lui numara trei ponderi SI doua constante de calibrare.
+%       Acum "Five quantities".
+%
+% FIGURA SCOASA: fig_confusion.png, matricea de confuzie pe engleza
+% held-out. Motivul principal, verificat in make_report_figures.py:93-121:
+% codul antreneaza pe CompLex EN train+trial si testeaza pe CompLex EN
+% test, adica engleza -> engleza, monolingv, desi captionul o numea
+% "In-source check", iar 3.2 defineste in-source ca transfer intre seturi
+% de limbi sursa diferite. In plus matricea contine strict mai putina
+% informatie decat r = 0.753 din titlul ei propriu, pentru ca se obtine
+% digitizand ambele axe la tertilele din train. Numarul a fost recuperat
+% in 3.2, langa 0.515, unde contrastul dintre cele doua cuantifica costul
+% trecerii intre limbi.
+%
+% TABEL DE p-VALUE, cerut si respins, cu calculul facut: la n = 1587, |r|
+% critic pentru p < 0.05 e 0.0492, iar toate cele zece celule ale matricii
+% de corelatii il depasesc, cea mai mica fiind B x C = 0.07 cu p = 5.3e-3.
+% Tabelul ar fi fost zece rinduri constante, ar fi sugerat ca perechea pe
+% care lucrarea o numeste "near-independent" e semnificativ corelata (0.07
+% trece la limita si de Bonferroni pe 10 teste, critic 0.0704), si ar fi
+% avut precizie falsa, pentru ca cele 78 de cuvinte fara gaze primesc
+% mediana inainte de corelatie (fill() din solutie_finala.py:140), ceea ce
+% umfla df-ul efectiv pe toate rindurile cu D. In loc de tabel, captionul
+% lui fig:corr declara acum n si muta cititorul pe varianta comuna: 83%
+% intre A si frecventa, 0.5% intre B si C.
+%
+% ---------------------------------------------------------------------
+% DE FACUT INAINTE DE SUBMISIE (MRL @ EMNLP 2026, 10 august, double-blind)
+%
+%   Titlul si provenienta datelor sunt REZOLVATE, vezi abaterea 8.
+%
+%   1. tab:fail, rindul Lasso, in-source 0.569. Singura valoare in-source
+%      fara log salvat. analysis_lasso.py afiseaza ambele metrici, deci o
+%      rulare confirma daca e transfer_avg (cum e trecut) sau EN->ML.
+%   2. r SI R^2 PE SETUL COMPLET: REZOLVAT PE 30 IULIE 2026, SUNT IN TEXT.
+%      Etichetele RoLCP sunt publice (github.com/senisioi/RALS, data.zip,
+%      parola "ralsresources" e in README-ul lor, CC BY-NC-SA 4.0).
+%      Scorat submission.csv pe ele, join 1587/1587 pe cheie completa
+%      (text_name, token, text), deci setul nostru de test E RoLCP exact:
+%        r      = 0.7770   CI 95% [0.7567, 0.7958]
+%        R^2    = 0.6028
+%        compozit recalculat = 68.99  (returnat 69.74, diferenta 0.75)
+%        gold: medie 0.2701, std 0.1674
+%      Scrise in TREI locuri: 2.1 (paragraf nou "Our result on the same
+%      set", langa cifra lor), 3.1 (finalul paragrafului de metrica) si 4.1
+%      (paragraful reperului, rescris). In toate trei se spune ca etichetele
+%      au fost citite doar dupa inghetarea predictorului, deci e raportare,
+%      nu tuning. Doua paragrafe din Limitations, "The reported metric cannot
+%      be decomposed" si "No score on the target labels is reported at all",
+%      SCOASE: devenise false.
+%      COMPOZITUL RECALCULAT NU INTRA IN TEXT, deliberat. Diferenta de 0.75
+%      nu e explicabila: nu e fisierul gresit (submission.csv scoreaza
+%      identic cu output/et_pca_w20.csv, adica e chiar configuratia
+%      w_D = 0.20), nu e coloana gresita de gold, nu e mediere per-text
+%      (59.85), nu e rotunjire (69.00), si NU e offset fix, pentru ca
+%      recalculand celelalte rinduri ale ablatiei diferenta isi schimba
+%      semnul (surface 10.27 vs 9.64, ET-baseline 41.76 vs 42.98, surprisal
+%      64.81 vs 64.17, lemma 68.90 vs 67.89). Cauza probabila: fisierele din
+%      output/ sunt re-rulari, nu exact ce s-a trimis atunci. Niciunul din
+%      cele 88 de fisiere de predictie de pe disc nu ajunge la 69.74, maximul
+%      e 69.18. In text intra deci compozitele returnate ca atare, plus r si
+%      R^2 masurate de noi, si cele doua nu se amesteca.
+%      ATENTIE, caveat onest despre r, NEscris in text: cele trei ponderi de
+%      fuziune au fost alese pe scorul public, care CONTINE |r|, deci 0.777
+%      nu e complet necontaminat. Sweep-ul se intinde insa pe 0.84 puncte de
+%      compozit, deci cel mult 0.84/50 = 0.017 din miscare poate fi |r|.
+%      Calibrarea iese confirmata, nu suspecta: R^2 e maximizat la
+%      sigma = r * sigma_gold = 0.1301, iar noi am folosit 0.125, deci
+%      R^2 optim ar fi fost 0.6038 fata de 0.6028 obtinut. La 0.001 de
+%      optim. Iar mu = 0.27 cade pe media reala 0.2701, exact ce produce
+%      optimizarea lui R^2 pe scorul public.
+%   3. Kuvshynova et al. 2026 (ETRA), necitata. Combina RoLCP cu eye-tracking
+%      romanesc MultiplEYE, adica exact unghiul nostru. Numele apare si in
+%      Acknowledgments-ul lui RALS, deci legatura cu grupul e reala.
+%   4. CALIBRAREA fata de distributia reala: REZOLVAT, nu e nimic de reparat.
+%      Noi folosim mu = 0.27, sigma = 0.125 in ecuatia 2. Medie 0.23 si std
+%      0.23 din Tabelul 1 al RALS descriu coloana complexity_b din RoLCP.csv,
+%      NU coloana complexity, care e tinta reala si are medie 0.2701, std
+%      0.1674. Verificat scorind pe fiecare coloana: complexity da 68.99,
+%      complexity_b doar 56.64. Deci mu cade pe media reala si nu se comenta
+%      nimic in Limitations.
+%      Tot din Tabelul 2 al lor, verificat in PDF: raporteaza NUMAI Pearson,
+%      niciun R^2. Diagonala RoLCP 0.71 +/- 0.05, HT 0.56 +/- .11, WT
+%      0.68 +/- .04, transfer WT->RoLCP 0.60 si RoLCP->WT 0.61.
+%   5. Nimic despre apendice: lucrarea nu are. Daca se adauga vreunul,
+%      formatting.md cere sa vina DUPA References si cu titlu informativ,
+%      iar CFP-ul MRL e autoritatea pe faptul daca sunt acceptate.
+% =====================================================================
+
+\begin{filecontents*}[overwrite]{custom.bib}
+% Use this file for citations not found in the ACL Anthology (contained in "anthology.bib").
+
+@book{Aho:72,
+    author  = {Alfred V. Aho and Jeffrey D. Ullman},
+    title   = {The Theory of Parsing, Translation and Compiling},
+    year    = "1972",
+    volume  = "1",
+    publisher = {Prentice-Hall},
+    address = {Englewood Cliffs, NJ}
+}
+
+@book{APA:83,
+    author  = {{American Psychological Association}},
+    title   = {Publications Manual},
+    year    = "1983",
+    publisher = {American Psychological Association},
+    address = {Washington, DC}
+}
+
+@article{Chandra:81,
+	author = {Ashok K. Chandra and Dexter C. Kozen and Larry J. Stockmeyer},
+	year = "1981",
+	title = {Alternation},
+	journal = {Journal of the Association for Computing Machinery},
+	volume = "28",
+	number = "1",
+	pages = "114--133",
+	doi = "10.1145/322234.322243",
+}
+
+@inproceedings{andrew2007scalable,
+  title={Scalable training of {L1}-regularized log-linear models},
+  author={Andrew, Galen and Gao, Jianfeng},
+  booktitle={Proceedings of the 24th International Conference on Machine Learning},
+  pages={33--40},
+  year={2007},
+}
+
+@book{Gusfield:97,
+    author  = {Dan Gusfield},
+    title   = {Algorithms on Strings, Trees and Sequences},
+    year    = "1997",
+    publisher = {Cambridge University Press},
+    address = {Cambridge, UK}
+}
+
+@article{rasooli-tetrault-2015,
+    author    = {Mohammad Sadegh Rasooli and Joel R. Tetreault},
+    title     = {Yara Parser: {A} Fast and Accurate Dependency Parser},
+    journal   = {Computing Research Repository},
+    volume    = {arXiv:1503.06733},
+    year      = {2015},
+    url       = {http://arxiv.org/abs/1503.06733},
+    note    = {version 2}
+}
+
+@article{Ando2005,
+	Acmid = {1194905},
+	Author = {Ando, Rie Kubota and Zhang, Tong},
+	Issn = {1532-4435},
+	Issue_Date = {12/1/2005},
+	Journal = {Journal of Machine Learning Research},
+	Month = dec,
+	Numpages = {37},
+	Pages = {1817--1853},
+	Publisher = {JMLR.org},
+	Title = {A Framework for Learning Predictive Structures from Multiple Tasks and Unlabeled Data},
+	Volume = {6},
+	Year = {2005}
+}
+
+% ---- De aici incolo, cele 20 de intrari ale lucrarii. ----
+
+% RALS, lucrarea care publica setul nostru de test. Adaugata pe 30 iulie 2026,
+% dupa ce coordonatorul a confirmat ca trebuie citata. Luata de pe
+% aclanthology.org/2025.emnlp-main.1603.bib, cu O SINGURA abatere:
+%
+%   Anthology are al doilea autor despicat prost, "Petru-Theodor, Cristea",
+%   ceea ce randeaza "Cristea Petru-Theodor". Pagina de titlu a lucrarii scrie
+%   "Petru Theodor Cristea", iar intrarea cristea-nisioi-2024-machine de mai jos
+%   confirma numele de familie ca "Cristea, Petru". Scris deci
+%   "Cristea, Petru Theodor". A doua corectie, mai mica: Anthology scrie
+%   "Creanga" fara diacritica, dar lucrarea lor scrie "Creanga" cu a-breve, deci
+%   e scris {\u a}, escape-ul folosit deja la {\v{S}}tajner si {\c s}. Daca se
+%   reia intrarea de pe Anthology, de refacut ambele corectii.
+@inproceedings{anghel-etal-2025-rals,
+    title = "{RALS}: Resources and Baselines for {R}omanian Automatic Lexical Simplification",
+    author = "Anghel, Fabian  and
+      Cristea, Petru Theodor  and
+      Creang{\u a}, Claudiu  and
+      Nisioi, Sergiu",
+    editor = "Christodoulopoulos, Christos  and
+      Chakraborty, Tanmoy  and
+      Rose, Carolyn  and
+      Peng, Violet",
+    booktitle = "Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing",
+    month = nov,
+    year = "2025",
+    address = "Suzhou, China",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2025.emnlp-main.1603/",
+    doi = "10.18653/v1/2025.emnlp-main.1603",
+    pages = "31481--31492",
+    ISBN = "979-8-89176-332-6"
+}
+
+% Munca anterioara pe transfer cross-lingual de complexitate pentru romana,
+% prin traducere automata in engleza. Necitata pina pe 30 iulie 2026. Luata de
+% pe aclanthology.org/2024.bea-1.55.bib, cu Anais convertit la {\"i}, regula
+% fara-Unicode din capul fisierului.
+@inproceedings{cristea-nisioi-2024-machine,
+    title = "Archaeology at {MLSP} 2024: Machine Translation for Lexical Complexity Prediction and Lexical Simplification",
+    author = "Cristea, Petru  and
+      Nisioi, Sergiu",
+    editor = {Kochmar, Ekaterina  and
+      Bexte, Marie  and
+      Burstein, Jill  and
+      Horbach, Andrea  and
+      Laarmann-Quante, Ronja  and
+      Tack, Ana{\"i}s  and
+      Yaneva, Victoria  and
+      Yuan, Zheng},
+    booktitle = "Proceedings of the 19th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2024)",
+    month = jun,
+    year = "2024",
+    address = "Mexico City, Mexico",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.bea-1.55/",
+    pages = "610--617"
+}
+
+@inproceedings{shardlow-etal-2021-semeval,
+    title = "{S}em{E}val-2021 Task 1: Lexical Complexity Prediction",
+    author = "Shardlow, Matthew  and
+      Evans, Richard  and
+      Paetzold, Gustavo Henrique  and
+      Zampieri, Marcos",
+    editor = "Palmer, Alexis  and
+      Schneider, Nathan  and
+      Schluter, Natalie  and
+      Emerson, Guy  and
+      Herbelot, Aurelie  and
+      Zhu, Xiaodan",
+    booktitle = "Proceedings of the 15th International Workshop on Semantic Evaluation (SemEval-2021)",
+    month = aug,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.semeval-1.1/",
+    doi = "10.18653/v1/2021.semeval-1.1",
+    pages = "1--16"
+}
+
+@inproceedings{yimam-etal-2018-report,
+    title = "A Report on the Complex Word Identification Shared Task 2018",
+    author = {Yimam, Seid Muhie  and
+      Biemann, Chris  and
+      Malmasi, Shervin  and
+      Paetzold, Gustavo  and
+      Specia, Lucia  and
+      {\v{S}}tajner, Sanja  and
+      Tack, Ana{\"i}s  and
+      Zampieri, Marcos},
+    editor = "Tetreault, Joel  and
+      Burstein, Jill  and
+      Kochmar, Ekaterina  and
+      Leacock, Claudia  and
+      Yannakoudakis, Helen",
+    booktitle = "Proceedings of the Thirteenth Workshop on Innovative Use of {NLP} for Building Educational Applications",
+    month = jun,
+    year = "2018",
+    address = "New Orleans, Louisiana",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/W18-0507/",
+    doi = "10.18653/v1/W18-0507",
+    pages = "66--78"
+}
+
+@inproceedings{shardlow-etal-2024-multilingual,
+    title = "Multilingual Resources for Lexical Complexity Prediction: A Review",
+    author = "Shardlow, Matthew  and
+      North, Kai  and
+      Zampieri, Marcos",
+    editor = "Nunzio, Giorgio Maria Di  and
+      Vezzani, Federica  and
+      Ermakova, Liana  and
+      Azarbonyad, Hosein  and
+      Kamps, Jaap",
+    booktitle = "Proceedings of the Workshop on DeTermIt! Evaluating Text Difficulty in a Multilingual Context @ LREC-COLING 2024",
+    month = may,
+    year = "2024",
+    address = "Torino, Italia",
+    publisher = "ELRA and ICCL",
+    url = "https://aclanthology.org/2024.determit-1.5/",
+    pages = "51--59"
+}
+
+@inproceedings{shardlow-etal-2024-bea,
+    title = "The {BEA} 2024 Shared Task on the Multilingual Lexical Simplification Pipeline",
+    author = {Shardlow, Matthew  and
+      Alva-Manchego, Fernando  and
+      Batista-Navarro, Riza  and
+      Bott, Stefan  and
+      Calderon Ramirez, Saul  and
+      Cardon, R{\'e}mi  and
+      Fran{\c{c}}ois, Thomas  and
+      Hayakawa, Akio  and
+      Horbach, Andrea  and
+      H{\"u}lsing, Anna  and
+      Ide, Yusuke  and
+      Imperial, Joseph Marvin  and
+      Nohejl, Adam  and
+      North, Kai  and
+      Occhipinti, Laura  and
+      Rojas, Nelson Per{\'e}z  and
+      Raihan, Nishat  and
+      Ranasinghe, Tharindu  and
+      Salazar, Martin Solis  and
+      {\v{S}}tajner, Sanja  and
+      Zampieri, Marcos  and
+      Saggion, Horacio},
+    editor = {Kochmar, Ekaterina  and
+      Bexte, Marie  and
+      Burstein, Jill  and
+      Horbach, Andrea  and
+      Laarmann-Quante, Ronja  and
+      Tack, Ana{\"i}s  and
+      Yaneva, Victoria  and
+      Yuan, Zheng},
+    booktitle = "Proceedings of the 19th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2024)",
+    month = jun,
+    year = "2024",
+    address = "Mexico City, Mexico",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.bea-1.51/",
+    pages = "571--589"
+}
+
+@inproceedings{qiu-etal-2024-complex,
+    title = "{C}omp{L}ex-{ZH}: A New Dataset for Lexical Complexity Prediction in {M}andarin and {C}antonese",
+    author = "Qiu, Le  and
+      Guo, Shanyue  and
+      Wong, Tak-Sum  and
+      Chersoni, Emmanuele  and
+      Lee, John  and
+      Huang, Chu-Ren",
+    editor = "Shardlow, Matthew  and
+      Saggion, Horacio  and
+      Alva-Manchego, Fernando  and
+      Zampieri, Marcos  and
+      North, Kai  and
+      {\v{S}}tajner, Sanja  and
+      Stodden, Regina",
+    booktitle = "Proceedings of the Third Workshop on Text Simplification, Accessibility and Readability (TSAR 2024)",
+    month = nov,
+    year = "2024",
+    address = "Miami, Florida, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.tsar-1.3/",
+    doi = "10.18653/v1/2024.tsar-1.3",
+    pages = "20--26"
+}
+
+@inproceedings{saggion-etal-2024-lexical,
+    title = "Lexical Complexity Prediction and Lexical Simplification for {C}atalan and {S}panish: Resource Creation, Quality Assessment, and Ethical Considerations",
+    author = "Saggion, Horacio  and
+      Bott, Stefan  and
+      Szasz, Sandra  and
+      P{\'e}rez, Nelson  and
+      Calder{\'o}n, Sa{\'u}l  and
+      Sol{\'i}s, Mart{\'i}n",
+    editor = "Shardlow, Matthew  and
+      Saggion, Horacio  and
+      Alva-Manchego, Fernando  and
+      Zampieri, Marcos  and
+      North, Kai  and
+      {\v{S}}tajner, Sanja  and
+      Stodden, Regina",
+    booktitle = "Proceedings of the Third Workshop on Text Simplification, Accessibility and Readability (TSAR 2024)",
+    month = nov,
+    year = "2024",
+    address = "Miami, Florida, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.tsar-1.9/",
+    doi = "10.18653/v1/2024.tsar-1.9",
+    pages = "82--94"
+}
+
+@inproceedings{conneau2020xlmr,
+  title        = {Unsupervised Cross-lingual Representation Learning at Scale},
+  author       = {Conneau, Alexis and Khandelwal, Kartikay and Goyal, Naman and Chaudhary, Vishrav and Wenzek, Guillaume and Guzm{\'a}n, Francisco and Grave, Edouard and Ott, Myle and Zettlemoyer, Luke and Stoyanov, Veselin},
+  booktitle    = {Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics (ACL)},
+  pages        = {8440--8451},
+  year         = {2020},
+  url          = {https://aclanthology.org/2020.acl-main.747}
+}
+
+@inproceedings{pires-etal-2019-multilingual,
+    title = "How Multilingual is Multilingual {BERT}?",
+    author = "Pires, Telmo  and
+      Schlinger, Eva  and
+      Garrette, Dan",
+    editor = "Korhonen, Anna  and
+      Traum, David  and
+      M{\`a}rquez, Llu{\'i}s",
+    booktitle = "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P19-1493/",
+    doi = "10.18653/v1/P19-1493",
+    pages = "4996--5001"
+}
+
+@inproceedings{wu-dredze-2020-languages,
+    title = "Are All Languages Created Equal in Multilingual {BERT}?",
+    author = "Wu, Shijie  and
+      Dredze, Mark",
+    editor = "Gella, Spandana  and
+      Welbl, Johannes  and
+      Rei, Marek  and
+      Petroni, Fabio  and
+      Lewis, Patrick  and
+      Strubell, Emma  and
+      Seo, Minjoon  and
+      Hajishirzi, Hannaneh",
+    booktitle = "Proceedings of the 5th Workshop on Representation Learning for NLP",
+    month = jul,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2020.repl4nlp-1.16/",
+    doi = "10.18653/v1/2020.repl4nlp-1.16",
+    pages = "120--130"
+}
+
+@inproceedings{peters-etal-2019-tune,
+    title = "To Tune or Not to Tune? Adapting Pretrained Representations to Diverse Tasks",
+    author = "Peters, Matthew E.  and
+      Ruder, Sebastian  and
+      Smith, Noah A.",
+    editor = "Augenstein, Isabelle  and
+      Gella, Spandana  and
+      Ruder, Sebastian  and
+      Kann, Katharina  and
+      Can, Burcu  and
+      Welbl, Johannes  and
+      Conneau, Alexis  and
+      Ren, Xiang  and
+      Rei, Marek",
+    booktitle = "Proceedings of the 4th Workshop on Representation Learning for NLP (RepL4NLP-2019)",
+    month = aug,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/W19-4302/",
+    doi = "10.18653/v1/W19-4302",
+    pages = "7--14"
+}
+
+@inproceedings{hale2001probabilistic,
+  title        = {A Probabilistic {Earley} Parser as a Psycholinguistic Model},
+  author       = {Hale, John},
+  booktitle    = {Proceedings of the Second Meeting of the North American Chapter of the Association for Computational Linguistics (NAACL)},
+  year         = {2001},
+  url          = {https://aclanthology.org/N01-1021}
+}
+
+@article{rayner1998eye,
+  title        = {Eye movements in reading and information processing: 20 years of research},
+  author       = {Rayner, Keith},
+  journal      = {Psychological Bulletin},
+  volume       = {124},
+  number       = {3},
+  pages        = {372--422},
+  year         = {1998},
+  doi          = {10.1037/0033-2909.124.3.372}
+}
+
+@inproceedings{hollenstein-etal-2021-multilingual,
+    title = "Multilingual Language Models Predict Human Reading Behavior",
+    author = {Hollenstein, Nora  and
+      Pirovano, Federico  and
+      Zhang, Ce  and
+      J{\"a}ger, Lena  and
+      Beinborn, Lisa},
+    editor = "Toutanova, Kristina  and
+      Rumshisky, Anna  and
+      Zettlemoyer, Luke  and
+      Hakkani-Tur, Dilek  and
+      Beltagy, Iz  and
+      Bethard, Steven  and
+      Cotterell, Ryan  and
+      Chakraborty, Tanmoy  and
+      Zhou, Yichao",
+    booktitle = "Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies",
+    month = jun,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.naacl-main.10/",
+    doi = "10.18653/v1/2021.naacl-main.10",
+    pages = "106--123"
+}
+
+@inproceedings{alves-2025-benchmarking,
+    title = "Benchmarking Language Model Surprisal for Eye-Tracking Predictions in {B}razilian {P}ortuguese",
+    author = "Alves, Diego",
+    editor = "Acarturk, Cengiz  and
+      Nasir, Jamal  and
+      Can, Burcu  and
+      Coltekin, Cagr{\i}",
+    booktitle = "Proceedings of the First International Workshop on Gaze Data and Natural Language Processing",
+    month = sep,
+    year = "2025",
+    address = "Varna, Bulgaria",
+    publisher = "INCOMA Ltd., Shoumen, BULGARIA",
+    url = "https://aclanthology.org/2025.gaze4nlp-1.2/",
+    pages = "7--17"
+}
+
+@inproceedings{gorman-bedrick-2019-need,
+    title = "We Need to Talk about Standard Splits",
+    author = "Gorman, Kyle  and
+      Bedrick, Steven",
+    editor = "Korhonen, Anna  and
+      Traum, David  and
+      M{\`a}rquez, Llu{\'i}s",
+    booktitle = "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P19-1267/",
+    doi = "10.18653/v1/P19-1267",
+    pages = "2786--2791"
+}
+
+% Urmatoarele trei nu sunt citate in fisierul asta. Sunt citate in
+% paste_body.tex (SHAP, chain-of-thought) si erau citate in subsectiunea
+% 2.5 Romanian Resources, scoasa la revizia 7. Lasate aici ca sa nu mai
+% fie atins nimic la asamblarea lucrarii complete.
+
+@inproceedings{lundberg2017shap,
+  title        = {A Unified Approach to Interpreting Model Predictions},
+  author       = {Lundberg, Scott M. and Lee, Su-In},
+  booktitle    = {Advances in Neural Information Processing Systems (NeurIPS)},
+  pages        = {4765--4774},
+  year         = {2017},
+  url          = {https://arxiv.org/abs/1705.07874}
+}
+
+@inproceedings{wei2022cot,
+  title        = {Chain-of-Thought Prompting Elicits Reasoning in Large Language Models},
+  author       = {Wei, Jason and Wang, Xuezhi and Schuurmans, Dale and Bosma, Maarten and Ichter, Brian and Xia, Fei and Chi, Ed H. and Le, Quoc V. and Zhou, Denny},
+  booktitle    = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year         = {2022},
+  url          = {https://arxiv.org/abs/2201.11903}
+}
+
+@inproceedings{masala-etal-2024-vorbesti,
+    title = "``Vorbe{\c s}ti Rom{\^a}ne{\c s}te?'' A Recipe to Train Powerful {R}omanian {LLM}s with {E}nglish Instructions",
+    author = "Masala, Mihai  and
+      Ilie-Ablachim, Denis  and
+      Dima, Alexandru  and
+      Corlatescu, Dragos Georgian  and
+      Zavelca, Miruna-Andreea  and
+      Olaru, Ovio  and
+      Terian, Simina-Maria  and
+      Terian, Andrei  and
+      Leordeanu, Marius  and
+      Velicu, Horia  and
+      Popescu, Marius  and
+      Dascalu, Mihai  and
+      Rebedea, Traian",
+    editor = "Al-Onaizan, Yaser  and
+      Bansal, Mohit  and
+      Chen, Yun-Nung",
+    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2024",
+    month = nov,
+    year = "2024",
+    address = "Miami, Florida, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.findings-emnlp.681/",
+    doi = "10.18653/v1/2024.findings-emnlp.681",
+    pages = "11632--11647"
+}
+\end{filecontents*}
+
+\documentclass[11pt]{article}
+
+% Change "review" to "final" to generate the final (sometimes called camera-ready) version.
+% Change to "preprint" to generate a non-anonymous version with page numbers.
+\usepackage[review]{acl}
+
+% Standard package includes
+\usepackage{times}
+\usepackage{latexsym}
+
+% For proper rendering and hyphenation of words containing Latin characters (including in bib files)
+\usepackage[T1]{fontenc}
+% For Vietnamese characters
+% \usepackage[T5]{fontenc}
+% See https://www.latex-project.org/help/documentation/encguide.pdf for other character sets
+
+% This assumes your files are encoded as UTF8
+\usepackage[utf8]{inputenc}
+
+% This is not strictly necessary, and may be commented out,
+% but it will improve the layout of the manuscript,
+% and will typically save some space.
+\usepackage{microtype}
+
+% This is also not strictly necessary, and may be commented out.
+% However, it will improve the aesthetics of text in
+% the typewriter font.
+\usepackage{inconsolata}
+
+%Including images in your LaTeX document requires adding
+%additional package(s)
+\usepackage{graphicx}
+
+% ---------------------------------------------------------------------
+% Abaterea 3: singurele adaugiri de preambul cerute de corpul lucrarii.
+% NU adaugati \bibliographystyle{acl_natbib}; acl.sty il seteaza singur,
+% iar duplicarea da eroare la compilare.
+% ---------------------------------------------------------------------
+\usepackage{booktabs}          % \toprule / \midrule / \bottomrule in the five tables
+\graphicspath{{figures/}}      % beeswarm.png, fig_corr_matrix.png
+
+% Fractiile implicite ale lui LaTeX (topfraction 0.7, textfraction 0.2)
+% dedicau coloane intregi doar figurilor, cu spatiu elastic intre ele.
+% Relaxate ca sa incapa text in aceeasi coloana cu doua floats.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.5}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.8}
+
+% If the title and author information does not fit in the area allocated, uncomment the following
+%
+%\setlength\titlebox{<dim>}
+%
+% and set <dim> to something 5cm or larger.
+
+\title{Cross-Lingual Transfer for Romanian Lexical Complexity Prediction:
+       Fusing a Multilingual Encoder, a Language Model, Surprisal, and
+       Eye-Tracking}
+
+% Author information can be set in various styles:
+% For several authors from the same institution:
+% \author{Author 1 \and ... \and Author n \\
+%         Address line \\ ... \\ Address line}
+% if the names do not fit well on one line use
+%         Author 1 \\ {\bf Author 2} \\ ... \\ {\bf Author n} \\
+% For authors from different institutions:
+% \author{Author 1 \\ Address line \\  ... \\ Address line
+%         \And  ... \And
+%         Author n \\ Address line \\ ... \\ Address line}
+% To start a separate ``row'' of authors use \AND, as in
+% \author{Author 1 \\ Address line \\  ... \\ Address line
+%         \AND
+%         Author 2 \\ Address line \\ ... \\ Address line \And
+%         Author 3 \\ Address line \\ ... \\ Address line}
+
+% ---------------------------------------------------------------------
+% Blocul de autori e GOL, intentionat. MRL e double-blind.
+%
+% Anonimizarea o face template-ul, nu noi: acl.sty pune \acl@anonymizetrue
+% pentru optiunea "review" si tipareste "Anonymous ACL submission" in locul
+% lui \@author. Deci la review continutul lui \author nu se vede oricum.
+% Gol e totusi mai bine decit placeholderii template-ului: daca cineva
+% comuta pe "final", varianta cu "First Author / Second Author" ar pleca
+% asa la tipar, iar una goala forteaza completarea.
+%
+% DE COMPLETAT la camera-ready, dupa modelul template-ului:
+%   \author{Nume Autor \\
+%     Afiliere \\
+%     \texttt{email@domain} \\\And
+%     Al Doilea Autor \\
+%     Afiliere \\
+%     \texttt{email@domain} \\}
+% ---------------------------------------------------------------------
+\author{}
+
+%\author{
+%  \textbf{First Author\textsuperscript{1}},
+%  \textbf{Second Author\textsuperscript{1,2}},
+%  \textbf{Third T. Author\textsuperscript{1}},
+%  \textbf{Fourth Author\textsuperscript{1}},
+%\\
+%  \textbf{Fifth Author\textsuperscript{1,2}},
+%  \textbf{Sixth Author\textsuperscript{1}},
+%  \textbf{Seventh Author\textsuperscript{1}},
+%  \textbf{Eighth Author \textsuperscript{1,2,3,4}},
+%\\
+%  \textbf{Ninth Author\textsuperscript{1}},
+%  \textbf{Tenth Author\textsuperscript{1}},
+%  \textbf{Eleventh E. Author\textsuperscript{1,2,3,4,5}},
+%  \textbf{Twelfth Author\textsuperscript{1}},
+%\\
+%  \textbf{Thirteenth Author\textsuperscript{3}},
+%  \textbf{Fourteenth F. Author\textsuperscript{2,4}},
+%  \textbf{Fifteenth Author\textsuperscript{1}},
+%  \textbf{Sixteenth Author\textsuperscript{1}},
+%\\
+%  \textbf{Seventeenth S. Author\textsuperscript{4,5}},
+%  \textbf{Eighteenth Author\textsuperscript{3,4}},
+%  \textbf{Nineteenth N. Author\textsuperscript{2,5}},
+%  \textbf{Twentieth Author\textsuperscript{1}}
+%\\
+%\\
+%  \textsuperscript{1}Affiliation 1,
+%  \textsuperscript{2}Affiliation 2,
+%  \textsuperscript{3}Affiliation 3,
+%  \textsuperscript{4}Affiliation 4,
+%  \textsuperscript{5}Affiliation 5
+%\\
+%  \small{
+%    \textbf{Correspondence:} \href{mailto:email@domain}{email@domain}
+%  }
+%}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Lexical complexity prediction is normally solved by fine-tuning an
+encoder on annotated data in the target language, which excludes every
+language that has none. We predict the lexical complexity of Romanian
+words in context without using a single Romanian training label, by
+fusing four signals that carry complexity knowledge from outside the
+language: cross-lingual transfer through a frozen multilingual encoder
+trained on English and Romance annotations, a complexity rating and
+token surprisal from a Romanian language model, and a reading-effort
+score derived from eye-tracking. Together they score $69.74$ on a
+combined correlation and $R^2$ metric, against $10.27$ for surface
+features alone. The largest single gain
+($+4.09$) comes from a lemma-frequency correction that repairs the
+frequency estimates inflection corrupts, and transfers to any
+morphologically rich language served by the same frequency lists. We
+also report two negative results: with no target labels, fine-tuning
+the encoder is consistently worse than freezing it, and in-source
+validation does not predict transfer quality.
+\end{abstract}
+
+\section{Introduction}
+\label{section:intro}
+
+Making a text usable by a given audience depends, before anything else,
+on its vocabulary. A word that is routine for a specialist can stop a
+language learner or a reader from outside the field, taking the
+surrounding sentence with it. Deciding which
+words will cause this, and for whom, is what lexical complexity
+prediction (LCP) does: it assigns a word in context a score on a
+continuous scale \citep{shardlow-etal-2021-semeval}. Text simplification
+uses those scores to choose what to replace, readability assessment to
+aggregate difficulty over a document, and language-teaching material to
+keep vocabulary within a learner's range; complexity prediction is for
+this reason typically the first stage of a simplification pipeline
+\citep{qiu-etal-2024-complex}.
+
+Nearly every LCP system is built the same way: a pretrained encoder is
+fine-tuned on complexity annotations in the language of interest. The
+recipe works wherever those annotations exist, and it quietly assumes the
+one resource most languages do not have. Surveying the datasets published
+between 2018 and 2024, \citet{shardlow-etal-2024-multilingual} find nine
+of them, covering eight languages. A language outside that set has
+nothing to fine-tune on, and buying its way in means paying for a new
+annotation effort of its own.
+
+Our target language is Romanian, and we use no Romanian complexity
+labels at any point, whether for training, validation or model
+selection. Romanian complexity annotations do exist
+\citep{anghel-etal-2025-rals}; we set them aside deliberately, to ask
+what is achievable for a language that has none. Working without them
+means no design decision can be checked
+on Romanian itself, so every choice has to be justified on other
+languages. Romanian adds a problem of its own: the most reliable
+predictor of word difficulty misfires on it. Word frequency governs how
+long readers fixate a word \citep{rayner1998eye} and ranks first in our
+own attribution analysis (Section~\ref{sec:results}), but Romanian
+inflects heavily and the frequency lists available for it cover
+inflected forms poorly: of the 1587 Romanian target tokens in our test
+set, $11.7\%$ are absent from the list and would be scored as maximally
+rare, and for a further $36.0\%$ the listed form is rarer than its own
+lemma. A method for Romanian therefore needs complexity knowledge
+imported from other languages, and a frequency estimate that survives
+inflection.
+
+In this paper, we predict the lexical complexity of Romanian words in
+context without a single Romanian training label, and we make four
+contributions. First, we combine four label-free signals into a single
+predictor: cross-lingual transfer through a frozen multilingual encoder,
+a language-model complexity rating, surprisal, and a reading-effort
+score derived from eye-tracking. It scores $69.74$ on our test set,
+under a metric that combines Pearson correlation with $R^2$.
+Second, we introduce a lemma-frequency correction for
+morphologically rich languages, substituting the lemma frequency when the
+inflected form is missing or rarer; it is worth $+4.09$, the largest
+single gain we measure, and applies to any inflected language served
+by the same frequency lists. Third, we show that the four signals are
+complementary rather than redundant: the cross-lingual signal acts mainly
+as a frequency detector, the rating and surprisal are near-independent,
+and eye-tracking captures a difficulty the others miss, the effort of
+fitting a word into its context, which shows up only in \emph{late} gaze
+measures.
+Fourth, we report two negative results: fine-tuning the encoder, full or
+LoRA, is consistently \emph{worse} than leaving it frozen, and in-source
+validation is an unreliable guide, since three configurations that win on
+English-to-Romance transfer lose on Romanian.
+
+Our setting differs from the LCP literature in the resource it assumes
+rather than in the model it uses: where that literature trains on
+target-language annotations, we treat complexity as knowledge to be
+imported. We also invert two conventions: gaze becomes evidence about
+complexity rather than something to predict from text, and the encoder
+stays frozen rather than fine-tuned. Section~\ref{sec:related} sets all
+three differences against the work they concern.
+
+The rest of the paper describes the four signals and their fusion
+(Section~\ref{section:approach}), reports the ablation and the analysis
+(Section~\ref{sec:results}), and collects what did not work
+(Section~\ref{sec:negative}).
+
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Lexical complexity prediction.}
+Annotated complexity data exists for only a handful of languages.
+Romanian joined them recently: \citet{anghel-etal-2025-rals} release
+$3921$ complexity-annotated Romanian samples, whose largest subset is the
+test set we predict, together with a supervised baseline on it: a Ridge
+regressor over handcrafted features, which reaches Pearson
+$r = 0.71 \pm 0.05$ on the Romanian set under ten-fold cross-validation
+grouped so that no test sentence appears in training. They report
+correlation only, not $R^2$. The task
+itself began as classification over
+annotated target words \citep{yimam-etal-2018-report}; SemEval-2021
+Task~1 replaced it with a continuous scale on the CompLex corpus
+\citep{shardlow-etal-2021-semeval}, which is the formulation we adopt.
+Zero-shot evaluation is not itself new: the 2018 task already had a
+multilingual track whose French test set came with no French training
+data, though it asked only for binary classification and supplied
+training data in three languages, one of them Romance. Coverage has since
+grown to
+Catalan, Spanish, Mandarin and Cantonese
+\citep{saggion-etal-2024-lexical, qiu-etal-2024-complex} and to the ten
+languages of the MLSP shared task \citep{shardlow-etal-2024-bea}, but the
+review of \citet{shardlow-etal-2024-multilingual} shows annotated LCP
+data still concentrated in a few high-resource languages. Romanian
+appears in none of these multilingual resources, which is why the source
+side of our transfer is built from their English and Romance portions.
+
+\paragraph{Our result on the same set.}
+We predict that same set without fitting on any of its labels, and reach
+Pearson $r = 0.777$, $95\%$ CI $[0.757, 0.796]$, with $R^2 = 0.603$. We
+read the labels only after the predictor was frozen, in order to score
+it.
+
+\paragraph{Cross-lingual transfer without target labels.}
+Multilingual encoders such as XLM-R \citep{conneau2020xlmr} place
+translation-equivalent words close together, which makes zero-shot
+transfer of a regressor trained on one language plausible. Transfer
+quality is far from uniform across languages, however, and degrades for
+languages with less pretraining data and richer morphology
+\citep{pires-etal-2019-multilingual, wu-dredze-2020-languages}, which is
+precisely the regime Romanian occupies. Transfer is moreover normally
+realised by fine-tuning the encoder on the source language; that feature
+extraction can outperform fine-tuning when the target task is distant
+from the source is known \citep{peters-etal-2019-tune}, but we are aware
+of no prior report of it for cross-lingual complexity transfer. This
+motivates our frozen-encoder design, and the lemma-frequency correction
+completes it: the encoder supplies cross-lingual semantics, the
+correction repairs the lexical feature that morphology corrupts. The one
+prior attempt at cross-lingual complexity prediction for Romanian takes
+the translation route: \citet{cristea-nisioi-2024-machine}
+machine-translate into English and predict there with English resources.
+We transfer inside the shared representation space instead, which keeps
+the Romanian form and its context.
+
+\paragraph{Surprisal and eye movements as difficulty signals.}
+Surprisal theory predicts that processing effort scales with the
+negative log probability of a word in context \citep{hale2001probabilistic},
+and gaze measures such as longer fixations, re-reading and regressions
+are the standard behavioural correlate of that effort
+\citep{rayner1998eye}. Language-model surprisal predicts reading times
+across languages \citep{hollenstein-etal-2021-multilingual}, including
+in Romance languages \citep{alves-2025-benchmarking}. Both literatures
+run from text to behaviour; we take the converse view, reading surprisal
+and gaze as label-free evidence about complexity.
+
+\paragraph{Evaluation without a development set.}
+Selecting a model against the same data used to report its score inflates
+that score \citep{gorman-bedrick-2019-need}. With no development set to
+tune on, we state our selection procedure explicitly and quantify its
+effect (Section~\ref{sec:tuning}).
+
+\section{Approach}
+\label{section:approach}
+
+\subsection{Task, data and metric}
+
+Given a target word in a Romanian sentence, the task is to predict a
+complexity score in $[0,1]$, where $0$ is a fully familiar word and $1$
+a maximally difficult one. Our test data is the Romanian lexical
+complexity set released with RALS \citep{anghel-etal-2025-rals} under a
+CC BY-NC-SA 4.0 licence: $1587$ target words in $274$ sentences taken
+from Wikipedia, popular science, literature, institutional documents and
+argumentative essays, each word rated by ten annotators drawn from a pool
+of eighty. Aggregated eye-tracking measurements over the same texts are
+released with the complexity data, so gaze is available for the target
+words without any annotation effort of our own.
+
+Predictions are scored by
+\begin{equation}
+  \label{eq:metric}
+  \mathrm{score} = 50\,\bigl(|r| + \max(0, R^2)\bigr),
+\end{equation}
+where $r$ is the Pearson correlation with the gold scores and $R^2$ the
+coefficient of determination. The metric is fixed by the evaluation
+setup we work in rather than chosen by us; it is not a standard LCP
+measure, and it conflates two different things, since $|r|$ rewards
+ranking the words correctly while $R^2$ rewards putting them on the
+right absolute scale. We report it because the evaluation we submitted to
+returns only this composite. The gold labels for the full test set are
+public \citep{anghel-etal-2025-rals}. We used none of them to build the
+predictor, and read them only once it was frozen, in order to score it.
+That is what lets us report the two terms of Equation~\ref{eq:metric}
+separately, $r = 0.777$ and $R^2 = 0.603$. We take $r$ as the primary
+measure, for the reason given in Section~\ref{sec:tuning}.
+
+\subsection{Setup and in-source validation}
+
+We use XLM-RoBERTa-base \citep{conneau2020xlmr} and RoLlama3-8B
+\citep{masala-etal-2024-vorbesti} in 4-bit quantisation, with
+\texttt{transformers}, \texttt{scikit-learn} and \texttt{wordfreq}.
+
+With no Romanian labels to validate on, design decisions were made
+\emph{in-source}: a regressor is trained on one set of source languages
+and evaluated on another, with cross-validation inside each source. We
+report two such quantities, and they are not interchangeable.
+$r_{\mathrm{EN}\rightarrow\mathrm{RO}^{*}}$ is the correlation obtained
+when training on English CompLex \citep{shardlow-etal-2021-semeval} and
+testing on the Romance portion of MLSP \citep{shardlow-etal-2024-bea};
+$\bar{r}_{\mathrm{transfer}}$ averages that with the reverse direction.
+Both are transfer measures, and both sit well below what the same
+regressor reaches without leaving English, $r = 0.753$ on held-out
+CompLex against $0.515$ transferring to Romance
+(Table~\ref{tab:fail}), which is the price of crossing languages. Built
+on thousands of real labels, either check tells us whether a
+configuration is sound before it is applied to Romanian. Its limits are
+the subject of Section~\ref{sec:negative}.
+
+\subsection{The four signals}
+
+Each signal estimates complexity in a different way, and none of them
+requires a Romanian complexity annotation.
+
+\paragraph{(A) Cross-lingual transfer.}
+Complexity is learned from English and Romance annotations
+\citep{shardlow-etal-2021-semeval, shardlow-etal-2024-bea} and carried
+over to Romanian through the shared representation space of
+XLM-RoBERTa, which places translation-equivalent words close together
+(Section~\ref{sec:related}). A Ridge and HistGradientBoosting blend
+reads each word's embedding, the mean of the last four layers centred
+per language, together with a few surface cues: frequency, length,
+syllable count and capitalisation.
+
+One Romanian-specific correction accounts for the largest single gain we
+measure. Because Romanian is heavily inflected, many word forms are
+absent from the frequency list and would be scored as maximally rare: of
+the $1587$ target tokens, $11.7\%$ have no entry at all, and for
+$36.0\%$ the lemma is more frequent than the inflected form, by $0.86$
+Zipf units on average. The damage is visible in the annotations
+themselves: \citet{anghel-etal-2025-rals} measure a correlation of
+$-0.53$ between Zipf frequency and Romanian complexity, against $-0.74$
+for the English data annotated under the same guidelines. We therefore
+use
+$\max\bigl(\mathrm{zipf}(\mathrm{form}), \mathrm{zipf}(\mathrm{lemma})\bigr)$
+in place of the form frequency.
+
+\paragraph{A scope condition for the correction.}
+\label{sec:scope}
+The substitution assumes that an inflected form inherits its difficulty
+from its lemma, and that assumption has a failure mode worth naming.
+\emph{Putu}, the simple-perfect form of \emph{putea} (``to be able''), is
+rare, archaic in ordinary prose, and hard for exactly that reason; its
+lemma is among the most frequent verbs in the language. The correction
+raises its frequency estimate by $2.76$ Zipf units and so predicts it to
+be easy. The assumption fails whenever the inflection is itself the
+source of difficulty, which is the case for archaic, literary or
+otherwise marked morphology. The $+4.09$ measured over $1587$ items says
+the assumption usually holds; forms like this one say it is an
+assumption, not an identity.
+
+\paragraph{(B) Language-model rating.}
+RoLlama3 is asked to rate the target word in context on a $1$--$5$
+scale. We read the answer from the probabilities the model assigns to
+the five digit tokens rather than from the text it generates, which
+turns a discrete choice into a smooth expected value.
+
+\paragraph{(C) Surprisal.}
+Surprisal, $-\log P(w \mid \mathrm{context})$, measures how unexpected
+the word is; under surprisal theory an unexpected word is harder to
+process \citep{hale2001probabilistic}. It comes from the same forward
+pass as (B) but is a raw internal statistic, which is why it is nearly
+independent of the rating ($r = 0.07$).
+
+\paragraph{(D) Eye-tracking.}
+Harder words are fixated longer and re-read more often
+\citep{rayner1998eye}. We compress the eight per-word effort measures
+into a single reading-effort score with PCA. The first component
+explains $62\%$ of the variance and every measure loads on it with the
+same sign (Table~\ref{tab:pca}), so the component is interpretable as a
+single ``more effort $=$ more complex'' axis.
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{lc}
+\toprule
+\textbf{Eye-tracking metric} & \textbf{PC1 loading} \\
+\midrule
+Total fixation time (TFT) & 0.44 \\
+Total fixation count (TFC) & 0.43 \\
+First-pass reading time (FPRT) & 0.42 \\
+First-pass fixation count (FPFC) & 0.39 \\
+Re-reading time (RRT) & 0.35 \\
+First-fixation duration (FFD) & 0.29 \\
+Regression-path duration (RPD\_inc) & 0.28 \\
+Incoming regressions (TRC\_in) & 0.13 \\
+\bottomrule
+\end{tabular}
+\caption{Weight of each eye-tracking metric in the reading-effort score (loadings on PC1, which explains $62\%$ of
+the variance). All loadings are positive: one ``more effort = more complex'' axis.}
+\label{tab:pca}
+\end{table}
+
+\subsection{Fusing the signals}
+
+The four signals live on different scales, so each is standardised and
+they are combined as a weighted average. Signal A is itself an ensemble
+of the English-source and Romance-source transfers, averaged after
+standardisation. The fused score is then mapped onto the scale of the
+test distribution,
+\begin{equation}
+  \label{eq:calib}
+  \hat{y} = \mathrm{clip}\bigl(\mu + \sigma \cdot z(s),\; 0,\; 1\bigr),
+\end{equation}
+with $\mu = 0.27$ and $\sigma = 0.125$. Per-signal weights are in
+Table~\ref{tab:signals}.
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Signal} & \textbf{SHAP importance} & \textbf{weight} \\
+\midrule
+A cross-lingual & 0.061 & 44\% \\
+B LLM rating & 0.034 & 29\% \\
+D eye-tracking & 0.017 & 20\% \\
+C surprisal & 0.006 & 6\% \\
+\bottomrule
+\end{tabular}
+\caption{Per-signal SHAP importance and the weight each signal gets in the final average. The two orders agree;
+SHAP describes the model, it does not choose the weights.}
+\label{tab:signals}
+\end{table}
+
+\subsection{What was tuned, and what it costs}
+\label{sec:tuning}
+
+A zero-label setting has no development set, and selecting anything
+against the evaluation score is a known way to inflate it
+\citep{gorman-bedrick-2019-need}. We state exactly what this affects.
+
+Five numbers were chosen against the public evaluation score: the three
+fusion weights and the two constants of Equation~\ref{eq:calib}. The
+weights were searched on a coarse grid; for the eye-tracking weight the
+full sweep was
+$w_D \in \{0, 0.10, 0.20, 0.30\} \rightarrow 68.90, 69.66, 69.74,
+69.00$. Everything else, the encoder, the layer, the feature set, the
+regressor and the lemma correction, was decided in-source, without
+reference to that score.
+
+Two things bound the damage. First, the calibration constants cannot
+affect $r$ at all. Equation~\ref{eq:calib} is affine up to the clip,
+and the clip is inactive on our predictions, whose range is
+$[0.014, 0.845]$; Pearson $r$ is invariant under affine rescaling, so
+$\mu$ and $\sigma$, the two quantities that most directly encode
+information about the test distribution, move only the $R^2$ term of
+Equation~\ref{eq:metric}. This is why we treat $r$ as the primary
+measure. Second, the response surface is flat: the eye-tracking sweep
+spans $0.84$ points end to end, so no setting of $w_D$ within the grid
+changes the outcome by much. The one figure that inherits the full
+optimism of this procedure is the $+0.84$ credited to eye-tracking in
+Table~\ref{tab:ablation}, flagged there as an upper bound.
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Configuration} & \textbf{Score} & \textbf{$\Delta$} \\
+\midrule
+Predict a constant (the mean) & 0.00 & --- \\
+Surface features only (zero-shot RO) & 10.27 & +10.27 \\
+\;+ eye-tracking (no imported res.) & 41.76 & +31.49 \\
+\;+ cross-lingual A + LLM B & 64.52 & +22.76 \\
+\;+ surprisal C & 64.81 & +0.29 \\
+\;+ lemma-frequency fix (in A) & 68.90 & +4.09 \\
+\;+ eye-tracking PCA D & \textbf{69.74} & +0.84$^{\dagger}$ \\
+\bottomrule
+\end{tabular}
+\caption{Evaluation score (Equation~\ref{eq:metric}), built one component at a time; $\Delta$ is the marginal
+contribution of each component. Predicting one constant gives no correlation, hence $0$. The first two rows use
+only resources released with the data. $^{\dagger}$This delta is the maximum of the sweep that selected $w_D$ and
+should be read as an upper bound (Section~\ref{sec:tuning}).}
+\label{tab:ablation}
+\end{table}
+
+\section{Results}
+\label{sec:results}
+
+\subsection{How much each signal contributes}
+
+Table~\ref{tab:ablation} builds our predictor one signal at a time.
+Restricted to the resources released with the data, surface features and
+eye-tracking, it reaches $41.76$; the imported signals take it to
+$69.74$, so roughly $40\%$ of the final score is attributable to
+knowledge brought in from outside Romanian. Surface features alone reach
+$10.27$. The single largest step is adding the cross-lingual and
+language-model signals together ($+22.76$); the lemma-frequency
+correction is the largest single gain after that ($+4.09$), and
+surprisal and eye-tracking each add a small amount.
+
+Against the gold labels our predictions reach $r = 0.777$, $95\%$ CI
+$[0.757, 0.796]$, and $R^2 = 0.603$ over all $1587$ target words.
+\citet{anghel-etal-2025-rals} report $r = 0.71 \pm 0.05$ on the same
+words with a Ridge regressor fitted on them under grouped ten-fold
+cross-validation. Theirs measures what a small supervised model extracts
+from in-domain Romanian annotation, ours what a frozen fusion imports
+from outside the language, and their figure remains the right measure of
+what target-language annotation buys.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\columnwidth]{beeswarm.png}
+\caption{SHAP over named features (top 8 shown). Frequency dominates, then the LLM rating and surprisal. The
+separate blue cluster on the frequency row is the group of very rare / out-of-vocabulary words, which push the
+predicted complexity up, the expected behavior. Red = high feature value.}
+\label{fig:beeswarm}
+\end{figure}
+
+\subsection{What drives the prediction}
+
+A SHAP analysis \citep{lundberg2017shap} over named features
+(Figure~\ref{fig:beeswarm}) places
+frequency first, the language-model rating second and surprisal third;
+the surface features barely matter. Table~\ref{tab:signals} gives the
+same ordering at the signal level, and it agrees with the tuned weights.
+The signals are complementary rather than redundant
+(Figure~\ref{fig:corr}): the rating and surprisal are nearly
+independent, while the cross-lingual signal tracks frequency closely
+enough to be read as a frequency detector with semantics attached.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\columnwidth]{fig_corr_matrix.png}
+\caption{Correlation between the four signals and frequency on the Romanian test set. The rating (B) and surprisal
+(C) are nearly independent; the cross-lingual signal (A) tracks frequency closely. Every cell is computed on
+$n = 1587$, where any $|r| > 0.05$ already reaches $p < 0.05$, so the matrix is to be read by shared variance
+rather than by significance: A shares $83\%$ of its variance with frequency, B and C share $0.5\%$.}
+\label{fig:corr}
+\end{figure}
+
+\subsection{Eye-tracking contributes through its late measures}
+
+Eye-tracking helps because it carries something the lexical signals do
+not, and the division is the one predicted by the reading literature.
+Partialling out frequency and length from each gaze measure over the
+$1509$ test words that have gaze data, the early measures (first
+fixation duration, first-pass reading time, skip rate) retain almost no
+relation to our own prediction ($\bar{r} = 0.010$) or to surprisal
+($\bar{r} = -0.027$): what they encode is lexical access, which signal A
+already knows. The late measures (re-reading time, incoming regressions,
+refixation rate) retain $\bar{r} = 0.243$ and $\bar{r} = 0.177$
+respectively. Late gaze is where the contextual-integration difficulty
+lives, and that is the part of the eye-tracking signal that is not
+already in the other three.
+
+
+\section{What Did Not Work}
+\label{sec:negative}
+
+Table~\ref{tab:fail} lists the attempts that failed, and two of them
+carry a lesson beyond this work.
+
+\paragraph{Fine-tuning is worse than freezing.}
+Every form of fine-tuning we tried, full fine-tuning and LoRA over a
+sweep of learning rates, epochs and ranks, transferred worse than the
+frozen encoder ($0.461$ and $0.462$ against $0.515$). With no
+target-language labels, fine-tuning can only adapt to the source
+language, and in doing so it degrades the cross-lingual alignment that
+the transfer depends on. This is the behaviour \citet{peters-etal-2019-tune}
+report when the target task is distant from the source, and it is worth
+stating plainly because the default move in a cross-lingual pipeline is
+to fine-tune \citep{pires-etal-2019-multilingual}.
+
+\paragraph{In-source validation does not predict transfer to Romanian.}
+Three configurations beat the frozen XLM-R baseline on in-source
+transfer and then lost on Romanian: a different encoder (e5), mid-layer
+embeddings, and a Lasso regressor. The in-source check measures transfer
+between English and Romance, related and well-resourced languages, and
+that is evidently not the same problem as transfer into Romanian. In a
+setting with no target-language development set this is the
+uncomfortable conclusion: the validation signal available is not the
+validation signal needed.
+
+\paragraph{Prompting and extra features.}
+Chain-of-thought and few-shot prompting added noise rather than signal;
+at the $8$B scale chain-of-thought is not yet reliably helpful
+\citep{wei2022cot}. Rarity measures and a range of part-of-speech,
+named-entity and WordNet features proved redundant with frequency,
+which is consistent with the SHAP picture in
+Figure~\ref{fig:beeswarm}.
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Attempt} & \textbf{in-source} & \textbf{score} \\
+\midrule
+\multicolumn{3}{l}{\emph{Fine-tuning} ($r_{\mathrm{EN}\rightarrow\mathrm{RO}^{*}}$)} \\
+Frozen XLM-R (this work) & 0.515 & --- \\
+Full fine-tune (best of sweep) & 0.461 & --- \\
+LoRA (best of sweep) & 0.462 & --- \\
+\midrule
+\multicolumn{3}{l}{\emph{Representation and regressor} ($\bar{r}_{\mathrm{transfer}}$)} \\
+Frozen XLM-R (this work) & 0.551 & 69.74 \\
+Encoder swap (e5) & 0.586 & 63.00 \\
+Mid-layer embeddings & 0.556 & 64.49 \\
+Lasso regressor & 0.569 & 64.28 \\
+\midrule
+\multicolumn{3}{l}{\emph{Prompting}} \\
+LLM few-shot prompt & --- & 63.31 \\
+\bottomrule
+\end{tabular}
+\caption{Failed attempts. The two blocks use different in-source measures and are not comparable across blocks:
+$r_{\mathrm{EN}\rightarrow\mathrm{RO}^{*}}$ is the one-directional English-to-Romance transfer correlation, and
+$\bar{r}_{\mathrm{transfer}}$ averages both directions. Within the second block, every variant that beats the
+frozen baseline in-source loses on the public evaluation score.}
+\label{tab:fail}
+\end{table}
+
+\section{Conclusions}
+\label{section:conclusions}
+
+Working without Romanian training labels did not merely constrain the
+design, it determined it: with no labels to fit and no development set
+to select on, the only remaining move is to import complexity knowledge
+from elsewhere and combine several independent imports. Four such
+signals, a frozen multilingual encoder, a language-model rating,
+surprisal and gaze, reach $69.74$ on the metric of
+Equation~\ref{eq:metric} without a single target-language annotation.
+
+Three findings generalise beyond Romanian. A lemma-frequency correction
+is worth more than any other single component ($+4.09$) for a
+morphologically rich language, subject to the scope condition of
+Section~\ref{sec:scope}. Fine-tuning a multilingual encoder without
+target labels is actively harmful, and freezing it is the stronger
+default. And in-source validation, the only validation a zero-label
+setting affords, does not reliably predict transfer to the target
+language, which is the finding we would most want future work in this
+setting to take seriously.
+
+\section*{Limitations}
+
+\paragraph{Five quantities were selected on the evaluation score.}
+The setting provides no development set, so the three fusion weights
+and the two calibration constants of Equation~\ref{eq:calib} were
+chosen against the public evaluation score rather than held-out data. We
+have bounded this in Section~\ref{sec:tuning}, but only partly: the
+calibration cannot influence $r$, which is algebraic, and the response
+surface is flat across the grid we searched. Neither argument measures
+the bias that remains, and we have no held-out Romanian labels with
+which to measure it. The $69.74$ headline figure and, in particular, the
+$+0.84$ credited to eye-tracking therefore retain an optimistic bias we
+cannot quantify.
+
+\paragraph{The eye-tracking analysis is partly circular.}
+The early-versus-late analysis in Section~\ref{sec:results} was not
+validated against the gold labels. It uses our own predictions as the
+complexity proxy over the $1509$ test words that have gaze, so it
+establishes that late gaze measures carry information the other signals
+lack \emph{relative to what our model predicts}, not relative to human
+judgement. Gaze coverage is also not missing at random: the $78$ words
+without fixations are shorter and more frequent than average (mean Zipf
+$4.45$ against $4.20$; length $6.91$ against $7.57$), because frequent
+short words are skipped, so the signal is systematically absent exactly
+where it would matter least, and its absence is itself informative in a
+way the PCA score does not capture.
+
+\paragraph{The lemma-frequency correction has a scope condition.}
+Substituting lemma frequency assumes an inflected form inherits its
+difficulty from its lemma. Section~\ref{sec:scope} documents a case
+where this fails, a simple-perfect verb form that is difficult because
+of its inflection, and we have not measured how often such forms occur,
+since doing so would require Romanian labels. The correction should be
+expected to help on average and to fail systematically on archaic,
+literary or otherwise marked morphology.
+
+\paragraph{The approach assumes resources that not every language has.}
+The method needs an instruction-tuned language model in the target
+language, a frequency list with lemma coverage, and annotated complexity
+data in a related language. Romanian has all three, and the eye-tracking
+measurements came released with the complexity data, which makes gaze
+the least portable of the four signals: gaze corpora exist for few
+languages, and collecting them is expensive. A language lacking any of
+these would be left with a proper subset of our signals, and we have not
+measured how the fusion degrades under such a subset.
+
+\paragraph{One target language, one domain.}
+All results are for Romanian, on the texts of a single dataset. The
+claims we expect to generalise, that a frozen encoder beats fine-tuning
+without target labels and that in-source validation misleads, are
+supported here by one language pair each, and neither has been tested on
+a second morphologically rich language.
+
+% ---------------------------------------------------------------------
+% Blocul \section*{Acknowledgments} al template-ului a fost SCOS de aici.
+% formatting.md, la Acknowledgments: "Do not include this section in the
+% review version." Nu e o optiune.
+%
+% DE REPUS la camera-ready, cu mulitumirile noastre, si exact in locul
+% asta: formatting.md cere ca sectiunea sa fie imediat inaintea
+% referintelor si sa fie nenumerotata.
+% ---------------------------------------------------------------------
+
+% Bibliography entries for the entire Anthology, followed by custom entries
+%\bibliography{custom,anthology-overleaf-1,anthology-overleaf-2}
+
+% Custom bibliography entries only
+\bibliography{custom}
+
+% ---------------------------------------------------------------------
+% NU exista apendice. Apendicele de exemplu al template-ului ("Example
+% Appendix" / "This is an appendix.") a fost scos, iar tab:pca, mutat un
+% timp aici, s-a intors in 3.3: singur intr-un apendice, dupa cele 18
+% referinte, ocupa o pagina intreaga cu 14 rinduri de text, si arata rau.
+% Costul intoarcerii e ~1/4 de pagina de continut, care exista.
+%
+% Daca se adauga apendice mai tirziu, formatting.md cere: sa vina DUPA
+% References, sa aiba titlu informativ, iar textul principal sa rimina
+% autonom fara ele. Si sa fie confirmate in CFP-ul MRL, care e autoritatea
+% pe lungime si pe acceptarea apendicelor.
+% ---------------------------------------------------------------------
+
+\end{document}

@@ -1,0 +1,13 @@
+% =====================================================================
+% PASTE FILE -- singurele adaugiri de preambul cerute de fisierele noi.
+% Se lipesc in acl_latex.tex dupa \usepackage{graphicx}, inainte de
+% \begin{document}.
+%
+% NU adaugati \bibliographystyle{acl_natbib} -- acl.sty il seteaza deja,
+% iar duplicarea da eroare la compilare.
+% NU e nevoie de enumitem: lista de contributii din introducere foloseste
+% itemize standard (de la revizia 3; inainte era enumerate, tot standard).
+% =====================================================================
+
+\usepackage{booktabs}          % \toprule / \midrule / \bottomrule din tabele
+\graphicspath{{figures/}}      % beeswarm.png, fig_corr_matrix.png, fig_confusion.png

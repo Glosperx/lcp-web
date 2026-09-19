@@ -1,0 +1,437 @@
+% =====================================================================
+% PASTE FILE -- introducere + related work, scrise pentru MRL 2026.
+% Se copiaza peste \section{Introduction} din acl_latex.tex in Overleaf.
+% Intrarile .bib necesare sunt in paste_bib_additions.bib (toate verificate
+% pe ACL Anthology).
+%
+% Structura urmeaza modelul hgs (cs.columbia.edu/~hgs/etc/intro-style.html):
+%   P1 motivatie -> P2 problema specifica -> P3 contributii ->
+%   P4 diferentiere -> P5 roadmap
+% Versiune anonimizata (MRL e double-blind): fara link de GitHub, fara nume.
+%
+% Revizia 2: fiecare afirmatie are acum ori o citare, ori un numar din paper.
+% Numerele noi din P2 (11.7 / 36.0 / 0.86) sunt calculate pe setul de test,
+% n=1587 -- vezi sectiunea Approach.
+%
+% Revizia 3 (27 iulie 2026): pornita de la revizia 2, remodelata retoric dupa
+% paperul-exemplu 2605.07466 (Anghel et al., fatty pancreas), pastrand
+% structura hgs. Ce s-a schimbat:
+%   - motivatia despicata in doua paragrafe: miza (P1) -> reteta standard si
+%     presupozitia ei (P2). Problema specifica devine P3, contributiile P4,
+%     diferentierea P5, roadmap-ul P6.
+%   - contributiile: enumerate cu itemi de 5-8 randuri -> itemize cu lead-in
+%     bold si 3-5 randuri, o revendicare si o cifra fiecare.
+%   - paragraful separat despre tuning (rev. 2) comprimat la o fraza dupa
+%     lista de contributii; tratarea integrala ramane in sec:tuning si in
+%     Limitations, unde era deja.
+%   - P5 diferentiere scurtata; citarile fine coborate in Related Work.
+%
+% ATENTIE, verificat pe ACL Anthology pe 27 iulie 2026: shared task-ul CWI
+% 2018 (yimam-etal-2018-report) a avut patru piste -- EN/DE/ES monolingv PLUS
+% "a multilingual track with a French test set", adica exact un setup zero-shot
+% cross-lingual. Deci NU se poate revendica "primul sistem LCP fara etichete in
+% limba tinta". Claim-ul de noutate e limitat la romana, iar pista franceza e
+% acum recunoscuta explicit in Related Work si diferentiata (clasificare binara
+% si probabilistica, nu predictie continua; date de antrenare in trei limbi,
+% una romanica).
+%
+% Intrari .bib noi fata de revizia 2: qiu-etal-2024-complex,
+% saggion-etal-2024-lexical. Total referinte: 18.
+%
+% Revizia 4 (27 iulie 2026): reformulari cerute la review, in P1, P2 si P6.
+% Nicio schimbare de continut, de cifre sau de citari.
+%   - P1, prima fraza: "Text is only as accessible as its hardest words"
+%     (aforism, neclar) -> deschidere pe cine e afectat, "Children, language
+%     learners, and readers with limited literacy or a reading disability are
+%     held up by the same thing: individual words they do not know." Aleasa
+%     dintre trei variante propuse: mizele umane (asta), cele trei aplicatii
+%     comprimate intr-o singura intrebare, si o fraza scurta fara figuri de stil.
+%     O varianta intermediara ("Whether a text can be read by the audience it
+%     was written for depends on which of its words that audience finds
+%     difficult") a fost si ea respinsa, ca prea incarcata de subordonate.
+%   - P1: scos "Automatic simplification" -> "text simplification"; in NLP
+%     simplificarea e oricum automata, adjectivul nu adauga nimic.
+%   - P2: scos "The field has converged on a single recipe" -> afirmatia
+%     directa "Nearly every LCP system is built the same way: ...".
+%   - P2: scos "A decade of shared tasks" -> "the shared tasks in the area
+%     have established", fara cuantificarea in ani.
+%   - P6 (roadmap): rescris. Ghidul cere explicit "Avoid redundant phrasing,
+%     'In Section 2, In section 3, ... In Section 4, ...'", iar versiunea
+%     anterioara facea exact asta pe patru sectiuni la rand. Acum enumera
+%     continutul, nu sectiunile, si nu mai anunta Conclusions.
+%
+% Verificat la revizia 4, fara modificari necesare: concordanta timpurilor in
+% P2 (singurul perfect compus, "have established", e corect - proces incheiat
+% cu relevanta in prezent) si fraza-tema a lui P3, care leaga de P2 prin "such
+% a language" si anunta cele doua probleme pe care paragraful le livreaza apoi.
+%
+% Revizia 5 (27 iulie 2026), tot la cererea lui Alexandru. Deschiderea a fost
+% remodelata dupa introducerea din 2605.07466_6048.pdf, care e paperul-model
+% agreat, pastrand structura din ghid.
+%   - P1 rescris integral. Modelul isi deschide introducerea numind si definind
+%     obiectul de studiu, cu citare, apoi trece la consecinte concrete; nicio
+%     figura de stil. Deci P1 incepe acum cu definitia LCP si continua cu cele
+%     trei aplicatii care depind de ea. Respinse pe rand, ca "vrajeala": varianta
+%     cu aforismul ("Text is only as accessible as its hardest words"), cea cu
+%     subordonate ("Whether a text can be read by the audience...") si cea cu
+%     mizele umane ("Children, language learners, and readers with limited
+%     literacy..."). A cazut si formularea "The systems built to help them".
+%   - SCOS TOT em-dash-ul din introducere, sase locuri: P1, P3, doua in lista de
+%     contributii si unul in paragraful de tuning. Inlocuit cu virgule, punct si
+%     virgula sau reformulare. Modelul nu foloseste em-dash deloc. De pastrat
+%     regula asta la orice text nou.
+%   - P3: scoasa fraza "Fourteen labelled Romanian target words exist, enough to
+%     sanity-check a system but neither to train one nor to validate one...".
+%     Faptul portant (nu exista set de dezvoltare) a ramas, dar reformulat, iar
+%     paragraful anunta acum explicit doua obstacole si le livreaza in ordine.
+%     Cele 14 exemple sunt introduse acolo unde chiar sunt folosite, in prima
+%     contributie, formulate ca sa se sustina singure.
+%
+% Structura ramane 1. Introduction + 2. Related Work: ghidul o cere explicit la
+% P4 ("you can refer to a future section where specific details and differences
+% will be given"), iar paperul-model face la fel (1 INTRODUCTION, 2 RELATED WORK
+% cu subsectiuni). Verificat pe 27 iulie 2026.
+%
+% Revizia 6 (27 iulie 2026): aliniere completa la paperul-model, cerute amandoua.
+%   - Lista de contributii trecuta pe verb la persoana I, ca in model ("We build",
+%     "We introduce", "We show", "We report"), si scos lead-in-ul ingrosat.
+%     Modelul nu foloseste bold in lista de contributii. Continutul si cifrele
+%     sunt neschimbate, doar constructia frazei.
+%   - Cele cinci \paragraph{} din Related Work promovate la \subsection{}, cu
+%     titluri in title case: 2.1 Lexical Complexity Prediction, 2.2 Cross-Lingual
+%     Transfer Without Target Labels, 2.3 Surprisal and Eye Movements as
+%     Difficulty Signals, 2.4 Evaluation Without a Development Set, 2.5 Romanian
+%     Resources. Modelul are Related Work cu subsectiuni numerotate (2.1, 2.2).
+%   - Scos em-dash-ul si din Related Work, inca cinci locuri (2.1, 2.2, 2.3 si
+%     doua in 2.4). La revizia 5 fusese curatata doar introducerea, pentru ca
+%     Related Work nu intra atunci in compilarea de preview. Acum fisierul e
+%     curat integral.
+%
+% Revizia 7 (27 iulie 2026): consecinte ale numerotarii subsectiunilor.
+% Masurate, subsectiunile ieseau 155 / 125 / 86 / 60 / 35 de cuvinte; ca
+% \paragraph{} dezechilibrul nu se vedea, ca subsectiuni numerotate, da.
+%   - 2.5 Romanian Resources era un ciot de 35 de cuvinte care amesteca RoLlama3
+%     (resursa romaneasca reala) cu SHAP (metoda de interpretabilitate, fara
+%     legatura cu titlul). SHAP a fost scos de aici; subsectiunea are acum o teza
+%     proprie (romana e bine servita de resurse generale si deloc de resurse
+%     specifice sarcinii, iar designul nostru decurge din asta) si ~120 de cuvinte.
+%   - ATENTIE: scoaterea lui SHAP de aici lasa \citep{lundberg2017shap} orfan,
+%     pentru ca paste_body.tex foloseste SHAP de sapte ori fara sa-l citeze
+%     niciodata. Citarea a fost mutata in paste_body.tex, la prima folosire
+%     ("A SHAP analysis \citep{lundberg2017shap} over named features"). Fara
+%     mutarea asta, referinta ar fi disparut din bibliografia lucrarii complete.
+%   - 2.1 deschidea cronologic ("CWI was originally posed as..."), nu cu teza
+%     subsectiunii. Acum incepe cu "Annotated complexity data exists for only a
+%     handful of languages, and Romanian is not among them", iar istoricul vine
+%     dupa, ca sprijin. Cerinta de fraza-tema din ghid.
+%   - Acronimul CWI era folosit in paragraful de diferentiere si in 2.1 fara sa
+%     fie definit nicaieri. Expandat acum la prima aparitie, in P2.
+%
+% =====================================================================
+% Revizia 8 (27 iulie 2026). DOUA lucruri diferite, de nu confundat.
+%
+% (A) TREI AFIRMATII FALSE, SCOASE. Nu erau chestiuni de stil.
+% Setul nostru de test de 1587 de tinte este RoLCP, publicat in RALS (Anghel,
+% Cristea, Creanga, Nisioi), EMNLP 2025 main. Sergiu Nisioi, ultimul autor, este
+% coordonatorul lui Alexandru. Descoperit plecand de la paperul-model ETRA
+% (Kuvshynova et al. 2026), care citeaza RoLCP. Dimensiunea se potriveste exact
+% si formularea e tot continua in [0,1].
+%   - "To our knowledge, no prior system predicts lexical complexity for
+%     Romanian" (contributia 1): STERSA. Ei raporteaza un Ridge supervizat cu
+%     r = 0.71 pe exact aceste date.
+%   - "Romanian has no complexity-annotated training set and no development set"
+%     (P3): REFORMULATA. Datele exista (3921 de exemple: 569 HT + 1765 WT +
+%     1587 RoLCP, public, CC BY-NC-SA). Noi ALEGEM sa nu le folosim, ceea ce e
+%     intelegerea cu coordonatorul. P3 declara acum constrangerea ca alegere de
+%     design, nu ca lipsa a datelor din lume.
+%   - "we are aware of no published LCP system for it" (2.1): STEARSA.
+%   - "the fourteen labelled Romanian items that exist" -> "released with the
+%     shared task". Cele 14 sunt ce s-a dat participantilor.
+%   Aceleasi corectii facute si in paste_body.tex (Conclusions, "the only
+%   Romanian labels available") si paste_limitations.tex ("the entirety of the
+%   Romanian supervision that exists").
+%
+%   Ce NU s-a schimbat, pentru ca e adevarat: nu folosim nicio eticheta de
+%   antrenare romaneasca. Asta ramane teza lucrarii, in abstract si peste tot.
+%
+%   % TODO, de decis cu Sergiu inainte de submisie:
+%     1. Se citeaza RALS? Alexandru a cerut explicit sa NU fie citat deocamdata,
+%        deci nu e. Dar lucrarea nu citeaza in acest moment NICIO sursa pentru
+%        setul de 1587 de exemple, iar ACL cere proveninta datelor.
+%     2. Se citeaza Kuvshynova et al. 2026 (ETRA)? Combina RoLCP cu eye-tracking
+%        MultiplEYE romanesc, adica exact unghiul nostru. E cea mai apropiata
+%        lucrare de a noastra si e necitata.
+%     3. Daca (1) e da: se citeaza si r = 0.71 al lor ca punct de comparatie?
+%        Atentie, protocoalele difera (ei cross-valideaza supervizat, noi
+%        prezicem fara antrenare), deci trebuie spus explicit.
+%
+% (B) REFORMULARILE CERUTE de Alexandru la review.
+%   - P1 rescris a treia oara. "Lexical complexity prediction (LCP) is the task
+%     of estimating..." suna a definitie de dictionar, "se vede ca nu e scrisa de
+%     om". Acum urmeaza MISCAREA din introducerea ETRA (de ce conteaza -> cine e
+%     afectat -> numele sarcinii -> ce permite), fara sa semene 1 la 1 cu ea.
+%   - "but Romanian is heavily inflected and inflected forms are systematically
+%     missing from frequency lists" -> "Romanian inflects heavily, and the
+%     frequency lists available for it cover inflected forms poorly".
+%   - Scos "by 0.86 Zipf units on average" din intro. Cele doua procente raman,
+%     pentru ca justifica cele doua ramuri ale corectiei pe lema, dar detaliul cu
+%     unitatile Zipf era duplicat verbatim din Approach.
+%   - "A method for Romanian has to transfer complexity knowledge from outside
+%     the language and repair the frequency signal it transfers on" era neclar.
+%     Spart in doua cerinte explicite: "bring in complexity knowledge from
+%     languages that have it, and repair the frequency estimates before leaning
+%     on them".
+%   - Scos acronimul din "We build an LCP system"; contributia 1 incepe acum cu
+%     "We combine four label-free signals into a single system".
+%
+% RAMAS DE FACUT, semnalat: paste_body.tex si paste_limitations.tex inca folosesc
+% em-dash. Regula "fara em-dash" a fost aplicata doar pe paste_intro.tex, pentru
+% ca livrabilul curent e introducerea.
+%
+% =====================================================================
+% Revizia 10 (27 iulie 2026). P3 rescris, P4 subtiat. Cifrele si citarile
+% nu s-au schimbat; trei numere au fost mutate, nu sterse.
+%
+% P3, formulari respinse la review si scoase:
+%   - "we adopt the hardest version of the setting";
+%   - "That constraint creates two obstacles. The first is that... The
+%     second is that...";
+%   - "Ordinary words are therefore made to look rare, and the words this
+%     happens to are precisely the morphologically marked ones" -- stearsa
+%     de tot, nu reformulata: fraza anterioara spune deja ca listele acopera
+%     prost formele flexionate si ca 11.7% ar fi scorate ca maxim rare, deci
+%     era o repetitie.
+%   - ultima fraza ("has to do two things at once: bring in complexity
+%     knowledge..., and repair the frequency estimates before leaning on
+%     them") comprimata la "needs complexity knowledge imported from other
+%     languages, and a frequency estimate that survives inflection".
+%
+% P3, EROARE DE LOGICA reparata, probabil cauza reala a confuziei semnalate
+% la review: versiunea veche punea ambele obstacole pe seama constrangerii
+% noastre ("That constraint creates two obstacles"), dar al doilea nu vine de
+% la ea. Lipsa etichetelor romanesti e alegerea noastra si produce doar
+% imposibilitatea validarii; frecventa e stricata de morfologia limbii, care
+% ar fi stricat-o si intr-un sistem supervizat. Acum sunt atribuite separat.
+%
+% Interzis, la cerere: expresia "the system" ca desemnare a lucrarii noastre.
+% Scoasa in trei locuri: "enters the system" (P3), "into one system" (P4, ->
+% "into a single predictor"), "the largest single gain in the system" (P4, ->
+% "we measure"). In paste_abstract.tex, "The system reaches 69.74" -> "Together
+% they reach". ATENTIE: paste_body.tex o mai foloseste de sase ori.
+% Formularea "Nearly every LCP system is built the same way" (P2) a ramas:
+% acolo desemneaza sistemele altora, nu al nostru.
+%
+% P4: 223 -> 202 de cuvinte. Contributiile 1 si 2 isi pastreaza cifra de
+% titlu (69.74, +4.09); din 3 si 4 au fost scoase cifrele de sprijin, care
+% in introducere nu pot fi interpretate:
+%   - $41.76$ (contributia 1)  -> exista in tab:ablation si in sec:results,
+%     cu incadrarea "40% din scorul final vine din semnalele importate";
+%   - $r = 0.07$ (contributia 3) -> paste_body.tex, la analiza corelatiilor;
+%   - $0.461$ / $0.462$ / $0.515$ (contributia 4) -> tab:fail si sec:negative.
+% Revendicarile au ramas toate patru, nemodificate. Motivul: in introducere
+% se anunta ce e nou, dovada e treaba sectiunii de rezultate.
+%
+% Masurat, aceeasi metoda de numarare pe ambele versiuni (build/intro_body.tex
+% e copia de la revizia 9): P3 182 -> 132, P4 223 -> 202, Intro 703 -> 632,
+% Related Work neatins la 394, total 1097 -> 1026. La compilare, References
+% incepe acum pe pagina 2, nu pe 3.
+%
+% =====================================================================
+% Revizia 11 (27 iulie 2026). Trei reformulari cerute la review, plus
+% consecinta lor pe cifre.
+%
+% 1. METRICA E ACUM NUMITA. "It reaches 69.74 on the shared-task metric" nu
+%    spunea nici numele metricii, nici scara, desi pagina competitiei o
+%    defineste explicit (Nitro AI Judge_metrica.html, sectiunea "Evaluarea"):
+%      100 * 1/2 * ( |rho_py| + max(0, R^2_py) )
+%    adica media dintre |Pearson r| si R^2 clipat la 0, pe scara 0-100.
+%    Formula din paste_body.tex, 50(|r| + max(0, R^2)), e algebric identica,
+%    deci in body nu era nimic de corectat.
+%
+%    DOUA variante respinse pe drum, in ordine:
+%      (a) "It scores 69.74 out of 100 on the official metric, which averages
+%          Pearson r with clipped R^2". Respinsa: "out of 100" era o adaugire
+%          de-a mea, iar "the official metric" tot nu spunea care e metrica.
+%      (b) "It scores 69.74 on the task metric, 50(|r| + max(0, R^2)) for
+%          Pearson correlation r". Respinsa: formula in introducere iese din
+%          registrul high level pe care ghidul hgs il cere la paragraful de
+%          contributii. Formula are deja locul ei, ecuatia 1 din Approach.
+%      (c) "It scores 69.74 on the shared-task metric, which combines Pearson
+%          correlation with R^2". Respinsa pentru "shared-task": incadreaza
+%          lucrarea ca proiect de facultate, ca sarcina primita si rezolvata,
+%          nu ca lucrare de workshop. Cerinta e sa se prezinte ca cercetare.
+%    Varianta pastrata: "It scores 69.74 on our test set, under a metric that
+%    combines Pearson correlation with R^2". Evaluarea e a noastra, pe setul
+%    nostru de test, iar metrica e numita fara sa fie atribuita unui concurs.
+%    Abstractul, la fel: "score 69.74 on a combined correlation and R^2 metric".
+%
+% NOTA de incadrare, valabila pentru tot restul lucrarii. "shared task",
+% "leaderboard" si "submission" apar inca de vreo 16 ori in paste_body.tex si
+% paste_limitations.tex si trebuie recitite cu ochiul asta. ATENTIE insa:
+% referintele la leaderboard din Limitations sunt PORTANTE, nu decorative -
+% divulgarea faptului ca cele cinci cantitati au fost alese pe scorul public
+% depinde de numirea lui. Alea ramin, dar incadrate ca limita de evaluare.
+% Ce se scoate e cadrul de competitie din revendicari.
+% Referinta din Related Work la "the ten languages of the MLSP shared task"
+% e legitima: e shared task-ul altora, citat ca resursa.
+%
+% RAMANE DESCHIS, legat de asta: scoaterea cadrului de competitie din
+% introducere lasa setul de 1587 de exemple complet fara proveninta, iar ACL
+% o cere. Vezi TODO-ul de la revizia 8 despre citarea RALS.
+%
+%    Efect: cu scara explicita, 69.74 se sustine singur, deci au fost scoase
+%    din contributia 1 cifrele de sprijin 10.27 (ramane in abstract) si
+%    r = 0.913 (masurat pe 14 exemple, cea mai slaba dovada a lucrarii; are
+%    nevoie de caveat ca sa fie onesta si il are, in sec:14items).
+%    Introducerea are acum DOUA cifre de rezultat: 69.74 si +4.09.
+%
+% 2. Contributia 3, ultima clauza: "eye-tracking adds, through its late
+%    measures, the contextual-integration difficulty the others miss" ->
+%    "eye-tracking captures a difficulty the others miss, the effort of
+%    fitting a word into its context, which shows up only in late gaze
+%    measures". Sintagma nominala grea pusa dupa un circumstantial era
+%    nedescifrabila la prima citire.
+%
+% 3. P5 scurtat, de la 77 la 69 de cuvinte: "Two smaller inversions follow:
+%    ... we find the frozen encoder to beat fine-tuning, the opposite of the
+%    usual cross-lingual recipe" -> "We also invert two conventions: gaze
+%    becomes evidence about complexity rather than something to predict from
+%    text, and the encoder stays frozen rather than fine-tuned."
+%
+% Masurat: P4 202 -> 203 (a pierdut doua cifre, a castigat definitia
+% metricii), P5 77 -> 69, Intro 632 -> 625, Related Work neatins la 394,
+% total 1019. Compileaza curat, References tot pe pagina 2.
+% =====================================================================
+
+\section{Introduction}
+\label{section:intro}
+
+Making a text usable by a given audience depends, before anything else,
+on its vocabulary. A word that is routine for a specialist can stop a
+language learner or a reader from outside the field, taking the
+surrounding sentence with it. Deciding which
+words will cause this, and for whom, is what lexical complexity
+prediction (LCP) does: it assigns a word in context a score on a
+continuous scale \citep{shardlow-etal-2021-semeval}. Text simplification
+uses those scores to choose what to replace, readability assessment to
+aggregate difficulty over a document, and language-teaching material to
+keep vocabulary within a learner's range; complexity prediction is for
+this reason typically the first stage of a simplification pipeline
+\citep{qiu-etal-2024-complex}.
+
+Nearly every LCP system is built the same way: a pretrained encoder is
+fine-tuned on complexity annotations in the language of interest. The
+recipe works wherever those annotations exist, and it quietly assumes the
+one resource most languages do not have. Surveying the datasets published
+between 2018 and 2024, \citet{shardlow-etal-2024-multilingual} find nine
+of them, covering eight languages. A language outside that set has
+nothing to fine-tune on, and buying its way in means paying for a new
+annotation effort of its own.
+
+Our target language is Romanian, and we use no Romanian complexity
+labels at any point, whether for training, validation or model
+selection. Working without them means no design decision can be checked
+on Romanian itself, so every choice has to be justified on other
+languages. Romanian adds a problem of its own: the most reliable
+predictor of word difficulty misfires on it. Word frequency governs how
+long readers fixate a word \citep{rayner1998eye} and ranks first in our
+own attribution analysis (Section~\ref{sec:results}), but Romanian
+inflects heavily and the frequency lists available for it cover
+inflected forms poorly: of the 1587 Romanian target tokens in our test
+set, $11.7\%$ are absent from the list and would be scored as maximally
+rare, and for a further $36.0\%$ the listed form is rarer than its own
+lemma. A method for Romanian therefore needs complexity knowledge
+imported from other languages, and a frequency estimate that survives
+inflection.
+
+In this paper, we predict the lexical complexity of Romanian words in
+context without a single Romanian training label, and we make four
+contributions. First, we combine four label-free signals into a single
+predictor: cross-lingual transfer through a frozen multilingual encoder,
+a language-model complexity rating, surprisal, and a reading-effort
+score derived from eye-tracking. It scores $69.74$ on our test set,
+under a metric that combines Pearson correlation with $R^2$.
+Second, we introduce a lemma-frequency correction for
+morphologically rich languages, substituting the lemma frequency when the
+inflected form is missing or rarer; it is worth $+4.09$, the largest
+single gain we measure, and applies to any inflected language served
+by the same frequency lists. Third, we show that the four signals are
+complementary rather than redundant: the cross-lingual signal acts mainly
+as a frequency detector, the rating and surprisal are near-independent,
+and eye-tracking captures a difficulty the others miss, the effort of
+fitting a word into its context, which shows up only in \emph{late} gaze
+measures.
+Fourth, we report two negative results: fine-tuning the encoder, full or
+LoRA, is consistently \emph{worse} than leaving it frozen, and in-source
+validation is an unreliable guide, since three configurations that win on
+English-to-Romance transfer lose on Romanian.
+
+Our setting differs from the LCP literature in the resource it assumes
+rather than in the model it uses: where that literature trains on
+target-language annotations, we treat complexity as knowledge to be
+imported. We also invert two conventions: gaze becomes evidence about
+complexity rather than something to predict from text, and the encoder
+stays frozen rather than fine-tuned. Section~\ref{sec:related} sets all
+three differences against the work they concern.
+
+The rest of the paper describes the four signals and their fusion
+(Section~\ref{section:approach}), reports the ablation and the analysis
+(Section~\ref{sec:results}), and collects what did not work
+(Section~\ref{sec:negative}).
+
+% =====================================================================
+
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Lexical complexity prediction.}
+Annotated complexity data exists for only a handful of languages, and
+Romanian is not among them. The task itself began as classification over
+annotated target words \citep{yimam-etal-2018-report}; SemEval-2021
+Task~1 replaced it with a continuous scale on the CompLex corpus
+\citep{shardlow-etal-2021-semeval}, which is the formulation we adopt.
+Zero-shot evaluation is not itself new: the 2018 task already had a
+multilingual track whose French test set came with no French training
+data, though it asked only for binary classification and supplied
+training data in three languages, one of them Romance. Coverage has since
+grown to
+Catalan, Spanish, Mandarin and Cantonese
+\citep{saggion-etal-2024-lexical, qiu-etal-2024-complex} and to the ten
+languages of the MLSP shared task \citep{shardlow-etal-2024-bea}, but the
+review of \citet{shardlow-etal-2024-multilingual} shows annotated LCP
+data still concentrated in a few high-resource languages. Romanian
+appears in none of these resources. We use the English and Romance
+portions of them as the source side of our transfer.
+
+\paragraph{Cross-lingual transfer without target labels.}
+Multilingual encoders such as XLM-R \citep{conneau2020xlmr} place
+translation-equivalent words close together, which makes zero-shot
+transfer of a regressor trained on one language plausible. Transfer
+quality is far from uniform across languages, however, and degrades for
+languages with less pretraining data and richer morphology
+\citep{pires-etal-2019-multilingual, wu-dredze-2020-languages}, which is
+precisely the regime Romanian occupies. Transfer is moreover normally
+realised by fine-tuning the encoder on the source language; that feature
+extraction can outperform fine-tuning when the target task is distant
+from the source is known \citep{peters-etal-2019-tune}, but we are aware
+of no prior report of it for cross-lingual complexity transfer. This
+motivates our frozen-encoder design, and the lemma-frequency correction
+completes it: the encoder supplies cross-lingual semantics, the
+correction repairs the lexical feature that morphology corrupts.
+
+\paragraph{Surprisal and eye movements as difficulty signals.}
+Surprisal theory predicts that processing effort scales with the
+negative log probability of a word in context \citep{hale2001probabilistic},
+and gaze measures such as longer fixations, re-reading and regressions
+are the standard behavioural correlate of that effort
+\citep{rayner1998eye}. Language-model surprisal predicts reading times
+across languages \citep{hollenstein-etal-2021-multilingual}, including
+in Romance languages \citep{alves-2025-benchmarking}. Both literatures
+run from text to behaviour; we take the converse view, reading surprisal
+and gaze as label-free evidence about complexity.
+
+\paragraph{Evaluation without a development set.}
+Selecting a model against the same data used to report its score inflates
+that score \citep{gorman-bedrick-2019-need}. With no development set to
+tune on, we state our selection procedure explicitly and quantify its
+effect (Section~\ref{sec:tuning}).

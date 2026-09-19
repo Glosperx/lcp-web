@@ -1,0 +1,55 @@
+% =====================================================================
+% Build de preview -- Sectiunile 1 (Introduction) si 2 (Related Work).
+% Nu e fisierul de submisie: nu contine abstract, Approach, Results,
+% Limitations. Corpul e paste_intro.tex integral.
+%
+% De la revizia 6 include si Related Work, ca sa fie vizibile subsectiunile
+% 2.1-2.5. Pana atunci se taia inainte de \section{Related Work}, si de aceea
+% sec:related era printre etichetele fixate manual mai jos; acum e o eticheta
+% reala si a fost scoasa de acolo (altfel: "Label multiply defined").
+% =====================================================================
+
+\documentclass[11pt]{article}
+
+\usepackage[review]{acl}
+
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{graphicx}
+
+\usepackage{booktabs}
+\graphicspath{{figures/}}
+
+\title{[titlul se decide ulterior]}
+
+\author{}
+
+\begin{document}
+\maketitle
+
+% Abstractul e inclus DOAR ca paginarea sa fie realista. Fara el, pagina 1 are
+% o coloana in plus libera si masuratoarea "incape in 2 pagini" ar fi falsa.
+\input{abstract_body}
+
+% Referintele inainte catre sectiuni care nu exista in acest preview sunt
+% fixate manual la numerele pe care le au in paperul complet, ca sa nu apara
+% "Section ??". Numai pentru preview -- nu se lipeste in Overleaf.
+\makeatletter
+\def\pinlabel#1#2{\expandafter\gdef\csname r@#1\endcsname{{#2}{1}{}{}{}}}
+\pinlabel{section:approach}{3}
+\pinlabel{sec:tuning}{3.5}
+\pinlabel{sec:results}{4}
+\pinlabel{sec:14items}{4.2}
+\pinlabel{sec:negative}{5}
+\pinlabel{section:conclusions}{6}
+\makeatother
+
+\input{intro_body}
+
+\bibliography{custom}
+
+\end{document}

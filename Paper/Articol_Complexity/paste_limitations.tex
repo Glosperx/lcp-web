@@ -1,0 +1,84 @@
+% =====================================================================
+% PASTE FILE -- sectiunea Limitations, ceruta de MRL.
+% Se copiaza dupa Conclusions, INAINTE de \bibliography.
+% Nenumerotata (\section*), deci nu intra in limita de 8 pagini.
+%
+% Acopera: tuning-ul pe scorul public, imposibilitatea de a decompune
+% metrica, n=14, circularitatea analizei ET, biasul de acoperire ET,
+% dependenta de resurse si o singura limba-tinta.
+% =====================================================================
+
+\section*{Limitations}
+
+\paragraph{Three weights were selected on the evaluation score.}
+The setting provides no development set, so the three fusion weights
+and the two calibration constants of Equation~\ref{eq:calib} were
+chosen against the public leaderboard rather than held-out data. We
+have bounded this in Section~\ref{sec:tuning} --- the calibration
+cannot influence $r$, the response surface is flat, and the tuning is
+worth $0.019$ of $r$ on labels it never saw --- but bounding is not
+eliminating. The $69.74$ headline figure and, in particular, the
+$+0.84$ credited to eye-tracking retain an unquantified optimistic
+bias. A private-leaderboard evaluation would settle this and was not
+available to us.
+
+\paragraph{The reported metric cannot be decomposed.}
+The shared-task metric of Equation~\ref{eq:metric} sums $|r|$ and
+$\max(0,R^2)$, and the leaderboard returns only the sum. Because the
+test labels are not released, we cannot report $r$ and $R^2$ separately
+for any configuration evaluated on the full test set, and comparisons
+against work that reports standard correlation measures are therefore
+indirect. The separate figures we do give come from the 14 labelled
+items only.
+
+\paragraph{The independent evaluation rests on 14 items.}
+The shared task released fourteen labelled words, and our independent
+evaluation rests entirely on them. The bootstrap interval for our headline
+correlation on them, $[0.663, 0.975]$, is correspondingly wide, and a
+single item is enough to reverse the sign of the frequency baselines,
+as Section~\ref{sec:14items} shows. Those items also cover only two of
+the four signals --- surprisal was never computed for them and only two
+carry eye-tracking --- so the fusion they validate is not the fusion we
+submit. They were additionally consulted as a sanity check during
+development, which makes them independent of the weight tuning but not
+a pristine test set.
+
+\paragraph{The eye-tracking analysis is partly circular.}
+Because only $2$ of the $14$ labelled items have gaze data, the
+early-versus-late analysis in Section~\ref{sec:results} could not be
+validated against gold complexity. It uses the system's own predictions
+as the complexity proxy over the $1509$ test words that have gaze, so
+it establishes that late gaze measures carry information the other
+signals lack \emph{relative to what our model predicts}, not relative
+to human judgement. Gaze coverage is also not missing at random: the
+$78$ words without fixations are shorter and more frequent than
+average (mean Zipf $4.45$ against $4.20$; length $6.91$ against
+$7.57$), because frequent short words are skipped, so the signal is
+systematically absent exactly where it would matter least --- and its
+absence is itself informative in a way the PCA score does not capture.
+
+\paragraph{The lemma-frequency correction has a scope condition.}
+Substituting lemma frequency assumes an inflected form inherits its
+difficulty from its lemma. Section~\ref{sec:14items} documents a case
+where this fails --- a simple-perfect verb form that is difficult
+because of its inflection --- and we have not measured how often such
+forms occur, since doing so would require Romanian labels. The
+correction should be expected to help on average and to fail
+systematically on archaic, literary or otherwise marked morphology.
+
+\paragraph{The approach assumes resources that not every language has.}
+The system needs an instruction-tuned language model in the target
+language, a frequency list with lemma coverage, and annotated
+complexity data in a related language. Romanian has all three, and the
+shared task supplied the eye-tracking data, which is the least portable
+of the four signals: gaze corpora exist for few languages, and
+collecting them is expensive. A language lacking any of these would be
+left with a proper subset of our signals, and we have not measured how
+the fusion degrades under such a subset.
+
+\paragraph{One target language, one domain.}
+All results are for Romanian, on the texts of a single shared task.
+The claims we expect to generalise --- that a frozen encoder beats
+fine-tuning without target labels, and that in-source validation
+misleads --- are supported here by one language pair each, and neither
+has been tested on a second morphologically rich language.

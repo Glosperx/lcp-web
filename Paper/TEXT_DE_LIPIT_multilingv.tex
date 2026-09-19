@@ -1,0 +1,219 @@
+% =====================================================================
+% Pasajele determinate complet de masuratori, gata de lipit.
+% Scrise 19 august 2026, dupa regulile de scriitura: fara em-dash, fara
+% desemnarea lucrarii noastre prin substantivul generic interzis, fara
+% cadru de competitie, contributiile la persoana I. Vezi memoria
+% `preferinte-de-scriitura-paper`.
+%
+% Cifrele vin din output/e_rezumat_modele.csv, output/e_adoptie.md,
+% output/e_m1.md, output/e_m3.md si output/repere_publicate.md.
+% NU se rotunjesc altfel decat aici fara sa se verifice sursa.
+% =====================================================================
+
+
+% =====================================================================
+% 1. ABSTRACT, propozitia de rezultat. Bara comparabila ca protocol e
+%    TMU-HIT zero-shot uniform, nu G-Scale. Aia e revendicarea tare.
+% =====================================================================
+
+We predict lexical complexity in ten languages without using a single
+annotated example from the language being evaluated. Averaged over the
+ten languages, we reach a Pearson correlation of $0.675$, ahead of the
+only published system evaluated under the same zero-label protocol by
+$0.065$, and ahead on nine of the ten languages.
+
+
+% =====================================================================
+% 2. RESULTS, paragraful principal. Ablatia e ordonata ca sa se vada ca
+%    cele doua contributii se aduna, nu se suprapun.
+% =====================================================================
+
+Table~\ref{tab:results} reports Pearson correlation per language,
+averaged without weighting across the ten languages, on 5{,}624 test
+instances. The configuration we report reaches $0.6749$. Removing the
+encoder average costs $0.0057$ and removing the evaluation-split model
+choice costs $0.0052$; removing both costs $0.0104$, with a paired
+bootstrap interval of $[+0.006, +0.015]$ over resampled contexts. The
+two changes are close to additive, which is what we would expect from
+their per-language profiles: the encoder average helps most on Sinhala
+and Catalan, the model choice helps almost entirely on French.
+
+All intervals are computed by resampling contexts rather than
+instances, because seven of the ten languages contain on average three
+target words per context and an instance-level bootstrap would be too
+narrow exactly where the dependence is strongest.
+
+
+% =====================================================================
+% 3. RESULTS, comparatia cu reperele. Se scrie in AMBELE sensuri.
+%    „Batem cel mai bun sistem publicat" NU se scrie.
+% =====================================================================
+
+Two published systems are relevant. TMU-HIT run under a uniform
+zero-shot protocol reaches $0.610$, and is the only published number
+that uses no target-language labels. We are ahead of it by $0.065$,
+winning on nine of the ten languages. G-Scale with GPT-4o reaches
+$0.669$ and is the highest published average on this test set. We are
+ahead of it by $0.006$.
+
+That second margin should not be read as an improvement over the state
+of the art. The 95\% interval of our own average is $[0.660, 0.689]$,
+so a difference of $0.006$ is a fifth of one interval width, and it
+cannot be tested at all, because per-instance predictions for G-Scale
+are not available. The protocols also differ: G-Scale conditions on
+thirty labelled examples in the target language and on a temperature
+fitted across all ten trial sets, while we use none. Being above it is
+therefore not a protocol win, just as being below it would not have
+been a protocol failure. We include it because it is the highest
+published figure and a reader familiar with this data would notice its
+absence.
+
+Under the comparison that does hold protocol fixed, the margin is
+$0.065$ rather than $0.006$, and seven of the ten per-language figures
+we report are the highest published for that language.
+
+
+% =====================================================================
+% 4. APPROACH sau RESULTS. M1. Asta e pasajul care raspunde obiectiei
+%    „ati ales medierea dupa ce ati vazut ca selectia cade".
+% =====================================================================
+
+Choosing to average the four encoders rather than select among them is
+the one binary decision in our pipeline that could have been made after
+inspecting test scores, so we removed it from our hands. For each
+target language, we compare the two alternatives using only the other
+nine languages, through the same leave-one-language-out criterion that
+already fixes the fusion weight and the language model. Averaging is
+selected on all ten folds, with a minimum margin of $0.0088$. The
+configuration we report is therefore the output of the protocol rather
+than a choice we made after seeing the result.
+
+The unanimity is not surprising, and it is worth saying why. Averaging
+beats selection on nine of the ten languages, so dropping one language
+from the criterion cannot reverse the argument of the maximum. What
+this establishes is not that a close decision came out correctly, but
+that the decision is stable and does not rest on any single language. A
+criterion that flipped when one language was withheld would have been
+evidence that the choice was noise, which is precisely what we observe
+for per-language encoder selection.
+
+One consequence should be stated plainly. On Filipino, averaging is
+worse than selection, and the protocol still selects averaging there,
+because it is not allowed to look at Filipino. That is a real loss we
+pay to keep the procedure clean.
+
+
+% =====================================================================
+% 5. RESULTS sau LIMITATIONS. Cifra raportata NU e cifra maxima.
+%    Se scrie, fiindca materialul suplimentar o contine.
+% =====================================================================
+
+The figure we report is not the highest we measured. Averaging four
+encoders instead of three reaches $0.6760$, which is $0.0011$ above the
+configuration we report, with a paired interval of $[-0.0004, +0.0025]$
+that includes zero. We report the three-encoder configuration because
+the fourth encoder does not produce a measurable gain while accounting
+for close to half of the encoder cost, and because dropping it also
+removes a 24-layer model from the requirements. We note this rather
+than reporting the maximum, since both figures appear in the
+supplementary log.
+
+
+% =====================================================================
+% 6. LIMITATIONS. Bifurcatiile. Se declara, nu se ascunde. Formularea
+%    vine din output/e_adoptie.md §4.
+% =====================================================================
+
+We measured 51 system configurations on the test split, listed in full
+in the supplementary material. Each of them respects the
+leave-one-language-out protocol at every level of choice, so no
+per-language figure uses labels from the language it is evaluated on.
+The choice of which configuration to report, however, was made by us,
+by looking at the mean test score, and is not itself the output of an
+automatic procedure. The figure we report should be read as the
+outcome of a search of that size rather than a first attempt. Confidence
+intervals are paired against the preceding configuration and are not
+corrected for multiple comparisons.
+
+We reduced this exposure where it was cheapest to do so. The single
+decision most open to the objection, whether to average or select
+encoders, is now taken by the same leave-one-language-out criterion
+used elsewhere. The remaining choices are declared here instead.
+
+
+% =====================================================================
+% 7. LIMITATIONS. Restrangerea bazinului. Se scrie pana cand P10 ruleaza;
+%    daca P10 ruleaza, paragraful se INLOCUIESTE, nu se sterge.
+% =====================================================================
+
+The pool from which the language model is selected is narrower on the
+test split than on the trial split. Two of the three candidates were
+run on all ten languages, while the third was run only on French, so
+the selection effectively chooses between two candidates per language.
+The restriction uses no labels and is a matter of coverage rather than
+of score, but it does narrow the choice, and a reader could reasonably
+observe that we selected among the models we happened to have run.
+
+
+% =====================================================================
+% 8. LIMITATIONS. n, acum o nota de subsol si nu o limitare.
+% =====================================================================
+
+We evaluate on 5{,}624 of the 5{,}627 test instances. The three
+remaining items are cases where the target string could not be located
+in its context by any of the matching rules we apply.
+
+
+% =====================================================================
+% 9. TABELUL DE REZULTATE. Cifrele per limba sunt din
+%    output/fusion_lolo_adoptat.csv; reperele din repere_publicate.md,
+%    care e transcris de mana din Nohejl et al., Tabelul 13, si din
+%    Anexa B a lui Shardlow et al. 2024a pentru cele doua randuri TMU-HIT
+%    uniforme, care NU exista publicate ca medii.
+% =====================================================================
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{lccccccccccc}
+\toprule
+& ca & en & fil & de & fr & it & ja & pt & si & es & avg \\
+\midrule
+Frequency baseline      & .301 & .748 & .389 & .591 & .517 & .519 & .642 & .713 & -.196 & .551 & .478 \\
+Archaeology             & .274 & .790 & .443 & .551 & .533 & .534 & .485 & .683 & .044 & .527 & .487 \\
+TMU-HIT, zero-shot      & .528 & .804 & \textbf{.569} & .658 & .625 & .539 & .645 & .764 & .248 & .720 & .610 \\
+TMU-HIT, per-language best & \textbf{.616} & .820 & \textbf{.569} & .718 & .625 & .601 & .733 & .786 & .308 & .762 & .654 \\
+G-Eval, GPT-4o          & .573 & .827 & .494 & .711 & .764 & .629 & .745 & .761 & .328 & .739 & .657 \\
+G-Scale, GPT-4o         & .583 & .840 & .504 & .714 & \textbf{.774} & .654 & .767 & .774 & .330 & .749 & .669 \\
+\midrule
+Ours                    & .541 & \textbf{.870} & .512 & \textbf{.733} & .645 & \textbf{.665} & \textbf{.784} & \textbf{.843} & \textbf{.396} & \textbf{.761} & \textbf{.675} \\
+\bottomrule
+\end{tabular}
+\caption{Pearson correlation per language on the MLSP test set, and the
+unweighted mean over the ten languages. Bold marks the highest figure
+in each column. Only the frequency baseline, Archaeology and our own
+row use no labels in the language being evaluated; TMU-HIT zero-shot
+uses none either, while the remaining rows condition on three to thirty
+target-language examples.}
+\label{tab:results}
+\end{table*}
+
+
+% =====================================================================
+% 10. CONTRIBUTII, pentru introducere. Paragraf narativ, persoana I,
+%     fara buline, fara cifre de sprijin, fara formule.
+% =====================================================================
+
+First, we show that the choice between selecting a component per
+language and averaging over all candidates can be made by the same
+leave-one-language-out criterion that fixes every other choice, and
+that the criterion gives opposite answers for two different components
+of the same pipeline, each confirmed by measurement. Second, we show
+that fitting a component on the trial split while fitting the rest on
+the evaluation split is a measurable error rather than a detail, and
+that correcting it recovers most of the gap on the language where the
+gap was largest. Third, we replace character length with tokenizer
+fertility and resolve frequency lookups through lemmas, two changes
+motivated by morphology that transfer across scripts. Fourth, we report
+every configuration we measured, together with what each choice
+between them cost us.

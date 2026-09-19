@@ -1,0 +1,441 @@
+% =====================================================================
+% PASTE FILE -- Approach / Results / What Did Not Work / Conclusions,
+% adaptate din report/report.tex la formatul de workshop (MRL 2026).
+% Se copiaza dupa Related Work in acl_latex.tex, inainte de Limitations.
+%
+% Fata de report/report.tex:
+%   - cheile de citare noi (vezi maparea din paste_bib_additions.bib);
+%   - metrica definita explicit si marcata ca metrica a competitiei;
+%   - sectiune noua 4.5 "What was tuned" -- divulgarea completa;
+%   - subsectiune noua 5.2 -- evaluarea pe cele 14 exemple RO;
+%   - tab:fail rescris pe doua blocuri: cele doua metrici in-source nu mai
+%     sunt amestecate (0.515 era EN->ML, 0.586 era transfer_avg);
+%   - "87% din scor" scos: nu se reconcilia cu propriul tabel (e 40%);
+%   - fara link de GitHub, fara TODO de author contributions.
+%
+% NECESITA IN PREAMBUL: \usepackage{booktabs} si \graphicspath{{figures/}}
+% -- vezi paste_preamble.tex. (enumitem NU e folosit nicaieri.)
+% =====================================================================
+
+\section{Approach}
+\label{section:approach}
+
+\subsection{Task, data and metric}
+
+Given a target word in a Romanian sentence, the task is to predict a
+complexity score in $[0,1]$, where $0$ is a fully familiar word and $1$
+a maximally difficult one. The test set contains $1587$ target words.
+Fourteen Romanian items carry gold complexity labels; they are too few
+to train or validate on, and we use them only as an independent check
+(Section~\ref{sec:14items}). Aggregated eye-tracking measurements over
+the same texts are distributed with the task, so gaze is available for
+the target words without any annotation effort of our own.
+
+Systems are ranked by
+\begin{equation}
+  \label{eq:metric}
+  \mathrm{score} = 50\,\bigl(|r| + \max(0, R^2)\bigr),
+\end{equation}
+where $r$ is the Pearson correlation with the gold scores and $R^2$ the
+coefficient of determination. This is the metric defined by the shared
+task, not a standard LCP measure, and it conflates two different
+things: $|r|$ rewards ranking the words correctly, while $R^2$ rewards
+putting them on the right absolute scale. We report it because the
+leaderboard returns only this composite --- the gold labels for the
+test set are not released, so we cannot decompose our own submissions
+into $r$ and $R^2$. Wherever labels are available we report $r$
+separately, and we take $r$ as the primary measure for the reason given
+in Section~\ref{sec:tuning}.
+
+\subsection{Setup and in-source validation}
+
+The system uses XLM-RoBERTa-base \citep{conneau2020xlmr} and RoLlama3-8B
+\citep{masala-etal-2024-vorbesti} in 4-bit quantisation, with
+\texttt{transformers}, \texttt{scikit-learn} and \texttt{wordfreq}.
+
+With no Romanian labels to validate on, design decisions were made
+\emph{in-source}: a regressor is trained on one set of source languages
+and evaluated on another, with cross-validation inside each source. We
+report two such quantities, and they are not interchangeable.
+$r_{\mathrm{EN}\rightarrow\mathrm{RO}^{*}}$ is the correlation obtained
+when training on English CompLex \citep{shardlow-etal-2021-semeval} and
+testing on the Romance portion of MLSP \citep{shardlow-etal-2024-bea};
+$\bar{r}_{\mathrm{transfer}}$ averages that with the reverse direction.
+Built on thousands of real labels, either check tells us whether a
+configuration is sound before it is applied to Romanian. Its limits are
+the subject of Section~\ref{sec:negative}.
+
+\subsection{The four signals}
+
+Each signal estimates complexity in a different way, and none of them
+requires a Romanian complexity annotation.
+
+\paragraph{(A) Cross-lingual transfer.}
+Complexity is learned from English and Romance annotations
+\citep{shardlow-etal-2021-semeval, shardlow-etal-2024-bea} and carried
+over to Romanian through the shared representation space of
+XLM-RoBERTa, which places translation-equivalent words close together
+(Section~\ref{sec:related}). A Ridge and HistGradientBoosting blend
+reads each word's embedding --- the mean of the last four layers,
+centred per language --- together with a few surface cues: frequency,
+length, syllable count and capitalisation.
+
+One Romanian-specific correction accounts for the largest single gain
+in the system. Because Romanian is heavily inflected, many word forms
+are absent from the frequency list and would be scored as maximally
+rare: of the $1587$ target tokens, $11.7\%$ have no entry at all, and
+for $36.0\%$ the lemma is more frequent than the inflected form, by
+$0.86$ Zipf units on average. We therefore use
+$\max\bigl(\mathrm{zipf}(\mathrm{form}), \mathrm{zipf}(\mathrm{lemma})\bigr)$
+in place of the form frequency. Section~\ref{sec:14items} identifies the
+condition under which this substitution is the wrong thing to do.
+
+\paragraph{(B) Language-model rating.}
+RoLlama3 is asked to rate the target word in context on a $1$--$5$
+scale. We read the answer from the probabilities the model assigns to
+the five digit tokens rather than from the text it generates, which
+turns a discrete choice into a smooth expected value.
+
+\paragraph{(C) Surprisal.}
+Surprisal, $-\log P(w \mid \mathrm{context})$, measures how unexpected
+the word is; under surprisal theory an unexpected word is harder to
+process \citep{hale2001probabilistic}. It comes from the same forward
+pass as (B) but is a raw internal statistic, which is why it is nearly
+independent of the rating ($r = 0.07$).
+
+\paragraph{(D) Eye-tracking.}
+Harder words are fixated longer and re-read more often
+\citep{rayner1998eye}. We compress the eight per-word effort measures
+into a single reading-effort score with PCA. The first component
+explains $62\%$ of the variance and every measure loads on it with the
+same sign (Table~\ref{tab:pca}), so the component is interpretable as a
+single ``more effort $=$ more complex'' axis.
+
+\subsection{Fusing the signals}
+
+The four signals live on different scales, so each is standardised and
+they are combined as a weighted average. Signal A is itself an ensemble
+of the English-source and Romance-source transfers, averaged after
+standardisation. The fused score is then mapped onto the scale of the
+test distribution,
+\begin{equation}
+  \label{eq:calib}
+  \hat{y} = \mathrm{clip}\bigl(\mu + \sigma \cdot z(s),\; 0,\; 1\bigr),
+\end{equation}
+with $\mu = 0.27$ and $\sigma = 0.125$. Per-signal weights are in
+Table~\ref{tab:signals}.
+
+\subsection{What was tuned, and what it costs}
+\label{sec:tuning}
+
+A zero-label setting has no development set, and selecting anything
+against the evaluation score is a known way to inflate it
+\citep{gorman-bedrick-2019-need}. We state exactly what this affects.
+
+Five numbers in the system were chosen against the public leaderboard
+score: the three fusion weights and the two constants of
+Equation~\ref{eq:calib}. The weights were searched on a coarse grid;
+for the eye-tracking weight the full sweep was
+$w_D \in \{0, 0.10, 0.20, 0.30\} \rightarrow 68.90, 69.66, 69.74,
+69.00$. Everything else --- the encoder, the layer, the feature set,
+the regressor, the lemma correction --- was decided in-source, without
+reference to the leaderboard.
+
+Two things bound the damage. First, the calibration constants cannot
+affect $r$ at all. Equation~\ref{eq:calib} is affine up to the clip,
+and the clip is inactive on our predictions, whose range is
+$[0.014, 0.845]$; Pearson $r$ is invariant under affine rescaling, so
+$\mu$ and $\sigma$ --- the two quantities that most directly encode
+information about the test distribution --- move only the $R^2$ term of
+Equation~\ref{eq:metric}. This is why we treat $r$ as the primary
+measure. Second, the response surface is flat: the eye-tracking sweep
+spans $0.84$ points end to end, and on the 14 Romanian items the tuned
+weights are worth $0.019$ of Pearson $r$ over uniform weights
+(Section~\ref{sec:14items}). The one number that must be read as an
+upper bound is the $+0.84$ attributed to eye-tracking in
+Table~\ref{tab:ablation}: it is the maximum of the sweep that selected
+$w_D$, and no independent estimate of it is available.
+
+\section{Results}
+\label{sec:results}
+
+\subsection{How much each signal contributes}
+
+Table~\ref{tab:ablation} builds the system one signal at a time.
+Restricted to what the shared task itself provides --- surface features
+and eye-tracking --- the system reaches $41.76$; the imported signals
+take it to $69.74$, so roughly $40\%$ of the final score is
+attributable to knowledge brought in from outside Romanian. Surface
+features alone reach $10.27$. The single largest step is adding the
+cross-lingual and language-model signals together ($+22.76$); the
+lemma-frequency correction is the largest single gain after that
+($+4.09$), and surprisal and eye-tracking each add a small amount.
+
+\subsection{Evaluation on the 14 Romanian items}
+\label{sec:14items}
+
+The fourteen labelled Romanian items are the only real Romanian
+supervision in existence for this task. They were never used for
+training and took no part in weight selection, which was carried out
+against the leaderboard; they were consulted during development as a
+sanity check, so they are not a pristine test set either, but they are
+independent of the tuning audited in Section~\ref{sec:tuning}.
+Table~\ref{tab:ro14} reports Pearson $r$ on them. Two caveats apply
+throughout: $n = 14$, so the confidence intervals are wide; and only
+signals A and B are available on these items, because surprisal was
+never computed for them and only $2$ of the $14$ carry eye-tracking.
+
+The fused signal reaches $r = 0.913$, and a permutation test rejects
+chance at $p < 0.0001$ despite the sample size. Uniform weights give
+$0.894$: the tuning is worth $0.019$, which is the estimate quoted in
+Section~\ref{sec:tuning}. With the calibration constants of
+Equation~\ref{eq:calib} the composite metric on these items is $73.53$
+($R^2 = 0.558$), close to the $69.74$ obtained on the full test set and
+in the same direction, which is weak evidence that the leaderboard
+figure is not inflated.
+
+\paragraph{A scope condition for the lemma correction.}
+The first two rows of Table~\ref{tab:ro14} are the frequency baselines,
+and they invert. Raw form frequency correlates $-0.606$ with
+complexity, the expected direction; after the lemma correction the
+correlation is $+0.092$. The reversal comes from a single item:
+\emph{putu}, a simple-perfect verb form, is the most complex word in the
+set ($0.545$) and the correction raises its frequency estimate by
+$2.76$ Zipf units, turning the hardest word into one of the easiest.
+Excluding it, the two baselines are $-0.465$ and $-0.476$, so on the
+remaining thirteen items the correction is neutral to mildly helpful.
+The correction assumes that an inflected form inherits its difficulty
+from its lemma. That assumption fails exactly when the inflection is
+itself the source of difficulty --- archaic, literary or otherwise
+marked forms --- and Romanian simple-perfect verbs are such a case. The
+$+4.09$ measured over $1587$ items says the assumption usually holds;
+this item says it is an assumption, not an identity.
+
+\subsection{What drives the prediction}
+
+A SHAP analysis \citep{lundberg2017shap} over named features
+(Figure~\ref{fig:beeswarm}) places
+frequency first, the language-model rating second and surprisal third;
+the surface features barely matter. Table~\ref{tab:signals} gives the
+same ordering at the signal level, and it agrees with the tuned
+weights --- SHAP describes the fitted model, it does not choose the
+weights. The signals are complementary rather than redundant
+(Figure~\ref{fig:corr}): the rating and surprisal are nearly
+independent, while the cross-lingual signal tracks frequency closely
+enough to be read as a frequency detector with semantics attached.
+
+\subsection{Eye-tracking contributes through its late measures}
+
+Eye-tracking helps because it carries something the lexical signals do
+not, and the division is the one predicted by the reading literature.
+Partialling out frequency and length from each gaze measure over the
+$1509$ test words that have gaze data, the early measures --- first
+fixation duration, first-pass reading time, skip rate --- retain almost
+no relation to the system's prediction ($\bar{r} = 0.010$) or to
+surprisal ($\bar{r} = -0.027$): what they encode is lexical access,
+which signal A already knows. The late measures --- re-reading time,
+incoming regressions, refixation rate --- retain $\bar{r} = 0.243$ and
+$\bar{r} = 0.177$ respectively. Late gaze is where the
+contextual-integration difficulty lives, and that is the part of the
+eye-tracking signal that is not already in the other three. As a
+separate check on the transfer regressor itself, on held-out English
+words it sorts complexity into easy, medium and hard bands with a
+clearly diagonal confusion matrix (Figure~\ref{fig:confusion}).
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\columnwidth]{beeswarm.png}
+\caption{SHAP over named features (top 8 shown). Frequency dominates, then the LLM rating and surprisal. The
+separate blue cluster on the frequency row is the group of very rare / out-of-vocabulary words, which push the
+predicted complexity up --- the expected behavior. Red = high feature value.}
+\label{fig:beeswarm}
+\end{figure}
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\columnwidth]{fig_corr_matrix.png}
+\caption{Correlation between the four signals and frequency on the Romanian test set. The rating (B) and surprisal
+(C) are nearly independent; the cross-lingual signal (A) tracks frequency closely.}
+\label{fig:corr}
+\end{figure}
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.8\columnwidth]{fig_confusion.png}
+\caption{In-source check: on held-out English words, the regressor sorts complexity into easy/medium/hard bands
+with a clearly diagonal confusion matrix.}
+\label{fig:confusion}
+\end{figure}
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Configuration} & \textbf{Score} & \textbf{$\Delta$} \\
+\midrule
+Predict a constant (the mean) & 0.00 & --- \\
+Surface features only (zero-shot RO) & 10.27 & +10.27 \\
+\;+ eye-tracking (no imported res.) & 41.76 & +31.49 \\
+\;+ cross-lingual A + LLM B & 64.52 & +22.76 \\
+\;+ surprisal C & 64.81 & +0.29 \\
+\;+ lemma-frequency fix (in A) & 68.90 & +4.09 \\
+\;+ eye-tracking PCA D & \textbf{69.74} & +0.84$^{\dagger}$ \\
+\bottomrule
+\end{tabular}
+\caption{Shared-task score (Equation~\ref{eq:metric}), built one component at a time; $\Delta$ is the marginal
+contribution of each component. Predicting one constant gives no correlation, hence $0$. The first two rows use
+only resources the shared task provides, so the imported signals account for $(69.74-41.76)/69.74 \approx 40\%$ of
+the final score. $^{\dagger}$This delta is the maximum of the sweep that selected $w_D$ and should be read as an
+upper bound (Section~\ref{sec:tuning}).}
+\label{tab:ablation}
+\end{table}
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{lc}
+\toprule
+\textbf{Predictor on the 14 items} & \textbf{Pearson $r$} \\
+\midrule
+Zipf frequency, inflected form & $-0.606$ \\
+Zipf frequency, lemma-corrected & $+0.092$ \\
+\midrule
+A cross-lingual, English source & $0.891$ \\
+A cross-lingual, Romance source & $0.759$ \\
+A ensemble & $0.838$ \\
+B language-model rating & $0.615$ \\
+\midrule
+A+B, uniform weights (untuned) & $0.894$ \\
+A+B, tuned weights & $\mathbf{0.913}$ \\
+\bottomrule
+\end{tabular}
+\caption{Pearson $r$ against the gold labels of the 14 Romanian items, which took no part in weight selection.
+Complexity falls as frequency rises, so a negative $r$ is the expected direction for the frequency rows and a
+positive one for the model signals. Bootstrap $95\%$ CIs over $10{,}000$ resamples: $[0.661, 0.967]$ for the
+untuned fusion and $[0.663, 0.975]$ for the tuned one; a permutation test over $20{,}000$ shuffles gives
+$p < 0.0001$ for the latter. Signals C and D are absent: surprisal was not computed for these items and only $2$
+of the $14$ have eye-tracking.}
+\label{tab:ro14}
+\end{table}
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Signal} & \textbf{SHAP importance} & \textbf{weight} \\
+\midrule
+A cross-lingual & 0.061 & 44\% \\
+B LLM rating & 0.034 & 29\% \\
+D eye-tracking & 0.017 & 20\% \\
+C surprisal & 0.006 & 6\% \\
+\bottomrule
+\end{tabular}
+\caption{Per-signal SHAP importance and the weight each signal gets in the final average. The two orders agree;
+SHAP describes the model, it does not choose the weights.}
+\label{tab:signals}
+\end{table}
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{lc}
+\toprule
+\textbf{Eye-tracking metric} & \textbf{PC1 loading} \\
+\midrule
+Total fixation time (TFT) & 0.44 \\
+Total fixation count (TFC) & 0.43 \\
+First-pass reading time (FPRT) & 0.42 \\
+First-pass fixation count (FPFC) & 0.39 \\
+Re-reading time (RRT) & 0.35 \\
+First-fixation duration (FFD) & 0.29 \\
+Regression-path duration (RPD\_inc) & 0.28 \\
+Incoming regressions (TRC\_in) & 0.13 \\
+\bottomrule
+\end{tabular}
+\caption{Weight of each eye-tracking metric in the reading-effort score (loadings on PC1, which explains $62\%$ of
+the variance). All loadings are positive: one ``more effort = more complex'' axis.}
+\label{tab:pca}
+\end{table}
+
+\section{What Did Not Work}
+\label{sec:negative}
+
+Table~\ref{tab:fail} lists the attempts that failed, and two of them
+carry a lesson beyond this system.
+
+\paragraph{Fine-tuning is worse than freezing.}
+Every form of fine-tuning we tried --- full fine-tuning and LoRA, over
+a sweep of learning rates, epochs and ranks --- transferred worse than
+the frozen encoder ($0.461$ and $0.462$ against $0.515$). With no
+target-language labels, fine-tuning can only adapt to the source
+language, and in doing so it degrades the cross-lingual alignment that
+the transfer depends on. This is the behaviour \citet{peters-etal-2019-tune}
+report when the target task is distant from the source, and it is worth
+stating plainly because the default move in a cross-lingual pipeline is
+to fine-tune \citep{pires-etal-2019-multilingual}.
+
+\paragraph{In-source validation does not predict transfer to Romanian.}
+Three configurations beat the frozen XLM-R baseline on in-source
+transfer and then lost on Romanian: a different encoder (e5), mid-layer
+embeddings, and a Lasso regressor. The in-source check measures
+transfer between English and Romance --- related, well-resourced
+languages --- and that is evidently not the same problem as transfer
+into Romanian. In a setting with no target-language development set
+this is the uncomfortable conclusion: the validation signal available
+is not the validation signal needed.
+
+\paragraph{Prompting and extra features.}
+Chain-of-thought and few-shot prompting added noise rather than signal;
+at the $8$B scale chain-of-thought is not yet reliably helpful
+\citep{wei2022cot}. Rarity measures and a range of part-of-speech,
+named-entity and WordNet features proved redundant with frequency,
+which is consistent with the SHAP picture in
+Figure~\ref{fig:beeswarm}.
+
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Attempt} & \textbf{in-source} & \textbf{score} \\
+\midrule
+\multicolumn{3}{l}{\emph{Fine-tuning} ($r_{\mathrm{EN}\rightarrow\mathrm{RO}^{*}}$)} \\
+Frozen XLM-R (this work) & 0.515 & --- \\
+Full fine-tune (best of sweep) & 0.461 & --- \\
+LoRA (best of sweep) & 0.462 & --- \\
+\midrule
+\multicolumn{3}{l}{\emph{Representation and regressor} ($\bar{r}_{\mathrm{transfer}}$)} \\
+Frozen XLM-R (this work) & 0.551 & 69.74 \\
+Encoder swap (e5) & 0.586 & 63.00 \\
+Mid-layer embeddings & 0.556 & 64.49 \\
+Lasso regressor & 0.569 & 64.28 \\
+\midrule
+\multicolumn{3}{l}{\emph{Prompting}} \\
+LLM few-shot prompt & --- & 63.31 \\
+\bottomrule
+\end{tabular}
+\caption{Failed attempts. The two blocks use different in-source measures and are not comparable across blocks:
+$r_{\mathrm{EN}\rightarrow\mathrm{RO}^{*}}$ is the one-directional English-to-Romance transfer correlation, and
+$\bar{r}_{\mathrm{transfer}}$ averages both directions. Within the second block, every variant that beats the
+frozen baseline in-source loses on the shared-task score.}
+\label{tab:fail}
+\end{table}
+
+\section{Conclusions}
+\label{section:conclusions}
+
+The absence of Romanian training data did not merely constrain the
+design, it determined it: with no labels to fit and no development set
+to select on, the only remaining move is to import complexity knowledge
+from elsewhere and combine several independent imports. Four such
+signals --- a frozen multilingual encoder, a language-model rating,
+surprisal, and gaze --- reach $69.74$ on the shared-task metric and
+$r = 0.913$ on the labelled Romanian items released with the task,
+without a single target-language annotation.
+
+Three findings generalise beyond Romanian. A lemma-frequency correction
+is worth more than any other single component ($+4.09$) for a
+morphologically rich language, subject to the scope condition of
+Section~\ref{sec:14items}. Fine-tuning a multilingual encoder without
+target labels is actively harmful, and freezing it is the stronger
+default. And in-source validation, the only validation a zero-label
+setting affords, does not reliably predict transfer to the target
+language --- which is the finding we would most want future work in
+this setting to take seriously.

@@ -1,0 +1,17 @@
+{
+ "n_estimators": 8,
+ "max_rows": null,
+ "dtype": "torch.bfloat16",
+ "n_cereri": 12,
+ "norm_methods": [
+  "none",
+  "power",
+  "quantile_rtdl",
+  "robust"
+ ],
+ "max_num_features": 256,
+ "n_feature_crosses": "sqrt",
+ "n_svd_features": 0,
+ "enable_nnls": false,
+ "outlier_threshold": 4.0
+}

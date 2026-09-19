@@ -1,0 +1,1364 @@
+% =====================================================================
+% LUCRAREA MULTILINGVA, un singur fisier, de dat copy-paste in Overleaf.
+% Template-ul ACL cu textul nostru in el, de la abstract la Limitations.
+% Scrisa pe 19 august 2026. Tinta: ARR 12 octombrie 2026, NAACL 2027.
+%
+% ASTA NU E paperul romanesc. Acela e Paper/Articol_Complexity/paper_full.tex,
+% alt subiect, alt set de date, si nu se atinge de aici.
+%
+% Numerotarea: 1 Introduction, 2 Related Work, 3 Approach, 4 Results,
+% 5 Conclusions, apoi Limitations nenumerotata. Fara Acknowledgments si
+% fara apendice la review.
+%
+% ORDINEA IN CARE A FOST SCRISA, si nu e ordinea din fisier: Results plus
+% cele trei tabele ale lui, apoi Limitations, apoi Approach, apoi Related
+% Work si Conclusions, apoi Introduction si abstractul. Sectiunile complet
+% determinate de masuratori s-au scris primele, ca sa nu se aleaga nicio
+% cifra ca sa sune bine intr-o fraza deja scrisa.
+%
+% ABATERILE DE LA TEMPLATE:
+%
+%   1. Corpul lucrarii. Abstractul template-ului e inlocuit cu al nostru,
+%      \section{Introduction} cu Sectiunile 1-5, si \section*{Limitations}
+%      cu a noastra. Sectiunile de manual ale template-ului (Engines,
+%      Preamble, Document Body, BibTeX Files) sunt SCOASE, cu tabelele si
+%      figurile lor de exemplu. Deci nu e nevoie de pachetul mwe, si dispar
+%      \nocite{Ando2005,...} si citarile la Gusfield:97.
+%
+%   2. Bibliografia. Blocul filecontents scrie custom.bib cu cele 7 intrari
+%      ale template-ului PLUS cele 19 ale lucrarii. Cele 7 raman necitate,
+%      dar inofensive: fisierul merge lipit si intr-un proiect ACL care are
+%      deja un custom.bib de exemplu. [overwrite] e OBLIGATORIU exact din
+%      motivul asta.
+%
+%   3. O singura adaugire de preambul dupa \usepackage{graphicx}: booktabs,
+%      pentru \toprule / \midrule / \bottomrule din cele 4 tabele. NU se
+%      adauga \bibliographystyle{acl_natbib}; acl.sty il seteaza singur si
+%      duplicarea da eroare.
+%
+%   4. Lucrarea asta NU are figuri, deci nu are nici \graphicspath. graphicx
+%      ramane fiindca e in template si e inofensiv.
+%
+%   5. Plasarea floats-urilor. Fiecare tabel e declarat inaintea titlului
+%      care urmeaza primei lui referinte, nu in bloc la finalul sectiunii.
+%      Declararea in bloc face LaTeX sa dedice coloane intregi numai lor.
+%      Plus cele patru \renewcommand de fractii de float.
+%
+%   6. \author{} e gol. Anonimizarea o face template-ul: optiunea "review"
+%      din acl.sty tipareste "Anonymous ACL submission" in locul lui \@author,
+%      deci continutul lui nu se vede oricum la review. Gol e totusi mai bine
+%      decit placeholderii, care ar pleca asa la tipar daca cineva comuta pe
+%      "final". DE COMPLETAT la camera-ready.
+%
+%   7. \section*{Acknowledgments} e SCOS, obligatoriu la review conform
+%      formatting.md. De repus la camera-ready, imediat inaintea referintelor.
+%
+% CE E DE VERIFICAT INAINTE DE TRIMITERE, si e scris si in locurile lui:
+%   - lista de autori si subtitlul intrarii enomoto-etal-2024-tmu;
+%   - citarile rapoartelor tehnice ale celor trei modele de limbaj, care
+%     sunt acum numite in text fara citare;
+%   - graful de citari MLSP 2024, pentru afirmatia din Related Work;
+%   - titlul de mai jos, care e provizoriu.
+%
+% CIFRELE. Toate vin din artefacte pe disc si niciuna nu e recalculata la
+% scriere. Sursele, o data pentru tot fisierul:
+%   output/fusion_lolo_adoptat.csv     cifrele per limba ale sistemului
+%   output/e_rezumat_modele.csv        jurnalul generat, cu diferente perechi
+%   output/e_rezumat_modele_pre-p11_n5606.csv   arhiva, pentru Tabelul 4
+%   output/e_adoptie.md                cele doua parghii, §1 si §2
+%   output/e_m1.md                     alegerea mediaza-vs-selecteaza, LOLO
+%   output/e_m3.md                     leave-one-encoder-out
+%   output/e_pick_split.md             latimile criteriului, harta de modele
+%   output/e_bakeoff_test.md           r per limba al fiecarui model, semnalul B
+%   output/e_lemma.md                  fixul de lema si teza morfologica
+%   output/repere_publicate.md         reperele publicate, transcrise de mana
+%
+% ATENTIE LA UN LUCRU CARE SE POATE SCRIE GRESIT FARA SA SE VADA: cifrele
+% Tabelului 4 sunt pe n = 5606, dinaintea fixului de potrivire a spanului,
+% iar restul lucrarii e pe n = 5624. Nu se scad unele din altele. Jurnalul
+% marcheaza randurile vechi cu "n vechi (5606), NU se compara".
+% =====================================================================
+
+\begin{filecontents*}[overwrite]{custom.bib}
+% Use this file for citations not found in the ACL Anthology (contained in "anthology.bib").
+
+% Cele 7 intrari ale template-ului ACL. Raman necitate, dar inofensive:
+% fisierul merge lipit si intr-un proiect care are deja un custom.bib.
+
+@book{Aho:72,
+    author  = {Alfred V. Aho and Jeffrey D. Ullman},
+    title   = {The Theory of Parsing, Translation and Compiling},
+    year    = "1972",
+    volume  = "1",
+    publisher = {Prentice-Hall},
+    address = {Englewood Cliffs, NJ}
+}
+
+@book{APA:83,
+    author  = {{American Psychological Association}},
+    title   = {Publications Manual},
+    year    = "1983",
+    publisher = {American Psychological Association},
+    address = {Washington, DC}
+}
+
+@article{Chandra:81,
+	author = {Ashok K. Chandra and Dexter C. Kozen and Larry J. Stockmeyer},
+	year = "1981",
+	title = {Alternation},
+	journal = {Journal of the Association for Computing Machinery},
+	volume = "28",
+	number = "1",
+	pages = "114--133",
+	doi = "10.1145/322234.322243",
+}
+
+@inproceedings{andrew2007scalable,
+  title={Scalable training of {L1}-regularized log-linear models},
+  author={Andrew, Galen and Gao, Jianfeng},
+  booktitle={Proceedings of the 24th International Conference on Machine Learning},
+  pages={33--40},
+  year={2007},
+}
+
+@book{Gusfield:97,
+    author  = {Dan Gusfield},
+    title   = {Algorithms on Strings, Trees and Sequences},
+    year    = "1997",
+    publisher = {Cambridge University Press},
+    address = {Cambridge, UK}
+}
+
+@article{rasooli-tetrault-2015,
+    author    = {Mohammad Sadegh Rasooli and Joel R. Tetreault},
+    title     = {Yara Parser: {A} Fast and Accurate Dependency Parser},
+    journal   = {Computing Research Repository},
+    volume    = {arXiv:1503.06733},
+    year      = {2015},
+    url       = {http://arxiv.org/abs/1503.06733},
+    note    = {version 2}
+}
+
+@article{Ando2005,
+	Acmid = {1194905},
+	Author = {Ando, Rie Kubota and Zhang, Tong},
+	Issn = {1532-4435},
+	Issue_Date = {12/1/2005},
+	Journal = {Journal of Machine Learning Research},
+	Month = dec,
+	Numpages = {37},
+	Pages = {1817--1853},
+	Publisher = {JMLR.org},
+	Title = {A Framework for Learning Predictive Structures from Multiple Tasks and Unlabeled Data},
+	Volume = {6},
+	Year = {2005}
+}
+
+% ---- Intrarile copiate din Paper/Articol_Complexity/paper_full.tex, unde
+% ---- au fost deja verificate contra ACL Anthology. Nu se re-transcriu.
+
+@inproceedings{shardlow-etal-2021-semeval,
+    title = "{S}em{E}val-2021 Task 1: Lexical Complexity Prediction",
+    author = "Shardlow, Matthew  and
+      Evans, Richard  and
+      Paetzold, Gustavo Henrique  and
+      Zampieri, Marcos",
+    editor = "Palmer, Alexis  and
+      Schneider, Nathan  and
+      Schluter, Natalie  and
+      Emerson, Guy  and
+      Herbelot, Aurelie  and
+      Zhu, Xiaodan",
+    booktitle = "Proceedings of the 15th International Workshop on Semantic Evaluation (SemEval-2021)",
+    month = aug,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.semeval-1.1/",
+    doi = "10.18653/v1/2021.semeval-1.1",
+    pages = "1--16"
+}
+
+@inproceedings{yimam-etal-2018-report,
+    title = "A Report on the Complex Word Identification Shared Task 2018",
+    author = {Yimam, Seid Muhie  and
+      Biemann, Chris  and
+      Malmasi, Shervin  and
+      Paetzold, Gustavo  and
+      Specia, Lucia  and
+      {\v{S}}tajner, Sanja  and
+      Tack, Ana{\"i}s  and
+      Zampieri, Marcos},
+    editor = "Tetreault, Joel  and
+      Burstein, Jill  and
+      Kochmar, Ekaterina  and
+      Leacock, Claudia  and
+      Yannakoudakis, Helen",
+    booktitle = "Proceedings of the Thirteenth Workshop on Innovative Use of {NLP} for Building Educational Applications",
+    month = jun,
+    year = "2018",
+    address = "New Orleans, Louisiana",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/W18-0507/",
+    doi = "10.18653/v1/W18-0507",
+    pages = "66--78"
+}
+
+@inproceedings{shardlow-etal-2024-multilingual,
+    title = "Multilingual Resources for Lexical Complexity Prediction: A Review",
+    author = "Shardlow, Matthew  and
+      North, Kai  and
+      Zampieri, Marcos",
+    editor = "Nunzio, Giorgio Maria Di  and
+      Vezzani, Federica  and
+      Ermakova, Liana  and
+      Azarbonyad, Hosein  and
+      Kamps, Jaap",
+    booktitle = "Proceedings of the Workshop on DeTermIt! Evaluating Text Difficulty in a Multilingual Context @ LREC-COLING 2024",
+    month = may,
+    year = "2024",
+    address = "Torino, Italia",
+    publisher = "ELRA and ICCL",
+    url = "https://aclanthology.org/2024.determit-1.5/",
+    pages = "51--59"
+}
+
+@inproceedings{shardlow-etal-2024-bea,
+    title = "The {BEA} 2024 Shared Task on the Multilingual Lexical Simplification Pipeline",
+    author = {Shardlow, Matthew  and
+      Alva-Manchego, Fernando  and
+      Batista-Navarro, Riza  and
+      Bott, Stefan  and
+      Calderon Ramirez, Saul  and
+      Cardon, R{\'e}mi  and
+      Fran{\c{c}}ois, Thomas  and
+      Hayakawa, Akio  and
+      Horbach, Andrea  and
+      H{\"u}lsing, Anna  and
+      Ide, Yusuke  and
+      Imperial, Joseph Marvin  and
+      Nohejl, Adam  and
+      North, Kai  and
+      Occhipinti, Laura  and
+      Rojas, Nelson Per{\'e}z  and
+      Raihan, Nishat  and
+      Ranasinghe, Tharindu  and
+      Salazar, Martin Solis  and
+      {\v{S}}tajner, Sanja  and
+      Zampieri, Marcos  and
+      Saggion, Horacio},
+    editor = {Kochmar, Ekaterina  and
+      Bexte, Marie  and
+      Burstein, Jill  and
+      Horbach, Andrea  and
+      Laarmann-Quante, Ronja  and
+      Tack, Ana{\"i}s  and
+      Yaneva, Victoria  and
+      Yuan, Zheng},
+    booktitle = "Proceedings of the 19th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2024)",
+    month = jun,
+    year = "2024",
+    address = "Mexico City, Mexico",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.bea-1.51/",
+    pages = "571--589"
+}
+
+@inproceedings{saggion-etal-2024-lexical,
+    title = "Lexical Complexity Prediction and Lexical Simplification for {C}atalan and {S}panish: Resource Creation, Quality Assessment, and Ethical Considerations",
+    author = "Saggion, Horacio  and
+      Bott, Stefan  and
+      Szasz, Sandra  and
+      P{\'e}rez, Nelson  and
+      Calder{\'o}n, Sa{\'u}l  and
+      Sol{\'i}s, Mart{\'i}n",
+    editor = "Shardlow, Matthew  and
+      Saggion, Horacio  and
+      Alva-Manchego, Fernando  and
+      Zampieri, Marcos  and
+      North, Kai  and
+      {\v{S}}tajner, Sanja  and
+      Stodden, Regina",
+    booktitle = "Proceedings of the Third Workshop on Text Simplification, Accessibility and Readability (TSAR 2024)",
+    month = nov,
+    year = "2024",
+    address = "Miami, Florida, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.tsar-1.9/",
+    doi = "10.18653/v1/2024.tsar-1.9",
+    pages = "82--94"
+}
+
+@inproceedings{qiu-etal-2024-complex,
+    title = "{C}omp{L}ex-{ZH}: A New Dataset for Lexical Complexity Prediction in {M}andarin and {C}antonese",
+    author = "Qiu, Le  and
+      Guo, Shanyue  and
+      Wong, Tak-Sum  and
+      Chersoni, Emmanuele  and
+      Lee, John  and
+      Huang, Chu-Ren",
+    editor = "Shardlow, Matthew  and
+      Saggion, Horacio  and
+      Alva-Manchego, Fernando  and
+      Zampieri, Marcos  and
+      North, Kai  and
+      {\v{S}}tajner, Sanja  and
+      Stodden, Regina",
+    booktitle = "Proceedings of the Third Workshop on Text Simplification, Accessibility and Readability (TSAR 2024)",
+    month = nov,
+    year = "2024",
+    address = "Miami, Florida, USA",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.tsar-1.3/",
+    doi = "10.18653/v1/2024.tsar-1.3",
+    pages = "20--26"
+}
+
+@inproceedings{cristea-nisioi-2024-machine,
+    title = "Archaeology at {MLSP} 2024: Machine Translation for Lexical Complexity Prediction and Lexical Simplification",
+    author = "Cristea, Petru  and
+      Nisioi, Sergiu",
+    editor = {Kochmar, Ekaterina  and
+      Bexte, Marie  and
+      Burstein, Jill  and
+      Horbach, Andrea  and
+      Laarmann-Quante, Ronja  and
+      Tack, Ana{\"i}s  and
+      Yaneva, Victoria  and
+      Yuan, Zheng},
+    booktitle = "Proceedings of the 19th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2024)",
+    month = jun,
+    year = "2024",
+    address = "Mexico City, Mexico",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.bea-1.55/",
+    pages = "610--617"
+}
+
+@inproceedings{conneau2020xlmr,
+  title        = {Unsupervised Cross-lingual Representation Learning at Scale},
+  author       = {Conneau, Alexis and Khandelwal, Kartikay and Goyal, Naman and Chaudhary, Vishrav and Wenzek, Guillaume and Guzm{\'a}n, Francisco and Grave, Edouard and Ott, Myle and Zettlemoyer, Luke and Stoyanov, Veselin},
+  booktitle    = {Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics (ACL)},
+  pages        = {8440--8451},
+  year         = {2020},
+  url          = {https://aclanthology.org/2020.acl-main.747}
+}
+
+@inproceedings{pires-etal-2019-multilingual,
+    title = "How Multilingual is Multilingual {BERT}?",
+    author = "Pires, Telmo  and
+      Schlinger, Eva  and
+      Garrette, Dan",
+    editor = "Korhonen, Anna  and
+      Traum, David  and
+      M{\`a}rquez, Llu{\'i}s",
+    booktitle = "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P19-1493/",
+    doi = "10.18653/v1/P19-1493",
+    pages = "4996--5001"
+}
+
+@inproceedings{wu-dredze-2020-languages,
+    title = "Are All Languages Created Equal in Multilingual {BERT}?",
+    author = "Wu, Shijie  and
+      Dredze, Mark",
+    editor = "Gella, Spandana  and
+      Welbl, Johannes  and
+      Rei, Marek  and
+      Petroni, Fabio  and
+      Lewis, Patrick  and
+      Strubell, Emma  and
+      Seo, Minjoon  and
+      Hajishirzi, Hannaneh",
+    booktitle = "Proceedings of the 5th Workshop on Representation Learning for NLP",
+    month = jul,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2020.repl4nlp-1.16/",
+    doi = "10.18653/v1/2020.repl4nlp-1.16",
+    pages = "120--130"
+}
+
+@inproceedings{peters-etal-2019-tune,
+    title = "To Tune or Not to Tune? Adapting Pretrained Representations to Diverse Tasks",
+    author = "Peters, Matthew E.  and
+      Ruder, Sebastian  and
+      Smith, Noah A.",
+    editor = "Augenstein, Isabelle  and
+      Gella, Spandana  and
+      Ruder, Sebastian  and
+      Kann, Katharina  and
+      Can, Burcu  and
+      Welbl, Johannes  and
+      Conneau, Alexis  and
+      Ren, Xiang  and
+      Rei, Marek",
+    booktitle = "Proceedings of the 4th Workshop on Representation Learning for NLP (RepL4NLP-2019)",
+    month = aug,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/W19-4302/",
+    doi = "10.18653/v1/W19-4302",
+    pages = "7--14"
+}
+
+@inproceedings{gorman-bedrick-2019-need,
+    title = "We Need to Talk about Standard Splits",
+    author = "Gorman, Kyle  and
+      Bedrick, Steven",
+    editor = "Korhonen, Anna  and
+      Traum, David  and
+      M{\`a}rquez, Llu{\'i}s",
+    booktitle = "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+    month = jul,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/P19-1267/",
+    doi = "10.18653/v1/P19-1267",
+    pages = "2786--2791"
+}
+
+% ---- Intrarile NOI, scrise pentru lucrarea multilingva. Regulile din
+% ---- memoria `paper-overleaf-workflow`: zero Unicode, zero arond in
+% ---- comentarii, acronimele in acolade ca .bst-ul sa nu le scrie cu
+% ---- minuscule.
+
+% Sursa reperelor publicate. Datele bibliografice sunt cele verificate in
+% output/repere_publicate.md, unde e transcris si Tabelul 13.
+@article{nohejl-etal-2025-japanese,
+    author  = {Nohejl, Adam and Hayakawa, Akio and Ide, Yusuke and Watanabe, Taro},
+    title   = {A {J}apanese Dataset and Efficient Multilingual {LLM}-Based Methods for Lexical Simplification and Lexical Complexity Prediction},
+    journal = {Journal of Natural Language Processing},
+    volume  = {32},
+    number  = {4},
+    pages   = {1129--1163},
+    year    = {2025}
+}
+
+% DE COMPLETAT inainte de trimitere: lista completa de autori si subtitlul,
+% de pe aclanthology.org/2024.bea-1.52.bib. Ce e mai jos e numai ce e
+% verificat in output/repere_publicate.md, si "and others" randeaza corect
+% "Enomoto et al." pana atunci.
+@inproceedings{enomoto-etal-2024-tmu,
+    title     = "{TMU}-{HIT} at {MLSP} 2024",
+    author    = "Enomoto and others",
+    booktitle = "Proceedings of the 19th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2024)",
+    month     = jun,
+    year      = "2024",
+    address   = "Mexico City, Mexico",
+    publisher = "Association for Computational Linguistics",
+    url       = "https://aclanthology.org/2024.bea-1.52/"
+}
+
+@inproceedings{liu-etal-2023-geval,
+    title     = "{G}-{E}val: {NLG} Evaluation using {GPT}-4 with Better Human Alignment",
+    author    = "Liu, Yang  and
+      Iter, Dan  and
+      Xu, Yichong  and
+      Wang, Shuohang  and
+      Xu, Ruochen  and
+      Zhu, Chenguang",
+    booktitle = "Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing",
+    month     = dec,
+    year      = "2023",
+    address   = "Singapore",
+    publisher = "Association for Computational Linguistics",
+    url       = "https://aclanthology.org/2023.emnlp-main.153/",
+    doi       = "10.18653/v1/2023.emnlp-main.153",
+    pages     = "2511--2522"
+}
+
+@inproceedings{feng-etal-2022-language,
+    title     = "Language-agnostic {BERT} Sentence Embedding",
+    author    = "Feng, Fangxiaoyu  and
+      Yang, Yinfei  and
+      Cer, Daniel  and
+      Arivazhagan, Naveen  and
+      Wang, Wei",
+    booktitle = "Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month     = may,
+    year      = "2022",
+    address   = "Dublin, Ireland",
+    publisher = "Association for Computational Linguistics",
+    url       = "https://aclanthology.org/2022.acl-long.62/",
+    doi       = "10.18653/v1/2022.acl-long.62",
+    pages     = "878--891"
+}
+
+@article{wang2024multilinguale5,
+    author  = {Wang, Liang and Yang, Nan and Huang, Xiaolong and Yang, Linjun and Majumder, Rangan and Wei, Furu},
+    title   = {Multilingual {E}5 Text Embeddings: A Technical Report},
+    journal = {Computing Research Repository},
+    volume  = {arXiv:2402.05672},
+    year    = {2024},
+    url     = {https://arxiv.org/abs/2402.05672}
+}
+
+@inproceedings{qi-etal-2020-stanza,
+    title     = "{S}tanza: A {P}ython Natural Language Processing Toolkit for Many Human Languages",
+    author    = "Qi, Peng  and
+      Zhang, Yuhao  and
+      Zhang, Yuhui  and
+      Bolton, Jason  and
+      Manning, Christopher D.",
+    booktitle = "Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics: System Demonstrations",
+    month     = jul,
+    year      = "2020",
+    address   = "Online",
+    publisher = "Association for Computational Linguistics",
+    url       = "https://aclanthology.org/2020.acl-demos.14/",
+    doi       = "10.18653/v1/2020.acl-demos.14",
+    pages     = "101--108"
+}
+
+@inproceedings{rust-etal-2021-good,
+    title     = "How Good is Your Tokenizer? On the Monolingual Performance of Multilingual Language Models",
+    author    = "Rust, Phillip  and
+      Pfeiffer, Jonas  and
+      Vuli{\'c}, Ivan  and
+      Ruder, Sebastian  and
+      Gurevych, Iryna",
+    booktitle = "Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th International Joint Conference on Natural Language Processing (Volume 1: Long Papers)",
+    month     = aug,
+    year      = "2021",
+    address   = "Online",
+    publisher = "Association for Computational Linguistics",
+    url       = "https://aclanthology.org/2021.acl-long.243/",
+    doi       = "10.18653/v1/2021.acl-long.243",
+    pages     = "3118--3135"
+}
+\end{filecontents*}
+
+\documentclass[11pt]{article}
+
+% Change "review" to "final" to generate the final (sometimes called camera-ready) version.
+% Change to "preprint" to generate a non-anonymous version with page numbers.
+\usepackage[review]{acl}
+
+% Standard package includes
+\usepackage{times}
+\usepackage{latexsym}
+
+% For proper rendering and hyphenation of words containing Latin characters (including in bib files)
+\usepackage[T1]{fontenc}
+% For Vietnamese characters
+% \usepackage[T5]{fontenc}
+% See https://www.latex-project.org/help/documentation/encguide.pdf for other character sets
+
+% This assumes your files are encoded as UTF8
+\usepackage[utf8]{inputenc}
+
+% This is not strictly necessary, and may be commented out,
+% but it will improve the layout of the manuscript,
+% and will typically save some space.
+\usepackage{microtype}
+
+% This is also not strictly necessary, and may be commented out.
+% However, it will improve the aesthetics of text in
+% the typewriter font.
+\usepackage{inconsolata}
+
+%Including images in your LaTeX document requires adding
+%additional package(s)
+\usepackage{graphicx}
+
+% ---------------------------------------------------------------------
+% Abaterea 3: singura adaugire de preambul ceruta de corpul lucrarii.
+% ---------------------------------------------------------------------
+\usepackage{booktabs}          % \toprule / \midrule / \bottomrule in the four tables
+
+% Fractiile implicite ale lui LaTeX (topfraction 0.7, textfraction 0.2)
+% dedica coloane intregi numai tabelelor. Relaxate ca sa incapa text in
+% aceeasi coloana cu un float.
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.5}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.8}
+
+% If the title and author information does not fit in the area allocated, uncomment the following
+%
+%\setlength\titlebox{<dim>}
+%
+% and set <dim> to something 5cm or larger.
+
+% TITLUL E PROVIZORIU. Numeste ambele contributii, cea de protocol si cea de
+% rezultat. De confirmat cu coordonatorul inainte de trimitere.
+\title{Lexical Complexity Prediction Without Target-Language Labels:\\
+       When to Select a Component and When to Average}
+
+% ---------------------------------------------------------------------
+% Blocul de autori e GOL, intentionat. Vezi abaterea 6 din capul fisierului.
+%
+% DE COMPLETAT la camera-ready, dupa modelul template-ului:
+%   \author{Nume Autor \\
+%     Afiliere \\
+%     \texttt{email@domain} \\\And
+%     Al Doilea Autor \\
+%     Afiliere \\
+%     \texttt{email@domain} \\}
+% ---------------------------------------------------------------------
+\author{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We predict lexical complexity in ten languages without using a single
+annotated example from the language being evaluated. Two signals are
+fused: a regressor over a frozen multilingual encoder, fitted on
+annotations from the other languages, and a complexity rating read from
+the token probabilities of an open-weight language model run locally.
+Every choice the pipeline makes, including which language model to use
+and how to weight the two signals against each other, is fitted on the
+other nine languages. Averaged over the ten, we reach a Pearson
+correlation of $0.675$, ahead by $0.065$ of the strongest published
+result obtained without target-language labels, and ahead on nine of the
+ten languages. We further show that the same leave-one-language-out
+criterion can decide whether a component should be selected per language
+or averaged over all candidates, and that it answers that question in
+opposite ways for the two components of one pipeline.
+\end{abstract}
+
+% =====================================================================
+% Sectiunea 1, Introduction. Scrisa ULTIMA, cum cere ordinea.
+%
+% Structura ceruta de coordonator, ghidul Columbia hgs, vezi memoria
+% `intro-style-hgs`. Maparea celor 5 puncte pe cele 6 paragrafe:
+%   P1 motivatie          -> ¶1
+%   P2 problema specifica -> ¶2 + ¶3
+%   P3 contributiile      -> ¶4, paragraf narativ, persoana I, fara buline
+%   P4 diferentierea      -> ¶5, la nivel inalt, se inchide cu trimitere la §2
+%   P5 roadmap            -> ¶6, enumera CONTINUT, nu numere de sectiune
+%
+% Reguli aplicate: fara deschidere de tip definitie de dictionar, fara
+% aforisme, fara formule, fara cifre de sprijin peste cifra de titlu, fraza
+% -tema la inceputul fiecarui paragraf, timpuri verbale consistente in
+% interiorul paragrafului.
+%
+% Contributia a doua e REFORMULATA fata de pasajul 10 din
+% Paper/TEXT_DE_LIPIT_multilingv.tex: acolo scria „recovers most of the gap",
+% ceea ce supraliciteaza. Decalajul francez fata de cea mai mare cifra
+% publicata a trecut de la 0.192 la 0.129, adica o treime.
+% =====================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Deciding which words in a text will be difficult is the first step of
+automatic simplification, and it bounds everything the rest of the
+pipeline is able to do, since a word that is never identified as hard is
+never replaced. The readers this matters for are not one group.
+Language learners, readers with limited literacy, and specialists
+reading outside their own field each meet the problem in a different
+vocabulary, and a system that serves one of them does not thereby serve
+the others. Lexical complexity prediction estimates how difficult a
+given word is in the sentence where it occurs, which is what lets a
+simplification system rank candidates for replacement and a readability
+measure locate where in a text the difficulty sits.
+
+Nearly every reported system for the task is built the same way. Human
+annotators rate words in context in some language, an encoder is
+fine-tuned on those ratings, and the resulting model predicts in that
+language. This works, and it has produced the figures the field cites,
+but it makes the method available exactly where it is least needed. The
+languages with complexity annotations are the languages that already
+have simplification tools, readability formulas and graded reading
+material; the languages without them have none of these, and no obvious
+route to any.
+
+Removing the labels breaks more than the training step. It also removes
+the means by which every other decision is normally made. Which
+pretrained encoder suits a language, which of several language models
+rates its words most reliably, how far to trust a transfer model against
+a direct one: all of these are ordinarily settled by validating in the
+target language, and none of them can be settled that way when the
+target language is the one thing that must not be looked at. The surface
+features carry a second, quieter version of the problem, since character
+length and syllable count do not mean the same thing across writing
+systems, and frequency lists index inflected forms as though each were
+its own word.
+
+We take the position that these decisions should be made by the same
+procedure that produces the predictions, and we report what happens when
+they are. First, we show that the choice between selecting a component
+per language and averaging over all candidates can be made by the same
+leave-one-language-out criterion that fixes every other choice, and that
+the criterion gives opposite answers for two components of one pipeline,
+each answer confirmed by measurement. Second, we show that fitting one
+component on the trial split while fitting the rest on the evaluation
+split is a measurable error and not a detail of bookkeeping, and that
+correcting it closes a third of the gap on the language where the gap to
+published results was largest. Third, we replace character length with
+tokeniser fertility and resolve frequency lookups through lemmas, two
+changes argued from morphology rather than chosen by score, which
+transfer across writing systems. The resulting predictions reach a
+Pearson correlation of $0.675$ averaged over ten languages, using no annotated
+example from the language being evaluated, which is ahead by $0.065$ of
+the strongest published result obtained under that same condition.
+Fourth, we report every configuration we measured, together with what
+choosing between them cost us.
+
+Two things separate this from the closest published work. The strongest
+published averages on this data come from prompting a proprietary model
+with labelled examples in the target language, so they answer a
+different question than the one we ask, and the distance between those
+figures and ours is smaller in either direction than the width of our
+own confidence interval.
+The zero-label results that do answer our question were obtained by
+translating into English, which concedes the multilingual problem
+instead of addressing it. Section~\ref{sec:related} places both, along
+with the transfer and tokenisation work the approach builds on.
+
+The rest of the paper describes the two signals and the criterion that
+combines them, reports per-language correlations against every published
+figure on this test set, separates what each of the two corrections
+contributes, and states where the reported configuration was chosen by
+us rather than by the procedure.
+
+% =====================================================================
+% Sectiunea 2, Related Work. Pe \paragraph{}, fara subsectiuni numerotate,
+% ca in RALS. Impreuna cu introducerea trebuie sa stea sub 2 pagini.
+%
+% Fiecare bloc se inchide cu o fraza de gap, tiparul luat din
+% 2605.07466_6048.pdf. Nicio citare nu apare in doua blocuri: regula
+% „nicio idee spusa de doua ori" prinde exact repetitia de citari.
+%
+% NEVERIFICAT, si trebuie verificat inainte de trimitere: graful de citari
+% al datelor MLSP 2024, pentru afirmatia ca nimeni n-a raportat protocolul
+% asta pe setul asta. Formularea de mai jos spune ce am gasit noi, nu ca nu
+% exista, tocmai fiindca verificarea nu s-a facut.
+% =====================================================================
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Lexical complexity prediction.} Predicting how difficult a
+word is for a reader, in the context where it occurs, was posed as a
+regression problem by \citet{shardlow-etal-2021-semeval} for English,
+after earlier work treated it as binary identification
+\citep{yimam-etal-2018-report}. Data has since appeared for other
+languages one at a time, for Catalan and Spanish
+\citep{saggion-etal-2024-lexical}, for Mandarin and Cantonese
+\citep{qiu-etal-2024-complex}, and, in the collection we use here, for
+ten languages annotated under a shared protocol
+\citep{shardlow-etal-2024-bea}. \citet{shardlow-etal-2024-multilingual}
+survey what exists. The resources are what make a multilingual
+evaluation possible, and they are also what makes the labelled-data
+assumption easy to keep: with annotations available in ten languages, a
+system can be fitted in each of them and never asked what it would do in
+the eleventh.
+
+\paragraph{Systems on this data.} Reported approaches divide by what they
+condition on. \citet{cristea-nisioi-2024-machine} translate into English
+and apply an English model, using no target-language labels and reaching
+$0.486$. TMU-HIT \citep{enomoto-etal-2024-tmu} prompt a large
+proprietary model with labelled examples in the target language, and
+their zero-shot run is the strongest published result that uses none.
+\citet{nohejl-etal-2025-japanese} give the current best figures, by
+reading complexity from the token probabilities of a proprietary model
+rather than from its generated text, following the evaluation
+formulation of \citet{liu-etal-2023-geval}, and adding a temperature
+fitted on the trial sets of all ten languages. What is missing from this
+picture is a system that reaches that range while conditioning on
+nothing in the target language and running on weights that can be
+downloaded.
+
+\paragraph{Transfer through frozen encoders.} Multilingual encoders
+transfer across languages without parallel supervision
+\citep{pires-etal-2019-multilingual, conneau2020xlmr}, unevenly, and
+worst for the languages with least pretraining data
+\citep{wu-dredze-2020-languages}. \citet{peters-etal-2019-tune} show
+that freezing rather than fine-tuning is often the better choice when
+the target task has little supervision, which is the regime here, since
+by construction there is none. What is less settled is how to choose
+among encoders when no labels exist in the language to choose for, and
+this is the decision we take from the researcher and give to the
+protocol.
+
+\paragraph{Frequency, morphology and tokenisation.} Word frequency is
+the oldest predictor of lexical difficulty and remains the strongest
+single feature, but it is measured over surface forms, which in an
+inflecting language splits one word's evidence across many entries. The
+number of subword units a tokeniser assigns to a word varies sharply
+across languages for the same encoder \citep{rust-etal-2021-good}, which
+makes it both a symptom of uneven coverage and, as we use it here, a
+feature that is measured in the same unit in every language. Neither
+observation appears to have been carried into complexity prediction,
+where character length is still the standard surface feature.
+
+% =====================================================================
+% Sectiunea 3, Approach. Scrisa DUPA Results, cum cere ordinea.
+%
+% Fiecare detaliu de aici a fost verificat in cod in sesiunea din 19 august:
+%   trasaturile lexicale        solution_bert.py, `lexical`
+%   fertilitatea                solution_bert.py, `fertility`
+%   centrarea si concatenarea   solution_bert.py, `_Xc`
+%   regresorul                  solution_bert.py, `blend_ridge_hgb`
+%   cele doua prompturi         solution_bert.py:383-390
+%   citirea cifrelor 1..5       solution_bert.py, `digit_mass` si `_score_msgs`
+%   nivelurile de selectie      output/e_fusion_lolo_adoptat.md, tabelul de audit
+%   latimile criteriilor        output/e_pick_split.md, output/e_encoder.md
+%   M1                          output/e_m1.md
+%   scara bratului A            output/e_rezumat_modele_pre-p11_n5606.csv
+%
+% Modelele de limbaj sunt numite in text FARA citare: rapoartele lor tehnice
+% nu au fost verificate in sesiunea asta si nu se inventeaza intrari de
+% bibliografie. DE COMPLETAT inainte de trimitere.
+% =====================================================================
+\section{Approach}
+\label{sec:approach}
+
+\subsection{Data}
+\label{sec:data}
+
+We use the multilingual lexical complexity data of
+\citet{shardlow-etal-2024-bea}, which covers Catalan, English, Filipino,
+German, French, Italian, Japanese, Portuguese, Sinhala and Spanish, with
+a complexity value in $[0,1]$ for a target word in a sentence. We
+evaluate on the test split of all ten languages, 5{,}624 instances.
+English complexity annotations from CompLex
+\citep{shardlow-etal-2021-semeval} are used as an additional labelled
+source.
+
+Throughout, the language being evaluated contributes no labels to
+anything: not to training, not to feature selection, not to the choice
+of language model, and not to the fusion weight. Section~\ref{sec:lolo}
+states where each of those exclusions happens.
+
+\subsection{The transfer signal}
+\label{sec:signalA}
+
+The first signal is a regressor over a frozen multilingual encoder. For
+a target word we take the per-token hidden states of the last four
+layers, restricted to the target span, and centre them on the mean of
+the language. To this we concatenate four lexical columns, Zipf
+frequency, a length measure, syllable count and capitalisation, plus two
+indicators that record whether frequency and Latin-script surface
+features are defined for that language at all. Sinhala has no frequency
+list and Japanese has no meaningful syllable or capitalisation feature,
+and marking those cases is what keeps a missing value from being read as
+a small one. The regressor is the mean of a ridge regression and a
+gradient-boosted tree, which is more stable across languages than either
+alone.
+
+Two of the lexical columns are not the obvious ones, and both changes
+are motivated by morphology rather than chosen by score.
+
+\paragraph{Frequency through the lemma.} An inflected form is often
+rarer than the word it belongs to, and in a morphologically rich
+language the frequency list will report that rarity as difficulty. We
+therefore resolve frequency as the maximum of the Zipf frequency of the
+surface form and that of its lemma, with lemmas from
+\citet{qi-etal-2020-stanza}. The correction can only apply to the eight
+languages that have both a lemmatiser and a frequency list. Across those
+eight, what it gains correlates at $+0.78$ with a corpus measure of
+morphological synthesis, which is the direction the argument predicts.
+With eight points we report the coefficient and leave it at that.
+
+\paragraph{Fertility instead of character length.} Character length is
+not comparable across writing systems. A Japanese target in this data
+averages $3.59$ characters and an Italian one $8.78$, so the same
+numeric value means different things in the two languages. The number of
+subword units the tokeniser produces for the target is by construction
+in the same unit everywhere, and it is available without any model
+weights or inference \citep{rust-etal-2021-good}. We use it in place of
+character length. On Sinhala, where no frequency value exists, it is the
+only frequency-like information that remains.
+
+Table~\ref{tab:aarm} shows what the two changes contribute on their own.
+
+% ---------------------------------------------------------------------
+% Tabelul `tab:aarm`. Scara bratului A, din arhiva
+% output/e_rezumat_modele_pre-p11_n5606.csv, randurile de brat inghetat:
+%   0.5523 xlmr inghetat
+%   0.5630 + lema
+%   0.5753 + fertilitate in loc de lungime
+%   0.5804 + ansamblu de surse
+% TOATE pe n = 5606, adica DINAINTE de fixul de potrivire a spanului. Nu se
+% scad din cifrele Tabelului 1, care sunt pe 5624. Comparatiile din interiorul
+% tabelului sunt insa valide: ambele brate ale fiecarei perechi sunt pe
+% aceleasi randuri, cu bootstrap pereche.
+% Cifra +0.0107 si corelatia MSP sunt din output/e_lemma.md, tot pe n vechi.
+% Propunerea de re-rulare pe 5624 e in raportul de final al sesiunii.
+% ---------------------------------------------------------------------
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lc}
+\toprule
+Transfer signal alone & avg $r$ \\
+\midrule
+Frozen encoder, surface frequency      & .5523 \\
+\quad + frequency through the lemma    & .5630 \\
+\quad + fertility for character length & .5753 \\
+\quad + second transfer arm            & .5804 \\
+\bottomrule
+\end{tabular}
+\caption{The transfer signal on its own, without the language model.
+These four figures were measured on 5{,}606 instances, before the
+span-matching correction that brought the count to 5{,}624, so they are
+comparable with each other but not with Table~\ref{tab:results}. Each
+step is a paired comparison on identical rows.}
+\label{tab:aarm}
+\end{table}
+
+\paragraph{Two transfer arms.} We fit the regressor twice. One arm sees
+only the English annotations and predicts every language from them. The
+other adds the rows of the other nine languages, refitted once per
+held-out language. The two are standardised within the language and
+mixed with a single weight chosen on a nine-point grid, so the pipeline
+can decide per language how much to lean on a source that never saw this
+data at all.
+
+\paragraph{Encoders.} We ran four frozen encoders through this
+arm: XLM-R base and XLM-R large \citep{conneau2020xlmr}, LaBSE
+\citep{feng-etal-2022-language} and multilingual E5
+\citep{wang2024multilinguale5}. No single one of them improves the
+fused result over XLM-R base with an interval that excludes zero. What
+works is averaging their standardised predictions, and
+Section~\ref{sec:selectavg} explains why that is the outcome of the
+protocol rather than a preference.
+
+\subsection{The language model signal}
+\label{sec:signalB}
+
+The second signal is a complexity rating from an open-weight language
+model run locally. We use two prompts, both in English and both naming
+the target language explicitly, which ask for a rating from 1 to 5 for
+the target word in its sentence. Rather than sampling a reply, we read
+the probability mass the model assigns to the tokens \texttt{1} to
+\texttt{5} at the next position, take the expectation under that
+distribution, rescale it to $[0,1]$, and average over the two prompts.
+This costs one forward pass per prompt and no generation. Reading
+complexity from token probabilities in this way is not our contribution;
+it is the method of \citet{nohejl-etal-2025-japanese}, and we adopt it.
+
+Three models were run: Gemma~4 12B at 4-bit precision, Qwen3 8B at
+4-bit, and Qwen3.5 9B at 8-bit. Which of them serves a given language is
+decided by the same criterion as everything else, and on the evaluation
+split it selects the same model for all ten languages.
+
+\subsection{Fusion, and where each choice is made}
+\label{sec:lolo}
+
+Both signals are standardised within the language and combined with a
+single weight on a twenty-one point grid. For a held-out language $L$,
+every quantity that the prediction for $L$ depends on is fitted on the
+other nine languages: the transfer regressor, the mixing weight between
+the two transfer arms, the choice of language model, and the fusion
+weight. The criterion that ranks candidates for $L$ is itself nested. A
+candidate is scored by its mean correlation over the nine fitting
+languages, and the fusion weight used at each of those nine comes from
+the remaining eight, so no candidate is ever judged with a weight fitted
+on the very language that measures it.
+
+One asymmetry in this scheme was a genuine error, and correcting it is
+the second of the two changes in Table~\ref{tab:ablation}. The fusion
+weight was fitted on the evaluation split while the language model was
+chosen from trial-split scores. Nothing motivated the split; the reason
+that had once justified it for the weight had been removed and left
+standing for the model. Under the corrected procedure both read the same
+split, always excluding the held-out language. The effect is confined
+almost entirely to French, which gains $0.0583$, because that is the
+only language where the two splits disagreed about which model to use.
+This is worth stating precisely: the claim is not that different
+languages need different models, since on the correct split the same
+model wins everywhere. The claim is that trial scores are a poor proxy
+for test scores on this signal, and this is the second measurement that
+shows it.
+
+\subsection{Selecting or averaging}
+\label{sec:selectavg}
+
+The same kind of decision arises twice, once for the encoder and once
+for the language model, and the two do not have the same answer. What
+decides is how far apart the candidates are under the criterion that
+ranks them, measured against how far apart the fusion weight curve
+spreads over its own grid. That curve is the reference for what a
+difference worth acting on looks like here, since it is the one
+quantity we already fit by search and know to matter. Where the
+candidates spread flat against that reference, the maximum is noise and
+averaging is safer. Where they spread wide, the maximum means something
+and selection is safer.
+
+The two cases fall on opposite sides, and both verdicts are confirmed by
+measurement. For the language model the criterion spans $0.2677$ against
+a weight curve spanning $0.0888$, three times wider, and selection is
+right: it improves French by $0.0583$. For the encoder the criterion
+spans $0.0077$ against $0.082$, more than ten times flatter, and
+selection is wrong: choosing an encoder per language under the same
+protocol scores $0.0050$ below using one encoder everywhere, and it
+picks the best encoder for a language zero times out of ten. Averaging the encoders instead lifts the transfer signal to the score
+that picking the best encoder per language would have reached, and it
+does so without using any labels.
+
+That leaves one binary decision that we could have made after looking at
+test scores, and we removed it from our hands. For each target language
+we compare averaging against selection using only the other nine
+languages, through the same criterion that already fixes the fusion
+weight and the language model. Averaging is chosen on all ten folds,
+with a minimum margin of $0.0088$.
+
+The unanimity is not a surprise, and it is worth saying why. Averaging
+beats selection on nine of the ten languages, so withholding one
+language cannot reverse the maximum. What this establishes is not that a
+close decision came out correctly, but that the decision is stable and
+rests on no single language. A criterion that flipped when one language
+was withheld would have been evidence that the choice was noise, which
+is what we observe for encoder selection itself.
+
+One consequence should be stated plainly. On Filipino, averaging is
+worse than selection, and the procedure selects averaging there anyway,
+because it is not allowed to look at Filipino. That is a real loss we
+pay to keep the procedure clean.
+
+Choosing which three of the four encoders to average is a separate
+question, and the criterion above does not answer it, because the four
+candidates are not distinguishable. We take it as an engineering
+decision, on cost and on behaviour, and Section~\ref{sec:notmax} reports
+what it costs in score.
+
+% =====================================================================
+% Sectiunea 4, Results. Scrisa PRIMA in sesiunea din 19 august, fiindca
+% e complet determinata de masuratori.
+%
+% Fiecare cifra si de unde vine:
+%   0.6749, per limba          output/fusion_lolo_adoptat.csv, coloana r_fuz_raw
+%   0.664581 / 0.669223 /
+%   0.669735 / 0.674946        output/e_rezumat_modele.csv + output/e_adoptie.md §1
+%   0.0052 / 0.0057 / 0.0104   output/e_adoptie.md §1, tabelul comparatiilor perechi
+%   106%                       output/e_adoptie.md §2
+%   ponderile 0.390..0.430     output/e_adoptie.md §2, paragraful despre franceza
+%   reperele publicate         output/repere_publicate.md
+%   0.675996, +0.0011          output/e_rezumat_modele.csv, randul „r MAXIM masurat"
+%   leave-one-encoder-out      output/e_m3.md
+%
+% ATENTIE, greseala prinsa in TEXT_DE_LIPIT_multilingv.tex pasajul 2: cele
+% doua ablatii erau INVERSATE acolo. Scoaterea mediei de encodere costa
+% 0.0052 (adoptat minus picktest singur), scoaterea selectiei pe test costa
+% 0.0057 (adoptat minus encmean singur). Asa e in e_adoptie.md §1.
+% =====================================================================
+
+% ---------------------------------------------------------------------
+% Tabelul `tab:results`. Cifrele noastre per limba vin din output/fusion_lolo_adoptat.csv,
+% coloana r_fuz_raw, rotunjite la 3 zecimale:
+%   ca .541096  en .870245  fil .512088  de .733289  fr .645033
+%   it .664653  ja .783530  pt .842722  si .396198  es .760611
+%   medie exacta 0.6749464 -> .675
+% Reperele sunt din output/repere_publicate.md, transcrise de mana din
+% Nohejl et al. 2025 Tabelul 13, si din Anexa B a lui Shardlow et al. 2024a
+% pentru randul TMU-HIT zero-shot uniform, care NU exista publicat ca medie.
+%
+% DOUA corecturi fata de Paper/TEXT_DE_LIPIT_multilingv.tex pasajul 9:
+%   1. Archaeology e .486, nu .487. Cifra lui Nohejl e 0.487, dar media
+%      valorilor per limba TIPARITE in randul asta e 0.4864. Un reviewer
+%      care aduna randul trebuie sa obtina ce scrie in coloana medie. Din
+%      acelasi motiv scrie .486 si in Related Work, unde cifra e citata a
+%      doua oara: doua valori diferite pentru acelasi sistem in aceeasi
+%      lucrare se vad imediat.
+%   2. Captionul de acolo se contrazicea: spunea „only ... use no labels"
+%      si apoi „TMU-HIT zero-shot uses none either". Rescris intr-o singura
+%      propozitie, cu numarul de randuri.
+% ---------------------------------------------------------------------
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{lccccccccccc}
+\toprule
+& ca & en & fil & de & fr & it & ja & pt & si & es & avg \\
+\midrule
+Frequency baseline         & .301 & .748 & .389 & .591 & .517 & .519 & .642 & .713 & -.196 & .551 & .478 \\
+Archaeology                & .274 & .790 & .443 & .551 & .533 & .534 & .485 & .683 & .044 & .527 & .486 \\
+TMU-HIT, zero-shot         & .528 & .804 & \textbf{.569} & .658 & .625 & .539 & .645 & .764 & .248 & .720 & .610 \\
+\midrule
+TMU-HIT, per-language best & \textbf{.616} & .820 & \textbf{.569} & .718 & .625 & .601 & .733 & .786 & .308 & .762 & .654 \\
+G-Eval, GPT-4o             & .573 & .827 & .494 & .711 & .764 & .629 & .745 & .761 & .328 & .739 & .657 \\
+G-Scale, GPT-4o            & .583 & .840 & .504 & .714 & \textbf{.774} & .654 & .767 & .774 & .330 & .749 & .669 \\
+\midrule
+Ours                       & .541 & \textbf{.870} & .512 & \textbf{.733} & .645 & \textbf{.665} & \textbf{.784} & \textbf{.843} & \textbf{.396} & \textbf{.761} & \textbf{.675} \\
+\bottomrule
+\end{tabular}
+\caption{Pearson correlation per language on the MLSP test set, and the
+unweighted mean over the ten languages. Bold marks the highest figure in
+each column. The first three rows and ours use no labels in the language
+being evaluated, while the middle three condition on three to thirty
+labelled examples in it. Published figures are from
+\citet{nohejl-etal-2025-japanese}, except the TMU-HIT zero-shot row,
+which we obtained by averaging the per-language figures of that run in
+Appendix B of \citet{shardlow-etal-2024-bea}, since no mean over
+languages is published for it.}
+\label{tab:results}
+\end{table*}
+
+\section{Results}
+\label{sec:results}
+
+Table~\ref{tab:results} reports Pearson correlation per language,
+averaged without weighting across the ten languages, on 5{,}624 test
+instances. The configuration described in Section~\ref{sec:approach}
+reaches $0.6749$, with a bootstrap interval of $[0.660, 0.689]$ for the
+mean.
+
+Every interval we report resamples contexts rather than instances,
+2{,}000 times. Seven of the ten languages contain about three target
+words per context, so an instance-level bootstrap would be narrowest
+exactly where the dependence between items is strongest. Differences
+between configurations are paired: the same resample selects the same
+contexts on both sides, so the interval belongs to the difference and
+not to the sum of two uncertainties.
+
+\subsection{What each component contributes}
+\label{sec:ablation}
+
+Two changes separate this configuration from the one we started with,
+which used a single encoder and chose the language model on the trial
+split. Table~\ref{tab:ablation} measures them separately and together.
+Removing the encoder average costs $0.0052$, removing the
+evaluation-split model choice costs $0.0057$, and removing both costs
+$0.0104$, with a paired interval of $[+0.006, +0.015]$.
+
+The two changes almost do not overlap. Their separate gains sum to
+$0.0098$, and measured together they give $0.0104$, so nothing is lost
+by applying both. Their per-language profiles explain why: averaging
+encoders helps most on Sinhala ($+0.0176$) and Catalan ($+0.0130$),
+while the model choice acts almost entirely on French ($+0.0583$) and
+leaves three languages identical row by row. The one place where they
+could have cancelled is the fusion weight, which reallocates when both
+arms improve. It does move, from $0.390$ averaged over the ten
+languages to $0.430$ when the frozen arm improves and to $0.375$ when
+the language model arm improves, and it settles at $0.410$ when both
+apply, but not far enough to absorb either gain.
+
+Two languages fall. Filipino loses $0.0051$ and Japanese loses
+$0.0051$, both from the encoder average and both with intervals that
+include zero.
+
+% ---------------------------------------------------------------------
+% Tabelul `tab:ablation`. Cele patru configuratii, din output/e_rezumat_modele.csv
+% (coloanele r_mediu, d_vs_adoptat, ci_lo, ci_hi) si output/e_adoptie.md §1.
+%   0.664581  ens              d -0.010365  [-0.0146, -0.0060]
+%   0.669223  encmean3         d -0.005724  [-0.0087, -0.0029]
+%   0.669735  picktest         d -0.005211  [-0.0084, -0.0017]
+%   0.674946  ADOPTAT
+% Celula de referinta e LASATA GOALA, nu umpluta cu o linie: regula fara
+% em-dash se aplica si in tabele.
+% ---------------------------------------------------------------------
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+ & avg $r$ & vs.\ reported \\
+\midrule
+Single encoder, model                 & .6646 & $-.0104$ \\
+\quad chosen on trial                 &       & $[-.0146, -.0060]$ \\
+\addlinespace[2pt]
+Encoder average only                  & .6692 & $-.0057$ \\
+                                      &       & $[-.0087, -.0029]$ \\
+\addlinespace[2pt]
+Evaluation-split model                & .6697 & $-.0052$ \\
+\quad choice only                     &       & $[-.0084, -.0017]$ \\
+\addlinespace[2pt]
+\textbf{Both, reported}               & \textbf{.6749} & \\
+\bottomrule
+\end{tabular}
+\caption{The two changes, separately and together, on the same 5{,}624
+test instances. Differences are paired against the reported
+configuration, with 95\% bootstrap intervals over resampled contexts.}
+\label{tab:ablation}
+\end{table}
+
+\subsection{Comparison with published figures}
+\label{sec:published}
+
+Two published systems set the frame. TMU-HIT run under a uniform
+zero-shot protocol reaches $0.610$, and is the strongest published
+result on this data that uses no labels in the language it is
+evaluated on. We are ahead of it by $0.065$, winning on nine of the ten
+languages. G-Scale with GPT-4o reaches $0.669$ and is the highest
+published average on this test set. We are ahead of it by $0.006$.
+
+That second margin should not be read as an improvement over the state
+of the art, for three reasons. The interval of our own mean is
+$[0.660, 0.689]$, so a difference of $0.006$ is a fifth of one interval
+width. It cannot be tested, because per-instance predictions for
+G-Scale are not available. And the protocols differ: G-Scale conditions
+on thirty labelled examples in the target language and on a temperature
+fitted across all ten trial sets, while we condition on none. Being
+above it is therefore not a protocol win, just as being below it would
+not have been a protocol failure. We keep it in the table because it is
+the highest published figure and its absence would be noticed.
+
+Under the comparison that does hold the protocol fixed, the margin is
+$0.065$ rather than $0.006$, and seven of the ten per-language figures
+we report are the highest published for that language. The three that
+are not are Catalan, Filipino and French.
+
+\subsection{The figure we report is not the highest we measured}
+\label{sec:notmax}
+
+Averaging four encoders instead of three reaches $0.6760$, which is
+$0.0011$ above the configuration we report, with a paired interval of
+$[-0.0004, +0.0025]$ that includes zero. We report the three-encoder
+configuration because the fourth encoder produces no measurable gain
+while accounting for close to half of the encoder cost, and because
+dropping it also removes a 24-layer model from what has to be run. This
+is a choice made on cost and not on score, and we state it as such
+rather than reporting the larger number, since both appear in the log
+we release.
+
+Dropping that encoder is safe in a second sense. Table~\ref{tab:loeo}
+removes each of the four in turn: all four three-encoder averages beat
+the single-encoder arm with intervals that exclude zero, so no single
+encoder carries the gain. The largest loss comes from dropping the
+24-layer model, and even then $0.0046$ of the gain remains. Filipino,
+the language that falls under the encoder average, falls less without
+that encoder, which is the second reason to leave it out.
+
+% ---------------------------------------------------------------------
+% Tabelul `tab:loeo`. Leave-one-encoder-out, din output/e_m3.md.
+% ATENTIE la context: familia asta a fost masurata cu ponderea potrivita pe
+% splitul de evaluare dar cu modelul lui B inca ales pe trial, deci
+% referinta e 0.664581, nu 0.674946. Se scrie in caption, altfel cifrele
+% par sa nu se lege de Tabelul 2.
+% Perechea patru-vs-trei care conteaza pentru configuratia raportata e in
+% ACELASI context ca ea (0.675996 fata de 0.674946) si e in text, nu aici.
+% ---------------------------------------------------------------------
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+Encoders averaged & avg $r$ & vs.\ single \\
+\midrule
+XLM-R base alone      & .6646 &  \\
+All four              & .6716 & $+.0070$ \\
+Without XLM-R base    & .6706 & $+.0060$ \\
+Without E5            & .6711 & $+.0065$ \\
+Without LaBSE         & .6701 & $+.0055$ \\
+Without XLM-R large   & .6692 & $+.0046$ \\
+\bottomrule
+\end{tabular}
+\caption{Leave-one-encoder-out. Every three-encoder average beats the
+single encoder with a paired interval that excludes zero, the narrowest
+being $[+.0011, +.0079]$ for the average we report. These figures were
+measured with the fusion weight fitted on the evaluation split but the
+language model still chosen on trial, so the reference is $.6646$ rather
+than $.6749$.}
+\label{tab:loeo}
+\end{table}
+
+% =====================================================================
+% Sectiunea 5, Conclusions. Scurta, fara idei noi si fara cifre care nu
+% sunt deja in Results.
+% =====================================================================
+\section{Conclusions}
+\label{sec:conclusions}
+
+Lexical complexity can be predicted in a language with no annotated
+examples at a level that until now required them. Averaged over ten
+languages, fusing a frozen transfer regressor with a locally run
+language model reaches a Pearson correlation of $0.675$, ahead by
+$0.065$ of the strongest published result obtained under the same
+zero-label condition, and ahead on nine of the ten languages.
+
+The result rests on a decision procedure rather than on a component. The
+same leave-one-language-out criterion that fixes the fusion weight also
+decides whether to select a component per language or to average over
+all candidates, and it answers the two cases differently: it selects the
+language model, where the criterion separates candidates widely, and it
+averages the encoders, where the criterion is ten times flatter than the
+reference and its maximum is noise. A rule that gave the same answer in
+both places would not have been telling us anything about either.
+
+% =====================================================================
+% Limitations. Nenumerotata, ca in template. Scrisa imediat dupa Results,
+% fiindca e la fel de determinata de masuratori.
+%
+% Sursele: pasajele 6, 7 si 8 din Paper/TEXT_DE_LIPIT_multilingv.tex, cu
+% formularea de bifurcatii venita din output/e_adoptie.md §4. Ultimele doua
+% paragrafe sunt ADAUGATE aici, nu erau in pasaje:
+%   - trackul combinat, din output/repere_publicate.md, „Regula unica"
+%   - cele doua locuri unde LOLO nu e garantat, din
+%     output/e_fusion_lolo_adoptat.md, sectiunea de audit
+%
+% Cifra e 51 de CONFIGURATII (13 pe n curent + 38 in arhiva), nu 70.
+% „70" apare inca la finalul lui output/e_m1.md si e numar de randuri de
+% jurnal dintr-o stare mai veche. Vezi output/e_adoptie.md §4.
+%
+% P10 S-A RULAT pe 19 august 2026: `qwen35-9b-8bit` are acum toate cele
+% zece limbi pe test, deci bazinul e complet si paragraful despre el a fost
+% INLOCUIT, nu sters. Harta ramane Gemma peste tot si cifra de sistem nu s-a
+% miscat, deci nimic altceva din lucrare nu se schimba. Marjele si oracolul
+% pe catalana vin din output/e_bakeoff_test.md.
+% =====================================================================
+\section*{Limitations}
+
+We measured 51 system configurations on the test split, listed in full
+in the supplementary material. Each of them respects the
+leave-one-language-out protocol at every level of choice, so no
+per-language figure uses labels from the language it is evaluated on.
+The choice of which configuration to report, however, was made by us,
+by looking at the mean test score, and is not itself the output of an
+automatic procedure. The figure we report should be read as the outcome
+of a search of that size rather than a first attempt, in the sense of
+\citet{gorman-bedrick-2019-need}. Confidence intervals are paired
+against the preceding configuration and are not corrected for multiple
+comparisons.
+
+We reduced this exposure where it was cheapest to do so. The single
+decision most open to the objection, whether to average encoders or to
+select one per language, is now taken by the same criterion used
+everywhere else, as described in Section~\ref{sec:selectavg}. The
+remaining choices are declared here instead.
+
+All three candidate language models were run on all ten languages of
+the test split, so for each language the choice is made over the full
+pool rather than over whichever models happened to have been run on it.
+The criterion selects Gemma~4 for all ten. Since the criterion for a
+language is the mean correlation over the other nine, each of the ten
+choices carries a margin over the runner-up, and those margins run from
+$0.045$ to $0.060$, so none of them is close. A per-language oracle,
+which the protocol does not permit, would differ on one language: on
+Catalan, Qwen3.5 reaches $0.507$ where Gemma~4 reaches $0.483$. The
+criterion cannot see that, because it never reads the labels of the
+language it is choosing for, and the gap is the price of the protocol
+rather than a flaw in it.
+
+We evaluate on 5{,}624 of the 5{,}627 test instances. The three
+remaining items are cases where the target string could not be located
+in its context by any of the matching rules we apply.
+
+We cannot report a figure on the pooled track, in which a single
+correlation is computed over all languages at once. Both of our signals
+are standardised within the language before they are fused, which is
+what lets a single fusion weight serve ten languages, and it leaves the
+predictions without a common absolute scale. This is a consequence of
+the design rather than a result, but it does mean one published number
+has no counterpart here.
+
+Two dependencies survive the protocol, and both are indirect. The
+frozen-arm prediction for a fitting language comes from a model trained
+on every language except that one, which includes the held-out language,
+so the choices made for the held-out language depend on its labels
+through predictions on other languages. Measuring the size of that
+effect would require training the frozen arm with two languages excluded
+at a time, which is ninety fits instead of ten, and we have not run it.
+Separately, the language model chosen for a fitting language excludes
+one language rather than two. Neither dependency lets a label from a
+language enter its own prediction, and the English-only transfer arm has
+neither, since it never sees this data at all.
+
+% Custom bibliography entries only
+\bibliography{custom}
+
+% Fara apendice la review. Daca se adauga, formatting.md cere sa vina DUPA
+% References, cu titlu informativ, iar textul principal sa ramana autonom
+% fara ele.
+
+\end{document}

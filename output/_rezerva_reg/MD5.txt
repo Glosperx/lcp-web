@@ -1,0 +1,4 @@
+MD5 (output/_rezerva_reg/e1_frozen_preds_e5_lemma_fert_inloc.csv) = 21a961652cd8c3934ff81830e3caaa90
+MD5 (output/_rezerva_reg/e1_frozen_preds_labse_lemma_fert_inloc.csv) = dcd034b542c9f383e6fb213a94f43eb9
+MD5 (output/_rezerva_reg/e1_frozen_preds_lemma_fert_inloc.csv) = 70c74c22218b7525d8e1d3d11b663f67
+MD5 (output/_rezerva_reg/e1_frozen_trial_lemma_fert_inloc.csv) = eadbda464425211302ae163009ae5ca1

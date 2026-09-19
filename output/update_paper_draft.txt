@@ -1,0 +1,327 @@
+Update Paper
+
+1. Initial, pentru prezicerea complexitatii cuvintelor in limba romana, am folosit XLM-R si puneam
+embeddingurile cuvintelor (din seturile de date CompLex si MLSP) in plan vectorial apropiate fata de
+cum ar fi embeddingurile cuvintelor respective in limba romana. Asta am incercat sa fac si acum, doar
+ca xlm-roberta-base nu a mers la fel de bine pentru toate limbile:
+
+  limba        r (xlm-roberta-base)
+  ca           0.443
+  de           0.654
+  en           0.817
+  es           0.667
+  fil          0.408
+  fr           0.537
+  it           0.630
+  ja           0.601
+  pt           0.762
+  si           0.259   <- cea mai slaba
+  medie        0.578
+
+Asa ca am incercat si cu alte encodere: xlm-roberta-large, LaBSE, multilingual-e5-base. Doar ca, la
+fel, unele encodere functionau mai bine pe unele limbi, dar mai rau pe altele:
+
+  limba    xlmr-large   LaBSE    multilingual-e5-base
+  ca       0.480        0.473    0.471
+  de       0.657        0.616    0.623
+  en       0.821        0.813    0.817
+  es       0.665        0.671    0.707   <- e5 castiga aici
+  fil      0.357        0.395    0.410
+  fr       0.578        0.546    0.551
+  it       0.619        0.615    0.628
+  ja       0.613        0.528    0.561
+  pt       0.771        0.765    0.766
+  si       0.272        0.358    0.217   <- LaBSE castiga aici
+  medie    0.583        0.578    0.575
+
+Niciun encoder nu are un scor bun pe toate limbile. Am masurat si corelatia intre predictiile lor si e destul de mare:0.85-0.89 pentru aceeasi limba,
+deci fiecare encoder e mai bun de la limba la limba.
+
+Asa ca am incercat sa fac o medie a encoderelor din punct de vedere al embeddingurilor, in
+construirea semnalului A.
+Totusi am obtinut cam acelasi scor daca faceam aceasta compunere cu tot cu xlm-roberta-large
+
+In final fac media a celor 3 encodere : xlm-roberta-base, LaBSE,
+multilingual-e5-base.
+
+Deci eu folosesc 2 modele pe care le antrenez: Un model de regresie liniara la care am pus regularizare mare L2:Ridge
+Si mai folosesc inca un model de xgboost:HGB.
+Si in fiecare model , pun ca feature embedding ul cuvantului, alaturi de lemma(adica forma de baza a cuvantului ) si am mai introdus inca un feature:numarul de token uri in cate se sparge un cuvant.
+
+Antrenez de 3 ori pentru fiecare model pentru ca de fiecare data folosesc alt embedding.
+Adica antrenez o data Ridge cu embedding ul de la xlm-roberta-base.
+Apoi antrenez Ridge cu embedding ul de la LaBSE.
+Apoi din nou, doar ca cu embedding ul de la multilingual-e5-base.
+
+La fel si pentru modelul de xgboost.
+
+Apoi fac media de prectictie pentru modelul ridge cat si pentru modelul hgb:
+predictie_ridge o sa fie media aritmetica dintre cele 3 predictii facute cu cele 3 embedding uri.
+
+Iar predictia_finala = (predictie_ridge + predictie_hgb) / 2
+
+Acest Semnal (fara niciun LLM inca) are un r mediu de 0.598 pe cele 10 limbi, calculat pe
+tot setul de test (n=5624). Cel mai slab e pe sinhaleza (0.331) si filipineza (0.409), cel mai bun pe
+engleza (0.833) si portugheza (0.779).
+
+2. Am incercat mai multe LLM-uri locale pentru a returna o nota de complexitate de la 1 la 5
+pentru un anumit cuvant: Qwen3-8B, Qwen3.5-9B, Gemma4-12B, Aya Expanse 8b, Llama-3.1 - toate rulate
+cuantizate (4-bit/8-bit) local:
+
+  model                    r mediu (trial, 10 limbi)
+  Gemma4-12B (4-bit)       0.686   <- cel mai bun
+  Qwen3.5-9B (8-bit)       0.662
+  Qwen3.5-9B (4-bit)       0.622
+  Qwen3-8B (8-bit)         0.584
+  Qwen3-8B (4-bit)         0.565
+  Llama-3.1-8B (4-bit)     0.547
+  Aya Expanse-8B (4-bit)   0.514
+
+Cel mai bine a iesit r mediu cu Gemma4-12B cuantizat la 4-bit. Totusi Gemma4 nu s-a descurcat bine pe
+toate limbile:
+
+  limba    ca     de     en     es     fil    fr     it     ja     pt     si
+  Gemma4   0.743  0.753  0.737  0.709  0.642  0.609  0.770  0.834  0.893  0.170
+
+Pe sinhaleza chiar a fost praf, cu r de 0.170.
+Asta cred ca este din cauza ca tokenizerul sparge cuvintele sinhaleze in octeti care nu pot scoate neaparat o relatie semantica.
+Pe franceza a avut si acolo un scor comparativ mic, 0.609 - al doilea cel mai slab dupa sinhaleza.
+
+Pe de alta parte, Qwen se descurca mult mai bine pe sinhaleza (0.561-0.595, cel mai bun din tot
+toate rezultatele din tabel), unde Gemma4 are scor mic. 
+Asa ca am vrut sa masor corelatia dintre modele. 
+Ma gandeam initial ca as putea sa le combin raspunsurile, dar corelatia medie intre toate perechile de modele e
+destul de mare, 0.653 (0.489-0.933). Cele doua modele bune, Gemma si Qwen3.5-9B, sunt corelate
+puternic intre ele (0.790), deci nu a avut sens sa le combin.Totusi Gemma4 si
+Qwen3-8B au corelatie mica (0.537).
+
+Am incercat direct sa le fac media, dar am avut un scor mai mic decat Gemma4 singur pe test:0.584, adica -0.058 fata de Gemma4 singur pe test.
+
+Asa ca am renuntat la combinarea raspunsurilor si am folosit de fapt LOLO (Leave-One-Language-Out):
+pentru fiecare limba, aleg modelul care se descurca cel mai bine pe celelalte 9 limbi, fara sa ma uit
+vreodata la limba pe care o evaluez, si il aplic pe ea.
+
+Alegerea o fac pe randurile de test ale celorlalte 9 limbi.
+
+  limba    model ales (LOLO)         r pe limba (test)
+  ca       Gemma4-12B                0.483
+  de       Gemma4-12B                0.654
+  en       Gemma4-12B                0.838
+  es       Gemma4-12B                0.743
+  fil      Gemma4-12B                0.517
+  fr       Gemma4-12B                0.642
+  it       Gemma4-12B                0.613
+  ja       Gemma4-12B                0.768
+  pt       Gemma4-12B                0.821
+  si       Gemma4-12B                0.341
+  medie                              0.642
+
+Gemma are cel mai mare scor la criteriul LOLO pe toate cele 10 limbi. Marja fata de locul doi, adica tot media pe
+celelalte 9, e intre 0.045 si 0.060 la fiecare din cele 10 alegeri, deci nicio alegere nu e la limita.
+
+Am incercat si mai multe tipuri de prompt: zero-shot cu "context"(adica ii spuneam ca e un expert in lingvinstica ...), varianta mai scurta,
+few-shot cu exemple labeled din celelalte limbi, cat si Chain of Thought. 
+Few-shot n-a iesit mai bun individual (0.484, cam in media celorlalte), iar CoT a fost destul de rau de unul singur.
+
+Combinarea prompturilor ajuta modelele mai slabe (testat pe Qwen3-8B, 4-bit), dar
+nu ajuta deloc Gemma4, deci am renuntat la ansamblul de prompturi in metoda finala.
+Folosesc doar media a doua prompturi zero-shot simple (rol de expert + varianta scurta), fara exemple labeled.
+
+Am incercat si RoLlama pentru romana, Swallow pentru japoneza,care sunt modele monolingve/adaptate pe limba.
+Dar diferenta fata de un model general varia prea mult si era inconsistent intre limbi, asa ca am preferat sa raman la modele lingvistice
+generale.
+
+3. Iar legat de semnalul acela de la LLM cu nota de surprisal, care lua in functie de logits: am
+testat de cateva ori si nu am avut rezultate prea bune. r mediu intre -0.080 si +0.072. Si semnalul
+se schimba mult de la o limba la alta, asa ca
+am ales sa nu-l mai folosesc in partea finala de compunere a semnalelor.
+
+4. Iar in final, cel mai bun rezultat pentru corelatia Pearson pe care l-am obtinut a fost de
+0.674946, in care folosesc:
+
+  - media celor 3 encodere (xlm-roberta-base, LaBSE, multilingual-e5-base), plus lema si
+    nr de tokeni, ca feature uri pentru modelul Ridge + HGB antrenat
+  - nota de la LLM (1-5), din modelul ales per limba prin LOLO pe testul celorlalte 9 limbi, care
+    iese Gemma4-12B pe toate cele 10
+  - cele doua semnale se combina printr-o pondere w aleasa tot LOLO, pe testul celorlalte 9 limbi
+
+5. Am facut si putin research si am gasit 2 paper-uri relevante pe setul MLSP:
+
+  1) Nohejl, Hayakawa, Ide, Watanabe (2025). https://www.jstage.jst.go.jp/article/jnlp/32/4/32_1129/_article
+     Nu folosesc date labeled,decat cand dau un prompt cu fewshot.
+     r mediu pe 10 limbi: G-Eval 0.657, G-Scale 0.669.
+
+  2) Enomoto et al. (2024), "TMU-HIT at MLSP 2024". https://aclanthology.org/2024.bea-1.52/
+     Au si o rulare zero-shot, fara date labeled. r mediu pe 10 limbi: 0.610.
+
+6.Pentru a obtine embeddingul pentru un cuvant se fac urmatorii pasi:
+Se foloseste tokenizerul implicit din encoderul respectiv:se da toata propozitia ca input si apoi se foloseste 
+libraria tokenizers, cu functia de offset mapping.Adica se sparge propozita in mai multi tokeni si fiecare token este mapat la cuvantul din care face parte.
+
+Iar atunci cand un cuvant este spart in mai multi tokeni, embedding ul final pentru acel cuvant o sa fie media embedding urilor tokenilor aferenti cuvantului.
+
+Iar embedding ul final se da ca feature atunci cand se antreneaza modelele de HGB si Ridge.
+
+
+
+
+
+7. Update: rezultatul final si modelele incercate pentru semnalul A.
+
+Am incercat mai multe lucruri, dar n am reusit sa trec peste r= 0.69 in corelatia Pearson. In principiu
+am ajuns de la 0.675 la 0.69 prin testarea mai multor prompturi pentru semnalul B, cel de LLM.
+
+
+Fuziunea celor 2 semnale,A si B, este una liniara: w*r_A + (1-w)*r_B , unde  w il iau din LOLO.
+
+Pentru semnalul A am incercat mai multe tipuri de modele: liniare (Lasso, ARD, Kernel Ridge, PLS,
+SVR liniar), modele pe arbori decizionali (ExtraTrees, HGB cu depth mai mare, LightGBM, CatBoost),
+dar nu au avut rezultate mai bune pe fuziune.Adica unele dintre modele au avut scor mai bun pe test fara de HGB
+sau fata de Ridge,dar in fuziunea lor (tot doar pe semnalul A), nu a fost o pereche de modele care sa aiba un
+scor r_A mai mare.
+
+  model                        r_A individual   fata de Ridge+HGB
+  Ridge (adoptat)                   0.5519       -
+  HGB (adoptat)                     0.5472       -
+  Lasso (regularizare mare)         0.5689       -0.0092
+  ARD                               0.5220       -0.0152
+  Kernel Ridge (RBF)                0.5322       -0.0172
+  PLS                               0.5503       -0.0237
+  SVR liniar                        0.5351       -0.0264
+  ExtraTrees                        0.5691       +0.0050
+  HGB mai cu depth mare             0.5321       -0.0064
+  LightGBM (leaf-wise)              0.5527       +0.0009
+  LightGBM (frunze liniare)         0.5579       +0.0036
+  CatBoost                          0.5610       +0.0054
+
+Ideea era sa gasesc un model mai decorelat de Ridge (sau de HGB) decat sunt Ridge si HGB intre ele, ca sa castig
+prin combinare.
+
+LightGBM si CatBoost au iesit chiar putin mai buni individual decat HGB (0.55-0.56 fata de 0.5472), dar
+tot prea corelati cu Ridge ca sa aduca ceva in combinatie.
+
+Am incercat si un model de la Google lansat recent, TabFM, care foloseste si transformers ca arhitectura si in general cam bate xgboost ul,
+fiind folosit tot in mare parte pentru date tabulare.L am antrenat pe Colab, in 2 sesiuni cu checkpoint uri.
+Scorul individual, a fost de 0.5673, mai bun decat Ridge (0.5627) si HGB (0.5326) separat. Dar combinat
+cu Ridge tot n-a batut Ridge+HGB: fuziunea a iesit tot pe acolo 0.6806(TabFM +Ridge) fata de 0.6803(Ridge+HGB), o diferenta
+nesemnificativa, pentru ca TabFM e mai corelat cu Ridge (0.90) decat e HGB (0.81).
+Totusi am pus hyperparametrii mai mici,pentru ca nici pe Colab nu incapea asa modelul de antrenat :))
+
+Am scazut embeddingul de la 774 de coloane la 256 (774 = cele 768 dimensiuni native ale xlmr-base plus 6
+trasaturi lexicale; acelasi embedding intra si in Ridge si HGB), am quantizat modelul la bfloat16 in loc
+de float32, si am facut 8 treceri prin model.Voiam initial sa il cuantizez pe 4 biti cu mxfp4,dar nu mergea pe T4.
+
+
+Semnalul B foloseste acum 3 prompturi.
+
+Deci eu nu iau direct nota de output pe care llm ul o arunca, ci ma uit direct la logits urile modelului din etapa de prefill si 
+aplic un softmax peste logits urile care corespund doar tokenilor din vocabular care reprezinta notele de la 1 la 5.Fac asta pentru a avea si o probabilitate 
+de certitudine asupra raspunsului si apoi normalizez valoarea din scorul vectorului de probabilitati in [0,1].
+
+De exemplu:
+Daca dupa softmax am avea p = [0.05, 0.10, 0.15, 0.50, 0.20] pentru notele [1,2,3,4,5]:
+
+
+scor = 1*0.05 + 2*0.10 + 3*0.15 + 4*0.50 + 5*0.20 = 0.05+0.20+0.45+2.00+1.00 = 3.70
+apoi normalizez scorul:
+normalizat = (3.70 - 1) / (5 - 1) = 0.675
+
+
+Prompt 1 (rol de expert): "You are an expert in {lang} linguistics. On a scale of 1-5 (1=very
+familiar, 2=simple, 3=neutral, 4=difficult, 5=very difficult), how complex or difficult is the {lang}
+word "{tok}" for an average reader, in the sentence:\n"{sent}"\nAnswer with ONLY a single digit from 1
+to 5."
+
+Prompt 2 (varianta scurta): "In the {lang} sentence: "{sent}"\nRate the lexical difficulty of the word
+"{tok}" on a scale from 1 (very familiar) to 5 (very difficult). Answer with only the digit."
+
+Prompt 3 (target word): "In the {lang} sentence below, the target word is marked with «».
+\n"{marked}"\nOn a scale of 1 (very familiar) to 5 (very difficult), how difficult is «{tok}» for an
+average reader? Answer with ONLY a single digit from 1 to 5.", unde {marked} e propozitia cu cuvantul
+tinta incadrat in « ».
+
+Scorurile individuale pe test, facute cu LOLO, daca as folosi singur prompt pt semnalul B:
+
+  Prompt                    r_B (solo)   fuziune A + acest prompt singur
+  expert                    0.6239              0.6699
+  varianta scurta           0.6531              0.6801
+  target word               0.6191              0.6731
+  few-shot (alternativa)    0.6346              0.6715
+  toate 3 combinate (1+2+3) 0.6649              0.690001  (adoptat)
+
+Promptul 2 (varianta scurta) e cel mai bun de unul singur, atat ca B cat si in fuziune.Aproape ajunge singur la
+scorul intregului ansamblu de trei. Combinarea celor trei tot castiga fata de oricare solo, +0.0099 fata
+de promptul 2 luat singur.
+
+Few-shot a dat 0.688506 ca fuziune completa, aproape identic cu target word (0.690001, diferenta +0.0015
+e in limita zgomotului). Am ales target word pentru ca da acelasi rezultat fara sa foloseasca exemple
+etichetate, spre deosebire de few-shot, care are nevoie de exemple adnotate din celelalte limbi.
+
+Am incercat si Chain-of-Thought si self-consistency CoT, care au iesit sub prompturile zero-shot
+simple: CoT solo pe Gemma4 a dat 0.556 (fata de 0.62-0.65 pentru cele trei prompturi zero-shot de mai
+sus), iar self-consistency CoT (mai multe raspunsuri generate cu temperatura, mediate) l-am testat separat, pe
+modelul romanesc RoLlama3, si a iesit mai slab decat zero-shot peste tot:
+
+  set de test              zero-shot   self-consistency CoT
+  engleza                    0.585            0.499
+  limbile romanice           0.470            0.372
+  cele 14 exemple romanesti  0.591            0.268
+
+
+Corelatia intre cele 4 prompturi, fara temperatura schimbata:
+
+                expert   short   target word   few-shot
+  expert        1.000    0.831     0.765         0.813
+  short         0.831    1.000     0.879         0.830
+  target word   0.765    0.879     1.000         0.816
+  few-shot      0.813    0.830     0.816         1.000
+
+Iar astea sunt rezultatele cu tot cu fewshot , in comparatie cu doar 3 prompturi.
+
+                            3 prompturi (varianta actuala)   4 prompturi (+ few-shot)
+  rho(A,B), medie pe limba         0.6870                  0.6934
+  fuziune finala                   0.690001                0.6903
+
+
+Deci sincer nu stiu ce sa mai incerc.Problema pentru care nu pot sa scot o medie de r score mai mare de 0.69
+este din cauza la sinhaleza si filipineza,care au:0.43 respectiv 0.51, fata de 0.77 media celorlalte sapte limbi.
+
+  limba          r (sistemul adoptat)
+  catalana             0.5639
+  germana              0.7712
+  engleza              0.8723
+  spaniola             0.7672
+  filipineza           0.5074   <- a doua cea mai slaba
+  franceza             0.6679
+  italiana             0.6795
+  japoneza             0.7942
+  portugheza           0.8413
+  sinhaleza            0.4350   <- cea mai slaba
+  medie                0.690001
+
+
+8. Update: am adaugat si romana ca a 11-a limba in acelasi protocol.
+
+Scorurile pe fiecare limba, cu semnalul A (encodere+lema), semnalul B (LLM, 3 prompturi) si fuziunea
+finala:
+
+  limba          r_A       r_B       r_final
+
+  catalana       0.4624    0.5187    0.5648
+  germana        0.6817    0.7067    0.7725
+  engleza        0.8301    0.8471    0.8732
+  spaniola       0.7058    0.7553    0.7672
+  filipineza     0.4176    0.5000    0.5045
+  franceza       0.5473    0.6721    0.6615
+  italiana       0.6519    0.6406    0.6838
+  japoneza       0.6239    0.7795    0.7915
+  portugheza     0.7868    0.8243    0.8416
+  sinhaleza      0.3111    0.3951    0.4302
+  romana         0.7292    0.6588    0.7401
+
+  medie (11)     0.6134    0.6635    0.6937
+
+Fata de sistemul cu 10 limbi, celelalte 10 s-au miscat putin, in ambele directii, din cauza antrenarii
+cu randurile romanesti in plus: catalana +0.0009, germana +0.0013, engleza +0.0009, spaniola +0.0000,
+filipineza -0.0029, franceza -0.0064, italiana +0.0043, japoneza -0.0027, portugheza +0.0003, sinhaleza
+-0.0048.

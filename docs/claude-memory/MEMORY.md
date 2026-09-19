@@ -1,0 +1,98 @@
+- [Structura fisiere: doar necod reorganizat](structura-fisiere-doar-necod-reorganizat.md) — logs/notebooks/docs/legacy create; cele 73 de scripturi .py raman la radacina din cauza importurilor incrucisate.
+- [Hook tokensave coercitiv, revenit](tokensave-hook-coercitiv-revenit.md) — combo-ul deny pe Explore/grep a reaparut singur intre 29 iul si 15 aug, probabil la update; scos din nou pe 29 aug.
+- [Cod nou: tabfm_colab.ipynb fixat](cod-nou-tabfm-colab-fixat.md) — 4 bugi reali fixati, ultimul: files.download() e mort din VSCode, arhiva se scrie in Drive; plus capcana numelui canonic de CSV.
+- [Cerere: sesiune pe jumatatea liniara a lui A](cerere-sesiune-jumatatea-liniara.md) — INCHISA, rezultatul e in [[axa-liniara-inchisa]].
+- [Cerere: research pe algoritmii lui A](cerere-sesiune-gbdt.md) — INCHISA, rezultatul e in [[sesiunea-obiectivului-rezultatul]].
+- [Sesiunea obiectivului, rezultatul](sesiunea-obiectivului-rezultatul.md) — ipoteza despre LOSS e greșita si axa nu era neatinsa; INCADRAREA ordinala repara colapsul lui hgb pe ja/si, +0.0083 pe A pe 3/3, dar fuziunea da +0.0002.
+- [Castigul pe A plateste doar unde rho(A,B) e mic](castigul-pe-a-plateste-doar-unde-rho-ab-e-mic.md) — corelatia intre d(r_A) si d(rho(A,B)) pe limbi e +0.917, deci explica de ce sase sesiuni la rand n-au transmis nimic; urmatoarea sesiune pe A e despre sinhaleza si filipineza.
+- [Anatomia cifrei 0.690001](anatomia-cifrei-0690001.md) — ce face sistemul, de ce r_fuz e o functie EXACTA de patru numere, si de ce combinarea nu are joc (+0.0027 la oracol); plus corectia: e gemma4 si M3 = TREI prompturi, K = colaps.
+- [frequency_unavailable e flag de sinhaleza](frequency-unavailable-e-flag-de-sinhaleza.md) — constant per limba (nu per cuvant); verificat: singura din 11 limbi neacoperita de wordfreq e si.
+- [Cod nou: sesiunea obiectivului](cod-nou-sesiunea-obiectivului.md) — 4 clase de invelisuri, cele trei roluri, slack, optimismul de selectie; plus libomp care omoara LightGBM fara traceback si controlul care NU e bit-exact.
+- [Axa liniara, inchisa](axa-liniara-inchisa.md) — podeaua de rho SE RUPE (0.739) dar transmisia e ~zero: A urca +0.0030 pe 3/3 encodere si fuziunea nu se misca; plus parghia alpha-per-brat, gasita si inchisa.
+- [Cod nou: axa liniara](cod-nou-axa-liniara.md) — familii parametrice de regresori, blocajul care explica de ce lasso n-a rulat NICIODATA, si cinci capcane inclusiv 2^21 submultimi si predictie constanta.
+- [TabFM la MAXFEAT=256, rezultatul](tabfm-maxfeat256-rezultatul.md) — axa inchisa cu mecanismul: partea decorelata din TabFM e ZGOMOTUL (1 membru rho 0.764, 8 membri 0.887); niciun hiperparametru nu ajuta; proiectia costa -0.0025.
+- [Cod nou: checkpoint pe membru TabFM](cod-nou-checkpoint-membru-tabfm.md) — al 5-lea patch, testat bit-identic la reluare; plus descoperirea ca crosses duce latimea reala la 272, nu 256.
+- [Cerere: verificare parametri TabFM 256](cerere-verificare-parametri-tabfm-256.md) — INCHISA: rularea s-a facut, rezultatul e in [[tabfm-maxfeat256-rezultatul]].
+- [Optimismul de selectie, masurat](optimismul-de-selectie-masurat.md) — maximul peste 23 de configuratii e umflat cu +0.0019; selectia LOLO a configuratiei da +0.0045 dar strica portugheza; castigul onest e ~+0.0045.
+- [Ansamblul de prompturi: formula](ansamblul-de-prompturi-formula.md) — castigul e EXACT reducerea de varianta, prezisa la 0.00014; FS3K e ales pe trial iar M3K e selectie pe test, desi cifrele nu se distinge; revendicarea G-Eval e moarta.
+- [Few-shot pe test, masurat](fewshot-pe-test-masurat.md) — few-shot SINGUR pierde -0.0123; ansamblul de trei plus unirea cifrelor da 0.688506, cel mai mare castig de pana acum, aditiv cu prio_K.
+- [Pozitia de citire, masurata](pozitia-de-citire-masurata.md) — prefixul fortat INCHIS, negativ pe toate trei bratele; mecanismul e ca strica COADA distributiei, invizibil in orice diagnostic de forma.
+- [Cod nou: few-shot si prefix](cod-nou-fewshot-si-prefix.md) — ce fac cele patru scripturi noi, controlul de octet care le valideaza, si capcana de spatiu din prefixul de citire.
+- [Prioritizarea parghiilor, masurata](prioritizarea-parghiilor-masurata.md) — 5 parghii inchise cu cifre, una noua trece bara la 0.685530 prin unirea cifrelor; scara de raspuns inchisa cu sondaj rulat.
+- [Stare paper 30 iulie + ce urmează](paper-stare-30-iulie-si-ce-urmeaza.md) — punct de reluare: 8 pagini, r/R² scrise în text, 2 lucruri rămase până pe 10 august.
+- [r și R² măsurate pe RoLCP](r-si-r2-masurate-pe-rolcp.md) — r=0.777/R²=0.603 sunt ACUM ÎN paper (§2,§3.1,§4.1), lângă 0.71±0.05 al RALS; diferența 68.99 vs 69.74 nescrisă deliberat.
+- [Datele sunt RoLCP, ale lui Nisioi](rals-rolcp-datele-sunt-ale-lui-nisioi.md) — setul de test e din RALS (EMNLP 2025), al coordonatorului; acum citată în paper.
+- [Paper: țintă MRL @ EMNLP 2026](paper-target-mrl-emnlp-2026.md) — pregătit pentru 10 august 2026, dar NU s-a trimis nimic; EMNLP main e închis.
+- [Extensia multilingvă, ARR 12 oct](paper-extensie-multilingva-arr-octombrie.md) — 11 limbi, LOLO, NAACL 2027; E1 rulat, C2 moartă prin §5.2, **P10 rulat și închis 19 aug: bazinul e 3/3, cifra NU s-a mișcat de la 0.674946**.
+- [Etapa 2, rezultatele pe test](etapa2-test-rezultate.md) — fuziunea A+B dă 0.6522, la 0.0049 sub G-Eval; franceza singură explică tot deficitul; §5.2 s-a înrăutățit de trei ori; ideea 1 e rulată.
+- [Ponderea potrivită pe test](pondere-fuziune-potrivita-pe-test.md) — `--fit test` dă 0.6540 pe lolo și 0.5676 pe brațul principal, care trece peste A singur; **încadrarea e decisă**: `fert_inloc` fix, 0.6646, e sistemul; agregatul pereche e acum în cod.
+- [Decalajul trial-test, măsurat](decalaj-trial-test-masurat.md) — depinde de semnal ȘI de model, cu semne opuse, deci nicio cifră de trial nu e predicție; dar ordinea supraviețuiește.
+- [Bake-off etapa 1, rezultatele](bakeoff-etapa1-rezultate.md) — 7 modele pe trial: Gemma 0.686, Qwen3-8B 0.565, C mort, LOLO cu 2 câștigători; bara publicată e 0.657 dar pe test, deci nu se compară.
+- [Prompturi: ansamblul decorelat e pârghia](prompt-ansamblu-decorelat.md) — un prompt singur nu se poate optimiza (toate 0.45-0.51); medierea celor decorelate dă 0.6077 LOLO; CoT colapsează rezoluția, 78/300 exact 0.500, dar ajută în ansamblu.
+- [Agregarea: medie pe limbi, nu pooled](agregare-medie-pe-limbi-nu-pooled.md) — 0.6241 e pooled si nu se compara; bara zero-label reala e 0.6100, deci suntem la +0.047; tabelul e in `output/repere_publicate.md`.
+- [Noutate și precedente LCP multilingv](noutate-si-precedente-lcp-multilingv.md) — **G-Eval 0.657 e 3-shot, nu zero-label**; G-Scale mai adaugă 30 de etichete; bara comparabilă e 0.610; frozen-vs-finetuned e replicare.
+- [Brațele LLM per limbă](brate-llm-per-limba.md) — Qwen3-8B listează toate 11 dar **tokenizerul lui cade pe sinhaleză**; alegerea s-a mutat spre Gemma 4, nefixată; si și fil n-au braț adaptat; Llama-3.1 a fost **respins** dar oglinzile negate îl rezolvă, cu o capcană de șablon de chat.
+- [Fertilitatea tokenizerelor, măsurată](fertilitate-tokenizere-masurata.md) — Qwen3-8B cade pe byte fallback pe sinhaleză deși o listează; metoda se validează singură pe modelele care declară absența.
+- [Rute de rulare pentru logits](rute-rulare-logits.md) — Ollama și serverul mlx_lm trunchiază, deci nu pot servi B și C; **Bloc D închis, ruta e verificată cap la cap**; garda `<think>` din brief e inversată, pragul 1e-9 e insuficient, Gemma 4 nu se încarcă sub mlx-lm 0.31.3.
+- [wordfreq face substituție tăcută de limbă](wordfreq-substitutie-tacuta-de-limba.md) — si e căutat în engleză, ja crapă fără MeCab; garda se scrie pe `available_languages()`, nu pe valoare.
+- [LOLO există deja în cod](lolo-exista-deja-in-cod.md) — **ÎNCHIS 17 aug: E1 rulat pe 10 limbi, σ_Δ=0.0369 deci peste pragul §5.2**; cvartetul Δ_controlat nu se mai descarcă.
+- [Lemele RO sunt gold, primite](lemele-ro-sunt-gold-primite.md) — **parțial rezolvat 18 aug**: stanza lematizează cele 8 limbi MLSP, dar relematizarea românei rămâne nefăcută.
+- [Ansamblul de modele nu se transferă](ansamblul-de-modele-nu-se-transfera.md) — corelații 0.49-0.93; cele decorelate de Gemma sunt cele slabe; ansamblul câștigă pe trial și pierde pe test.
+- [Fixul de lemă, măsurat multilingv](fixul-de-lema-multilingv-masurat.md) — contribuția #3 are cifre: +0.782 corelație cu MSP, fuziunea urcă la 0.6568, la 0.0003 sub G-Eval dar peste TMU-HIT.
+- [Două mașini, neinterschimbabile](hardware-doua-masini.md) — Mac M5 24 GB vs PC Windows RTX 2070 SUPER 8 GB; corectat 16 aug: Mac-ul ARE torch 2.13 cu MPS în envs/ml_def și poate rula B și C cu 3 linii schimbate.
+- [Preferințe de scriitură](preferinte-de-scriitura-paper.md) — fără em-dash, fără „the system", fără cadru de competiție, fără formule în intro, fără adăugiri necerute.
+- [Workflow Overleaf pentru paper](paper-overleaf-workflow.md) — paper_full.tex e masterul, paper_full_copy-paste.tex e derivatul de lipit; plus capcanele de compilare.
+- [Slăbiciuni de reviewer](paper-slabiciuni-de-reviewer.md) — tuning-ul pe scorul public, cele 14 exemple scoase complet, claim-urile false scoase.
+- [Stil de introducere cerut de coordonator](intro-style-hgs.md) — modelul Columbia pe 5 paragrafe; guvernează doar Secțiunea 1.
+- [Ansamblul de surse pentru semnalul A](ansamblul-de-surse-pentru-semnalul-a.md) — **ÎNCHIS: în cod, sistemul e 0.6646** în `output/e_fusion_lolo_ens.md`; cifrele ad-hoc vechi nu se citează, foloseau B neimbricat.
+- [Eye-tracking: cât a adus în r](eye-tracking-cat-a-adus-in-r.md) — +0.0067, nu „+0.84"; **ÎNCHIS DEFINITIV 18 aug**: poarta de distilare a picat, embeddingul singur prezice privirea mai prost decât 2 coloane.
+- [Franceza, diagnosticată](franceza-diagnosticata.md) — 3 din 4 ipoteze respinse, reziduul de fertilitate rămâne deschis (+0.1450, exclude zero); ipoteza „e embeddingul" **confirmată** de §3.6.
+- [Criteriu plat: mediază, nu alege](criteriu-plat-mediaza-nu-alege.md) — regula transversală, măsurată de trei ori; plus capcana corelației cu eroarea brută.
+- [Encoderul, măsurat sub LOLO](encoderul-masurat-lolo.md) — §3.6 rulat: niciun encoder singur nu mișcă fuziunea, dar **medierea celor patru dă 0.671952, +0.0074 cu CI care exclude zero** — cel mai mare câștig de până acum, neadoptat.
+- [Explicații tehnice în profunzime](explicatii-tehnice-in-profunzime.md) — la "ce înseamnă X mai exact" repetat, coboară la cod (fișier:linie) și exemplu numeric, nu reformulezi abstracția.
+- [Constantele hardcodate mint după renumerotare](constante-hardcodate-mint-dupa-renumerotare.md) — `SIS = 0.664555` a făcut raportul să se contrazică singur, fără eroare; ce să cauți.
+- [Parametri LLM de explorat](parametri-llm-de-explorat.md) — agenda cerută pentru o sesiune viitoare: scara de raspuns, pozitia de citire, few-shot din alte limbi; cernere pe trial, nu pe test.
+- [Sistemul e 0.683849, cu temperatura](distributia-b-temperatura.md) — **cifra de citat**; platou de T nu o valoare; ce face T e sa amestece capul cu coada distributiei; doi candidati peste ea si doua decizii deschise.
+- [P11 făcut, 0.674946](p11-adoptia-facuta.md) — SUPERSEDAT, e acum ablatia fara temperatura; pe n=5624; pick-split test plus media a TREI encodere; find_char_span reparat.
+- [M1 și M3 au trecut](m1-si-m3-au-trecut.md) — medierea aleasă de protocol 10/10; xlmr-large nu se distinge de zero odată ce B e reparat.
+- [Combinația P9, măsurată](combinatia-p9-masurata.md) — **ISTORIC, n=5606**; a arătat că cele două pârghii nu sunt redundante, ceea ce a dus la adopție.
+- [51 de configurații, bifurcația de declarat](bifurcatii-de-declarat.md) — fiecare curată pe dinăuntru, dar alegerea între ele se face pe scorul de test; formularea pentru Limitations e scrisă.
+- [Selecția modelului B e pe splitul greșit](selectia-modelului-b-e-pe-splitul-gresit.md) — adoptat la P11; **bazinul îngust ÎNCHIS de P10 pe 19 aug**, 3 candidați din 3, marja lui Gemma +0.045..+0.060 peste tot.
+- [Linia de tăiere din update_paper_draft](update-paper-draft-linia-de-taiere.md) — explicația în română: nu atingi nimic deasupra liniei pe care ți-o dă, și el editează în paralel.
+- [Semnalele A/B din update_paper_draft](update-paper-draft-semnale-a-b.md) — r final 0.674946, 3 encodere (nu 4), fără eyetracking, 2 paper-uri de referință; corecțiile făcute pe parcurs.
+- [Fără diacritice, fără tabele markdown](raspunsuri-fara-diacritice-fara-tabele-md.md) — cerut explicit pentru orice text/draft scris pentru acest utilizator, nu se copiază bine altfel.
+- [Engleza nu e zero-label](engleza-nu-e-zero-label.md) — CompLex EN, 63% din antrenare, rămâne în set și la L=en; explică r 0.8197 și Δ −0.0024.
+- [Alinierea țintă-subword, măsurată](alinierea-tinta-subword-masurata.md) — suprapunere de offset-uri, nu `word_ids`; Gemma/Qwen includ spațiul, e5 nu; 88/5624 ținte apar de mai multe ori.
+- [Firul Nisioi: monolingv vs LOLO](nisioi-fir-monolingv-lolo.md) — 20 aug, ce s-a răspuns și oferta deschisă de a rula monolingv pe japoneză; tiparul de erori din drafturi.
+- [Frontiera e identitate, nu aproximare](frontiera-e-identitate-nu-aproximare.md) — exacta la 3.3e-16 pe media standardizata; ce s-a numit eroare e distanta pana la media bruta a lui b_of; rho se masoara la T ales LOLO, nu la T=1.
+- [Calibrarea monotona, inchisa](calibrarea-monotona-inchisa.md) — 455 de candidati nu bat 15 trepte, podeaua de zgomot mananca tot; prio_K insusi e doar +0.00148 peste zgomot.
+- [Ponderea per item, inchisa](ponderea-per-item-inchisa.md) — a = 0 ales pe 10/10 si pe zgomot; dar grila largita strica prin criteriul imbricat chiar cand parametrul nu se foloseste.
+- [Transferul se masoara pe limba](transferul-se-masoara-pe-limba.md) — rho3 transfera +0.98 pe medii dar +0.64 pe limba, r3 invers; selectia e LOLO deci conteaza cea pe limba.
+- [Prompturi decorelate, cernute](prompturi-decorelate-cernute.md) — 5 candidati, frecventa trece portile cu rho3 0.770 si CADE pe test cu -0.0024; a patra rasturnare; un castig pe B poate cobori fuziunea.
+- [Cifra de raportat in paper](cifra-de-raportat-in-paper.md) — draftul e la .675 iar adoptatul e 0.683849, deci +0.0089 gratis; recomandarea e sa NU se urce la FS3K/M3K, cu motivele.
+- [Prioritate: contributia, si drumul la 0.7](prioritate-contributie-si-drumul-la-07.md) — contributia bate cifra; 0.700 se atinge doar prin sinhaleza si filipineza, unde lipsesc wordfreq si lematizatorul; plus cererea de sesiune de explicatii.
+- [w_src e decorelare, nu transfer](wsrc-e-decorelare-nu-transfer.md) — premisa era falsa: p_en e mai SLAB dar mai decorelat de B; toata parghia valoreaza 0.0027.
+- [Transmisia A -> fuziune, masurata](transmisia-a-fuziune-masurata.md) — factor 0.25 mediu si 0.09 marginal, deci A trebuie sa urce cu +0.017..+0.049 ca sa treaca bara.
+- [Poolingul `first` inverseaza literatura](pooling-first-inverseaza-literatura.md) — +0.0253 pe 10/10 limbi, invers fata de Acs et al.; ansamblul da 0.686010 dar strica filipineza.
+- [Coada: frecventa masurata](coada-frecventa-masurata.md) — acoperirea sinhalezei trece de la 0 la 89.8% dar fuziunea pierde; pe filipineza frecventa strica activ, +0.0225 daca se scoate.
+- [Semnalul C (surprisal), starea](semnalul-c-surprisal-stare.md) — exista deja calculat pe test, r intre -0.065 si +0.094, dar n-a trecut niciodata prin frontiera; SHAP-ul de pe disc e stale si romanesc.
+- [Cerere: sesiune pe al treilea semnal](cerere-sesiune-al-treilea-semnal.md) — INCHISA: sesiunea s-a facut, fiecare punct al cererii are raspuns.
+- [Gemma nu poate da surprisal](gemma-nu-poate-da-surprisal.md) — coloana C a lui gemma e degenerata (23.95 peste ln|V|=12.48), B e intact; poarta e analysis_c_sanatate.py.
+- [Poarta al treilea semnal: 0.1077](poarta-al-treilea-semnal-0107.md) — o singura cifra decide orice candidat; toti cei 13 masurati au sub 0.043, si semnul difera pe limbi.
+- [Filipineza: mecanismul frecventei](filipineza-mecanismul-frecventei.md) — INCHIS: 26.7% din tinte au zipf 0, iar pe ele fuziunea da 0.2320 fata de 0.4642.
+- [Cod nou: al treilea semnal](cod-nou-al-treilea-semnal.md) — cele 5 scripturi noi plus --only-c, controalele lor si cele doua capcane de scriere.
+- [Atribuirea cere doua masuri](atribuirea-cere-doua-masuri.md) — permutarea da lui zipf de 2.5x mai mult decat reantrenarea; SHAP e din aceeasi familie, nu al doilea punct de vedere.
+- [Al treilea semnal: ce ramane deschis](al3lea-semnal-ce-ramane-deschis.md) — PUNCT DE RELUARE: sistemul e 0.690001 si toate pistele inginerest sunt inchise cu cifre.
+- [Sistemul e 0.690001, M3K adoptat](sistemul-e-0690001-m3k.md) — NU mai e 0.683849; artefacte cu tag adoptat_m3k; pt la un fir de a pica, al treilea prompt ultimul pe trial.
+- [Dropout pe frecventa, inchis](dropout-frecventa-inchis.md) — mecanismul se confirma pe A (exact si, fil, ja urca) dar nu trece; selectia LOLO nimereste 0 din 9.
+- [Sinhaleza: decorelarea e capitalul](sinhaleza-decorelarea-e-capitalul.md) — rho(A,B)=0.387, cea mai mica; orice trasatura de FRECVENTA o strica desi urca A.
+- [Diversitatea contextuala, inchisa](diversitatea-contextuala-inchisa.md) — construita pe 10 limbi; inlocuirea lui zipf pierde -0.0242 pe A, adaugarea nu aduce nimic pe fuziune.
+- [Cod nou: coada si frecventa](cod-nou-coada-frecventa.md) — --freq-drop, --ctx-div, build_ctx_div.py, si cele doua capcane de patch platite pe 24 aug.
+- [Axa regresorului, inchisa](axa-regresorului-inchisa.md) — podeaua de rho e 0.80; CSV-ul vechi nu era reproductibil dar cifra a supravietuit: rt@160 refacut da 0.6798 vs 0.6797.
+- [Cod nou: axa regresorului](cod-nou-axa-regresorului.md) — --regressor, --emb-tf proj-N, puntea TabFM cu doua porti, si capcana inf*0 care da NaN.
+- [TabFM pe GPU: memorie si dtype](tabfm-pe-gpu-memorie-si-dtype.md) — 1.65 miliarde de parametri: fp16 da NaN mereu, fp32 nu incape pe T4, n_estimators e timp nu memorie; **bf16 pe T4 MERGE**; varful e dat de atentia ICL, oarba la MAXFEAT; exponentul 2.70 pe coloane e de pe M5 si NU se transfera pe T4 (real 0.79).
+- [Update paper, mesaj 2 (punctul 7)](update-paper-mesaj2-punctul7.md) — TRIMIS 29 aug catre coordonator; al 4-lea prompt (few-shot) testat si respins: rho(A,B) urca (0.6870->0.6934), fuziunea nu se misca (+0.0003, zgomot).
+- [RoLCP, a 11-a limba in LOLO](rolcp-a-11a-limba-lolo.md) — cerut de Sergiu; 0.690001 -> 0.693718 pe 11 limbi, Romania singura da 0.7401; tabelul scris in update_paper_draft.txt pct. 8; NIMIC comis in git.
+- [SHAP pe semnalul A, feature importance](shap-signal-a-feature-importance.md) — TreeSHAP+LinearSHAP reale; frecventa cuvantului si embeddingul aproape egale; beeswarm-uri in output/shap_beeswarm_native*.png.
+- [Grafice SHAP: nativ, nu custom](grafice-shap-native-nu-custom.md) — feedback: shap.plots.beeswarm() cerut explicit, bar chart respins de 2 ori, titlu obligatoriu pe scopul datelor.
+- [Scrie uman, nu overexplain](scrie-uman-nu-overexplain.md) — pentru texte/mesaje scrise pentru Alexandru, propozitii scurte, fara paranteze explicative inserate; opusul lui [[explicatii-tehnice-in-profunzime]].

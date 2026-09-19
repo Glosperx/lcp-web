@@ -1,0 +1,29 @@
+% =====================================================================
+% PASTE FILE -- abstract nou, scris pentru introducerea de la revizia 2.
+% Se copiaza peste blocul \begin{abstract}...\end{abstract} din
+% acl_latex.tex in Overleaf.
+%
+% Cel vechi (report/report.tex) era de raport de curs: descria ce s-a
+% facut, fara niciun rezultat. Asta il inlocuieste. ~140 de cuvinte.
+% Anonimizat: fara nume, fara link.
+% =====================================================================
+
+\begin{abstract}
+Lexical complexity prediction is normally solved by fine-tuning an
+encoder on annotated data in the target language, which excludes every
+language that has none. We predict the lexical complexity of Romanian
+words in context without using a single Romanian training label, by
+fusing four signals that carry complexity knowledge from outside the
+language: cross-lingual transfer through a frozen multilingual encoder
+trained on English and Romance annotations, a complexity rating and
+token surprisal from a Romanian language model, and a reading-effort
+score derived from eye-tracking. The system reaches $69.74$ on the
+shared-task metric, against $10.27$ for surface features alone, and
+Pearson $r = 0.913$ on held-out Romanian items. The largest single gain
+($+4.09$) comes from a lemma-frequency correction that repairs the
+frequency estimates inflection corrupts, and transfers to any
+morphologically rich language served by the same frequency lists. We
+also report two negative results: with no target labels, fine-tuning
+the encoder is consistently worse than freezing it, and in-source
+validation does not predict transfer quality.
+\end{abstract}

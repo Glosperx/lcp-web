@@ -1,0 +1,85 @@
+data,model,metoda,split,selectie,r_mediu,n_limbi
+,baseline frecventa,reper publicat,test,,0.4775,10
+,Archaeology,reper publicat,test,,0.4864,10
+,TMU-HIT,reper publicat,test,,0.6538,10
+,G-Eval cu GPT-4o,reper publicat,test,,0.6571,10
+2026-08-18 10:13,,xlmr inghetat,trial,,0.5216,10
+2026-08-18 10:19,,xlmr inghetat + lema,trial,,0.5357,10
+2026-08-18 10:13,,xlmr inghetat,test,,0.5523,10
+2026-08-18 10:19,,xlmr inghetat + lema,test,,0.5630,10
+2026-08-17 20:56,gemma4-12b-4bit,nota 1-5,trial,fix,0.6860,10
+2026-08-17 20:56,qwen35-9b-8bit,nota 1-5,trial,fix,0.6620,10
+2026-08-17 20:56,qwen35-9b-4bit,nota 1-5,trial,fix,0.6220,10
+2026-08-17 20:56,qwen3-8b-8bit,nota 1-5,trial,fix,0.5840,10
+2026-08-17 20:56,qwen3-8b-4bit,nota 1-5,trial,fix,0.5650,10
+2026-08-17 20:56,llama31-8b-4bit,nota 1-5,trial,fix,0.5470,10
+2026-08-17 20:56,aya-expanse-8b-4bit,nota 1-5,trial,fix,0.5140,10
+2026-08-17 20:56,gemma4-12b-4bit + qwen35-9b-8bit,nota 1-5,trial,LOLO,0.6551,10
+2026-08-17 20:56,qwen3-8b-4bit,surprisal,trial,fix,0.0720,10
+2026-08-17 20:56,qwen3-8b-8bit,surprisal,trial,fix,0.0500,10
+2026-08-17 20:56,llama31-8b-4bit,surprisal,trial,fix,0.0320,10
+2026-08-17 20:56,aya-expanse-8b-4bit,surprisal,trial,fix,0.0160,10
+2026-08-17 20:56,qwen35-9b-4bit,surprisal,trial,fix,-0.0230,10
+2026-08-17 20:56,qwen35-9b-8bit,surprisal,trial,fix,-0.0320,10
+2026-08-17 20:56,gemma4-12b-4bit,surprisal,trial,fix,-0.0800,10
+2026-08-18 00:30,gemma4-12b-4bit,nota 1-5,test,fix,0.6424,10
+2026-08-18 00:30,gemma4-12b-4bit + qwen35-9b-8bit,nota 1-5,test,LOLO,0.6320,10
+2026-08-18 00:30,qwen35-9b-8bit,nota 1-5,test,fix,0.5420,1
+2026-08-18 00:30,qwen3-8b-4bit,nota 1-5,test,fix,0.3743,10
+2026-08-18 00:30,qwen3-8b-4bit,surprisal,test,fix,0.0940,10
+2026-08-18 00:30,qwen35-9b-8bit,surprisal,test,fix,-0.0460,1
+2026-08-18 00:30,gemma4-12b-4bit,surprisal,test,fix,-0.0650,10
+2026-08-18 00:59,qwen3-8b-4bit,xlmr + nota 1-5,test,fix,0.5320,10
+2026-08-18 00:59,qwen3-8b-4bit,xlmr + nota 1-5 (w pe test),test,fix,0.5676,10
+2026-08-18 01:00,gemma4-12b-4bit + qwen35-9b-8bit,xlmr + nota 1-5,test,LOLO,0.6522,10
+2026-08-18 10:24,gemma4-12b-4bit + qwen35-9b-8bit,xlmr + nota 1-5 + lema,test,LOLO,0.6564,10
+2026-08-18 01:00,gemma4-12b-4bit + qwen35-9b-8bit,xlmr + nota 1-5 (w pe test),test,LOLO,0.6540,10
+2026-08-18 10:24,gemma4-12b-4bit + qwen35-9b-8bit,xlmr + nota 1-5 + lema (w pe test),test,LOLO,0.6568,10
+2026-08-18 00:59,gemma4-12b-4bit,xlmr + nota 1-5,test,fix,0.6573,10
+2026-08-18 10:24,gemma4-12b-4bit,xlmr + nota 1-5 + lema,test,fix,0.6594,10
+2026-08-18 00:59,gemma4-12b-4bit,xlmr + nota 1-5 (w pe test),test,fix,0.6616,10
+2026-08-18 10:24,gemma4-12b-4bit,xlmr + nota 1-5 + lema (w pe test),test,fix,0.6634,10
+2026-08-18 12:02,,xlmr inghetat + lema (brat EN-only),test,,0.5687,10
+2026-08-18 12:06,,xlmr inghetat + lema fara lungime,test,,0.5743,10
+2026-08-18 12:06,,xlmr inghetat + lema + fertilitate in loc de lungime,test,,0.5753,10
+2026-08-18 12:06,,xlmr inghetat + lema + fertilitate in loc de lungime (brat EN-only),test,,0.5756,10
+2026-08-18 12:04,,xlmr inghetat + lema + fertilitate pe langa lungime,test,,0.5666,10
+2026-08-18 12:25,,xlmr inghetat + lema + ansamblu de surse,test,LOLO,0.5710,10
+2026-08-18 12:26,,xlmr inghetat + lema + fertilitate + ansamblu de surse,test,LOLO,0.5804,10
+2026-08-18 12:25,gemma4-12b-4bit + qwen35-9b-8bit,xlmr + nota 1-5 + lema + ansamblu de surse (w pe test),test,LOLO,0.6636,10
+2026-08-18 12:25,gemma4-12b-4bit + qwen35-9b-8bit,xlmr + nota 1-5 + lema + fertilitate (w pe test),test,LOLO,0.6591,10
+2026-08-18 12:26,gemma4-12b-4bit + qwen35-9b-8bit,xlmr + nota 1-5 + lema + ansamblu + fertilitate (w pe test),test,LOLO,0.6646,10
+2026-08-18 12:25,gemma4-12b-4bit + qwen35-9b-8bit,xlmr + nota 1-5 + lema + ansamblu + set ales LOLO (w pe test),test,LOLO,0.6636,10
+2026-08-18 14:47,,labse inghetat + lema + fertilitate in loc de lungime,test,,0.5786,10
+2026-08-18 14:51,,e5 inghetat + lema + fertilitate in loc de lungime,test,,0.5756,10
+2026-08-18 14:52,,labse inghetat + lema + fertilitate + ansamblu de surse,test,LOLO,0.5796,10
+2026-08-18 14:52,gemma4-12b-4bit + qwen35-9b-8bit,labse + nota 1-5 + lema + ansamblu + fertilitate (w pe test),test,LOLO,0.6639,10
+2026-08-18 14:53,,e5 inghetat + lema + fertilitate + ansamblu de surse,test,LOLO,0.5824,10
+2026-08-18 14:53,gemma4-12b-4bit + qwen35-9b-8bit,e5 + nota 1-5 + lema + ansamblu + fertilitate (w pe test),test,LOLO,0.6656,10
+2026-08-18 14:57,,xlmr-large inghetat + lema + fertilitate in loc de lungime,test,,0.5829,10
+2026-08-18 14:58,,xlmr-large inghetat + lema + fertilitate + ansamblu de surse,test,LOLO,0.5917,10
+2026-08-18 14:58,gemma4-12b-4bit + qwen35-9b-8bit,xlmr-large + nota 1-5 + lema + ansamblu + fertilitate (w pe test),test,LOLO,0.6648,10
+2026-08-18 15:06,,encoder ales LOLO + lema + fertilitate + ansamblu de surse,test,LOLO,0.5691,10
+2026-08-18 15:06,gemma4-12b-4bit + qwen35-9b-8bit,encoder ales LOLO + nota 1-5 + lema + ansamblu + fertilitate (w pe test),test,LOLO,0.6599,10
+2026-08-18 15:07,,media a patru encodere inghetate + lema + fertilitate in loc de lungime,test,,0.6045,10
+2026-08-18 15:08,,media a patru encodere inghetate + lema + fertilitate + ansamblu de surse,test,LOLO,0.6086,10
+2026-08-18 15:08,gemma4-12b-4bit + qwen35-9b-8bit,media a patru encodere + nota 1-5 + lema + ansamblu + fertilitate (w pe test),test,LOLO,0.6720,10
+2026-08-18 12:25,,xlmr inghetat + lema + set de trasaturi ales LOLO + ansamblu de surse,test,LOLO,0.5728,10
+2026-08-18 15:55,,xlmr inghetat + lema + fertilitate + ansamblu de surse (model B pe test),test,LOLO,0.5807,10
+2026-08-18 15:55,gemma4-12b-4bit,xlmr + nota 1-5 + lema + ansamblu + fertilitate (w si model pe test),test,LOLO,0.6696,10
+2026-08-18 16:22,,media a patru encodere inghetate + lema + fertilitate + ansamblu de surse (model B pe test),test,LOLO,0.6077,10
+2026-08-18 16:22,gemma4-12b-4bit,media a patru encodere + nota 1-5 + lema + ansamblu + fertilitate (w si model pe test),test,LOLO,0.6763,10
+2026-08-19 00:59,gemma4-12b-4bit + qwen35-9b-8bit,media a trei encodere fara xlmr + nota 1-5 + lema + ansamblu + fertilitate (w pe test),test,LOLO,0.6714,10
+2026-08-19 00:59,,media a trei encodere fara xlmr + lema + fertilitate + ansamblu de surse,test,LOLO,0.6076,10
+2026-08-19 00:59,gemma4-12b-4bit + qwen35-9b-8bit,media a trei encodere fara xlmr-large + nota 1-5 + lema + ansamblu + fertilitate (w pe test),test,LOLO,0.6694,10
+2026-08-19 00:59,,media a trei encodere fara xlmr-large + lema + fertilitate + ansamblu de surse,test,LOLO,0.6014,10
+2026-08-19 00:59,gemma4-12b-4bit + qwen35-9b-8bit,media a trei encodere fara labse + nota 1-5 + lema + ansamblu + fertilitate (w pe test),test,LOLO,0.6696,10
+2026-08-19 00:59,,media a trei encodere fara labse + lema + fertilitate + ansamblu de surse,test,LOLO,0.6055,10
+2026-08-19 00:59,gemma4-12b-4bit + qwen35-9b-8bit,media a trei encodere fara e5 + nota 1-5 + lema + ansamblu + fertilitate (w pe test),test,LOLO,0.6714,10
+2026-08-19 00:59,,media a trei encodere fara e5 + lema + fertilitate + ansamblu de surse,test,LOLO,0.6078,10
+2026-08-19 00:57,,media a trei encodere inghetate fara e5 + lema + fertilitate in loc de lungime,test,,0.6030,10
+2026-08-19 00:57,,media a trei encodere inghetate fara labse + lema + fertilitate in loc de lungime,test,,0.6003,10
+2026-08-19 00:57,,media a trei encodere inghetate fara xlmr-large + lema + fertilitate in loc de lungime,test,,0.5976,10
+2026-08-19 00:57,,media a trei encodere inghetate fara xlmr + lema + fertilitate in loc de lungime,test,,0.6043,10
+2026-08-19 01:03,gemma4-12b-4bit,media a trei encodere fara xlmr-large + nota 1-5 + lema + ansamblu + fertilitate (w si model pe test),test,LOLO,0.6754,10
+2026-08-19 01:03,,media a trei encodere fara xlmr-large + lema + fertilitate + ansamblu de surse (model B pe test),test,LOLO,0.6012,10

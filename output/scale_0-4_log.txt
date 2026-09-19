@@ -1,0 +1,25 @@
+[E1] gemma4-12b-4bit (mlx-community/gemma-4-12B-it-qat-OptiQ-4bit @ 63912b888c04)
+[E1] 300 instante de trial, 10 limbi (ca 30, de 30, en 30, es 30, fil 30, fr 30, it 30, ja 30, pt 30, si 30)
+Fetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]Fetching 9 files: 100%|██████████| 9/9 [00:00<00:00, 6241.52it/s]
+[E1] incarcat in 5.5s, backend=mlx dev=mlx, scara 0-4 (5 atomi)
+
+[d4] masa bruta = 9.999855e-01   max(p) = 0.562110   _once() = 0.3594890378966036
+[d4] B pe 10 limbi: sd = 0.1949 pe 10/10 finite
+[d4] timp per item = 0.740s, sonda de dispersie 6.9s
+[d4] PASS -> /Users/alexandrucojoaca/Documents/GitHub/ia-sahistii/output/d4_sanity.md
+[E1] 25/300  29s  1.14s per item  NaN B=0 C=0
+[E1] 50/300  51s  1.02s per item  NaN B=0 C=0
+[E1] 75/300  73s  0.97s per item  NaN B=0 C=0
+[E1] 100/300  95s  0.95s per item  NaN B=0 C=0
+[E1] 125/300  140s  1.12s per item  NaN B=0 C=1
+[E1] 150/300  166s  1.11s per item  NaN B=0 C=7
+[E1] 175/300  193s  1.10s per item  NaN B=0 C=8
+[E1] 200/300  219s  1.10s per item  NaN B=0 C=10
+[E1] 225/300  247s  1.10s per item  NaN B=0 C=10
+[E1] 250/300  278s  1.11s per item  NaN B=0 C=10
+[E1] 275/300  318s  1.16s per item  NaN B=0 C=11
+[E1] 300/300  345s  1.15s per item  NaN B=0 C=12
+
+[E1] gemma4-12b-4bit: 300 instante in 345s (1.15s per item)
+[E1] NaN: B=0, C=12. NEIMPUTATE, se numara in raport.
+[E1] -> /Users/alexandrucojoaca/Documents/GitHub/ia-sahistii/output/dist/scale_0-4_trial.csv

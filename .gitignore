@@ -14,6 +14,9 @@ data/complex_en/
 *.npy
 data/cwi_en/
 
+# --- RoLCP gold (RALS), protejat cu parola in sursa: nu se versioneaza, nici in repo privat ---
+data/RoLCP.csv
+
 # --- Pastrate (munca ta, doar id+scor, necesare reproducerii bit-exact): ---
 #   data/crosslingual_test.csv
 #   data/crosslingual_mlsponly_test.csv
@@ -58,3 +61,24 @@ nitro*
 
 # tokensave local index (generated, machine-specific)
 .tokensave/
+
+# =============================================================================
+# Corpusuri descarcate si derivate mari (adaugat 15 sep 2026)
+# Motiv: data/wiki_ctx are 8 fisiere peste limita de 100 MB a GitHub.
+# Toate se regenereaza din cod: build_ctx_div.py, build_freq_tail.py.
+# =============================================================================
+data/wiki_ctx/
+data/wiki_tail/
+data/ctx_div/
+data/freq_tail/
+
+# Blocuri TabFM precalculate (acelasi spirit ca *.npy de mai sus)
+*.npz
+
+# Arhive descarcate din Colab (continutul e despachetat alaturi)
+data/preds_*.zip
+
+# --- Dump-uri de predictii per-item: 914 MB, regenerabile prin rularea
+#     scripturilor. Rezumatele .md si CSV-urile mici RAMAN versionate. ---
+output/e1_frozen_preds_*.csv
+output/fusion_preds_*.csv
