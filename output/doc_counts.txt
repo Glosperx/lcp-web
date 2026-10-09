@@ -1,0 +1,22 @@
+eval rows (11 langs): 7211  located: 7211
+      rows  located  contexts     y_min     y_max
+lang                                             
+ca     445      445       150  0.075000  0.863636
+de     570      570       193  0.175000  0.950000
+en     570      570       190  0.022727  0.931818
+es     593      593       208  0.000000  0.950000
+fil    570      570       555  0.025000  0.800000
+fr     569      569       191  0.000000  0.975000
+it     570      570       192  0.000000  0.880000
+ja     570      570       190  0.000000  0.950000
+pt     567      567       562  0.020000  0.720000
+ro    1587     1587       274  0.000000  0.977273
+si     600      600       578  0.040000  0.810000
+MLSP test rows: 5624  located: 5624
+CompLex 2.0 rows: 8423  located: 8423  y range: 0.0 0.875
+frequency available: {'ca': True, 'de': True, 'en': True, 'es': True, 'fil': True, 'fr': True, 'it': True, 'ja': True, 'pt': True, 'ro': True, 'si': False}
+stanza lemmatiser: ('ca', 'de', 'en', 'es', 'fr', 'it', 'ja', 'pt', 'ro')
+labse located: 7211 same as xlmr: True
+e5 located: 7211 same as xlmr: True
+MLSP test rows before dropna: 5624 | after: 5624
+rows with a missing field: 0

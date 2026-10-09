@@ -1,0 +1,103 @@
+% ===== 1. Keywords, in cutia abstractului, inainte de \begin{center}{\large\bfseries\abstractname}
+  \noindent{\small\textbf{Keywords:} lexical complexity prediction; cross-lingual transfer;
+  zero-label evaluation; leave-one-language-out selection; multilingual encoders;
+  language models}\par\vspace{0.6em}%
+
+% ===== 2. 4.1 Overview, finalul: (Section~\ref{sec:fusion}) -> (Section~\ref{sec:fusion}, Figure~\ref{fig:pipeline})
+
+% ===== 3. Figura pipeline, declarata inainte de \subsection{The transfer signal (A)}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_pipeline.pdf}
+\caption{The predictor for a held-out language $L$. Signal~A averages three frozen encoders, each
+feeding a ridge regression and a gradient-boosted tree in two arms, one fitted on CompLex English and
+one on CompLex English and the other languages. Signal~B reads the probabilities of the digits 1 to 5
+from one forward pass of Gemma~4 for each of three prompts. Quantities marked LOLO are chosen or
+fitted on the other languages only: the regressor, the arm weight $w_{\mathrm{src}}$, the language
+model, the temperature and grade partition, and the fusion weight $w$.}
+\label{fig:pipeline}
+\end{figure*}
+
+% ===== 4. 4.2, dupa "...which keeps the zero-label protocol intact."
+Centring removes most of the language identity from the vectors (Appendix~\ref{app:tsne}).
+
+% ===== 5. Anexa t-SNE
+\section{Representation Geometry}
+\label{app:tsne}
+Figure~\ref{fig:tsne} projects the target vectors of the $7{,}211$ test instances with t-SNE
+\citep{vandermaaten-hinton-2008-tsne}, before and after each language is centred on its own mean.
+The three encoders do not share a space, so their vectors cannot be averaged coordinate by
+coordinate; we concatenate them after scaling each to the same total variance, which makes a squared
+distance in the concatenation the sum of the three encoders' squared distances, and distances are
+all that t-SNE uses. In the concatenated space, excluding neighbours from the same sentence, $0.57$
+of each vector's 15 nearest neighbours share its language before centring and $0.33$ after, against
+$0.11$ by chance.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_tsne_encoders.png}
+\caption{t-SNE of the target vectors, XLM-R base, LaBSE and multilingual E5 concatenated with equal
+weight, on the eleven-language test split ($n=7{,}211$), before and after per-language centring
+(PCA to 50 dimensions, perplexity 30, seed 0).}
+\label{fig:tsne}
+\end{figure*}
+
+% ===== 6a. 4.2, la finalul paragrafului cu cele doua corectii lexicale (dupa \citep{rust-etal-2021-good}.)
+Word frequency and the embedding carry nearly all of signal~A (Appendix~\ref{app:shap}).
+
+% ===== 6b. Anexa SHAP (cifre din output/shap_signal_a_adopted_importance.csv)
+\section{Feature Attribution for Signal A}
+\label{app:shap}
+Figure~\ref{fig:shap} attributes signal~A, as it enters the fusion, to its inputs. Within a language,
+signal~A is an affine function of six predictions, two arms for each of three encoders, and each
+prediction is the mean of a ridge regression and a gradient-boosted tree. We compute Shapley values
+for every model \citep{lundberg-lee-2017-unified}, in closed form for the ridge and with
+interventional TreeSHAP for the tree \citep{lundberg-etal-2020-trees}, and combine them with the same
+affine weights, so the attributions of each instance sum to its value of signal~A. The reference is
+the instance's own language rather than the training data, because signal~A is standardised within
+the language and a shift shared by a whole language changes nothing; the two indicator columns are
+constant within a language, receive exactly zero, and are not shown. On average, word frequency moves
+signal~A by $0.56$ of its within-language standard deviation and the embedding by $0.31$, while
+subword count, capitalisation and syllable count stay below $0.06$. On Sinhala, which has no
+frequency list, the embedding carries $0.81$ and subword count $0.15$.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{fig_shap_signal_a.pdf}
+\caption{SHAP values of signal~A for the $7{,}211$ test instances, relative to the mean of each
+instance's language. Colour is the feature value; the $2{,}304$ embedding dimensions of the three
+encoders are summed into one row, in grey.}
+\label{fig:shap}
+\end{figure*}
+
+% ===== 7. bib, in blocul filecontents
+@inproceedings{lundberg-lee-2017-unified,
+    title     = {A Unified Approach to Interpreting Model Predictions},
+    author    = {Lundberg, Scott M. and Lee, Su-In},
+    booktitle = {Advances in Neural Information Processing Systems 30},
+    pages     = {4765--4774},
+    year      = {2017},
+    url       = {https://papers.nips.cc/paper/7062-a}
+}
+
+@article{lundberg-etal-2020-trees,
+    title   = {From Local Explanations to Global Understanding with Explainable {AI} for Trees},
+    author  = {Lundberg, Scott M. and Erion, Gabriel and Chen, Hugh and DeGrave, Alex and
+               Prutkin, Jordan M. and Nair, Bala and Katz, Ronit and Himmelfarb, Jonathan and
+               Bansal, Nisha and Lee, Su-In},
+    journal = {Nature Machine Intelligence},
+    volume  = {2},
+    number  = {1},
+    pages   = {56--67},
+    year    = {2020},
+    doi     = {10.1038/s42256-019-0138-9}
+}
+
+@article{vandermaaten-hinton-2008-tsne,
+    title   = {Visualizing Data using t-{SNE}},
+    author  = {van der Maaten, Laurens and Hinton, Geoffrey},
+    journal = {Journal of Machine Learning Research},
+    volume  = {9},
+    pages   = {2579--2605},
+    year    = {2008}
+}

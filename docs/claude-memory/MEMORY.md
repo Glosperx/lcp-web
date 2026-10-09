@@ -1,3 +1,4 @@
+- [Sistemul e 0.692527, engleza curata](sistemul-e-0692527-en-curat.md) — PUNCT DE RELUARE 26 sep: ADOPTAT, zero-label si pe en; comenzi, cifre, ce ramane (varianta pe 10 limbi nerulata curat).
 - [Structura fisiere: doar necod reorganizat](structura-fisiere-doar-necod-reorganizat.md) — logs/notebooks/docs/legacy create; cele 73 de scripturi .py raman la radacina din cauza importurilor incrucisate.
 - [Hook tokensave coercitiv, revenit](tokensave-hook-coercitiv-revenit.md) — combo-ul deny pe Explore/grep a reaparut singur intre 29 iul si 15 aug, probabil la update; scos din nou pe 29 aug.
 - [Cod nou: tabfm_colab.ipynb fixat](cod-nou-tabfm-colab-fixat.md) — 4 bugi reali fixati, ultimul: files.download() e mort din VSCode, arhiva se scrie in Drive; plus capcana numelui canonic de CSV.
@@ -61,7 +62,7 @@
 - [Linia de tăiere din update_paper_draft](update-paper-draft-linia-de-taiere.md) — explicația în română: nu atingi nimic deasupra liniei pe care ți-o dă, și el editează în paralel.
 - [Semnalele A/B din update_paper_draft](update-paper-draft-semnale-a-b.md) — r final 0.674946, 3 encodere (nu 4), fără eyetracking, 2 paper-uri de referință; corecțiile făcute pe parcurs.
 - [Fără diacritice, fără tabele markdown](raspunsuri-fara-diacritice-fara-tabele-md.md) — cerut explicit pentru orice text/draft scris pentru acest utilizator, nu se copiază bine altfel.
-- [Engleza nu e zero-label](engleza-nu-e-zero-label.md) — CompLex EN, 63% din antrenare, rămâne în set și la L=en; explică r 0.8197 și Δ −0.0024.
+- [Engleza nu e zero-label](engleza-nu-e-zero-label.md) — CompLex EN, 63% din antrenare, rămâne în set și la L=en; **varianta curata rulata 26 sep: en 0.8732->0.8695, media 11 limbi 0.692527**, flag --en-fara-complex.
 - [Alinierea țintă-subword, măsurată](alinierea-tinta-subword-masurata.md) — suprapunere de offset-uri, nu `word_ids`; Gemma/Qwen includ spațiul, e5 nu; 88/5624 ținte apar de mai multe ori.
 - [Firul Nisioi: monolingv vs LOLO](nisioi-fir-monolingv-lolo.md) — 20 aug, ce s-a răspuns și oferta deschisă de a rula monolingv pe japoneză; tiparul de erori din drafturi.
 - [Frontiera e identitate, nu aproximare](frontiera-e-identitate-nu-aproximare.md) — exacta la 3.3e-16 pe media standardizata; ce s-a numit eroare e distanta pana la media bruta a lui b_of; rho se masoara la T ales LOLO, nu la T=1.
@@ -92,7 +93,10 @@
 - [Cod nou: axa regresorului](cod-nou-axa-regresorului.md) — --regressor, --emb-tf proj-N, puntea TabFM cu doua porti, si capcana inf*0 care da NaN.
 - [TabFM pe GPU: memorie si dtype](tabfm-pe-gpu-memorie-si-dtype.md) — 1.65 miliarde de parametri: fp16 da NaN mereu, fp32 nu incape pe T4, n_estimators e timp nu memorie; **bf16 pe T4 MERGE**; varful e dat de atentia ICL, oarba la MAXFEAT; exponentul 2.70 pe coloane e de pe M5 si NU se transfera pe T4 (real 0.79).
 - [Update paper, mesaj 2 (punctul 7)](update-paper-mesaj2-punctul7.md) — TRIMIS 29 aug catre coordonator; al 4-lea prompt (few-shot) testat si respins: rho(A,B) urca (0.6870->0.6934), fuziunea nu se misca (+0.0003, zgomot).
-- [RoLCP, a 11-a limba in LOLO](rolcp-a-11a-limba-lolo.md) — cerut de Sergiu; 0.690001 -> 0.693718 pe 11 limbi, Romania singura da 0.7401; tabelul scris in update_paper_draft.txt pct. 8; NIMIC comis in git.
+- [RoLCP, a 11-a limba in LOLO](rolcp-a-11a-limba-lolo.md) — cerut de Sergiu; 0.690001 -> 0.693718 pe 11 limbi, **inlocuit 26 sep de 0.692527 cu engleza curata, ADOPTAT**, Romania singura da 0.7401; tabelul scris in update_paper_draft.txt pct. 8; NIMIC comis in git.
 - [SHAP pe semnalul A, feature importance](shap-signal-a-feature-importance.md) — TreeSHAP+LinearSHAP reale; frecventa cuvantului si embeddingul aproape egale; beeswarm-uri in output/shap_beeswarm_native*.png.
 - [Grafice SHAP: nativ, nu custom](grafice-shap-native-nu-custom.md) — feedback: shap.plots.beeswarm() cerut explicit, bar chart respins de 2 ori, titlu obligatoriu pe scopul datelor.
 - [Scrie uman, nu overexplain](scrie-uman-nu-overexplain.md) — pentru texte/mesaje scrise pentru Alexandru, propozitii scurte, fara paranteze explicative inserate; opusul lui [[explicatii-tehnice-in-profunzime]].
+- [Commit-ul il da utilizatorul](commitul-il-da-utilizatorul.md) — "push" nu implica "commit"; pregatesc staging-ul si ma opresc, autorship-ul e al lui.
+- [zsh nu accepta comentarii in comenzi](zsh-nu-accepta-comentarii-in-comenzi.md) — `#` pe aceeasi linie ajunge argument si erorile par probleme de git.
+- [Push GitHub: ce ramane afara](push-github-ce-ramane-afara.md) — gitignore-ul din 15 sep: 4.3 GB wiki_ctx peste limita de 100 MB, 854 MB predictii brute; memoriile sunt snapshot manual in docs/claude-memory.

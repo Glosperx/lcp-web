@@ -487,6 +487,7 @@ def _freq_drop(X, dim_emb, p, seed):
 def frozen_trial_gap(en, ml, mlt, holdout=None, emb_cfg="last4", encoder="xlmr", n_boot=2000,
                      lemma_freq=False, afeat="baza", no_freq=False, emb_tf="nu", oov=False,
                      freq_drop=0.0, ctx_div=None, regressor="blend", export_blocks=None,
+                     en_fara_complex=False,
                      out=os.path.join(HERE, "output", "e1_frozen_trial.csv"),
                      preds=os.path.join(HERE, "output", "e1_frozen_preds.csv"),
                      report=os.path.join(HERE, "output", "e1_trial_gap.md"),
@@ -645,6 +646,9 @@ def frozen_trial_gap(en, ml, mlt, holdout=None, emb_cfg="last4", encoder="xlmr",
         if freq_drop > 0:
             raise SystemExit("--export-blocks refuza --freq-drop: masca depinde de limba tinuta "
                              "deoparte, deci celalalt capat ar reconstrui alte matrice.")
+        if en_fara_complex:
+            raise SystemExit("--export-blocks refuza --en-fara-complex: `cereri` pune CompLex EN in "
+                             "fiecare matrice de antrenare, deci celalalt capat n-ar vedea schimbarea.")
         # dtype de unicode explicit, nu `.astype(str)`: pe un array de obiecte pandas acela lasa
         # object, iar `np.load` refuza object fara `allow_pickle`, deci exportul ar fi ilizibil.
         _u = lambda v: np.asarray(list(v), dtype="U16")
@@ -665,7 +669,13 @@ def frozen_trial_gap(en, ml, mlt, holdout=None, emb_cfg="last4", encoder="xlmr",
     for L in (holdout or sorted(pd.unique(lang))):
         te, tr = (lang == L), (lang != L)
         tt = (langt == L)
-        Xtr = np.vstack([Xen, Xml[tr]]); ytr = np.concatenate([yen, y[tr]])
+        # `en_fara_complex`: la L = "en" CompLex EN iese din antrenare, deci bratul vede numai
+        # celelalte limbi. Pentru orice alt L ramura veche e neatinsa, bit cu bit.
+        curat = en_fara_complex and L == "en"
+        if curat:
+            Xtr, ytr = Xml[tr], y[tr]
+        else:
+            Xtr = np.vstack([Xen, Xml[tr]]); ytr = np.concatenate([yen, y[tr]])
         # Samanta depinde de limba tinuta deoparte, deci fiecare potrivire are propria realizare a
         # mastii, dar rularea intreaga e reproductibila. Numai Xtr se atinge; `Xpred` de mai jos, care
         # contine randurile lui L, ramane cu frecventa intacta.
@@ -676,6 +686,10 @@ def frozen_trial_gap(en, ml, mlt, holdout=None, emb_cfg="last4", encoder="xlmr",
         p = reg(Xtr, ytr, Xpred)
         n_te, n_tt = int(te.sum()), int(tt.sum())
         p_te, p_tt_self, p_tt_test = p[:n_te], p[n_te:n_te + n_tt], p[n_te + n_tt:]
+        # Bratul EN-only e numai CompLex, deci la L = "en" ar aduce etichetele inapoi prin `w_src`.
+        # Se inlocuieste cu acelasi p_multi curat, ca amestecul sa nu mai aiba ce sa aleaga.
+        pe_te = p_te if curat else p_en_test[te]
+        pe_tt = p_tt_self if curat else p_en_trial[tt]
 
         b_te = boot_r_ci(y[te], p_te, ctx[te], n_boot=n_boot, seed=SEED)
         b_tt = boot_r_ci(yt[tt], p_tt_self, ctxt[tt], n_boot=n_boot, seed=SEED)
@@ -698,8 +712,8 @@ def frozen_trial_gap(en, ml, mlt, holdout=None, emb_cfg="last4", encoder="xlmr",
                      "r_test_multi": round(r_test, 4), "r_trial_multi_selfmu": round(r_trial, 4),
                      "r_trial_multi_testmu": (round(pearson(p_tt_test, yt[tt]), 4)
                                               if n_tt >= 2 else float("nan")),
-                     "r_test_en": round(pearson(p_en_test[te], y[te]), 4),
-                     "r_trial_en": (round(pearson(p_en_trial[tt], yt[tt]), 4)
+                     "r_test_en": round(pearson(pe_te, y[te]), 4),
+                     "r_trial_en": (round(pearson(pe_tt, yt[tt]), 4)
                                     if n_tt >= 2 else float("nan")),
                      "delta_split": round(r_trial - r_test, 4),
                      "delta_lo": round(float(np.percentile(dboot, 2.5)), 4) if len(dboot) else np.nan,
@@ -710,10 +724,10 @@ def frozen_trial_gap(en, ml, mlt, holdout=None, emb_cfg="last4", encoder="xlmr",
 
         for j, k in enumerate(np.flatnonzero(te)):
             prows.append(("test", int(idx[k]), L, ml["token"].values[idx[k]], float(y[te][j]),
-                          ctx[te][j], float(p_en_test[te][j]), float(p_te[j]), ""))
+                          ctx[te][j], float(pe_te[j]), float(p_te[j]), ""))
         for j, k in enumerate(np.flatnonzero(tt)):
             prows.append(("trial", int(idxt[k]), L, mlt["token"].values[idxt[k]], float(yt[tt][j]),
-                          ctxt[tt][j], float(p_en_trial[tt][j]), float(p_tt_self[j]),
+                          ctxt[tt][j], float(pe_tt[j]), float(p_tt_self[j]),
                           f"{float(p_tt_test[j]):.8f}"))
         pd.DataFrame(prows, columns=["split", "idx", "lang", "token", "complexity", "context_id",
                                      "p_en", "p_multi", "p_multi_testmu"]).to_csv(preds, index=False)
@@ -871,6 +885,11 @@ def main():
                          "10 limbi ramane neschimbat; scrie in fisiere proprii, cu sufixul _ro11, si "
                          "dezactiveaza poarta de reproducere fata de e1_lolo_frozen.csv, fiindca "
                          "antrenarea celorlalte 10 limbi include acum si randurile romanesti.")
+    ap.add_argument("--en-fara-complex", dest="en_fara_complex", action="store_true",
+                    help="numai cu --frozentrial: la L = en, p_multi se antreneaza fara CompLex EN, "
+                         "doar pe celelalte limbi, iar p_en al randurilor en se inlocuieste cu acelasi "
+                         "p_multi, ca `w_src` sa nu aduca CompLex inapoi. Celelalte limbi raman "
+                         "neschimbate. Sufixul _en-fara-complex pe toate caile de iesire.")
     ap.add_argument("--final", action="store_true")
     ap.add_argument("--model", choices=list(MODELS), default="base")
     ap.add_argument("--lr", type=float, default=2e-5)
@@ -929,6 +948,7 @@ def main():
         suf += ("" if not args.ctx_div else f"_cd-{args.ctx_div}")
         suf += ("" if args.regressor == "blend" else f"_reg-{args.regressor}")
         suf += ("_lemma" if args.lemma_freq else "") + ("" if args.afeat == "baza" else f"_{args.afeat}")
+        suf += ("_en-fara-complex" if args.en_fara_complex else "")
         suf += ("_ro11" if args.include_ro else "")
         return os.path.join(HERE, "output", f"{base}{suf}{ext}")
 
@@ -948,12 +968,13 @@ def main():
         canonic = (not args.lemma_freq and args.afeat == "baza" and args.encoder == "xlmr"
                    and args.emb_cfg == "last4" and args.freq_tail == "nu" and not args.no_freq
                    and args.emb_tf == "nu" and not args.oov and args.freq_drop == 0.0
-                   and args.ctx_div is None and args.regressor == "blend" and not args.include_ro)
+                   and args.ctx_div is None and args.regressor == "blend" and not args.include_ro
+                   and not args.en_fara_complex)
         frozen_trial_gap(en, ml, load_mlsp("trial"), lemma_freq=args.lemma_freq, afeat=args.afeat,
                          encoder=args.encoder, emb_cfg=args.emb_cfg, no_freq=args.no_freq,
                          emb_tf=args.emb_tf, oov=args.oov, freq_drop=args.freq_drop,
                          ctx_div=args.ctx_div, regressor=args.regressor,
-                         export_blocks=args.export_blocks,
+                         export_blocks=args.export_blocks, en_fara_complex=args.en_fara_complex,
                          out=_p("e1_frozen_trial.csv"), preds=_p("e1_frozen_preds.csv"),
                          report=_p("e1_trial_gap.md"),
                          ref=os.path.join(HERE, "output", "e1_lolo_frozen.csv") if canonic

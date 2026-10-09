@@ -1,0 +1,6 @@
+# Datasets are not redistributed (see README, Data)
+data/
+# Embeddings, lemmas, CompLex downloads, partial LLM runs
+cache/
+__pycache__/
+.DS_Store

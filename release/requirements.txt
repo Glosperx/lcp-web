@@ -1,0 +1,25 @@
+# Versions used for the paper (Python 3.11). Other recent versions should work, but the
+# regressor and the bootstrap are only guaranteed bit-identical with these.
+numpy==2.3.5
+pandas==3.0.3
+scipy==1.17.1
+scikit-learn==1.6.1
+torch==2.13.0
+transformers==5.13.1
+tokenizers==0.22.2
+sentencepiece==0.2.2
+protobuf==7.35.1
+huggingface-hub==1.23.0
+stanza==1.14.0
+wordfreq==3.1.1
+# Japanese frequencies in wordfreq need MeCab; without it Japanese is treated as having no
+# frequency list, which changes signal A.
+mecab-python3==1.0.12
+ipadic==1.0.0
+
+# Signal B, Apple silicon (the backend used for the paper)
+mlx==0.32.0; sys_platform == "darwin" and platform_machine == "arm64"
+mlx-lm==0.31.3; sys_platform == "darwin" and platform_machine == "arm64"
+# Signal B, CUDA
+accelerate==1.14.0; sys_platform != "darwin"
+bitsandbytes; sys_platform != "darwin"

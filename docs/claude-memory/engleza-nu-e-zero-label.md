@@ -34,6 +34,21 @@ din zece, iar engleza e prima pe care s-ar uita un reviewer, fiind și linia cu 
 corectă e „fără etichete în limba țintă, cu excepția englezei, unde CompLex rămâne în antrenare".
 
 **How to apply:** de declarat explicit înainte de submisie, în același loc unde se declară setarea
-transductivă din [[lolo-exista-deja-in-cod]]. Nu se repară prin cod: scoaterea lui CompLex la `L = "en"`
-ar schimba brațul EN-only, care e o singură potrivire pentru toate limbile. Vezi și
+transductivă din [[lolo-exista-deja-in-cod]]. Vechea obiectie ca nu se repara prin cod (bratul EN-only e o
+singura potrivire) s-a rezolvat pe 26 sep: pe randurile en, p_en se inlocuieste cu p_multi curat. Vezi și
 [[paper-slabiciuni-de-reviewer]] și [[nisioi-fir-monolingv-lolo]].
+
+## Varianta curata, rulata 26 sep 2026
+
+Flag nou `finetune_xlmr.py --frozentrial --en-fara-complex` (default neschimbat): la L = en, p_multi fara
+Xen, si p_en al randurilor en = acelasi p_multi. Control fara flag: bit-identic pe cele 3 encodere, pe
+media lor si pe fuziune (0.693718). Rezultat, tag `en_fara_complex_ro11`, A in
+`output/e1_frozen_preds_encmean-fara-xlmr-large_lemma_fert_inloc_en-fara-complex_ro11.csv`:
+engleza fuziune 0.8732 -> 0.8695 (d -0.0037, CI [-0.0107, +0.0026]), A 0.8301 -> 0.8064, B neschimbat;
+media pe 11 limbi 0.693718 -> 0.692527 (d -0.0012 [-0.0020, -0.0005]); pe 10 MLSP 0.68908 -> 0.68783.
+Celelalte limbi se misca prin criteriul LOLO (w_src), cel mai mult it -0.0037; es, fil, si exact 0.
+Nimic comis. Vezi [[rolcp-a-11a-limba-lolo]].
+
+**ADOPTAT 26 sep 2026** de Alexandru: "tot paperul se invarte in jurul la zero label". Sistemul pe 11 limbi e
+de acum 0.692527 (comanda adoptata + `--en-fara-complex` la cele 3 rulari --frozentrial). Varianta pe 10
+limbi (0.690001) are aceeasi scurgere pe engleza si NU a fost rulata curat.

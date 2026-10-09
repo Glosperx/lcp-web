@@ -81,7 +81,11 @@ s-a citat 0.690001 pana acum.
 crede ca 0.690001 e inca cifra curenta sau ar re-descoperi de la zero adancimea pipeline-ului
 (SYS_PREDS fix, make_enc_mean, al treilea prompt).
 
-**How to apply:** daca urmeaza sa scrii in paper, foloseste 0.693718 ca noua cifra pe 11 limbi si
+**SUPERSEDAT 26 sep 2026:** Alexandru a ADOPTAT varianta cu engleza curata (tot paperul e zero-label),
+deci cifra pe 11 limbi e **0.692527**, tag `en_fara_complex_ro11`, vezi [[engleza-nu-e-zero-label]].
+0.693718 ramane doar ca referinta veche.
+
+**How to apply (vechi):** daca urmeaza sa scrii in paper, foloseste 0.693718 ca noua cifra pe 11 limbi si
 tabelul de mai sus. Daca Sergiu cere si alte modele pe romana (nu doar Gemma4), pipeline-ul de mai
 sus (pasii 1-7) e reutilizabil, doar se repeta pasul 5 pentru alt model.
 
