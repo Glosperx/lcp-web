@@ -1,0 +1,30 @@
+# Stage 1: a working CPU image to time inference in Docker on the Mac (linux/arm64).
+#
+# Nothing is baked in except the Python environment. At run time (docker/run_cpu.sh) the repo is
+# mounted at /app, the Mac's Hugging Face cache read-only at /hf/hub (encoders, Gemma tokenizer,
+# GGUF, stanza zips), a named volume at /stanza for the unpacked stanza models, and the paper's
+# release data read-only under /paper.
+#
+#   docker build -f docker/Dockerfile.cpu -t lcp-web:cpu .
+FROM --platform=linux/arm64 python:3.11-slim
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends build-essential cmake git \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.13.0
+
+COPY docker/requirements.cpu.txt /tmp/requirements.cpu.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.cpu.txt
+
+# llama.cpp for this CPU. GGML_NATIVE turns on what the build machine has (NEON, dotprod, i8mm on
+# Apple silicon); the image is meant to run on the machine that built it.
+RUN CMAKE_ARGS="-DGGML_NATIVE=ON" \
+    pip install --no-cache-dir --no-binary llama-cpp-python llama-cpp-python==0.3.37
+
+ENV PYTHONPATH=/app/lcp_model:/app \
+    PYTHONUNBUFFERED=1 \
+    HF_HUB_CACHE=/hf/hub \
+    HF_HUB_OFFLINE=1 \
+    STANZA_RESOURCES_DIR=/stanza
+WORKDIR /app

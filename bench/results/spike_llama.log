@@ -1,0 +1,25 @@
+[spike] 110 rows (10 per language, 11 languages) x 3 prompts = 330 readings
+[gate 1] HF vocab 262144, GGUF vocab 262144, digit ids {'1': [236770], '2': [236778], '3': [236800], '4': [236812], '5': [236810]}, chat kwargs {'enable_thinking': False}
+[gate 1] PASS: 330/330 prompts give identical ids; all 5 digit ids decode to their digit
+[spike] GGUF loaded in 9.7s, threads 10
+[B reuse=False] 50/330  2.51s per reading
+[B reuse=False] 100/330  2.60s per reading
+[B reuse=False] 150/330  2.60s per reading
+[B reuse=False] 200/330  2.43s per reading
+[B reuse=False] 250/330  2.35s per reading
+[B reuse=False] 300/330  2.26s per reading
+[B reuse=False] 330/330  2.36s per reading
+[gate 2] PASS: min mass on digits 0.9999, no NaN
+[B reuse=True] 50/330  1.39s per reading
+[B reuse=True] 100/330  1.51s per reading
+[B reuse=True] 150/330  1.59s per reading
+[B reuse=True] 200/330  1.62s per reading
+[B reuse=True] 250/330  1.66s per reading
+[B reuse=True] 300/330  1.62s per reading
+[B reuse=True] 330/330  1.69s per reading
+-> bench/results/spike_llama.csv (1337s of readings)
+[gate 3] r(mean of 3 prompts, stored) per language: ca 0.9611  de 0.9546  en 0.9934  es 0.9709  fil 0.9967  fr 0.9918  it 0.9906  ja 0.9945  pt 0.9856  ro 0.9994  si 0.9494
+[gate 3] pooled r 0.9809 | per prompt, pooled: expert 0.9424  short 0.9893  marked 0.9669 | mean |score diff| 0.0310
+[kv reuse] 30184/41770 tokens evaluated with reuse, 2.36s vs 1.69s per reading, max |dp| 0, partial KV removals refused 0
+[gate 3] PASS
+[spike] all gates pass. CPU: 2.36s per reading, 127 prompt tokens, prefill 53.6 tokens/s

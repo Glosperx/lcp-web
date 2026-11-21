@@ -1,0 +1,4 @@
+[check] xlmr: 155 targets in 55 contexts, max |diff| so far 0
+[check] labse: 155 targets in 55 contexts, max |diff| so far 0
+[check] e5: 155 targets in 55 contexts, max |diff| so far 0
+[check] max |embed_spans - Encoder.embed| = 0

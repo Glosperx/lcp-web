@@ -1,0 +1,133 @@
+{
+ "wikidata": "Q525",
+ "license": "CC BY-SA 4.0",
+ "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+ "fetched": "2026-11-21",
+ "selection": "--pick Q525: no candidate was within the ranges in all 11 languages; this one was the closest",
+ "outside_ranges": [
+  "it"
+ ],
+ "texts": {
+  "ca": {
+   "wiki": "ca.wikipedia.org",
+   "title": "Sol",
+   "url": "https://ca.wikipedia.org/wiki/Sol",
+   "oldid": 39091466,
+   "timestamp": "2026-11-05T07:15:57Z",
+   "permalink": "https://ca.wikipedia.org/w/index.php?oldid=39091466",
+   "size_1": 138,
+   "size_2": 250,
+   "size_unit": "words"
+  },
+  "de": {
+   "wiki": "de.wikipedia.org",
+   "title": "Sonne",
+   "url": "https://de.wikipedia.org/wiki/Sonne",
+   "oldid": 271935090,
+   "timestamp": "2026-11-06T14:53:36Z",
+   "permalink": "https://de.wikipedia.org/w/index.php?oldid=271935090",
+   "size_1": 127,
+   "size_2": 184,
+   "size_unit": "words"
+  },
+  "en": {
+   "wiki": "en.wikipedia.org",
+   "title": "Sun",
+   "url": "https://en.wikipedia.org/wiki/Sun",
+   "oldid": 1385964136,
+   "timestamp": "2026-11-16T04:20:22Z",
+   "permalink": "https://en.wikipedia.org/w/index.php?oldid=1385964136",
+   "size_1": 80,
+   "size_2": 212,
+   "size_unit": "words"
+  },
+  "es": {
+   "wiki": "es.wikipedia.org",
+   "title": "Sol",
+   "url": "https://es.wikipedia.org/wiki/Sol",
+   "oldid": 176375645,
+   "timestamp": "2026-11-19T21:19:07Z",
+   "permalink": "https://es.wikipedia.org/w/index.php?oldid=176375645",
+   "size_1": 68,
+   "size_2": 137,
+   "size_unit": "words"
+  },
+  "fil": {
+   "wiki": "tl.wikipedia.org",
+   "title": "Araw (astronomiya)",
+   "url": "https://tl.wikipedia.org/wiki/Araw_%28astronomiya%29",
+   "oldid": 2087029,
+   "timestamp": "2024-02-09T16:04:30Z",
+   "permalink": "https://tl.wikipedia.org/w/index.php?oldid=2087029",
+   "size_1": 57,
+   "size_2": 168,
+   "size_unit": "words"
+  },
+  "fr": {
+   "wiki": "fr.wikipedia.org",
+   "title": "Soleil",
+   "url": "https://fr.wikipedia.org/wiki/Soleil",
+   "oldid": 241025844,
+   "timestamp": "2026-11-04T21:54:58Z",
+   "permalink": "https://fr.wikipedia.org/w/index.php?oldid=241025844",
+   "size_1": 113,
+   "size_2": 169,
+   "size_unit": "words"
+  },
+  "it": {
+   "wiki": "it.wikipedia.org",
+   "title": "Sole",
+   "url": "https://it.wikipedia.org/wiki/Sole",
+   "oldid": 153329573,
+   "timestamp": "2026-11-12T08:12:32Z",
+   "permalink": "https://it.wikipedia.org/w/index.php?oldid=153329573",
+   "size_1": 67,
+   "size_2": 111,
+   "size_unit": "words"
+  },
+  "ja": {
+   "wiki": "ja.wikipedia.org",
+   "title": "太陽",
+   "url": "https://ja.wikipedia.org/wiki/%E5%A4%AA%E9%99%BD",
+   "oldid": 111823090,
+   "timestamp": "2026-11-19T04:21:19Z",
+   "permalink": "https://ja.wikipedia.org/w/index.php?oldid=111823090",
+   "size_1": 111,
+   "size_2": 309,
+   "size_unit": "characters"
+  },
+  "pt": {
+   "wiki": "pt.wikipedia.org",
+   "title": "Sol",
+   "url": "https://pt.wikipedia.org/wiki/Sol",
+   "oldid": 73197256,
+   "timestamp": "2026-10-13T05:24:29Z",
+   "permalink": "https://pt.wikipedia.org/w/index.php?oldid=73197256",
+   "size_1": 197,
+   "size_2": 375,
+   "size_unit": "words"
+  },
+  "ro": {
+   "wiki": "ro.wikipedia.org",
+   "title": "Soare",
+   "url": "https://ro.wikipedia.org/wiki/Soare",
+   "oldid": 18111480,
+   "timestamp": "2026-11-08T18:20:20Z",
+   "permalink": "https://ro.wikipedia.org/w/index.php?oldid=18111480",
+   "size_1": 117,
+   "size_2": 231,
+   "size_unit": "words"
+  },
+  "si": {
+   "wiki": "si.wikipedia.org",
+   "title": "හිරු",
+   "url": "https://si.wikipedia.org/wiki/%E0%B7%84%E0%B7%92%E0%B6%BB%E0%B7%94",
+   "oldid": 797315,
+   "timestamp": "2026-08-06T12:00:58Z",
+   "permalink": "https://si.wikipedia.org/w/index.php?oldid=797315",
+   "size_1": 74,
+   "size_2": 123,
+   "size_unit": "words"
+  }
+ }
+}

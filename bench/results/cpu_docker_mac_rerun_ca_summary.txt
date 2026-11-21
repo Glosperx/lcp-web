@@ -1,0 +1,7 @@
+Stage 1, CPU in Docker on the Mac: median over the timed runs
+threads: llama.cpp 10, torch 10; peak RSS 15.53 GB, cgroup peak 16.059834368 GB
+
+lang size mode     sent words content reads  prompt_tok  seg_s    A_s      B_s    total_s  s/read  tok/s  first_s
+ca      1 A-only      5   137      68     0           0   0.15    0.58      0.0       0.7     nan    nan     0.2
+ca      1 noreuse     5   137      68   204       27148   0.23    1.40    451.0     452.6   2.211   60.3    27.6
+ca      1 reuse       5   137      68   204       27148   0.26    1.49    294.6     296.4   1.444   53.0    17.3

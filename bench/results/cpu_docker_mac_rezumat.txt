@@ -1,0 +1,47 @@
+Etapa 1: inferenta doar pe CPU, in Docker pe Mac
+masina: aarch64, 10 nuclee vizibile in container, thread-uri llama.cpp 10, torch 10; llama-cpp-python 0.3.37, torch 2.13.0+cpu
+model B: Gemma 4 12B it QAT q4_0 (GGUF Google), 3 prompturi pe cuvant de continut
+A: xlmr + labse + e5, un forward pe propozitie; regresorii si fuziunea (milisecunde) nu sunt inclusi
+
+Timpi pe text (mediana rularilor masurate; B a rulat o data pe text in fiecare mod).
+'cu refol.' = KV-ul prefixului comun pastrat intre citiri (modul pentru site, probabilitati
+bit-identice cu 'fara refol.' in spike); 'fara refol.' masurat doar la 1 paragraf.
+refacute separat (prima rulare era imediat dupa incarcare): ca 1 A-only, ca 1 noreuse, ca 1 reuse
+
+limba       marime  cuvinte  continut  citiri   segm      A  total cu refol.  s/citire  prima prop.  fara refol.  s/citire
+--------------------------------------------------------------------------------------------------------------------------
+catalana         1      137        68     204  0.15s  0.58s            4m56s      1.44          17s        7m33s      2.21
+catalana         2      251       124     372  0.26s  1.06s            8m22s      1.34          30s            -       nan
+germana          1      121        63     189  0.37s  0.72s            3m29s      1.10          33s        5m53s      1.86
+germana          2      177        91     273  0.72s  1.32s            4m56s      1.08          31s            -       nan
+engleza          1       79        36     108  0.46s  0.36s            2m57s      1.62          19s        3m19s      1.83
+engleza          2      201        94     282  0.67s  1.23s            5m46s      1.22          19s            -       nan
+spaniola         1       68        31      93  0.50s  0.32s            2m07s      1.36          88s        3m05s      1.98
+spaniola         2      137        66     198  0.62s  0.48s            4m22s      1.32          87s            -       nan
+filipineza       1       56        29      87  0.00s  0.33s            1m46s      1.21          27s        2m36s      1.78
+filipineza       2      168        93     279  0.00s  0.77s            5m58s      1.28          18s            -       nan
+franceza         1      109        57     171  0.51s  0.44s            3m57s      1.38          68s        6m24s      2.24
+franceza         2      157        80     240  0.74s  0.62s            5m43s      1.42          76s            -       nan
+italiana         1       65        32      96  0.49s  0.26s            2m17s      1.42          98s        3m33s      2.21
+italiana         2      106        53     159  0.60s  0.43s            3m36s      1.35          89s            -       nan
+japoneza         1       57        30      90  0.20s  0.27s            1m55s      1.27          42s        3m21s      2.21
+japoneza         2      172        95     285  0.33s  0.72s            6m00s      1.25          32s            -       nan
+portugheza       1      182        87     261  0.57s  0.83s            5m57s      1.36          26s        8m32s      1.95
+portugheza       2      351       174     522  1.42s  1.49s           11m12s      1.28          22s            -       nan
+romana           1      107        64     192  0.14s  0.60s            3m56s      1.22          21s        6m01s      1.87
+romana           2      226       126     378  0.21s  1.04s            6m54s      1.09          15s            -       nan
+sinhaleza        1       72        62     186  0.00s  0.57s            4m21s      1.40          24s        7m32s      2.42
+sinhaleza        2      112        93     279  0.00s  0.74s            8m22s      1.79          23s            -       nan
+
+1 paragraf(e), 11 limbi: total cu refol. median 3m29s, min 1m46s (fil), max 5m57s (pt); cuvinte 56-182, citiri 87-261
+2 paragraf(e), 11 limbi: total cu refol. median 5m58s, min 3m36s (it), max 11m12s (pt); cuvinte 106-351, citiri 159-522
+pe toate citirile: cu refol. 1.32 s/citire (4944 citiri), fara refol. 2.07 s/citire (1677 citiri); prefill fara refol. 58.4 tokeni/s, 121 tokeni pe prompt in medie; cu refol. se evalueaza 58% din tokeni
+castigul refolosirii la 1 paragraf: 35% median (intre 11% si 42%)
+
+Memorie (GB; anon = memorie proprie, file = pagini mapate din GGUF si safetensors,
+pe care kernelul le poate elibera si reciti; VM-ul Docker are 16 GB si 1 GB swap)
+  dupa encodere: hwm 1.38, rss 1.36, anon 1.21, file 0.15, swap 0.00
+  dupa Gemma:    hwm 15.70, rss 15.70, anon 8.88, file 6.82, swap 1.00
+  anon dupa incarcarea stanza, pe limba: ca 9.55, de 9.95, en 9.92, es 9.92, fr 9.89, it 9.87, ja 9.98, pt 9.92, ro 9.94
+  varf RSS proces: 15.71; varf cgroup (include page cache): 16.1782784
+  incarcare: encodere 5.1 s, Gemma 39.0 s, stanza pe limba ca 2.3 s, de 2.2 s, en 1.1 s, es 1.1 s, fr 1.2 s, it 1.4 s, ja 1.8 s, pt 1.4 s, ro 1.0 s

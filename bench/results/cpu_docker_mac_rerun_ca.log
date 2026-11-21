@@ -1,0 +1,32 @@
+[transformers] [1mXLMRobertaModel LOAD REPORT[0m from: xlm-roberta-base
+Key                       | Status     |  | 
+--------------------------+------------+--+-
+lm_head.dense.bias        | UNEXPECTED |  | 
+lm_head.layer_norm.weight | UNEXPECTED |  | 
+lm_head.dense.weight      | UNEXPECTED |  | 
+lm_head.layer_norm.bias   | UNEXPECTED |  | 
+lm_head.bias              | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[bench] encoders 6.5s, Gemma 29.6s, threads llama 10 torch 10, mem {'hwm': 15.494, 'rss': 15.494, 'anon': 8.871, 'file': 6.623, 'swap': 0.999}
+[bench] stanza ca loaded in 2.2s, mem {'hwm': 15.533, 'rss': 14.225, 'anon': 9.466, 'file': 4.759, 'swap': 0.604}
+[bench] ca size 1 A-only run 0 (warm-up): 68/137 content words, 0 readings, seg 0.33s A 1.40s B 0.0s total 1.7s, nans/reading, nan tok/s, first sentence 0.6s
+[bench] ca size 1 A-only run 1: 68/137 content words, 0 readings, seg 0.15s A 0.56s B 0.0s total 0.7s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] ca size 1 A-only run 2: 68/137 content words, 0 readings, seg 0.16s A 0.75s B 0.0s total 0.9s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] ca size 1 A-only run 3: 68/137 content words, 0 readings, seg 0.11s A 0.58s B 0.0s total 0.7s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] ca size 1 reuse run 0 (warm-up): 68/137 content words, 204 readings, seg 0.09s A 1.84s B 395.5s total 397.4s, 1.939s/reading, 39.3 tok/s, first sentence 29.5s
+[bench] ca size 1 reuse run 1: 68/137 content words, 204 readings, seg 0.33s A 1.40s B 311.2s total 312.9s, 1.525s/reading, 50.0 tok/s, first sentence 17.9s
+[bench] ca size 1 reuse run 2: 68/137 content words, 204 readings, seg 0.19s A 1.58s B 278.1s total 279.9s, 1.363s/reading, 55.9 tok/s, first sentence 16.7s
+[bench] ca size 1 noreuse run 0 (warm-up): 68/137 content words, 204 readings, seg 0.15s A 1.74s B 560.6s total 562.5s, 2.748s/reading, 48.4 tok/s, first sentence 26.2s
+[bench] ca size 1 noreuse run 1: 68/137 content words, 204 readings, seg 0.37s A 1.54s B 467.9s total 469.8s, 2.294s/reading, 58.0 tok/s, first sentence 33.8s
+[bench] ca size 1 noreuse run 2: 68/137 content words, 204 readings, seg 0.10s A 1.25s B 434.0s total 435.3s, 2.127s/reading, 62.6 tok/s, first sentence 21.3s
+Stage 1, CPU in Docker on the Mac: median over the timed runs
+threads: llama.cpp 10, torch 10; peak RSS 15.53 GB, cgroup peak 16.059834368 GB
+
+lang size mode     sent words content reads  prompt_tok  seg_s    A_s      B_s    total_s  s/read  tok/s  first_s
+ca      1 A-only      5   137      68     0           0   0.15    0.58      0.0       0.7     nan    nan     0.2
+ca      1 noreuse     5   137      68   204       27148   0.23    1.40    451.0     452.6   2.211   60.3    27.6
+ca      1 reuse       5   137      68   204       27148   0.26    1.49    294.6     296.4   1.444   53.0    17.3
+-> bench/results/cpu_docker_mac_rerun_ca.csv, bench/results/cpu_docker_mac_rerun_ca_readings.csv, bench/results/cpu_docker_mac_rerun_ca_load.json, bench/results/cpu_docker_mac_rerun_ca_summary.txt
+exit 0

@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.DS_Store
+# Models and datasets never go in the repo (HF cache, stanza volume, paper release are mounted)
+*.gguf
+*.safetensors
+*.npy
+data/
+cache/
