@@ -1,0 +1,38 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.6.3
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+WARNING: The NVIDIA Driver was not detected.  GPU functionality will not be available.
+   Use the NVIDIA Container Toolkit to start this container with GPU support; see
+   https://docs.nvidia.com/datacenter/cloud-native/ .
+
+ggml_cuda_init: failed to initialize CUDA: CUDA driver is a stub library
+llama_kv_cache_iswa: using full-size SWA cache (ref: https://github.com/ggml-org/llama.cpp/pull/13194#issuecomment-2868343055)
+llama_kv_cache: the V embeddings have different sizes across layers and FA is not enabled - padding V cache to 2048
+llama_kv_cache: the V embeddings have different sizes across layers and FA is not enabled - padding V cache to 2048
+[bench] encoders nans, Gemma 68.6s, gpu layers 0, threads llama 16 torch 8, mem {'hwm': 11.403, 'rss': 11.369, 'anon': 8.117, 'file': 3.252, 'swap': 0.053}, vram None -> None MiB
+[bench] stanza en loaded in 12.8s, mem {'hwm': 11.43, 'rss': 11.103, 'anon': 8.265, 'file': 2.838, 'swap': 0.136}
+[bench] en size 1 reuse run 0: 36/79 content words, 108 readings, seg 0.64s A 0.00s B 255.0s total 255.6s, 2.361s/reading, 26.5 tok/s, first sentence 22.4s
+[bench] stanza ro loaded in 1.8s, mem {'hwm': 11.43, 'rss': 10.967, 'anon': 8.223, 'file': 2.744, 'swap': 0.198}
+[bench] ro size 1 reuse run 0: 64/107 content words, 192 readings, seg 0.07s A 0.00s B 492.1s total 492.1s, 2.563s/reading, 26.6 tok/s, first sentence 33.7s
+[bench] si size 1 reuse run 0: 62/72 content words, 186 readings, seg 0.00s A 0.00s B 579.4s total 579.4s, 3.115s/reading, 26.8 tok/s, first sentence 52.2s
+Stage 7, CPU only (Ryzen 7 3700X, 16 threads) in Docker on the PC, B only: median over the timed runs
+threads: llama.cpp 16, torch 8; peak RSS 11.43 GB, cgroup peak 10.427142144 GB
+
+lang size mode     sent words content reads  prompt_tok  seg_s    A_s      B_s    total_s  s/read  tok/s  first_s
+en      1 reuse       4    79      36   108       11442   0.64    0.00    255.0     255.6   2.361   26.5    22.4
+ro      1 reuse       6   107      64   192       22387   0.07    0.00    492.1     492.1   2.563   26.6    33.7
+si      1 reuse       6    72      62   186       26654   0.00    0.00    579.4     579.4   3.115   26.8    52.2
+-> bench/results/cpu_docker_pc.csv, bench/results/cpu_docker_pc_readings.csv, bench/results/cpu_docker_pc_load.json, bench/results/cpu_docker_pc_summary.txt
+exit 0

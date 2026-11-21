@@ -1,0 +1,28 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.6.3
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+[fit] n_gpu_layers 49 (49/49): load 35.4s, 0.105 s/reading, 523 tok/s, VRAM 808 -> 7868 -> 7914 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 787.5, 'CUDA0 model': 6637.7, 'CUDA0 KV': 720.0, 'CUDA0 compute': 573.5, 'CUDA_Host compute': 54.0}
+[fit] n_gpu_layers 48 (48/49): load 6.4s, 0.123 s/reading, 445 tok/s, VRAM 227 -> 7880 -> 7926 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 907.8, 'CUDA0 model': 6517.4, 'CUDA0 KV': 704.0, 'CPU KV': 16.0, 'CUDA0 compute': 542.0, 'CUDA_Host compute': 54.0}
+[fit] n_gpu_layers 46 (46/49): load 3.9s, 0.143 s/reading, 384 tok/s, VRAM 272 -> 7812 -> 7860 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 1148.4, 'CUDA0 model': 6276.8, 'CUDA0 KV': 672.0, 'CPU KV': 48.0, 'CUDA0 compute': 542.0, 'CUDA_Host compute': 54.0}
+[fit] n_gpu_layers 44 (44/49): load 4.8s, 0.224 s/reading, 245 tok/s, VRAM 281 -> 7600 -> 7652 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 1389.0, 'CUDA0 model': 6036.2, 'CUDA0 KV': 640.0, 'CPU KV': 80.0, 'CUDA0 compute': 542.0, 'CUDA_Host compute': 54.0}
+[fit] n_gpu_layers 42 (42/49): load 4.2s, 0.240 s/reading, 229 tok/s, VRAM 277 -> 7330 -> 7384 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 1639.1, 'CUDA0 model': 5786.1, 'CPU KV': 106.0, 'CUDA0 KV': 614.0, 'CUDA0 compute': 549.5, 'CUDA_Host compute': 54.0}
+[fit] n_gpu_layers 40 (40/49): load 3.2s, 0.258 s/reading, 213 tok/s, VRAM 278 -> 7054 -> 7112 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 1879.7, 'CUDA0 model': 5545.5, 'CPU KV': 138.0, 'CUDA0 KV': 582.0, 'CUDA0 compute': 549.5, 'CUDA_Host compute': 54.0}
+[fit] n_gpu_layers 38 (38/49): load 3.2s, 0.299 s/reading, 184 tok/s, VRAM 275 -> 6782 -> 6841 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 2120.3, 'CUDA0 model': 5304.9, 'CPU KV': 170.0, 'CUDA0 KV': 550.0, 'CUDA0 compute': 549.5, 'CUDA_Host compute': 54.0}
+[fit] n_gpu_layers 36 (36/49): load 3.0s, 0.349 s/reading, 157 tok/s, VRAM 275 -> 6507 -> 6571 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 2370.4, 'CUDA0 model': 5054.9, 'CPU KV': 196.0, 'CUDA0 KV': 524.0, 'CUDA0 compute': 549.5, 'CUDA_Host compute': 54.0}
+[fit] n_gpu_layers 32 (32/49): load 3.1s, 0.427 s/reading, 129 tok/s, VRAM 275 -> 5962 -> 6027 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 2851.6, 'CUDA0 model': 4573.7, 'CPU KV': 260.0, 'CUDA0 KV': 460.0, 'CUDA0 compute': 549.5, 'CUDA_Host compute': 54.0}
+[fit] n_gpu_layers 24 (24/49): load 3.3s, 0.585 s/reading, 94 tok/s, VRAM 273 -> 4866 -> 4947 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 3833.0, 'CUDA0 model': 3592.3, 'CPU KV': 376.0, 'CUDA0 KV': 344.0, 'CUDA0 compute': 549.5, 'CUDA_Host compute': 54.0}
+[fit] fastest: n_gpu_layers 49, 0.105 s/reading; largest that loads: 49
+-> bench/results/fit_gpu_layers.csv
+exit 0

@@ -1,0 +1,52 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.6.3
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 8191 MiB):
+  Device 0: NVIDIA GeForce RTX 2070 SUPER, compute capability 7.5, VMM: yes, VRAM: 8191 MiB
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  43%|████▎     | 86/199 [00:00<00:00, 849.84it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1112.99it/s]
+[transformers] [1mXLMRobertaModel LOAD REPORT[0m from: xlm-roberta-base
+Key                       | Status     |  | 
+--------------------------+------------+--+-
+lm_head.dense.weight      | UNEXPECTED |  | 
+lm_head.layer_norm.bias   | UNEXPECTED |  | 
+lm_head.dense.bias        | UNEXPECTED |  | 
+lm_head.layer_norm.weight | UNEXPECTED |  | 
+lm_head.bias              | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  32%|███▏      | 64/199 [00:00<00:00, 637.51it/s]Loading weights:  73%|███████▎  | 146/199 [00:00<00:00, 743.09it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 942.03it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  43%|████▎     | 86/199 [00:00<00:00, 852.11it/s]Loading weights:  92%|█████████▏| 183/199 [00:00<00:00, 921.12it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 987.21it/s]
+llama_kv_cache_iswa: using full-size SWA cache (ref: https://github.com/ggml-org/llama.cpp/pull/13194#issuecomment-2868343055)
+[bench] encoders 14.5s, Gemma 7.5s, gpu layers 49, threads llama 16 torch 8, mem {'hwm': 8.766, 'rss': 2.801, 'anon': 1.679, 'file': 1.003, 'swap': 0.0}, vram (281, 8192) -> (7850, 8192) MiB
+[bench] stanza ca loaded in 2.2s, mem {'hwm': 8.766, 'rss': 3.909, 'anon': 1.793, 'file': 1.995, 'swap': 0.0}
+[bench] ca size 1 A-only run 0 (warm-up): 68/137 content words, 0 readings, seg 0.12s A 1.17s B 0.0s total 1.3s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ca size 1 A-only run 1: 68/137 content words, 0 readings, seg 0.09s A 0.94s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] ca size 1 A-only run 2: 68/137 content words, 0 readings, seg 0.13s A 0.88s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ca size 1 A-only run 3: 68/137 content words, 0 readings, seg 0.11s A 0.91s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] ca size 1 reuse run 0 (warm-up): 68/137 content words, 204 readings, seg 0.11s A 0.92s B 24.7s total 25.7s, 0.121s/reading, 630.6 tok/s, first sentence 2.0s
+[bench] ca size 1 reuse run 1: 68/137 content words, 204 readings, seg 0.09s A 0.88s B 18.7s total 19.7s, 0.092s/reading, 832.5 tok/s, first sentence 1.7s
+[bench] ca size 1 reuse run 2: 68/137 content words, 204 readings, seg 0.09s A 0.88s B 21.5s total 22.5s, 0.105s/reading, 722.7 tok/s, first sentence 1.2s
+[bench] ca size 1 reuse run 3: 68/137 content words, 204 readings, seg 0.09s A 0.83s B 23.3s total 24.2s, 0.114s/reading, 668.6 tok/s, first sentence 1.7s
+[bench] ca size 1 noreuse run 0 (warm-up): 68/137 content words, 204 readings, seg 0.08s A 0.86s B 28.0s total 28.9s, 0.137s/reading, 970.8 tok/s, first sentence 2.2s
+[bench] ca size 1 noreuse run 1: 68/137 content words, 204 readings, seg 0.14s A 0.85s B 25.3s total 26.3s, 0.124s/reading, 1071.9 tok/s, first sentence 1.6s
+[bench] ca size 1 noreuse run 2: 68/137 content words, 204 readings, seg 0.08s A 0.89s B 35.6s total 36.6s, 0.174s/reading, 762.7 tok/s, first sentence 1.5s
+[bench] ca size 1 noreuse run 3: 68/137 content words, 204 readings, seg 0.09s A 0.85s B 27.4s total 28.4s, 0.135s/reading, 989.2 tok/s, first sentence 2.2s
+[bench] ca size 2 A-only run 0 (warm-up): 124/251 content words, 0 readings, seg 0.20s A 1.91s B 0.0s total 2.1s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ca size 2 A-only run 1: 124/251 content words, 0 readings, seg 0.18s A 1.72s B 0.0s total 1.9s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ca size 2 A-only run 2: 124/251 content words, 0 readings, seg 0.19s A 1.60s B 0.0s total 1.8s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ca size 2 A-only run 3: 124/251 content words, 0 readings, seg 0.19s A 1.69s B 0.0s total 1.9s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ca size 2 reuse run 0 (warm-up): 124/251 content words, 372 readings, seg 0.22s A 1.63s B 96.1s total 98.0s, 0.258s/reading, 277.9 tok/s, first sentence 3.7s
+exit 137

@@ -1,0 +1,116 @@
+{
+ "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+ "machine": "x86_64",
+ "cpus": 16,
+ "python": "3.11.18",
+ "torch": "2.13.0+cpu",
+ "llama_cpp_python": "0.3.37",
+ "system_info": "CUDA : ARCHS = 750 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16,f8_e4m3-f8_e4m3 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+ "vram_start_mib": null,
+ "load_gemma_s": 68.58405021099952,
+ "mem_after_gemma_gb": {
+  "hwm": 11.403,
+  "rss": 11.368,
+  "anon": 8.116,
+  "file": 3.252,
+  "swap": 0.054
+ },
+ "vram_after_gemma_mib": null,
+ "threads_llama": 16,
+ "threads_torch": 8,
+ "mem_start_gb": [
+  0.38516,
+  0.364466176,
+  0.364453888
+ ],
+ "mem_stanza_gb": {
+  "en": {
+   "hwm": 11.43,
+   "rss": 11.103,
+   "anon": 8.265,
+   "file": 2.838,
+   "swap": 0.136
+  },
+  "ro": {
+   "hwm": 11.43,
+   "rss": 10.967,
+   "anon": 8.223,
+   "file": 2.744,
+   "swap": 0.198
+  }
+ },
+ "warmup_s": 13.076792798000497,
+ "vram_after_warmup_mib": null,
+ "args": {
+  "texts": "bench/texts",
+  "out": "bench/results",
+  "prefix": "cpu_docker_pc",
+  "langs": [
+   "en",
+   "ro",
+   "si"
+  ],
+  "sizes": [
+   1
+  ],
+  "modes": [
+   "reuse"
+  ],
+  "warmup": 0,
+  "reps": 1,
+  "noreuse_sizes": null,
+  "b_warmup": 0,
+  "b_reps": 1,
+  "threads": null,
+  "gpu_layers": 0,
+  "flash_attn": false,
+  "n_ctx": 4096,
+  "n_batch": 512,
+  "no_mmap": false,
+  "skip_a": true,
+  "title": "Stage 7, CPU only (Ryzen 7 3700X, 16 threads) in Docker on the PC, B only"
+ },
+ "mem_end_of_lang_gb": {
+  "en": {
+   "hwm": 11.43,
+   "rss": 10.934,
+   "anon": 8.093,
+   "file": 2.841,
+   "swap": 0.198
+  },
+  "ro": {
+   "hwm": 11.43,
+   "rss": 10.836,
+   "anon": 8.1,
+   "file": 2.736,
+   "swap": 0.201
+  },
+  "si": {
+   "hwm": 11.43,
+   "rss": 10.852,
+   "anon": 8.116,
+   "file": 2.736,
+   "swap": 0.2
+  }
+ },
+ "vram_end_of_lang_mib": {
+  "en": null,
+  "ro": null,
+  "si": null
+ },
+ "peak_rss_gb": 11.43044,
+ "cgroup_peak_gb": 10.427142144,
+ "cgroup_current_gb": 10.30025216,
+ "mem_end_gb": {
+  "hwm": 11.43,
+  "rss": 10.852,
+  "anon": 8.116,
+  "file": 2.736,
+  "swap": 0.2
+ },
+ "vram_end_mib": null,
+ "load_stanza_s": {
+  "en": 12.794290348000686,
+  "ro": 1.7930062969999199
+ }
+}

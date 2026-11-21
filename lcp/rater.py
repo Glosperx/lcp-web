@@ -56,7 +56,12 @@ def chat_kwargs(tok):
 
 
 class LlamaRater(signal_b.Rater):
-    def __init__(self, n_threads=None, n_ctx=4096, n_batch=512, n_gpu_layers=0, path=None):
+    def __init__(self, n_threads=None, n_ctx=4096, n_batch=512, n_gpu_layers=0, path=None,
+                 flash_attn=False, use_mmap=True, verbose=False, **llama_kw):
+        """n_gpu_layers: layers offloaded to the GPU (0 = none; more than the model has = all,
+        output layer included). flash_attn and use_mmap=False are passed to llama.cpp only when
+        set, so the defaults are those of llama-cpp-python, as in stage 1; so is every extra
+        keyword of llama_cpp.Llama (op_offload, type_k, type_v, swa_full...)."""
         # signal_b.Rater.__init__ loads MLX or transformers; only its attributes are rebuilt here.
         import llama_cpp
         self.llama_cpp = llama_cpp
@@ -65,11 +70,15 @@ class LlamaRater(signal_b.Rater):
         self.ids = digit_ids(self.tok)
         self.chat_kw = chat_kwargs(self.tok)
         n_threads = n_threads or os.cpu_count()
+        if flash_attn:
+            llama_kw["flash_attn"] = True
+        if not use_mmap:
+            llama_kw["use_mmap"] = False
         t0 = time.perf_counter()
         self.llm = llama_cpp.Llama(model_path=path or gguf_path(), n_ctx=n_ctx, n_batch=n_batch,
                                    n_ubatch=n_batch, n_threads=n_threads,
                                    n_threads_batch=n_threads, n_gpu_layers=n_gpu_layers,
-                                   logits_all=False, verbose=False)
+                                   logits_all=False, verbose=verbose, **llama_kw)
         self.load_seconds = time.perf_counter() - t0
         self.n_vocab = self.llm.n_vocab()
         self.reuse = False

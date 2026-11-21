@@ -1,0 +1,36 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.6.3
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+llama_kv_cache_iswa: using full-size SWA cache (ref: https://github.com/ggml-org/llama.cpp/pull/13194#issuecomment-2868343055)
+[parity] ca: 78 readings
+[parity] de: 45 readings
+[parity] en: 69 readings
+[parity] es: 93 readings
+[parity] fil: 54 readings
+[parity] fr: 72 readings
+[parity] it: 96 readings
+[parity] ja: 84 readings
+[parity] pt: 57 readings
+[parity] ro: 45 readings
+[parity] si: 99 readings
+Poarta de paritate: llama.cpp aici (gpu layers 49, flash attn True, n_ctx 2048) fata de CPU in Docker pe Mac
+subset: primele 2 propozitii din fiecare text de 1 paragraf, 792 citiri, 11 limbi; cheie lang, size, sent, word, prompt, mod reuse, run 0; tokenii de prompt identici pe toate citirile
+r scor (toate citirile): 0.99900 (prag 0.99)
+masa pe cifre: minim 0.99971 aici, 0.99969 pe Mac (prag 0.5); NaN: 0
+max |dp| pe cele 5 probabilitati: 0.4305 (median 0.00398); max |d scor|: 0.1081
+r pe limba: ca 0.9993, de 0.9979, en 0.9994, es 0.9990, fil 0.9998, fr 0.9993, it 0.9977, ja 0.9965, pt 0.9991, ro 0.9981, si 0.9992
+r pe prompt: expert 0.9985, marked 0.9992, short 0.9991
+POARTA TRECE
+exit 0

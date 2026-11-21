@@ -1,0 +1,19 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.6.3
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+[fit] n_gpu_layers 49 (49/49): load 24.5s, 0.117 s/reading, 469 tok/s, VRAM 431 -> 7821 -> 7866 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 787.5, 'CUDA0 model': 6637.7, 'CUDA0 KV': 336.0, 'CUDA0 compute': 272.0, 'CUDA_Host compute': 16.0}
+[fit] fastest: n_gpu_layers 49, 0.117 s/reading; largest that loads: 49
+-> bench/results/fit_gpu_layers_fa_ctx1024_b256.csv
+exit 0

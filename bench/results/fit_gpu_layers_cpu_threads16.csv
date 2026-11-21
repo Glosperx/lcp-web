@@ -1,0 +1,2 @@
+n_gpu_layers,flash_attn,n_ctx,n_batch,ok,exit,wall_s,offloaded,load_s,warmup_s,readings,s_per_reading,tok_s,min_mass,refused,threads,vram_before_mib,vram_loaded_mib,vram_after_mib,buf CPU_Mapped model,buf CPU_REPACK model,buf CPU KV,buf CPU compute
+0,False,1024,256,True,0,142.0,,77.707738952,12.696452432000115,15,2.104088891733348,26.107895702105658,0.9999772244395295,0,16,,,,787.5,5847.2,360.0,288.5

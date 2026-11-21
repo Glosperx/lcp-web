@@ -1,0 +1,3 @@
+n_gpu_layers,flash_attn,n_ctx,n_batch,ok,exit,wall_s,offloaded,load_s,warmup_s,readings,s_per_reading,tok_s,min_mass,refused,threads,vram_before_mib,vram_loaded_mib,vram_after_mib,buf CPU_Mapped model,buf CUDA0 model,buf CUDA0 KV,buf CUDA0 compute,buf CUDA_Host compute
+49,True,1024,256,True,0,24.0,49/49,13.015914360999886,0.7324789310000597,15,0.09336075713332927,588.39854152942,0.999980600849792,0,16,562,7828,7858,787.5,6637.7,336.0,272.0,16.0
+49,True,1024,256,True,0,13.5,49/49,3.4227689169997575,0.5385461210003086,15,0.09296694579998074,590.8910189598238,0.999980600849792,0,16,543,7828,7858,787.5,6637.7,336.0,272.0,16.0

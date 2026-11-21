@@ -1,0 +1,49 @@
+Etapa 7: GPU RTX 2070 SUPER (49/49 straturi, flash attn, n_ctx 1024, n_batch 256), Docker CUDA pe PC
+masina: x86_64, 16 nuclee vizibile in container, thread-uri llama.cpp 16, torch 8; llama-cpp-python 0.3.37, torch 2.13.0+cpu
+model B: Gemma 4 12B it QAT q4_0 (GGUF Google), 3 prompturi pe cuvant de continut
+A: xlmr + labse + e5, un forward pe propozitie; regresorii si fuziunea (milisecunde) nu sunt inclusi
+
+Timpi pe text (mediana rularilor masurate; B: 1 incalzire + 3 rulari masurate pe text in fiecare mod).
+'cu refol.' = KV-ul prefixului comun pastrat intre citiri (modul pentru site, probabilitati
+bit-identice cu 'fara refol.' in spike); 'fara refol.' masurat doar la 1 paragraf.
+
+limba       marime  cuvinte  continut  citiri   segm      A  total cu refol.  s/citire  prima prop.  fara refol.  s/citire
+--------------------------------------------------------------------------------------------------------------------------
+catalana         1      137        68     204  0.08s  0.81s            0m17s      0.08           1s        0m26s      0.12
+catalana         2      251       124     372  0.18s  1.58s            0m30s      0.08           1s            -       nan
+germana          1      121        63     189  0.46s  1.15s            0m15s      0.07           2s        0m20s      0.10
+germana          2      177        91     273  0.63s  1.67s            0m21s      0.07           2s            -       nan
+engleza          1       79        36     108  0.46s  0.61s            0m08s      0.07           1s        0m12s      0.10
+engleza          2      201        94     282  0.67s  1.60s            0m23s      0.07           1s            -       nan
+spaniola         1       68        31      93  0.45s  0.37s            0m08s      0.08           5s        0m11s      0.12
+spaniola         2      137        66     198  0.48s  0.74s            0m16s      0.07           5s            -       nan
+filipineza       1       56        29      87  0.00s  0.47s            0m07s      0.07           1s        0m10s      0.11
+filipineza       2      168        93     279  0.00s  1.22s            0m24s      0.08           1s            -       nan
+franceza         1      109        57     171  0.50s  0.72s            0m14s      0.08           4s        0m21s      0.11
+franceza         2      157        80     240  0.65s  0.92s            0m21s      0.08           5s            -       nan
+italiana         1       65        32      96  0.52s  0.37s            0m08s      0.08           6s        0m13s      0.13
+italiana         2      106        53     159  0.43s  0.59s            0m14s      0.08           6s            -       nan
+japoneza         1       57        30      90  0.18s  0.46s            0m07s      0.07           2s        0m09s      0.10
+japoneza         2      172        95     285  0.42s  1.15s            0m21s      0.07           2s            -       nan
+portugheza       1      182        87     261  0.71s  1.32s            0m22s      0.08           2s        0m31s      0.11
+portugheza       2      351       174     522  1.23s  2.32s            0m44s      0.08           3s            -       nan
+romana           1      107        64     192  0.07s  0.92s            0m15s      0.07           1s        0m22s      0.11
+romana           2      226       126     378  0.19s  1.84s            0m29s      0.07           1s            -       nan
+sinhaleza        1       72        62     186  0.00s  0.92s            0m17s      0.09           2s        0m25s      0.13
+sinhaleza        2      112        93     279  0.00s  1.16s            0m28s      0.10           2s            -       nan
+
+1 paragraf(e), 11 limbi: total cu refol. median 0m14s, min 0m07s (fil), max 0m22s (pt); cuvinte 56-182, citiri 87-261
+2 paragraf(e), 11 limbi: total cu refol. median 0m23s, min 0m14s (it), max 0m44s (pt); cuvinte 106-351, citiri 159-522
+pe toate citirile: cu refol. 0.08 s/citire (4944 citiri), fara refol. 0.11 s/citire (1677 citiri); prefill fara refol. 1072.5 tokeni/s, 121 tokeni pe prompt in medie; cu refol. se evalueaza 58% din tokeni
+castigul refolosirii la 1 paragraf: 31% median (intre 24% si 35%)
+
+Memorie (GB; anon = memorie proprie, file = pagini mapate din GGUF si safetensors,
+pe care kernelul le poate elibera si reciti; VM-ul Docker are 12 GB si 8 GB swap)
+  dupa encodere: hwm 1.51, rss 1.49, anon 1.29, file 0.19, swap 0.00
+  dupa Gemma:    hwm 8.77, rss 2.78, anon 1.68, file 1.00, swap 0.00
+  anon dupa incarcarea stanza, pe limba: ca 1.79, de 1.91, en 1.86, es 1.89, fr 1.89, it 1.89, ja 1.98, pt 1.92, ro 1.96
+  varf RSS proces: 8.77; varf cgroup (include page cache): 4.785573888
+  incarcare: encodere 14.8 s, Gemma 43.0 s, stanza pe limba ca 3.9 s, de 3.7 s, en 2.5 s, es 3.1 s, fr 3.2 s, it 2.9 s, ja 3.7 s, pt 2.6 s, ro 2.3 s
+  llama.cpp: gpu layers 49, flash attn True, n_ctx 1024, n_batch 256, mmap True
+  VRAM pe tot GPU-ul (include ecranul Windows): inainte 438 MiB, dupa Gemma 7785 MiB, dupa incalzire 7801 MiB, la final 7837 MiB
+  VRAM la finalul fiecarei limbi: maxim 7829 MiB

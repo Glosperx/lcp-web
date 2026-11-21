@@ -43,3 +43,26 @@ python scripts/bench_report.py --prefix cpu_docker_mac
 `docker/run_cpu.sh` mounts the repo at `/app`, the host's Hugging Face cache read-only, the stanza
 volume, and the paper's `release/` (with the two data paths its symlinks point to) read-only. The
 paper repository is expected at `~/Documents/GitHub/ia-sahistii` (override with `PAPER=`).
+
+### Stage 7 on the PC (CUDA, RTX 2070 SUPER 8 GB, Docker Desktop with WSL2)
+
+Results and conclusion: `bench/results/concluzie_etapa7_pc.txt`. Run from Git Bash; the Hugging
+Face cache lives in the Docker volume `lcp-hf` (not on `/mnt/c`), the VM has 12 GB (`.wslconfig`).
+
+```bash
+docker build -f docker/Dockerfile.cuda -t lcp-web:cuda .
+HF_ONLINE=1 docker/run_cuda.sh python scripts/fetch_models.py      # GGUF (sha256), tokenizer, encoders
+HF_ONLINE=1 docker/run_cuda.sh python -m lcp.segment --prepare     # stanza into volume lcp-stanza
+docker/run_cuda.sh python scripts/fit_gpu_layers.py --n-ctx 1024 --n-batch 256 --flash-attn
+docker/run_cuda.sh python scripts/parity_mac.py --gpu-layers 49 --flash-attn --n-ctx 1024 --n-batch 256
+docker/run_cuda.sh python scripts/bench_cpu.py --modes reuse noreuse --noreuse-sizes 1 \
+    --warmup 1 --reps 3 --b-warmup 1 --b-reps 3 --gpu-layers 49 --flash-attn --n-ctx 1024 \
+    --n-batch 256 --prefix gpu_docker_pc
+# x86 CPU reference: no --gpus at all (GPU=0), B only
+GPU=0 docker/run_cuda.sh python scripts/bench_cpu.py --skip-a --modes reuse --langs en ro si \
+    --sizes 1 --warmup 0 --reps 1 --b-warmup 0 --b-reps 1 --prefix cpu_docker_pc
+```
+
+With n_ctx 2048 and n_batch 512 the process needs ~8.1 GB on the card; on Windows the driver then
+pages part of it into system memory ("shared GPU memory") instead of failing, and readings get
+2-3 times slower. n_ctx 1024 / n_batch 256 keeps it at ~7.4 GB.

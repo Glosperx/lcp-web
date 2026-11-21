@@ -1,0 +1,21 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.6.3
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+[fit] n_gpu_layers 49 (49/49): load 3.4s, 0.062 s/reading, 884 tok/s, VRAM 280 -> 7819 -> 7885 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 787.5, 'CUDA0 model': 6637.7, 'CUDA0 KV': 672.0, 'CUDA0 compute': 546.0, 'CUDA_Host compute': 34.0}
+[fit] n_gpu_layers 48 (48/49): load 3.7s, 0.088 s/reading, 628 tok/s, VRAM 281 -> 7904 -> 7932 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 907.8, 'CUDA0 model': 6517.4, 'CUDA0 KV': 656.0, 'CPU KV': 16.0, 'CUDA0 compute': 542.0, 'CUDA_Host compute': 34.0}
+[fit] n_gpu_layers 46 (46/49): load 3.8s, 0.130 s/reading, 423 tok/s, VRAM 277 -> 7823 -> 7853 MiB, min mass 1.0000, buffers {'CPU_Mapped model': 1148.4, 'CUDA0 model': 6276.8, 'CUDA0 KV': 624.0, 'CPU KV': 48.0, 'CUDA0 compute': 542.0, 'CUDA_Host compute': 34.0}
+[fit] fastest: n_gpu_layers 49, 0.062 s/reading; largest that loads: 49
+-> bench/results/fit_gpu_layers_fa.csv
+exit 0

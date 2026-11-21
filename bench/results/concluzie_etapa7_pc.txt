@@ -1,0 +1,159 @@
+Etapa 7, partea de PC: GPU RTX 2070 SUPER si reperul CPU x86
+21 noiembrie 2026
+
+Tabelul complet pe limba si marime: gpu_docker_pc_rezumat.txt. Datele brute: gpu_docker_pc.csv (o
+linie pe rulare), gpu_docker_pc_readings.csv (o linie pe citire B), gpu_docker_pc_load.json
+(incarcare, memorie, VRAM), gpu_docker_pc.log. Reperul CPU: cpu_docker_pc_rezumat.txt si
+cpu_docker_pc.*. Straturile pe GPU: fit_gpu_layers*.csv si .log. Paritatea: parity_gpu_pc.txt
+(configuratia finala) si parity_gpu_pc_ctx2048.* (prima incercare). Rularea oprita din cauza
+memoriei: gpu_docker_pc_spill_partial.*.
+
+
+1. Ce s-a masurat
+
+Masina: Windows 11, Ryzen 7 3700X (8 nuclee, 16 thread-uri, AVX2, fara AVX-512), 16 GB RAM,
+RTX 2070 SUPER 8 GB (Turing, sm_75, driver 621.24), Docker Desktop cu WSL2, VM cu 16 CPU,
+12 GB memorie si 8 GB swap. Ryzen-ul nu are grafica integrata, deci ecranul Windows ruleaza pe
+aceeasi placa si tine 0.3-0.8 GB din VRAM.
+Imaginea: docker/Dockerfile.cuda (nvidia/cuda 12.6.3 devel, Python 3.11, aceleasi pinuri ca
+imaginea CPU, torch CPU, llama-cpp-python 0.3.37 compilat cu CUDA pentru sm_75 si AVX2). A
+(encoderele) ruleaza pe CPU, B pe GPU. Cache-ul Hugging Face sta intr-un volum Docker (lcp-hf),
+nu pe /mnt/c; pe PC nu exista o distributie Ubuntu in WSL, repo-ul e pe C:.
+Textele si protocolul sunt cele de pe Mac (articolul "Soarele", 11 limbi, 1 si 2 paragrafe;
+segmentarea si A cu 1 incalzire + 3 repetari; B cu si fara refolosirea KV, fara refolosire doar
+la 1 paragraf). In plus fata de Mac, pe GPU si B are 1 incalzire + 3 repetari, pentru ca o
+trecere ia secunde.
+Configuratia lui B pe GPU: toate cele 48 de straturi plus stratul de iesire pe GPU
+(n_gpu_layers 49), flash attention, n_ctx 1024, n_batch 256, 16 thread-uri. Embedding-urile de
+intrare (788 MiB) raman in RAM, asa lucreaza llama.cpp.
+
+
+2. Verificarile (toate au trecut)
+
+- GGUF-ul descarcat are sha256-ul asteptat; tokenizer-ul da aceleasi id-uri ale cifrelor
+  (236770, 236778, 236800, 236812, 236810).
+- Containerul fara --gpus nu vede niciun GPU (llama.cpp: "CUDA driver is a stub library"), deci
+  reperul CPU nu muta nimic pe placa.
+- Poarta de paritate, fixata dinainte (scripts/parity_mac.py): primele 2 propozitii din fiecare
+  text de 1 paragraf, 792 de citiri in 11 limbi, cu exact aceiasi tokeni de prompt ca pe Mac.
+  r pe scor 0.99901 (prag 0.99); masa pe cifre minim 0.9997 (prag 0.5), niciun NaN; max |dp|
+  0.43 (median 0.004), max |d scor| 0.108; r pe limba intre 0.9965 (ja) si 0.9998 (fil).
+  Diferentele mari de probabilitate apar pe cuvintele unde doua note vecine au probabilitati
+  aproape egale si o mica diferenta numerica muta masa intre ele; scorul se misca mult mai putin.
+- Pe tot setul de 1 paragraf (1677 de citiri), GPU fata de Mac: r 0.99874 cu refolosire,
+  0.99888 fara.
+- Diferenta fata de Mac: pe GPU, refolosirea KV nu mai e bit-identica cu citirea completa (pe
+  CPU era). Intre cele doua moduri pe GPU: r 0.99911, diferenta de scor mediana 0.0005, maxima
+  0.144; doar 6% din citiri sunt identice. E zgomot numeric de acelasi ordin ca diferenta
+  GPU-Mac (nucleele CUDA dau rezultate putin diferite dupa cati tokeni evalueaza deodata).
+  Pentru etapa 3: statisticile lui B trebuie calculate cu acelasi backend si acelasi mod ca pe
+  site.
+
+
+3. Cate straturi incap pe 8 GB
+
+Pe GPU, modelul ocupa 6638 MiB. KV-ul si bufferul de calcul depind de n_ctx si n_batch: la
+n_ctx 2048 si n_batch 512 (cu flash attention), KV 672 MiB si calcul 546 MiB; la n_ctx 1024 si
+n_batch 256, KV 336 MiB si calcul 272 MiB.
+Toate cele 49 de straturi incap, si asa e cel mai rapid; fiecare strat lasat pe CPU incetineste
+(scripts/fit_gpu_layers.py, 24 de citiri pe o propozitie engleza):
+- fara flash attention, n_ctx 2048: 49 straturi 0.105 s/citire, 48 0.123, 46 0.143, 44 0.224,
+  42 0.240, 40 0.258, 38 0.299, 36 0.349, 32 0.427, 24 0.585;
+- cu flash attention: 49 straturi 0.062, 48 0.088, 46 0.130. Flash attention e de 1.7 ori mai
+  rapid si micsoreaza bufferele.
+Capcana Windows: cand VRAM-ul nu ajunge, driverul nu da eroare, ci muta o parte din memoria
+placii in RAM ("shared GPU memory", optiunea CUDA Sysmem Fallback Policy). Prima rulare a
+bench-ului (n_ctx 2048, n_batch 512) a avut 566 MiB mutati in RAM, desktopul tinand 520 MiB,
+iar citirile au mers de 2-3 ori mai incet (0.26 s/citire la catalana pe 2 paragrafe, placa la
+116 W in loc de 200 W). Rularea a fost oprita si refacuta. Cu n_ctx 1024 si n_batch 256 s-au
+eliberat ~610 MiB; in toata rularea finala procesul a avut 7381-7383 MiB VRAM si 100 MiB
+"shared" (memoria fixata de CUDA pe gazda, nu straturi). In acelasi moment, pe aceleasi 24 de
+citiri: 1024/256 0.065 s/citire, 2048/512 0.150-0.158.
+n_ctx 1024 acopera cel mai lung prompt din bench (244 de tokeni) si din spike (675).
+Pe scurt: pe 8 GB intra tot, dar fara margine (~7.4 GB folositi de proces).
+
+
+4. Timpii pe GPU, cu refolosire (modul pentru site)
+
+- 1 paragraf (56-182 de cuvinte, 87-261 de citiri): median 14 s; cel mai scurt filipineza 7 s,
+  cel mai lung portugheza 22 s. Pe Mac, doar CPU: median 3m29s.
+- 2 paragrafe (106-351 de cuvinte, 159-522 de citiri): median 23 s; cel mai scurt italiana
+  14 s, cel mai lung portugheza 44 s. Pe Mac: median 5m58s.
+- B: 0.08 s pe citire cu refolosire (p95 0.135 s), 0.11 s fara; prefill fara refolosire
+  1072 tokeni/s (pe Mac 58). Refolosirea economiseste 31% median (intre 24% si 35%).
+- Fata de CPU-ul Mac-ului: de 16 ori mai rapid la 1 paragraf (median pe limbi, intre 14 si 21),
+  de 15 ori la 2 paragrafe; pe citire, de 17-18 ori. Fata de MLX pe Metal (paperul, 0.36 s pe
+  citire): de ~4.5 ori.
+- Unde se duce timpul: B 92% din total (median, minim 88%); segmentarea sub 1.3 s, A (pe CPU)
+  sub 2.4 s chiar pe cel mai lung text.
+- Prima propozitie colorata apare dupa 1-6 s (dupa lungimea primei propozitii).
+- Stabilitatea: cele 3 repetari difera intre ele cu 0.4% median (maxim 1.3%); incalzirea e cu
+  1% mai lenta decat repetarile. Incetinirea de dupa pornire de pe Mac nu apare pe GPU. Placa a
+  stat la 50-53 C, 2040 MHz, ~200 W.
+
+
+5. Reperul CPU x86 (Ryzen 7 3700X, container fara GPU, doar B)
+
+Aceleasi setari de llama.cpp ca pe Mac (n_ctx 4096, n_batch 512, fara flash attention, toate
+cele 16 thread-uri), fara encodere, doar cu refolosire, o trecere pe text:
+- engleza, 1 paragraf: 4m16s (2.36 s pe citire); romana: 8m12s (2.56 s); sinhaleza: 9m39s
+  (3.11 s). Viteza e aceeasi pe toate trei: 26.7 tokeni evaluati pe secunda.
+- Mac-ul, pe exact aceleasi prompturi: 52.8 tokeni/s (romana 55.8, sinhaleza 59.8; engleza
+  38.5, pentru ca pe Mac a prins intervalul mai lent de dupa pornire). Deci 3700X e de ~2 ori
+  mai lent decat M5 (pe timp: en 1.45x, ro 2.1x, si 2.2x).
+- 16 thread-uri merg mai bine decat 8: 2.10 fata de 2.91 s pe citire (test de 24 de citiri).
+- GPU-ul aceluiasi PC face aceleasi texte de 34-36 de ori mai repede.
+- Memoria: Gemma reimpachetat pentru AVX2 (5.8 GB) plus KV-ul la n_ctx 4096 (~1.4 GB) dau
+  8.1-8.3 GB memorie proprie; varf RSS 11.4 GB (cu paginile GGUF mapate), varf cgroup 10.4 GB,
+  swap 0.05-0.2 GB fara efect pe viteza (tokenii/s sunt aceiasi ca in testul cu n_ctx 1024).
+  Incarcarea Gemma: 69 s.
+
+
+6. Memoria pe GPU
+
+- RAM: varf 8.8 GB la incarcarea Gemma (GGUF-ul trece prin RAM spre placa), apoi RSS
+  2.8-3.9 GB (memorie proprie 1.7-2.0 GB, cu encoderele si o limba stanza). Swap 0.
+- VRAM: ~7.4 GB pentru proces; cu ecranul, 7.8 GB din 8 GB pe toata placa.
+- Incarcarea: encodere 15 s, Gemma 3-8 s cu GGUF-ul in cache (43 s la rece), stanza 2-4 s pe
+  limba.
+
+
+7. Ce inseamna pentru server
+
+Cu GPU, un paragraf ia ~15 s si doua ~25 s, iar prima propozitie apare dupa cateva secunde.
+Site-ul poate fi interactiv, cu rezultatul venind propozitie cu propozitie, in loc de modul
+asincron de minute pe care il impune CPU-ul.
+- Ce GPU: 8 GB ajung la limita (~7.4 GB folositi, fara margine; pe un server fara ecran ar fi
+  ~0.3-0.8 GB in plus). Recomandat 16-24 GB (de exemplu T4 16 GB, L4 sau A10 24 GB): loc pentru
+  n_ctx 2048 (propozitii lungi), eventual si pentru encodere pe GPU, si fara riscul de mutare
+  in RAM. Viteza pe alte placi e estimare, nemasurata: un T4 (tot Turing, dar cu ceas si memorie
+  mai lente) probabil de 1.5-2 ori mai lent decat 2070 SUPER, deci tot sub un minut pentru doua
+  paragrafe; L4 sau A10 probabil la fel sau mai rapid. Cifra reala se ia in cateva minute pe
+  serverul candidat cu scripts/bench_cpu.py pe o limba.
+- RAM pe serverul cu GPU: 16 GB ajung (varf 8.8 GB la incarcare, ~3-4 GB in regim; cu toate
+  cele 9 limbi stanza tinute in memorie, probabil inca 1-3 GB, nemasurat).
+- Capacitate: cu un singur lock pe model, textele se proceseaza pe rand: ~25 s pentru doua
+  paragrafe inseamna ~140 de texte pe ora pe un GPU.
+- Doar CPU: un desktop x86 cu 8 nuclee (3700X) face 27 tokeni/s, deci un paragraf ar lua
+  ~7 minute (median estimat, 3m29s x 2) si doua ~12 minute, portugheza pe doua paragrafe ~22 de
+  minute. Un server cloud cu 8 vCPU (4 nuclee fizice) e probabil mai lent decat 3700X. Un
+  server CPU ar avea nevoie de 16 sau mai multe nuclee fizice recente (AVX-512 VNNI sau AMX) ca
+  sa ajunga la M5, si tot ar fi de ~15 ori mai lent decat placa de aici. CPU-ul ramane doar
+  pentru mod asincron.
+- Concluzie: server cu GPU. Configuratia de pornire pentru llama.cpp: toate straturile pe GPU,
+  flash attention, n_ctx 1024 (2048 pe o placa de 16 GB sau mai mare), n_batch 256.
+
+
+8. Limitari
+
+- Reperul CPU are doar 3 limbi, o trecere pe text si fara A (A adauga ~1-2 s si ~1.5 GB RAM).
+- GPU-ul e impartit cu ecranul Windows; pe un server Linux fara ecran ar fi mai mult VRAM liber
+  si probabil putin mai multa viteza (nemasurat). Docker pe WSL2 e un strat in plus fata de
+  Linux nativ.
+- Paritatea e fata de llama.cpp pe CPU-ul Mac-ului, nu fata de paper (MLX); acordul cu paperul
+  ramane cel din etapa 1 (r 0.98 pe 330 de citiri).
+- Pe GPU refolosirea KV nu e bit-identica (r 0.9991 intre moduri).
+- n_ctx 1024 acopera textele masurate (maxim 244 de tokeni) si spike-ul (675). Pe site, cu
+  limita de 2000 de caractere, o singura propozitie foarte lunga, mai ales in sinhaleza (mai
+  multi tokeni pe caracter), ar putea trece de 1024 de tokeni; de verificat la etapa 4, iar
+  atunci fie n_ctx mai mare (mai mult VRAM), fie propozitia taiata.

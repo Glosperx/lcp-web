@@ -1,0 +1,306 @@
+{
+ "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+ "machine": "x86_64",
+ "cpus": 16,
+ "python": "3.11.18",
+ "torch": "2.13.0+cpu",
+ "llama_cpp_python": "0.3.37",
+ "system_info": "CUDA : ARCHS = 750 | USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16,f8_e4m3-f8_e4m3 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | ",
+ "vram_start_mib": [
+  438,
+  8192
+ ],
+ "load_encoders_s": 14.82105454700013,
+ "load_encoders_each_s": {
+  "xlmr": 8.080218878999403,
+  "labse": 2.074529421999614,
+  "e5": 4.666294267000012
+ },
+ "mem_after_encoders_gb": {
+  "hwm": 1.509,
+  "rss": 1.486,
+  "anon": 1.292,
+  "file": 0.194,
+  "swap": 0.0
+ },
+ "load_gemma_s": 43.00455333000082,
+ "mem_after_gemma_gb": {
+  "hwm": 8.769,
+  "rss": 2.784,
+  "anon": 1.68,
+  "file": 1.003,
+  "swap": 0.0
+ },
+ "vram_after_gemma_mib": [
+  7785,
+  8192
+ ],
+ "threads_llama": 16,
+ "threads_torch": 8,
+ "mem_start_gb": [
+  0.397804,
+  0.304316416,
+  0.281554944
+ ],
+ "mem_stanza_gb": {
+  "ca": {
+   "hwm": 8.769,
+   "rss": 3.904,
+   "anon": 1.793,
+   "file": 2.009,
+   "swap": 0.0
+  },
+  "de": {
+   "hwm": 8.769,
+   "rss": 3.949,
+   "anon": 1.907,
+   "file": 1.94,
+   "swap": 0.0
+  },
+  "en": {
+   "hwm": 8.769,
+   "rss": 3.843,
+   "anon": 1.856,
+   "file": 1.885,
+   "swap": 0.0
+  },
+  "es": {
+   "hwm": 8.769,
+   "rss": 3.806,
+   "anon": 1.885,
+   "file": 1.819,
+   "swap": 0.001
+  },
+  "fr": {
+   "hwm": 8.769,
+   "rss": 3.74,
+   "anon": 1.89,
+   "file": 1.748,
+   "swap": 0.001
+  },
+  "it": {
+   "hwm": 8.769,
+   "rss": 3.683,
+   "anon": 1.891,
+   "file": 1.689,
+   "swap": 0.001
+  },
+  "ja": {
+   "hwm": 8.769,
+   "rss": 3.771,
+   "anon": 1.98,
+   "file": 1.689,
+   "swap": 0.001
+  },
+  "pt": {
+   "hwm": 8.769,
+   "rss": 3.731,
+   "anon": 1.924,
+   "file": 1.705,
+   "swap": 0.001
+  },
+  "ro": {
+   "hwm": 8.769,
+   "rss": 3.795,
+   "anon": 1.962,
+   "file": 1.73,
+   "swap": 0.001
+  }
+ },
+ "warmup_s": 5.910238135999862,
+ "vram_after_warmup_mib": [
+  7801,
+  8192
+ ],
+ "args": {
+  "texts": "bench/texts",
+  "out": "bench/results",
+  "prefix": "gpu_docker_pc",
+  "langs": [
+   "ca",
+   "de",
+   "en",
+   "es",
+   "fil",
+   "fr",
+   "it",
+   "ja",
+   "pt",
+   "ro",
+   "si"
+  ],
+  "sizes": [
+   1,
+   2
+  ],
+  "modes": [
+   "reuse",
+   "noreuse"
+  ],
+  "warmup": 1,
+  "reps": 3,
+  "noreuse_sizes": [
+   1
+  ],
+  "b_warmup": 1,
+  "b_reps": 3,
+  "threads": null,
+  "gpu_layers": 49,
+  "flash_attn": true,
+  "n_ctx": 1024,
+  "n_batch": 256,
+  "no_mmap": false,
+  "skip_a": false,
+  "title": "Stage 7, GPU (RTX 2070 SUPER) in Docker on the PC"
+ },
+ "mem_end_of_lang_gb": {
+  "ca": {
+   "hwm": 8.769,
+   "rss": 3.848,
+   "anon": 1.705,
+   "file": 2.041,
+   "swap": 0.0
+  },
+  "de": {
+   "hwm": 8.769,
+   "rss": 3.789,
+   "anon": 1.758,
+   "file": 1.928,
+   "swap": 0.0
+  },
+  "en": {
+   "hwm": 8.769,
+   "rss": 3.748,
+   "anon": 1.758,
+   "file": 1.887,
+   "swap": 0.0
+  },
+  "es": {
+   "hwm": 8.769,
+   "rss": 3.706,
+   "anon": 1.789,
+   "file": 1.815,
+   "swap": 0.001
+  },
+  "fil": {
+   "hwm": 8.769,
+   "rss": 3.727,
+   "anon": 1.789,
+   "file": 1.836,
+   "swap": 0.001
+  },
+  "fr": {
+   "hwm": 8.769,
+   "rss": 3.64,
+   "anon": 1.794,
+   "file": 1.744,
+   "swap": 0.001
+  },
+  "it": {
+   "hwm": 8.769,
+   "rss": 3.592,
+   "anon": 1.794,
+   "file": 1.695,
+   "swap": 0.001
+  },
+  "ja": {
+   "hwm": 8.769,
+   "rss": 3.617,
+   "anon": 1.81,
+   "file": 1.705,
+   "swap": 0.001
+  },
+  "pt": {
+   "hwm": 8.769,
+   "rss": 3.697,
+   "anon": 1.864,
+   "file": 1.73,
+   "swap": 0.001
+  },
+  "ro": {
+   "hwm": 8.769,
+   "rss": 3.72,
+   "anon": 1.867,
+   "file": 1.751,
+   "swap": 0.001
+  },
+  "si": {
+   "hwm": 8.769,
+   "rss": 3.75,
+   "anon": 1.867,
+   "file": 1.781,
+   "swap": 0.001
+  }
+ },
+ "vram_end_of_lang_mib": {
+  "ca": [
+   7808,
+   8192
+  ],
+  "de": [
+   7809,
+   8192
+  ],
+  "en": [
+   7817,
+   8192
+  ],
+  "es": [
+   7809,
+   8192
+  ],
+  "fil": [
+   7809,
+   8192
+  ],
+  "fr": [
+   7814,
+   8192
+  ],
+  "it": [
+   7813,
+   8192
+  ],
+  "ja": [
+   7810,
+   8192
+  ],
+  "pt": [
+   7809,
+   8192
+  ],
+  "ro": [
+   7824,
+   8192
+  ],
+  "si": [
+   7829,
+   8192
+  ]
+ },
+ "peak_rss_gb": 8.769056,
+ "cgroup_peak_gb": 4.785573888,
+ "cgroup_current_gb": 4.762284032,
+ "mem_end_gb": {
+  "hwm": 8.769,
+  "rss": 3.75,
+  "anon": 1.867,
+  "file": 1.781,
+  "swap": 0.001
+ },
+ "vram_end_mib": [
+  7837,
+  8192
+ ],
+ "load_stanza_s": {
+  "ca": 3.924220830000195,
+  "de": 3.674737190999622,
+  "en": 2.481513513000209,
+  "es": 3.1169961060004425,
+  "fr": 3.2309550410000156,
+  "it": 2.8987491890002275,
+  "ja": 3.7403335529998003,
+  "pt": 2.5564330810002502,
+  "ro": 2.2588196070000777
+ }
+}

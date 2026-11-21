@@ -1,0 +1,323 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.6.3
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 8191 MiB):
+  Device 0: NVIDIA GeForce RTX 2070 SUPER, compute capability 7.5, VMM: yes, VRAM: 8191 MiB
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  49%|████▊     | 97/199 [00:00<00:00, 962.51it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1145.75it/s]
+[transformers] [1mXLMRobertaModel LOAD REPORT[0m from: xlm-roberta-base
+Key                       | Status     |  | 
+--------------------------+------------+--+-
+lm_head.dense.bias        | UNEXPECTED |  | 
+lm_head.dense.weight      | UNEXPECTED |  | 
+lm_head.layer_norm.weight | UNEXPECTED |  | 
+lm_head.bias              | UNEXPECTED |  | 
+lm_head.layer_norm.bias   | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  47%|████▋     | 94/199 [00:00<00:00, 931.44it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1252.05it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  41%|████      | 81/199 [00:00<00:00, 806.47it/s]Loading weights:  81%|████████▏ | 162/199 [00:00<00:00, 554.74it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 711.68it/s]
+llama_kv_cache_iswa: using full-size SWA cache (ref: https://github.com/ggml-org/llama.cpp/pull/13194#issuecomment-2868343055)
+[bench] encoders 14.8s, Gemma 43.0s, gpu layers 49, threads llama 16 torch 8, mem {'hwm': 8.769, 'rss': 2.783, 'anon': 1.68, 'file': 1.002, 'swap': 0.0}, vram (438, 8192) -> (7785, 8192) MiB
+[bench] stanza ca loaded in 3.9s, mem {'hwm': 8.769, 'rss': 3.904, 'anon': 1.793, 'file': 2.009, 'swap': 0.0}
+[bench] ca size 1 A-only run 0 (warm-up): 68/137 content words, 0 readings, seg 0.15s A 1.53s B 0.0s total 1.7s, nans/reading, nan tok/s, first sentence 0.4s
+[bench] ca size 1 A-only run 1: 68/137 content words, 0 readings, seg 0.08s A 0.81s B 0.0s total 0.9s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] ca size 1 A-only run 2: 68/137 content words, 0 readings, seg 0.08s A 0.90s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] ca size 1 A-only run 3: 68/137 content words, 0 readings, seg 0.08s A 0.80s B 0.0s total 0.9s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] ca size 1 reuse run 0 (warm-up): 68/137 content words, 204 readings, seg 0.08s A 0.83s B 16.3s total 17.2s, 0.080s/reading, 954.7 tok/s, first sentence 1.5s
+[bench] ca size 1 reuse run 1: 68/137 content words, 204 readings, seg 0.09s A 0.84s B 16.0s total 17.0s, 0.079s/reading, 969.1 tok/s, first sentence 1.2s
+[bench] ca size 1 reuse run 2: 68/137 content words, 204 readings, seg 0.08s A 0.85s B 16.1s total 17.1s, 0.079s/reading, 963.9 tok/s, first sentence 1.2s
+[bench] ca size 1 reuse run 3: 68/137 content words, 204 readings, seg 0.08s A 0.84s B 16.2s total 17.1s, 0.079s/reading, 961.0 tok/s, first sentence 1.2s
+[bench] ca size 1 noreuse run 0 (warm-up): 68/137 content words, 204 readings, seg 0.10s A 0.83s B 25.5s total 26.4s, 0.125s/reading, 1065.1 tok/s, first sentence 1.5s
+[bench] ca size 1 noreuse run 1: 68/137 content words, 204 readings, seg 0.09s A 0.85s B 25.5s total 26.4s, 0.125s/reading, 1065.7 tok/s, first sentence 1.5s
+[bench] ca size 1 noreuse run 2: 68/137 content words, 204 readings, seg 0.08s A 0.82s B 25.4s total 26.3s, 0.124s/reading, 1070.0 tok/s, first sentence 1.5s
+[bench] ca size 1 noreuse run 3: 68/137 content words, 204 readings, seg 0.08s A 0.80s B 25.4s total 26.3s, 0.124s/reading, 1069.3 tok/s, first sentence 1.5s
+[bench] ca size 2 A-only run 0 (warm-up): 124/251 content words, 0 readings, seg 0.19s A 1.92s B 0.0s total 2.1s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ca size 2 A-only run 1: 124/251 content words, 0 readings, seg 0.18s A 1.58s B 0.0s total 1.8s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ca size 2 A-only run 2: 124/251 content words, 0 readings, seg 0.20s A 1.54s B 0.0s total 1.7s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ca size 2 A-only run 3: 124/251 content words, 0 readings, seg 0.18s A 1.63s B 0.0s total 1.8s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ca size 2 reuse run 0 (warm-up): 124/251 content words, 372 readings, seg 0.20s A 1.54s B 28.4s total 30.2s, 0.076s/reading, 938.9 tok/s, first sentence 1.6s
+[bench] ca size 2 reuse run 1: 124/251 content words, 372 readings, seg 0.19s A 1.59s B 28.2s total 30.0s, 0.076s/reading, 945.7 tok/s, first sentence 1.3s
+[bench] ca size 2 reuse run 2: 124/251 content words, 372 readings, seg 0.20s A 1.68s B 28.4s total 30.3s, 0.076s/reading, 939.7 tok/s, first sentence 1.3s
+[bench] ca size 2 reuse run 3: 124/251 content words, 372 readings, seg 0.19s A 1.60s B 28.5s total 30.2s, 0.076s/reading, 938.7 tok/s, first sentence 1.3s
+[bench] stanza de loaded in 3.7s, mem {'hwm': 8.769, 'rss': 3.949, 'anon': 1.907, 'file': 1.94, 'swap': 0.0}
+[bench] de size 1 A-only run 0 (warm-up): 63/121 content words, 0 readings, seg 0.52s A 1.78s B 0.0s total 2.3s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] de size 1 A-only run 1: 63/121 content words, 0 readings, seg 0.49s A 1.15s B 0.0s total 1.6s, nans/reading, nan tok/s, first sentence 0.6s
+[bench] de size 1 A-only run 2: 63/121 content words, 0 readings, seg 0.46s A 1.12s B 0.0s total 1.6s, nans/reading, nan tok/s, first sentence 0.6s
+[bench] de size 1 A-only run 3: 63/121 content words, 0 readings, seg 0.46s A 1.28s B 0.0s total 1.7s, nans/reading, nan tok/s, first sentence 0.6s
+[bench] de size 1 reuse run 0 (warm-up): 63/121 content words, 189 readings, seg 0.46s A 1.28s B 13.5s total 15.3s, 0.072s/reading, 856.4 tok/s, first sentence 2.4s
+[bench] de size 1 reuse run 1: 63/121 content words, 189 readings, seg 0.61s A 1.39s B 13.1s total 15.1s, 0.069s/reading, 888.1 tok/s, first sentence 2.3s
+[bench] de size 1 reuse run 2: 63/121 content words, 189 readings, seg 0.58s A 1.26s B 13.0s total 14.9s, 0.069s/reading, 888.8 tok/s, first sentence 2.2s
+[bench] de size 1 reuse run 3: 63/121 content words, 189 readings, seg 0.53s A 1.28s B 13.1s total 14.9s, 0.069s/reading, 884.6 tok/s, first sentence 2.1s
+[bench] de size 1 noreuse run 0 (warm-up): 63/121 content words, 189 readings, seg 0.53s A 1.27s B 18.3s total 20.1s, 0.097s/reading, 1036.6 tok/s, first sentence 2.6s
+[bench] de size 1 noreuse run 1: 63/121 content words, 189 readings, seg 0.59s A 1.24s B 18.3s total 20.1s, 0.097s/reading, 1040.7 tok/s, first sentence 2.7s
+[bench] de size 1 noreuse run 2: 63/121 content words, 189 readings, seg 0.66s A 1.31s B 18.1s total 20.1s, 0.096s/reading, 1048.5 tok/s, first sentence 2.8s
+[bench] de size 1 noreuse run 3: 63/121 content words, 189 readings, seg 0.55s A 1.21s B 18.1s total 19.9s, 0.096s/reading, 1049.8 tok/s, first sentence 2.6s
+[bench] de size 2 A-only run 0 (warm-up): 91/177 content words, 0 readings, seg 0.61s A 1.97s B 0.0s total 2.6s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] de size 2 A-only run 1: 91/177 content words, 0 readings, seg 0.64s A 1.67s B 0.0s total 2.3s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] de size 2 A-only run 2: 91/177 content words, 0 readings, seg 0.63s A 1.67s B 0.0s total 2.3s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] de size 2 A-only run 3: 91/177 content words, 0 readings, seg 0.60s A 1.61s B 0.0s total 2.2s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] de size 2 reuse run 0 (warm-up): 91/177 content words, 273 readings, seg 0.55s A 1.68s B 19.3s total 21.5s, 0.071s/reading, 878.5 tok/s, first sentence 2.4s
+[bench] de size 2 reuse run 1: 91/177 content words, 273 readings, seg 0.65s A 1.63s B 18.9s total 21.1s, 0.069s/reading, 898.7 tok/s, first sentence 2.2s
+[bench] de size 2 reuse run 2: 91/177 content words, 273 readings, seg 0.53s A 1.68s B 19.0s total 21.2s, 0.069s/reading, 893.9 tok/s, first sentence 2.1s
+[bench] de size 2 reuse run 3: 91/177 content words, 273 readings, seg 0.66s A 1.68s B 18.9s total 21.3s, 0.069s/reading, 895.7 tok/s, first sentence 2.2s
+[bench] stanza en loaded in 2.5s, mem {'hwm': 8.769, 'rss': 3.843, 'anon': 1.856, 'file': 1.885, 'swap': 0.0}
+[bench] en size 1 A-only run 0 (warm-up): 36/79 content words, 0 readings, seg 0.45s A 0.81s B 0.0s total 1.3s, nans/reading, nan tok/s, first sentence 0.6s
+[bench] en size 1 A-only run 1: 36/79 content words, 0 readings, seg 0.42s A 0.61s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.5s
+[bench] en size 1 A-only run 2: 36/79 content words, 0 readings, seg 0.49s A 0.68s B 0.0s total 1.2s, nans/reading, nan tok/s, first sentence 0.6s
+[bench] en size 1 A-only run 3: 36/79 content words, 0 readings, seg 0.46s A 0.61s B 0.0s total 1.1s, nans/reading, nan tok/s, first sentence 0.6s
+[bench] en size 1 reuse run 0 (warm-up): 36/79 content words, 108 readings, seg 0.45s A 0.59s B 7.7s total 8.7s, 0.071s/reading, 881.8 tok/s, first sentence 1.4s
+[bench] en size 1 reuse run 1: 36/79 content words, 108 readings, seg 0.47s A 0.63s B 7.4s total 8.6s, 0.069s/reading, 906.4 tok/s, first sentence 1.2s
+[bench] en size 1 reuse run 2: 36/79 content words, 108 readings, seg 0.42s A 0.62s B 7.4s total 8.5s, 0.069s/reading, 910.7 tok/s, first sentence 1.2s
+[bench] en size 1 reuse run 3: 36/79 content words, 108 readings, seg 0.44s A 0.57s B 7.4s total 8.4s, 0.069s/reading, 907.7 tok/s, first sentence 1.2s
+[bench] en size 1 noreuse run 0 (warm-up): 36/79 content words, 108 readings, seg 0.43s A 0.65s B 11.0s total 12.1s, 0.102s/reading, 1038.5 tok/s, first sentence 1.4s
+[bench] en size 1 noreuse run 1: 36/79 content words, 108 readings, seg 0.42s A 0.58s B 11.0s total 12.0s, 0.101s/reading, 1043.8 tok/s, first sentence 1.3s
+[bench] en size 1 noreuse run 2: 36/79 content words, 108 readings, seg 0.43s A 0.63s B 10.9s total 12.0s, 0.101s/reading, 1045.8 tok/s, first sentence 1.3s
+[bench] en size 1 noreuse run 3: 36/79 content words, 108 readings, seg 0.41s A 0.57s B 11.0s total 12.0s, 0.102s/reading, 1042.7 tok/s, first sentence 1.3s
+[bench] en size 2 A-only run 0 (warm-up): 94/201 content words, 0 readings, seg 0.65s A 1.74s B 0.0s total 2.4s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] en size 2 A-only run 1: 94/201 content words, 0 readings, seg 0.67s A 1.60s B 0.0s total 2.3s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] en size 2 A-only run 2: 94/201 content words, 0 readings, seg 0.67s A 1.60s B 0.0s total 2.3s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] en size 2 A-only run 3: 94/201 content words, 0 readings, seg 0.70s A 1.50s B 0.0s total 2.2s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] en size 2 reuse run 0 (warm-up): 94/201 content words, 282 readings, seg 0.69s A 1.57s B 20.6s total 22.9s, 0.073s/reading, 900.2 tok/s, first sentence 1.8s
+[bench] en size 2 reuse run 1: 94/201 content words, 282 readings, seg 0.67s A 1.73s B 20.3s total 22.7s, 0.072s/reading, 914.0 tok/s, first sentence 1.4s
+[bench] en size 2 reuse run 2: 94/201 content words, 282 readings, seg 0.76s A 1.58s B 20.3s total 22.6s, 0.072s/reading, 917.4 tok/s, first sentence 1.5s
+[bench] en size 2 reuse run 3: 94/201 content words, 282 readings, seg 0.64s A 1.52s B 20.3s total 22.5s, 0.072s/reading, 915.1 tok/s, first sentence 1.4s
+[bench] stanza es loaded in 3.1s, mem {'hwm': 8.769, 'rss': 3.806, 'anon': 1.885, 'file': 1.819, 'swap': 0.001}
+[bench] es size 1 A-only run 0 (warm-up): 31/68 content words, 0 readings, seg 0.44s A 0.55s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] es size 1 A-only run 1: 31/68 content words, 0 readings, seg 0.45s A 0.37s B 0.0s total 0.8s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] es size 1 A-only run 2: 31/68 content words, 0 readings, seg 0.40s A 0.38s B 0.0s total 0.8s, nans/reading, nan tok/s, first sentence 0.6s
+[bench] es size 1 A-only run 3: 31/68 content words, 0 readings, seg 0.45s A 0.36s B 0.0s total 0.8s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] es size 1 reuse run 0 (warm-up): 31/68 content words, 93 readings, seg 0.39s A 0.37s B 7.5s total 8.3s, 0.081s/reading, 887.1 tok/s, first sentence 5.4s
+[bench] es size 1 reuse run 1: 31/68 content words, 93 readings, seg 0.37s A 0.35s B 7.2s total 7.9s, 0.077s/reading, 933.3 tok/s, first sentence 5.0s
+[bench] es size 1 reuse run 2: 31/68 content words, 93 readings, seg 0.39s A 0.36s B 7.1s total 7.9s, 0.077s/reading, 937.3 tok/s, first sentence 5.0s
+[bench] es size 1 reuse run 3: 31/68 content words, 93 readings, seg 0.40s A 0.35s B 7.1s total 7.9s, 0.076s/reading, 938.3 tok/s, first sentence 5.0s
+[bench] es size 1 noreuse run 0 (warm-up): 31/68 content words, 93 readings, seg 0.39s A 0.37s B 10.8s total 11.5s, 0.116s/reading, 1078.8 tok/s, first sentence 7.6s
+[bench] es size 1 noreuse run 1: 31/68 content words, 93 readings, seg 0.39s A 0.37s B 10.7s total 11.5s, 0.115s/reading, 1082.9 tok/s, first sentence 7.6s
+[bench] es size 1 noreuse run 2: 31/68 content words, 93 readings, seg 0.38s A 0.35s B 10.7s total 11.4s, 0.115s/reading, 1083.0 tok/s, first sentence 7.6s
+[bench] es size 1 noreuse run 3: 31/68 content words, 93 readings, seg 0.38s A 0.38s B 10.7s total 11.5s, 0.115s/reading, 1083.5 tok/s, first sentence 7.6s
+[bench] es size 2 A-only run 0 (warm-up): 66/137 content words, 0 readings, seg 0.51s A 0.95s B 0.0s total 1.5s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] es size 2 A-only run 1: 66/137 content words, 0 readings, seg 0.52s A 0.74s B 0.0s total 1.3s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] es size 2 A-only run 2: 66/137 content words, 0 readings, seg 0.48s A 0.70s B 0.0s total 1.2s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] es size 2 A-only run 3: 66/137 content words, 0 readings, seg 0.46s A 0.76s B 0.0s total 1.2s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] es size 2 reuse run 0 (warm-up): 66/137 content words, 198 readings, seg 0.47s A 0.74s B 15.1s total 16.3s, 0.076s/reading, 921.0 tok/s, first sentence 5.3s
+[bench] es size 2 reuse run 1: 66/137 content words, 198 readings, seg 0.56s A 0.72s B 14.8s total 16.1s, 0.075s/reading, 938.4 tok/s, first sentence 5.1s
+[bench] es size 2 reuse run 2: 66/137 content words, 198 readings, seg 0.54s A 0.71s B 14.8s total 16.0s, 0.075s/reading, 939.5 tok/s, first sentence 5.1s
+[bench] es size 2 reuse run 3: 66/137 content words, 198 readings, seg 0.45s A 0.75s B 14.9s total 16.1s, 0.075s/reading, 935.0 tok/s, first sentence 5.0s
+[bench] fil size 1 A-only run 0 (warm-up): 29/56 content words, 0 readings, seg 0.00s A 0.57s B 0.0s total 0.6s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] fil size 1 A-only run 1: 29/56 content words, 0 readings, seg 0.00s A 0.47s B 0.0s total 0.5s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] fil size 1 A-only run 2: 29/56 content words, 0 readings, seg 0.00s A 0.46s B 0.0s total 0.5s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] fil size 1 A-only run 3: 29/56 content words, 0 readings, seg 0.00s A 0.49s B 0.0s total 0.5s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] fil size 1 reuse run 0 (warm-up): 29/56 content words, 87 readings, seg 0.00s A 0.50s B 6.6s total 7.1s, 0.076s/reading, 873.9 tok/s, first sentence 1.6s
+[bench] fil size 1 reuse run 1: 29/56 content words, 87 readings, seg 0.00s A 0.47s B 6.3s total 6.8s, 0.073s/reading, 916.8 tok/s, first sentence 1.3s
+[bench] fil size 1 reuse run 2: 29/56 content words, 87 readings, seg 0.00s A 0.46s B 6.4s total 6.8s, 0.073s/reading, 910.2 tok/s, first sentence 1.3s
+[bench] fil size 1 reuse run 3: 29/56 content words, 87 readings, seg 0.00s A 0.48s B 6.3s total 6.8s, 0.073s/reading, 911.8 tok/s, first sentence 1.4s
+[bench] fil size 1 noreuse run 0 (warm-up): 29/56 content words, 87 readings, seg 0.00s A 0.50s B 9.3s total 9.8s, 0.107s/reading, 1038.6 tok/s, first sentence 1.8s
+[bench] fil size 1 noreuse run 1: 29/56 content words, 87 readings, seg 0.00s A 0.48s B 9.2s total 9.7s, 0.106s/reading, 1047.2 tok/s, first sentence 1.8s
+[bench] fil size 1 noreuse run 2: 29/56 content words, 87 readings, seg 0.00s A 0.45s B 9.2s total 9.6s, 0.106s/reading, 1047.4 tok/s, first sentence 1.8s
+[bench] fil size 1 noreuse run 3: 29/56 content words, 87 readings, seg 0.00s A 0.47s B 9.2s total 9.7s, 0.106s/reading, 1046.6 tok/s, first sentence 1.8s
+[bench] fil size 2 A-only run 0 (warm-up): 93/168 content words, 0 readings, seg 0.00s A 1.39s B 0.0s total 1.4s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] fil size 2 A-only run 1: 93/168 content words, 0 readings, seg 0.00s A 1.22s B 0.0s total 1.2s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] fil size 2 A-only run 2: 93/168 content words, 0 readings, seg 0.00s A 1.22s B 0.0s total 1.2s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] fil size 2 A-only run 3: 93/168 content words, 0 readings, seg 0.00s A 1.22s B 0.0s total 1.2s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] fil size 2 reuse run 0 (warm-up): 93/168 content words, 279 readings, seg 0.00s A 1.24s B 23.1s total 24.3s, 0.083s/reading, 945.2 tok/s, first sentence 1.6s
+[bench] fil size 2 reuse run 1: 93/168 content words, 279 readings, seg 0.00s A 1.22s B 22.8s total 24.0s, 0.082s/reading, 955.8 tok/s, first sentence 1.4s
+[bench] fil size 2 reuse run 2: 93/168 content words, 279 readings, seg 0.00s A 1.22s B 22.9s total 24.1s, 0.082s/reading, 953.9 tok/s, first sentence 1.4s
+[bench] fil size 2 reuse run 3: 93/168 content words, 279 readings, seg 0.00s A 1.20s B 22.9s total 24.1s, 0.082s/reading, 951.5 tok/s, first sentence 1.4s
+[bench] stanza fr loaded in 3.2s, mem {'hwm': 8.769, 'rss': 3.74, 'anon': 1.89, 'file': 1.748, 'swap': 0.001}
+[bench] fr size 1 A-only run 0 (warm-up): 57/109 content words, 0 readings, seg 0.56s A 0.95s B 0.0s total 1.5s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] fr size 1 A-only run 1: 57/109 content words, 0 readings, seg 0.48s A 0.72s B 0.0s total 1.2s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] fr size 1 A-only run 2: 57/109 content words, 0 readings, seg 0.59s A 0.66s B 0.0s total 1.3s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] fr size 1 A-only run 3: 57/109 content words, 0 readings, seg 0.50s A 0.72s B 0.0s total 1.2s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] fr size 1 reuse run 0 (warm-up): 57/109 content words, 171 readings, seg 0.46s A 0.75s B 13.4s total 14.6s, 0.078s/reading, 925.8 tok/s, first sentence 4.6s
+[bench] fr size 1 reuse run 1: 57/109 content words, 171 readings, seg 0.55s A 0.70s B 13.0s total 14.3s, 0.076s/reading, 948.1 tok/s, first sentence 4.4s
+[bench] fr size 1 reuse run 2: 57/109 content words, 171 readings, seg 0.46s A 0.68s B 13.1s total 14.2s, 0.077s/reading, 944.8 tok/s, first sentence 4.3s
+[bench] fr size 1 reuse run 3: 57/109 content words, 171 readings, seg 0.47s A 0.72s B 13.1s total 14.3s, 0.076s/reading, 946.0 tok/s, first sentence 4.3s
+[bench] fr size 1 noreuse run 0 (warm-up): 57/109 content words, 171 readings, seg 0.55s A 0.70s B 19.5s total 20.8s, 0.114s/reading, 1082.3 tok/s, first sentence 6.5s
+[bench] fr size 1 noreuse run 1: 57/109 content words, 171 readings, seg 0.47s A 0.74s B 19.4s total 20.6s, 0.114s/reading, 1088.9 tok/s, first sentence 6.3s
+[bench] fr size 1 noreuse run 2: 57/109 content words, 171 readings, seg 0.46s A 0.70s B 19.4s total 20.6s, 0.113s/reading, 1090.0 tok/s, first sentence 6.3s
+[bench] fr size 1 noreuse run 3: 57/109 content words, 171 readings, seg 0.53s A 0.68s B 19.4s total 20.6s, 0.114s/reading, 1088.8 tok/s, first sentence 6.4s
+[bench] fr size 2 A-only run 0 (warm-up): 80/157 content words, 0 readings, seg 0.78s A 1.01s B 0.0s total 1.8s, nans/reading, nan tok/s, first sentence 1.0s
+[bench] fr size 2 A-only run 1: 80/157 content words, 0 readings, seg 0.74s A 1.01s B 0.0s total 1.7s, nans/reading, nan tok/s, first sentence 0.9s
+[bench] fr size 2 A-only run 2: 80/157 content words, 0 readings, seg 0.65s A 0.92s B 0.0s total 1.6s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] fr size 2 A-only run 3: 80/157 content words, 0 readings, seg 0.63s A 0.92s B 0.0s total 1.6s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] fr size 2 reuse run 0 (warm-up): 80/157 content words, 240 readings, seg 0.78s A 0.99s B 20.1s total 21.8s, 0.084s/reading, 946.6 tok/s, first sentence 4.9s
+[bench] fr size 2 reuse run 1: 80/157 content words, 240 readings, seg 0.65s A 0.95s B 19.8s total 21.4s, 0.083s/reading, 958.3 tok/s, first sentence 4.5s
+[bench] fr size 2 reuse run 2: 80/157 content words, 240 readings, seg 0.68s A 0.93s B 19.9s total 21.5s, 0.083s/reading, 954.8 tok/s, first sentence 4.6s
+[bench] fr size 2 reuse run 3: 80/157 content words, 240 readings, seg 0.68s A 0.94s B 19.8s total 21.5s, 0.083s/reading, 957.8 tok/s, first sentence 4.6s
+[bench] stanza it loaded in 2.9s, mem {'hwm': 8.769, 'rss': 3.683, 'anon': 1.891, 'file': 1.689, 'swap': 0.001}
+[bench] it size 1 A-only run 0 (warm-up): 32/65 content words, 0 readings, seg 0.49s A 0.46s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] it size 1 A-only run 1: 32/65 content words, 0 readings, seg 0.52s A 0.37s B 0.0s total 0.9s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] it size 1 A-only run 2: 32/65 content words, 0 readings, seg 0.54s A 0.37s B 0.0s total 0.9s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] it size 1 A-only run 3: 32/65 content words, 0 readings, seg 0.49s A 0.36s B 0.0s total 0.9s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] it size 1 reuse run 0 (warm-up): 32/65 content words, 96 readings, seg 0.52s A 0.37s B 8.0s total 8.9s, 0.083s/reading, 921.8 tok/s, first sentence 6.4s
+[bench] it size 1 reuse run 1: 32/65 content words, 96 readings, seg 0.50s A 0.37s B 7.6s total 8.4s, 0.079s/reading, 971.7 tok/s, first sentence 6.0s
+[bench] it size 1 reuse run 2: 32/65 content words, 96 readings, seg 0.50s A 0.36s B 7.6s total 8.4s, 0.079s/reading, 971.9 tok/s, first sentence 6.0s
+[bench] it size 1 reuse run 3: 32/65 content words, 96 readings, seg 0.49s A 0.36s B 7.6s total 8.4s, 0.079s/reading, 972.4 tok/s, first sentence 6.0s
+[bench] it size 1 noreuse run 0 (warm-up): 32/65 content words, 96 readings, seg 0.46s A 0.35s B 12.1s total 12.9s, 0.126s/reading, 1065.4 tok/s, first sentence 9.4s
+[bench] it size 1 noreuse run 1: 32/65 content words, 96 readings, seg 0.51s A 0.40s B 12.1s total 13.0s, 0.126s/reading, 1070.5 tok/s, first sentence 9.4s
+[bench] it size 1 noreuse run 2: 32/65 content words, 96 readings, seg 0.48s A 0.37s B 12.1s total 12.9s, 0.126s/reading, 1072.4 tok/s, first sentence 9.4s
+[bench] it size 1 noreuse run 3: 32/65 content words, 96 readings, seg 0.45s A 0.38s B 12.1s total 12.9s, 0.126s/reading, 1071.3 tok/s, first sentence 9.3s
+[bench] it size 2 A-only run 0 (warm-up): 53/106 content words, 0 readings, seg 0.34s A 0.64s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.5s
+[bench] it size 2 A-only run 1: 53/106 content words, 0 readings, seg 0.45s A 0.60s B 0.0s total 1.1s, nans/reading, nan tok/s, first sentence 0.7s
+[bench] it size 2 A-only run 2: 53/106 content words, 0 readings, seg 0.42s A 0.59s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.6s
+[bench] it size 2 A-only run 3: 53/106 content words, 0 readings, seg 0.43s A 0.58s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.6s
+[bench] it size 2 reuse run 0 (warm-up): 53/106 content words, 159 readings, seg 0.42s A 0.58s B 13.3s total 14.3s, 0.084s/reading, 963.9 tok/s, first sentence 6.2s
+[bench] it size 2 reuse run 1: 53/106 content words, 159 readings, seg 0.39s A 0.59s B 13.1s total 14.0s, 0.082s/reading, 984.0 tok/s, first sentence 5.9s
+[bench] it size 2 reuse run 2: 53/106 content words, 159 readings, seg 0.45s A 0.58s B 13.1s total 14.1s, 0.082s/reading, 982.4 tok/s, first sentence 5.9s
+[bench] it size 2 reuse run 3: 53/106 content words, 159 readings, seg 0.43s A 0.60s B 13.1s total 14.1s, 0.082s/reading, 979.7 tok/s, first sentence 6.0s
+[bench] stanza ja loaded in 3.7s, mem {'hwm': 8.769, 'rss': 3.771, 'anon': 1.98, 'file': 1.689, 'swap': 0.001}
+[bench] ja size 1 A-only run 0 (warm-up): 30/57 content words, 0 readings, seg 0.17s A 0.60s B 0.0s total 0.8s, nans/reading, nan tok/s, first sentence 0.4s
+[bench] ja size 1 A-only run 1: 30/57 content words, 0 readings, seg 0.18s A 0.47s B 0.0s total 0.7s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ja size 1 A-only run 2: 30/57 content words, 0 readings, seg 0.17s A 0.45s B 0.0s total 0.6s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ja size 1 A-only run 3: 30/57 content words, 0 readings, seg 0.20s A 0.46s B 0.0s total 0.7s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ja size 1 reuse run 0 (warm-up): 30/57 content words, 90 readings, seg 0.17s A 0.44s B 6.6s total 7.2s, 0.073s/reading, 861.7 tok/s, first sentence 2.5s
+[bench] ja size 1 reuse run 1: 30/57 content words, 90 readings, seg 0.18s A 0.47s B 6.3s total 7.0s, 0.070s/reading, 893.7 tok/s, first sentence 2.2s
+[bench] ja size 1 reuse run 2: 30/57 content words, 90 readings, seg 0.20s A 0.49s B 6.3s total 7.0s, 0.070s/reading, 892.6 tok/s, first sentence 2.2s
+[bench] ja size 1 reuse run 3: 30/57 content words, 90 readings, seg 0.18s A 0.46s B 6.3s total 7.0s, 0.071s/reading, 892.3 tok/s, first sentence 2.2s
+[bench] ja size 1 noreuse run 0 (warm-up): 30/57 content words, 90 readings, seg 0.18s A 0.46s B 8.6s total 9.3s, 0.096s/reading, 1092.2 tok/s, first sentence 2.9s
+[bench] ja size 1 noreuse run 1: 30/57 content words, 90 readings, seg 0.17s A 0.48s B 8.6s total 9.3s, 0.096s/reading, 1097.1 tok/s, first sentence 2.9s
+[bench] ja size 1 noreuse run 2: 30/57 content words, 90 readings, seg 0.20s A 0.45s B 8.6s total 9.3s, 0.096s/reading, 1096.8 tok/s, first sentence 3.0s
+[bench] ja size 1 noreuse run 3: 30/57 content words, 90 readings, seg 0.20s A 0.45s B 8.6s total 9.2s, 0.095s/reading, 1097.7 tok/s, first sentence 2.9s
+[bench] ja size 2 A-only run 0 (warm-up): 95/172 content words, 0 readings, seg 0.35s A 1.27s B 0.0s total 1.6s, nans/reading, nan tok/s, first sentence 0.5s
+[bench] ja size 2 A-only run 1: 95/172 content words, 0 readings, seg 0.37s A 1.15s B 0.0s total 1.5s, nans/reading, nan tok/s, first sentence 0.5s
+[bench] ja size 2 A-only run 2: 95/172 content words, 0 readings, seg 0.42s A 1.11s B 0.0s total 1.5s, nans/reading, nan tok/s, first sentence 0.6s
+[bench] ja size 2 A-only run 3: 95/172 content words, 0 readings, seg 0.42s A 1.19s B 0.0s total 1.6s, nans/reading, nan tok/s, first sentence 0.6s
+[bench] ja size 2 reuse run 0 (warm-up): 95/172 content words, 285 readings, seg 0.40s A 1.11s B 19.5s total 21.0s, 0.068s/reading, 889.4 tok/s, first sentence 2.7s
+[bench] ja size 2 reuse run 1: 95/172 content words, 285 readings, seg 0.38s A 1.10s B 19.3s total 20.8s, 0.068s/reading, 897.5 tok/s, first sentence 2.4s
+[bench] ja size 2 reuse run 2: 95/172 content words, 285 readings, seg 0.42s A 1.15s B 19.3s total 20.9s, 0.068s/reading, 898.7 tok/s, first sentence 2.5s
+[bench] ja size 2 reuse run 3: 95/172 content words, 285 readings, seg 0.39s A 1.10s B 19.3s total 20.8s, 0.068s/reading, 898.3 tok/s, first sentence 2.5s
+[bench] stanza pt loaded in 2.6s, mem {'hwm': 8.769, 'rss': 3.731, 'anon': 1.924, 'file': 1.705, 'swap': 0.001}
+[bench] pt size 1 A-only run 0 (warm-up): 87/182 content words, 0 readings, seg 0.82s A 1.58s B 0.0s total 2.4s, nans/reading, nan tok/s, first sentence 1.0s
+[bench] pt size 1 A-only run 1: 87/182 content words, 0 readings, seg 0.77s A 1.34s B 0.0s total 2.1s, nans/reading, nan tok/s, first sentence 0.9s
+[bench] pt size 1 A-only run 2: 87/182 content words, 0 readings, seg 0.67s A 1.32s B 0.0s total 2.0s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] pt size 1 A-only run 3: 87/182 content words, 0 readings, seg 0.71s A 1.27s B 0.0s total 2.0s, nans/reading, nan tok/s, first sentence 0.8s
+[bench] pt size 1 reuse run 0 (warm-up): 87/182 content words, 261 readings, seg 0.67s A 1.32s B 20.1s total 22.0s, 0.077s/reading, 921.2 tok/s, first sentence 2.2s
+[bench] pt size 1 reuse run 1: 87/182 content words, 261 readings, seg 0.84s A 1.29s B 19.7s total 21.9s, 0.076s/reading, 935.5 tok/s, first sentence 2.2s
+[bench] pt size 1 reuse run 2: 87/182 content words, 261 readings, seg 0.75s A 1.29s B 19.8s total 21.8s, 0.076s/reading, 934.6 tok/s, first sentence 2.1s
+[bench] pt size 1 reuse run 3: 87/182 content words, 261 readings, seg 0.75s A 1.29s B 19.8s total 21.8s, 0.076s/reading, 932.9 tok/s, first sentence 2.1s
+[bench] pt size 1 noreuse run 0 (warm-up): 87/182 content words, 261 readings, seg 0.83s A 1.40s B 29.5s total 31.7s, 0.113s/reading, 1065.9 tok/s, first sentence 2.6s
+[bench] pt size 1 noreuse run 1: 87/182 content words, 261 readings, seg 0.87s A 1.34s B 29.4s total 31.6s, 0.113s/reading, 1068.1 tok/s, first sentence 2.6s
+[bench] pt size 1 noreuse run 2: 87/182 content words, 261 readings, seg 0.81s A 1.29s B 29.4s total 31.5s, 0.112s/reading, 1069.4 tok/s, first sentence 2.5s
+[bench] pt size 1 noreuse run 3: 87/182 content words, 261 readings, seg 0.76s A 1.26s B 29.4s total 31.4s, 0.112s/reading, 1069.4 tok/s, first sentence 2.5s
+[bench] pt size 2 A-only run 0 (warm-up): 174/351 content words, 0 readings, seg 1.38s A 2.52s B 0.0s total 3.9s, nans/reading, nan tok/s, first sentence 1.5s
+[bench] pt size 2 A-only run 1: 174/351 content words, 0 readings, seg 1.23s A 2.36s B 0.0s total 3.6s, nans/reading, nan tok/s, first sentence 1.4s
+[bench] pt size 2 A-only run 2: 174/351 content words, 0 readings, seg 1.20s A 2.27s B 0.0s total 3.5s, nans/reading, nan tok/s, first sentence 1.3s
+[bench] pt size 2 A-only run 3: 174/351 content words, 0 readings, seg 1.26s A 2.32s B 0.0s total 3.6s, nans/reading, nan tok/s, first sentence 1.4s
+[bench] pt size 2 reuse run 0 (warm-up): 174/351 content words, 522 readings, seg 1.26s A 2.36s B 41.0s total 44.7s, 0.079s/reading, 934.9 tok/s, first sentence 3.0s
+[bench] pt size 2 reuse run 1: 174/351 content words, 522 readings, seg 1.24s A 2.30s B 40.6s total 44.2s, 0.078s/reading, 944.2 tok/s, first sentence 2.6s
+[bench] pt size 2 reuse run 2: 174/351 content words, 522 readings, seg 1.28s A 2.30s B 40.6s total 44.2s, 0.078s/reading, 944.9 tok/s, first sentence 2.6s
+[bench] pt size 2 reuse run 3: 174/351 content words, 522 readings, seg 1.20s A 2.35s B 40.7s total 44.3s, 0.078s/reading, 942.0 tok/s, first sentence 2.6s
+[bench] stanza ro loaded in 2.3s, mem {'hwm': 8.769, 'rss': 3.795, 'anon': 1.962, 'file': 1.73, 'swap': 0.001}
+[bench] ro size 1 A-only run 0 (warm-up): 64/107 content words, 0 readings, seg 0.08s A 1.00s B 0.0s total 1.1s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] ro size 1 A-only run 1: 64/107 content words, 0 readings, seg 0.07s A 0.90s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] ro size 1 A-only run 2: 64/107 content words, 0 readings, seg 0.07s A 0.94s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] ro size 1 A-only run 3: 64/107 content words, 0 readings, seg 0.07s A 0.92s B 0.0s total 1.0s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] ro size 1 reuse run 0 (warm-up): 64/107 content words, 192 readings, seg 0.08s A 0.94s B 14.4s total 15.4s, 0.075s/reading, 911.5 tok/s, first sentence 1.5s
+[bench] ro size 1 reuse run 1: 64/107 content words, 192 readings, seg 0.08s A 0.91s B 14.1s total 15.1s, 0.073s/reading, 928.9 tok/s, first sentence 1.2s
+[bench] ro size 1 reuse run 2: 64/107 content words, 192 readings, seg 0.07s A 0.90s B 14.1s total 15.1s, 0.074s/reading, 926.9 tok/s, first sentence 1.1s
+[bench] ro size 1 reuse run 3: 64/107 content words, 192 readings, seg 0.07s A 0.91s B 14.2s total 15.1s, 0.074s/reading, 924.3 tok/s, first sentence 1.1s
+[bench] ro size 1 noreuse run 0 (warm-up): 64/107 content words, 192 readings, seg 0.08s A 0.93s B 21.1s total 22.1s, 0.110s/reading, 1060.5 tok/s, first sentence 1.5s
+[bench] ro size 1 noreuse run 1: 64/107 content words, 192 readings, seg 0.08s A 0.90s B 21.0s total 22.0s, 0.109s/reading, 1065.1 tok/s, first sentence 1.5s
+[bench] ro size 1 noreuse run 2: 64/107 content words, 192 readings, seg 0.08s A 0.96s B 21.1s total 22.2s, 0.110s/reading, 1058.6 tok/s, first sentence 1.5s
+[bench] ro size 1 noreuse run 3: 64/107 content words, 192 readings, seg 0.07s A 0.93s B 21.0s total 22.0s, 0.110s/reading, 1064.2 tok/s, first sentence 1.5s
+[bench] ro size 2 A-only run 0 (warm-up): 126/226 content words, 0 readings, seg 0.21s A 2.06s B 0.0s total 2.3s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ro size 2 A-only run 1: 126/226 content words, 0 readings, seg 0.19s A 1.87s B 0.0s total 2.1s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ro size 2 A-only run 2: 126/226 content words, 0 readings, seg 0.22s A 1.84s B 0.0s total 2.1s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ro size 2 A-only run 3: 126/226 content words, 0 readings, seg 0.19s A 1.79s B 0.0s total 2.0s, nans/reading, nan tok/s, first sentence 0.3s
+[bench] ro size 2 reuse run 0 (warm-up): 126/226 content words, 378 readings, seg 0.19s A 1.84s B 27.5s total 29.6s, 0.073s/reading, 907.3 tok/s, first sentence 1.6s
+[bench] ro size 2 reuse run 1: 126/226 content words, 378 readings, seg 0.18s A 1.81s B 27.4s total 29.4s, 0.072s/reading, 912.7 tok/s, first sentence 1.3s
+[bench] ro size 2 reuse run 2: 126/226 content words, 378 readings, seg 0.18s A 1.78s B 27.4s total 29.3s, 0.072s/reading, 912.6 tok/s, first sentence 1.2s
+[bench] ro size 2 reuse run 3: 126/226 content words, 378 readings, seg 0.16s A 1.73s B 27.2s total 29.1s, 0.072s/reading, 916.7 tok/s, first sentence 1.2s
+[bench] si size 1 A-only run 0 (warm-up): 62/72 content words, 0 readings, seg 0.00s A 1.08s B 0.0s total 1.1s, nans/reading, nan tok/s, first sentence 0.2s
+[bench] si size 1 A-only run 1: 62/72 content words, 0 readings, seg 0.00s A 0.92s B 0.0s total 0.9s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] si size 1 A-only run 2: 62/72 content words, 0 readings, seg 0.00s A 0.92s B 0.0s total 0.9s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] si size 1 A-only run 3: 62/72 content words, 0 readings, seg 0.00s A 0.92s B 0.0s total 0.9s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] si size 1 reuse run 0 (warm-up): 62/72 content words, 186 readings, seg 0.00s A 0.89s B 16.2s total 17.1s, 0.087s/reading, 958.2 tok/s, first sentence 2.0s
+[bench] si size 1 reuse run 1: 62/72 content words, 186 readings, seg 0.00s A 0.90s B 16.0s total 16.9s, 0.086s/reading, 969.5 tok/s, first sentence 1.7s
+[bench] si size 1 reuse run 2: 62/72 content words, 186 readings, seg 0.00s A 0.90s B 16.0s total 16.9s, 0.086s/reading, 968.8 tok/s, first sentence 1.7s
+[bench] si size 1 reuse run 3: 62/72 content words, 186 readings, seg 0.00s A 0.92s B 16.1s total 17.0s, 0.086s/reading, 966.6 tok/s, first sentence 1.7s
+[bench] si size 1 noreuse run 0 (warm-up): 62/72 content words, 186 readings, seg 0.00s A 0.90s B 23.7s total 24.6s, 0.127s/reading, 1125.6 tok/s, first sentence 2.2s
+[bench] si size 1 noreuse run 1: 62/72 content words, 186 readings, seg 0.00s A 0.88s B 23.9s total 24.8s, 0.129s/reading, 1113.1 tok/s, first sentence 2.2s
+[bench] si size 1 noreuse run 2: 62/72 content words, 186 readings, seg 0.00s A 0.89s B 23.6s total 24.5s, 0.127s/reading, 1128.7 tok/s, first sentence 2.2s
+[bench] si size 1 noreuse run 3: 62/72 content words, 186 readings, seg 0.00s A 0.91s B 23.6s total 24.5s, 0.127s/reading, 1128.2 tok/s, first sentence 2.2s
+[bench] si size 2 A-only run 0 (warm-up): 93/112 content words, 0 readings, seg 0.00s A 1.26s B 0.0s total 1.3s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] si size 2 A-only run 1: 93/112 content words, 0 readings, seg 0.00s A 1.14s B 0.0s total 1.1s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] si size 2 A-only run 2: 93/112 content words, 0 readings, seg 0.00s A 1.22s B 0.0s total 1.2s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] si size 2 A-only run 3: 93/112 content words, 0 readings, seg 0.00s A 1.16s B 0.0s total 1.2s, nans/reading, nan tok/s, first sentence 0.1s
+[bench] si size 2 reuse run 0 (warm-up): 93/112 content words, 279 readings, seg 0.00s A 1.13s B 26.8s total 27.9s, 0.096s/reading, 1007.1 tok/s, first sentence 2.0s
+[bench] si size 2 reuse run 1: 93/112 content words, 279 readings, seg 0.00s A 1.18s B 26.6s total 27.8s, 0.095s/reading, 1014.5 tok/s, first sentence 1.7s
+[bench] si size 2 reuse run 2: 93/112 content words, 279 readings, seg 0.00s A 1.17s B 26.6s total 27.8s, 0.095s/reading, 1013.8 tok/s, first sentence 1.7s
+[bench] si size 2 reuse run 3: 93/112 content words, 279 readings, seg 0.00s A 1.18s B 26.6s total 27.8s, 0.095s/reading, 1014.7 tok/s, first sentence 1.7s
+Stage 7, GPU (RTX 2070 SUPER) in Docker on the PC: median over the timed runs
+threads: llama.cpp 16, torch 8; peak RSS 8.77 GB, cgroup peak 4.785573888 GB
+
+lang size mode     sent words content reads  prompt_tok  seg_s    A_s      B_s    total_s  s/read  tok/s  first_s
+ca      1 A-only      5   137      68     0           0   0.08    0.81      0.0       0.9     nan    nan     0.2
+ca      1 noreuse     5   137      68   204       27148   0.08    0.82     25.4      26.3   0.124 1069.3     1.5
+ca      1 reuse       5   137      68   204       27148   0.08    0.84     16.1      17.1   0.079  963.9     1.2
+ca      2 A-only     10   251     124     0           0   0.18    1.58      0.0       1.8     nan    nan     0.3
+ca      2 reuse      10   251     124   372       46133   0.19    1.60     28.4      30.2   0.076  939.7     1.3
+de      1 A-only      8   121      63     0           0   0.46    1.15      0.0       1.6     nan    nan     0.6
+de      1 noreuse     8   121      63   189       19000   0.59    1.24     18.1      20.1   0.096 1048.5     2.7
+de      1 reuse       8   121      63   189       19000   0.58    1.28     13.1      14.9   0.069  888.1     2.2
+de      2 A-only     11   177      91     0           0   0.63    1.67      0.0       2.3     nan    nan     0.8
+de      2 reuse      11   177      91   273       28235   0.65    1.68     18.9      21.2   0.069  895.7     2.2
+en      1 A-only      4    79      36     0           0   0.46    0.61      0.0       1.1     nan    nan     0.6
+en      1 noreuse     4    79      36   108       11442   0.42    0.58     11.0      12.0   0.101 1043.8     1.3
+en      1 reuse       4    79      36   108       11442   0.44    0.62      7.4       8.5   0.069  907.7     1.2
+en      2 A-only     10   201      94     0           0   0.67    1.60      0.0       2.3     nan    nan     0.8
+en      2 reuse      10   201      94   282       31323   0.67    1.58     20.3      22.6   0.072  915.1     1.4
+es      1 A-only      3    68      31     0           0   0.45    0.37      0.0       0.8     nan    nan     0.7
+es      1 noreuse     3    68      31    93       11612   0.38    0.37     10.7      11.5   0.115 1083.0     7.6
+es      1 reuse       3    68      31    93       11612   0.39    0.35      7.1       7.9   0.077  937.3     5.0
+es      2 A-only      5   137      66     0           0   0.48    0.74      0.0       1.2     nan    nan     0.7
+es      2 reuse       5   137      66   198       24220   0.54    0.72     14.8      16.1   0.075  938.4     5.1
+fil     1 A-only      3    56      29     0           0   0.00    0.47      0.0       0.5     nan    nan     0.1
+fil     1 noreuse     3    56      29    87        9633   0.00    0.47      9.2       9.7   0.106 1047.2     1.8
+fil     1 reuse       3    56      29    87        9633   0.00    0.47      6.3       6.8   0.073  911.8     1.3
+fil     2 A-only      7   168      93     0           0   0.00    1.22      0.0       1.2     nan    nan     0.1
+fil     2 reuse       7   168      93   279       37425   0.00    1.22     22.9      24.1   0.082  953.9     1.4
+fr      1 A-only      4   109      57     0           0   0.50    0.72      0.0       1.2     nan    nan     0.7
+fr      1 noreuse     4   109      57   171       21142   0.47    0.70     19.4      20.6   0.114 1088.9     6.3
+fr      1 reuse       4   109      57   171       21142   0.47    0.70     13.1      14.3   0.076  946.0     4.3
+fr      2 A-only      5   157      80     0           0   0.65    0.92      0.0       1.6     nan    nan     0.8
+fr      2 reuse       5   157      80   240       32562   0.68    0.94     19.8      21.5   0.083  957.8     4.6
+it      1 A-only      2    65      32     0           0   0.52    0.37      0.0       0.9     nan    nan     0.7
+it      1 noreuse     2    65      32    96       12924   0.48    0.38     12.1      12.9   0.126 1071.3     9.4
+it      1 reuse       2    65      32    96       12924   0.50    0.36      7.6       8.4   0.079  971.9     6.0
+it      2 A-only      3   106      53     0           0   0.43    0.59      0.0       1.0     nan    nan     0.6
+it      2 reuse       3   106      53   159       22595   0.43    0.59     13.1      14.1   0.082  982.4     5.9
+ja      1 A-only      3    57      30     0           0   0.18    0.46      0.0       0.7     nan    nan     0.3
+ja      1 noreuse     3    57      30    90        9434   0.20    0.45      8.6       9.3   0.096 1097.1     2.9
+ja      1 reuse       3    57      30    90        9434   0.18    0.47      6.3       7.0   0.070  892.6     2.2
+ja      2 A-only      7   172      95     0           0   0.42    1.15      0.0       1.5     nan    nan     0.6
+ja      2 reuse       7   172      95   285       29740   0.39    1.10     19.3      20.8   0.068  898.3     2.5
+pt      1 A-only      8   182      87     0           0   0.71    1.32      0.0       2.0     nan    nan     0.8
+pt      1 noreuse     8   182      87   261       31390   0.81    1.29     29.4      31.5   0.112 1069.4     2.5
+pt      1 reuse       8   182      87   261       31390   0.75    1.29     19.8      21.8   0.076  934.6     2.1
+pt      2 A-only     14   351     174     0           0   1.23    2.32      0.0       3.6     nan    nan     1.4
+pt      2 reuse      14   351     174   522       66246   1.24    2.30     40.6      44.2   0.078  944.2     2.6
+ro      1 A-only      6   107      64     0           0   0.07    0.92      0.0       1.0     nan    nan     0.2
+ro      1 noreuse     6   107      64   192       22387   0.08    0.93     21.0      22.0   0.110 1064.2     1.5
+ro      1 reuse       6   107      64   192       22387   0.07    0.91     14.1      15.1   0.074  926.9     1.1
+ro      2 A-only     12   226     126     0           0   0.19    1.84      0.0       2.1     nan    nan     0.3
+ro      2 reuse      12   226     126   378       42422   0.18    1.78     27.4      29.3   0.072  912.7     1.2
+si      1 A-only      6    72      62     0           0   0.00    0.92      0.0       0.9     nan    nan     0.1
+si      1 noreuse     6    72      62   186       26654   0.00    0.89     23.6      24.5   0.127 1128.2     2.2
+si      1 reuse       6    72      62   186       26654   0.00    0.90     16.0      16.9   0.086  968.8     1.7
+si      2 A-only      7   112      93     0           0   0.00    1.16      0.0       1.2     nan    nan     0.1
+si      2 reuse       7   112      93   279       47240   0.00    1.18     26.6      27.8   0.095 1014.5     1.7
+-> bench/results/gpu_docker_pc.csv, bench/results/gpu_docker_pc_readings.csv, bench/results/gpu_docker_pc_load.json, bench/results/gpu_docker_pc_summary.txt
+exit 0

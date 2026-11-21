@@ -1,0 +1,47 @@
+# Stage 7 on the PC: a working CUDA image to time inference in Docker with the RTX 2070 SUPER
+# (Turing, sm_75), linux/amd64. Same Python environment as docker/Dockerfile.cpu; the encoders of
+# signal A stay on the CPU (torch CPU build, ~1 s per text), only llama.cpp uses the GPU.
+#
+# Nothing is baked in except the Python environment. At run time (docker/run_cuda.sh) the repo is
+# mounted at /app, the named volume lcp-hf at /hf/hub (Hugging Face cache: GGUF, Gemma tokenizer,
+# encoders, stanza zips) and the named volume lcp-stanza at /stanza for the unpacked stanza models.
+#
+#   docker build -f docker/Dockerfile.cuda -t lcp-web:cuda .
+FROM --platform=linux/amd64 nvidia/cuda:12.6.3-devel-ubuntu24.04
+
+# Python 3.11 as in python:3.11-slim (Ubuntu 24.04 ships 3.12), from the deadsnakes PPA.
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends software-properties-common \
+ && add-apt-repository -y ppa:deadsnakes/ppa \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends python3.11 python3.11-venv python3.11-dev \
+        build-essential cmake git \
+ && rm -rf /var/lib/apt/lists/*
+RUN python3.11 -m venv /opt/venv
+ENV PATH=/opt/venv/bin:$PATH
+
+RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch==2.13.0
+
+COPY docker/requirements.cpu.txt /tmp/requirements.cpu.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.cpu.txt
+
+# llama.cpp with CUDA for sm_75 only, plus the CPU kernels of the build machine (AVX2 on the
+# Ryzen 7 3700X) for the layers that stay on the CPU. Few parallel jobs: nvcc needs a lot of
+# memory per job and the VM has 12 GB.
+RUN CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=75 -DGGML_NATIVE=ON" \
+    CMAKE_BUILD_PARALLEL_LEVEL=6 \
+    pip install --no-cache-dir --no-binary llama-cpp-python llama-cpp-python==0.3.37
+
+# Without --gpus (x86 CPU reference) there is no libcuda.so.1 in the container and llama.cpp,
+# linked against it, would not load. run_cuda.sh with GPU=0 puts this directory on
+# LD_LIBRARY_PATH: the toolkit's driver stub, whose cuInit fails, so llama.cpp finds no device.
+RUN mkdir -p /opt/cuda-stub \
+ && ln -s /usr/local/cuda/lib64/stubs/libcuda.so /opt/cuda-stub/libcuda.so.1
+
+ENV PYTHONPATH=/app/lcp_model:/app \
+    PYTHONUNBUFFERED=1 \
+    HF_HUB_CACHE=/hf/hub \
+    HF_HUB_OFFLINE=1 \
+    STANZA_RESOURCES_DIR=/stanza
+WORKDIR /app

@@ -30,6 +30,9 @@ def main():
     ap.add_argument("--dir", default="bench/results")
     ap.add_argument("--prefix", default="cpu_docker_mac")
     ap.add_argument("--rerun", nargs="*", default=[])
+    ap.add_argument("--title", default="Etapa 1: inferenta doar pe CPU, in Docker pe Mac")
+    ap.add_argument("--vm", default="VM-ul Docker are 16 GB si 1 GB swap",
+                    help="memory note after the memory header")
     a = ap.parse_args()
     stem = os.path.join(a.dir, a.prefix)
     runs = pd.read_csv(stem + ".csv")
@@ -50,14 +53,19 @@ def main():
     reads = reads[reads["run"] == first]
 
     L = []
-    L.append("Etapa 1: inferenta doar pe CPU, in Docker pe Mac")
+    L.append(a.title)
     L.append(f"masina: {load.get('machine')}, {load.get('cpus')} nuclee vizibile in container, "
              f"thread-uri llama.cpp {load.get('threads_llama')}, torch {load.get('threads_torch')}; "
              f"llama-cpp-python {load.get('llama_cpp_python')}, torch {load.get('torch')}")
     L.append("model B: Gemma 4 12B it QAT q4_0 (GGUF Google), 3 prompturi pe cuvant de continut")
     L.append("A: xlmr + labse + e5, un forward pe propozitie; regresorii si fuziunea (milisecunde) nu sunt inclusi")
     L.append("")
-    L.append("Timpi pe text (mediana rularilor masurate; B a rulat o data pe text in fiecare mod).")
+    timed = runs[(~runs["warmup"]) & (runs["mode"] != "A-only")]
+    n_b = int(timed.groupby(["lang", "size", "mode"])["run"].count().max())
+    L.append("Timpi pe text (mediana rularilor masurate; B a rulat o data pe text in fiecare mod)."
+             if n_b == 1 else
+             f"Timpi pe text (mediana rularilor masurate; B: 1 incalzire + {n_b} rulari masurate "
+             f"pe text in fiecare mod).")
     L.append("'cu refol.' = KV-ul prefixului comun pastrat intre citiri (modul pentru site, probabilitati")
     L.append("bit-identice cu 'fara refol.' in spike); 'fara refol.' masurat doar la 1 paragraf.")
     if replaced:
@@ -93,19 +101,26 @@ def main():
     L.append("")
     for sz in sorted(set(R["size"])):
         r = R[R["size"] == sz]
-        L.append(f"{sz} paragraf(e), 11 limbi: total cu refol. median {mmss(r['total'].median())}, "
+        L.append(f"{sz} paragraf(e), {len(r)} limbi: total cu refol. median {mmss(r['total'].median())}, "
                  f"min {mmss(r['total'].min())} ({r.loc[r['total'].idxmin(), 'lang']}), "
                  f"max {mmss(r['total'].max())} ({r.loc[r['total'].idxmax(), 'lang']}); "
                  f"cuvinte {r['words'].min():.0f}-{r['words'].max():.0f}, "
                  f"citiri {r['readings'].min():.0f}-{r['readings'].max():.0f}")
     ru = reads[reads["mode"] == "reuse"]
     nr = reads[reads["mode"] == "noreuse"]
-    L.append(f"pe toate citirile: cu refol. {ru['seconds'].sum() / len(ru):.2f} s/citire "
-             f"({len(ru)} citiri), fara refol. {nr['seconds'].sum() / len(nr):.2f} s/citire "
-             f"({len(nr)} citiri); prefill fara refol. "
-             f"{nr['n_evaluated'].sum() / nr['seconds'].sum():.1f} tokeni/s, "
-             f"{nr['n_tokens'].mean():.0f} tokeni pe prompt in medie; cu refol. se evalueaza "
-             f"{ru['n_evaluated'].sum() / ru['n_tokens'].sum():.0%} din tokeni")
+    if len(nr):
+        L.append(f"pe toate citirile: cu refol. {ru['seconds'].sum() / len(ru):.2f} s/citire "
+                 f"({len(ru)} citiri), fara refol. {nr['seconds'].sum() / len(nr):.2f} s/citire "
+                 f"({len(nr)} citiri); prefill fara refol. "
+                 f"{nr['n_evaluated'].sum() / nr['seconds'].sum():.1f} tokeni/s, "
+                 f"{nr['n_tokens'].mean():.0f} tokeni pe prompt in medie; cu refol. se evalueaza "
+                 f"{ru['n_evaluated'].sum() / ru['n_tokens'].sum():.0%} din tokeni")
+    else:
+        L.append(f"pe toate citirile: cu refol. {ru['seconds'].sum() / len(ru):.2f} s/citire "
+                 f"({len(ru)} citiri), {ru['n_evaluated'].sum() / ru['seconds'].sum():.1f} "
+                 f"tokeni evaluati/s, {ru['n_tokens'].mean():.0f} tokeni pe prompt in medie, "
+                 f"se evalueaza {ru['n_evaluated'].sum() / ru['n_tokens'].sum():.0%} din tokeni; "
+                 f"fara refol. nemasurat")
     both = R.dropna(subset=["total_nr"])
     if len(both):
         L.append(f"castigul refolosirii la 1 paragraf: {1 - (both['total'] / both['total_nr']).median():.0%} "
@@ -113,7 +128,7 @@ def main():
                  f"{1 - (both['total'] / both['total_nr']).min():.0%})")
     L.append("")
     L.append("Memorie (GB; anon = memorie proprie, file = pagini mapate din GGUF si safetensors,")
-    L.append("pe care kernelul le poate elibera si reciti; VM-ul Docker are 16 GB si 1 GB swap)")
+    L.append(f"pe care kernelul le poate elibera si reciti; {a.vm})")
 
     def md(d):
         return ", ".join(f"{k} {v:.2f}" for k, v in d.items()) if isinstance(d, dict) else str(d)
@@ -129,6 +144,21 @@ def main():
     L.append(f"  incarcare: encodere {load.get('load_encoders_s', float('nan')):.1f} s, "
              f"Gemma {load.get('load_gemma_s', float('nan')):.1f} s, stanza pe limba "
              + ", ".join(f"{lg} {v:.1f} s" for lg, v in load.get("load_stanza_s", {}).items()))
+    args = load.get("args", {})
+    if args.get("gpu_layers") or load.get("vram_after_gemma_mib"):
+        def v(x):
+            return f"{x[0]} MiB" if isinstance(x, (list, tuple)) and x else "-"
+        L.append(f"  llama.cpp: gpu layers {args.get('gpu_layers')}, flash attn "
+                 f"{args.get('flash_attn')}, n_ctx {args.get('n_ctx')}, n_batch "
+                 f"{args.get('n_batch')}, mmap "
+                 f"{not args.get('no_mmap')}")
+        L.append(f"  VRAM pe tot GPU-ul (include ecranul Windows): inainte {v(load.get('vram_start_mib'))}, "
+                 f"dupa Gemma {v(load.get('vram_after_gemma_mib'))}, dupa incalzire "
+                 f"{v(load.get('vram_after_warmup_mib'))}, la final {v(load.get('vram_end_mib'))}")
+        ends = load.get("vram_end_of_lang_mib", {})
+        if ends:
+            L.append("  VRAM la finalul fiecarei limbi: maxim "
+                     f"{max(x[0] for x in ends.values() if x)} MiB")
     out = stem + "_rezumat.txt"
     with open(out, "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")

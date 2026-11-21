@@ -21,6 +21,10 @@ Outputs, in bench/results/:
   cpu_docker_mac_summary.txt   median over the timed runs, per language and size
 
   docker/run_cpu.sh python scripts/bench_cpu.py
+
+On the PC (stage 7): --gpu-layers, --flash-attn, --n-ctx and --no-mmap go to llama.cpp, --skip-a
+drops the encoders (x86 CPU reference for B), and the load JSON also records the VRAM used.
+  docker/run_cuda.sh python scripts/bench_cpu.py --gpu-layers 40 --n-ctx 2048 --prefix gpu_docker_pc
 """
 import argparse
 import gc
@@ -70,8 +74,22 @@ def mem():
     return tuple(out)
 
 
+def gpu_mem():
+    """(used MiB, total MiB) of the whole GPU from nvidia-smi, or None without a GPU. Under WSL2
+    there is no per-process figure, so this includes the Windows desktop."""
+    import subprocess
+    try:
+        out = subprocess.run(["nvidia-smi", "--query-gpu=memory.used,memory.total",
+                              "--format=csv,noheader,nounits"], capture_output=True, text=True,
+                             timeout=20)
+        used, total = (int(x) for x in out.stdout.strip().splitlines()[0].split(","))
+        return used, total
+    except (OSError, ValueError, IndexError, subprocess.SubprocessError):
+        return None
+
+
 def analyze(seg, enc, rt, lang, text, reuse, log_readings, run_key):
-    """One pass over `text`. reuse=None skips B (segmentation and A only)."""
+    """One pass over `text`. reuse=None skips B (segmentation and A only); enc=None skips A."""
     rt.reuse = bool(reuse)
     rt._prev = []
     t0 = time.perf_counter()
@@ -83,9 +101,10 @@ def analyze(seg, enc, rt, lang, text, reuse, log_readings, run_key):
     for si, s in enumerate(sents):
         cw = s.content_words
         if cw:
-            ta = time.perf_counter()
-            enc.embed(s.text, [(w.start, w.end) for w in cw])
-            t_a += time.perf_counter() - ta
+            if enc is not None:
+                ta = time.perf_counter()
+                enc.embed(s.text, [(w.start, w.end) for w in cw])
+                t_a += time.perf_counter() - ta
             for pr in (PROMPTS if reuse is not None else ()):
                 for wi, w in enumerate(cw):
                     tb = time.perf_counter()
@@ -111,9 +130,9 @@ def analyze(seg, enc, rt, lang, text, reuse, log_readings, run_key):
                 prefill_tok_s=n_eval / t_b if t_b else np.nan, t_first_sentence=t_first)
 
 
-def summary(df, load, path):
+def summary(df, load, path, title):
     t = df[~df["warmup"]].groupby(["lang", "size", "mode"]).median(numeric_only=True)
-    lines = ["Stage 1, CPU in Docker on the Mac: median over the timed runs",
+    lines = [f"{title}: median over the timed runs",
              f"threads: llama.cpp {load['threads_llama']}, torch {load['threads_torch']}; "
              f"peak RSS {load['peak_rss_gb']:.2f} GB, cgroup peak {load['cgroup_peak_gb']} GB",
              "",
@@ -145,6 +164,19 @@ def main():
     ap.add_argument("--b-warmup", type=int, default=None, help="default: --warmup")
     ap.add_argument("--b-reps", type=int, default=None, help="default: --reps")
     ap.add_argument("--threads", type=int, default=None)
+    ap.add_argument("--gpu-layers", type=int, default=0,
+                    help="Gemma layers offloaded to the GPU (0 = none; 49 = all + output)")
+    ap.add_argument("--flash-attn", action="store_true", help="flash attention in llama.cpp")
+    ap.add_argument("--n-ctx", type=int, default=4096,
+                    help="llama.cpp context (longest prompt in the spike: 675 tokens)")
+    ap.add_argument("--n-batch", type=int, default=512,
+                    help="llama.cpp n_batch = n_ubatch (the compute buffer grows with it)")
+    ap.add_argument("--no-mmap", action="store_true",
+                    help="read the GGUF into memory instead of mapping it")
+    ap.add_argument("--skip-a", action="store_true",
+                    help="no encoders: segmentation and B only (no A-only runs)")
+    ap.add_argument("--title", default="Stage 1, CPU in Docker on the Mac",
+                    help="first line of the summary")
     a = ap.parse_args()
     a.b_warmup = a.warmup if a.b_warmup is None else a.b_warmup
     a.b_reps = a.reps if a.b_reps is None else a.b_reps
@@ -161,31 +193,41 @@ def main():
             "torch": torch.__version__}
     import llama_cpp
     load["llama_cpp_python"] = llama_cpp.__version__
+    si = llama_cpp.llama_print_system_info()
+    load["system_info"] = si.decode(errors="replace") if isinstance(si, bytes) else str(si)
+    load["vram_start_mib"] = gpu_mem()
     m0 = mem()
-    t0 = time.perf_counter()
-    enc = Encoders()
-    load["load_encoders_s"] = time.perf_counter() - t0
-    load["load_encoders_each_s"] = enc.load_seconds
-    load["mem_after_encoders_gb"] = mem_detail()
-    rt = LlamaRater(n_threads=a.threads)
+    enc = None
+    if not a.skip_a:
+        t0 = time.perf_counter()
+        enc = Encoders()
+        load["load_encoders_s"] = time.perf_counter() - t0
+        load["load_encoders_each_s"] = enc.load_seconds
+        load["mem_after_encoders_gb"] = mem_detail()
+    rt = LlamaRater(n_threads=a.threads, n_ctx=a.n_ctx, n_batch=a.n_batch,
+                    n_gpu_layers=a.gpu_layers, flash_attn=a.flash_attn, use_mmap=not a.no_mmap)
     load["load_gemma_s"] = rt.load_seconds
     load["mem_after_gemma_gb"] = mem_detail()
+    load["vram_after_gemma_mib"] = gpu_mem()
     load["threads_llama"] = rt.llm.n_threads
     load["threads_torch"] = torch.get_num_threads()
     load["mem_start_gb"] = m0
     load["mem_stanza_gb"] = {}
     seg = S.Segmenter()
-    print(f"[bench] encoders {load['load_encoders_s']:.1f}s, Gemma {rt.load_seconds:.1f}s, "
-          f"threads llama {rt.llm.n_threads} torch {torch.get_num_threads()}, mem {mem_detail()}",
-          flush=True)
+    print(f"[bench] encoders {load.get('load_encoders_s', float('nan')):.1f}s, "
+          f"Gemma {rt.load_seconds:.1f}s, gpu layers {a.gpu_layers}, "
+          f"threads llama {rt.llm.n_threads} torch {torch.get_num_threads()}, mem {mem_detail()}, "
+          f"vram {load['vram_start_mib']} -> {load['vram_after_gemma_mib']} MiB", flush=True)
 
     # Warm-up, not recorded: page in the GGUF and run each encoder once.
     t0 = time.perf_counter()
     rt.reuse = False
     for pr in PROMPTS:
         rt.read(pr, "en", "The cat sat on the mat.", "cat")
-    enc.embed("The cat sat on the mat.", [(4, 7)])
+    if enc is not None:
+        enc.embed("The cat sat on the mat.", [(4, 7)])
     load["warmup_s"] = time.perf_counter() - t0
+    load["vram_after_warmup_mib"] = gpu_mem()
     load["args"] = vars(a)
 
     rows, readings = [], []
@@ -198,7 +240,7 @@ def main():
         for sz in a.sizes:
             with open(os.path.join(a.texts, f"{lg}_{sz}.txt"), encoding="utf-8") as fh:
                 text = fh.read().strip()
-            plan = [("A-only", a.warmup, a.reps)] + [
+            plan = ([] if a.skip_a else [("A-only", a.warmup, a.reps)]) + [
                 (md, a.b_warmup, a.b_reps) for md in a.modes
                 if not (md == "noreuse" and a.noreuse_sizes and sz not in a.noreuse_sizes)]
             for md, n_warm, n_reps in plan:
@@ -220,14 +262,15 @@ def main():
         if seg._nlp.pop(lg, None) is not None:
             gc.collect()
         load.setdefault("mem_end_of_lang_gb", {})[lg] = mem_detail()
+        load.setdefault("vram_end_of_lang_mib", {})[lg] = gpu_mem()
 
     rss, peak, cur = mem()
     load |= {"peak_rss_gb": rss, "cgroup_peak_gb": peak, "cgroup_current_gb": cur,
-             "mem_end_gb": mem_detail(),
+             "mem_end_gb": mem_detail(), "vram_end_mib": gpu_mem(),
              "load_stanza_s": seg.load_seconds}
     with open(stem + "_load.json", "w") as fh:
         json.dump(load, fh, indent=1, default=str)
-    summary(pd.DataFrame(rows), load, stem + "_summary.txt")
+    summary(pd.DataFrame(rows), load, stem + "_summary.txt", a.title)
     print(f"-> {stem}.csv, {stem}_readings.csv, {stem}_load.json, {stem}_summary.txt")
 
 
