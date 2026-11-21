@@ -6,8 +6,10 @@
 #
 # Mounts: this repo at /app; the named volume lcp-hf at /hf/hub (the Hugging Face cache, on the
 # Docker VM's own disk rather than /mnt/c, so the 7 GB GGUF reads fast), read-only unless
-# HF_ONLINE=1, which also lifts HF_HUB_OFFLINE; the named volume lcp-stanza at /stanza. The paper's
-# data is not mounted (not needed on the PC).
+# HF_ONLINE=1, which also lifts HF_HUB_OFFLINE; the named volume lcp-stanza at /stanza; the paper's
+# release/ read-only at /paper/release, from the worktree of branch lcp_model next to this repo
+# (../lcp-paper, override with PAPER=), when it exists. Its symlinks are replaced there by copies,
+# since Git for Windows checks them out as text files.
 # GPU=0 runs without --gpus: the container sees no GPU at all, so llama.cpp cannot move work to it
 # even with n_gpu_layers=0; the CUDA driver stub stands in for libcuda.so.1 (see Dockerfile.cuda).
 set -euo pipefail
@@ -20,6 +22,10 @@ HF_MODE=ro
 if [ "${HF_ONLINE:-0}" = 1 ]; then
   HF_MODE=rw
   ARGS+=(-e HF_HUB_OFFLINE=0)
+fi
+PAPER="${PAPER:-$(cd "$(dirname "$0")/../../lcp-paper" 2>/dev/null && (pwd -W 2>/dev/null || pwd) || true)}"
+if [ -n "$PAPER" ] && [ -d "$PAPER/release" ]; then
+  ARGS+=(-v "$PAPER/release":/paper/release:ro)
 fi
 if [ "${GPU:-1}" = 1 ]; then
   ARGS+=(--gpus all)

@@ -49,6 +49,21 @@ paper repository is expected at `~/Documents/GitHub/ia-sahistii` (override with 
 Results and conclusion: `bench/results/concluzie_etapa7_pc.txt`. Run from Git Bash; the Hugging
 Face cache lives in the Docker volume `lcp-hf` (not on `/mnt/c`), the VM has 12 GB (`.wslconfig`).
 
+The paper's repository is the branch `lcp_model` (its own history, never merged into `main`),
+checked out as a worktree next to this repo; `docker/run_cuda.sh` mounts its `release/` read-only at
+`/paper/release`. Git for Windows writes the symlinks of `release/` as text files, so they are
+replaced by copies and hidden from `git status`:
+
+```bash
+git config extensions.worktreeConfig true
+git -c core.autocrlf=false worktree add --track -b lcp_model ../lcp-paper origin/lcp_model
+cd ../lcp-paper && git config --worktree core.autocrlf false
+L=$(git ls-tree -r HEAD release/ | awk '$1=="120000"{print $4}')
+for f in $L; do t="$(dirname "$f")/$(cat "$f")"
+  if [ -d "$t" ]; then rm "$f" && cp -r "$t" "$f"; else cp "$t" "$f.tmp" && mv "$f.tmp" "$f"; fi; done
+git update-index --skip-worktree $L
+```
+
 ```bash
 docker build -f docker/Dockerfile.cuda -t lcp-web:cuda .
 HF_ONLINE=1 docker/run_cuda.sh python scripts/fetch_models.py      # GGUF (sha256), tokenizer, encoders
