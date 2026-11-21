@@ -1,0 +1,21 @@
+Below is one paragraph of the Results section of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. The authors want it shorter. Rewrite it so that it is at most 150 words (it has 169 now), by making only these changes:
+1. Merge the sentence on Sonnet and the sentence on Opus into one sentence, with both models and their four numbers.
+2. Remove the words "which is" wherever they appear.
+3. Shorten "In the last two rows of Table~\ref{tab:ablations}, the Claude model rating replaces signal~B in the fusion." without losing the reference to the table.
+4. Write the last sentence about the correlation with signal~A so that it says clearly that for Gemma~4 the rating of Gemma~4 correlates with signal~A at 0.685.
+Every other sentence stays word for word. Keep the paragraph, starting with "\paragraph{Baseline.}".
+
+Current text:
+<<<
+\paragraph{Baseline.} We built a baseline using Claude Sonnet 5.5 and Claude Opus 5.5 as standalone models, each rating every test instance zero-shot with the same prompt. Sonnet reached 0.685 on eleven languages and 0.675 on ten, which is below our method by 0.008 and 0.015. Opus reached 0.721 and 0.711, above our method by 0.028 and 0.021. Fusing each Claude model with our trained method using a weighted average as in step~8 yielded 0.706 for Sonnet on the ten MLSP languages and 0.724 for Opus, which is 0.013 more than Opus alone. In the last two rows of Table~\ref{tab:ablations}, the Claude model rating replaces signal~B in the fusion. With signal~A, Opus reaches 0.725 and Sonnet 0.695 on eleven languages, which is 0.004 above Opus alone and 0.010 above Sonnet alone, and both intervals exclude zero. With Gemma~4, the same fusion adds 0.029 to signal~B (Section~\ref{sec:results-fusion}). The ratings of Opus and Sonnet both correlate with signal~A at 0.77 on average over the eleven languages, while Gemma~4 correlates at 0.685 (Table~\ref{tab:corr-ab}).
+>>>
+
+Rules:
+- Make only the changes described above. Everything else stays word for word.
+- Do not change any number. Keep every "Table~\ref{...}", "Section~\ref{...}", "Appendix~\ref{...}" and every "\citep{...}" or "\citet{...}" exactly as written, and write "signal~A", "signal~B", "Gemma~4", "Claude Opus 5.5" and "Claude Sonnet 5.5" exactly like this.
+- Do not add any claim, number, explanation or citation.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Use "we" for the authors. Write "test language" for the language we predict.
+- At most 150 words.
+
+Output only the rewritten text in LaTeX, with no title, no comments and no explanations.

@@ -1,0 +1,18 @@
+Below is one paragraph of the Results section of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. Rewrite only the problem described below. Make only this change. Every other sentence stays word for word. Keep it as one paragraph.
+
+The problem: "Boosted trees correlate at 0.974 to 0.995; ridge correlates at 0.88." does not say with what they correlate. It must say that the signal~A of the boosted trees correlates at 0.974 to 0.995 with each other, and that the signal~A of ridge correlates at 0.88 with theirs. Use as few words as possible.
+
+Current text:
+<<<
+The average of ridge and HGB provides the best signal~A and fusion. Every model loses in the fusion: 0.002 to 0.003 for ridge and boosted trees, and 0.006 to 0.007 for ExtraTrees, RandomForest, and MLP. For HGB, LightGBM, and CatBoost, the loss interval includes zero. Boosted trees correlate at 0.974 to 0.995; ridge correlates at 0.88. Ridge and HGB correlate lowest on Sinhala (0.571) and 0.831 to 0.957 elsewhere (Table~\ref{tab:corr-ab}). The average outperforms each alone by combining models with different errors.
+>>>
+
+Rules:
+- Make only the changes described above. Everything else stays word for word.
+- Do not change any number. Keep every "Table~\ref{...}", "Section~\ref{...}", "Appendix~\ref{...}" and every "\citep{...}" or "\citet{...}" exactly as written, and write "signal~A", "signal~B", "Gemma~4", "Claude Opus 5.5" and "Claude Sonnet 5.5" exactly like this.
+- Do not add any claim, number, explanation or citation.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Use "we" for the authors. Write "test language" for the language we predict.
+- At most 85 words.
+
+Output only the rewritten text in LaTeX, with no title, no comments and no explanations.

@@ -1,0 +1,3 @@
+joined 1587 of 1587
+r with ET 0.7770  without 0.7704  diff +0.0066
+contexts 274  paired 95% CI [-0.0009, +0.0144]  P(>0) 95.7%

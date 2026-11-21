@@ -1,0 +1,40 @@
+You are writing the Introduction of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels". Write only the body of the Introduction, in LaTeX, about 250 words, in four paragraphs. Follow the structure and tone of the example introduction below (from the RALS paper, EMNLP 2025): first the broad area and why it matters for readers, then lexical complexity prediction as a subtask, then the scarcity of labelled resources across languages, and a last paragraph that starts with "In this paper, we address".
+
+Example introduction (for structure and tone only; do not copy its content or its citations):
+<<<
+Text simplification is the process of transforming texts into variants that are simpler to understand by larger audiences or easier to process by existing NLP systems. Such initiatives promote literacy, facilitate effective communication, and enable equal access to information for individuals with diverse reading abilities or special needs (Zilio et al., 2020; Štajner, 2021; Gooding, 2022). These outcomes have broad-reaching advantages in sectors such as education, healthcare, legal documentation, government communication, online content, and beyond, ultimately enhancing social inclusivity and empowerment.
+
+Unlike sentence simplification, which is typically modeled as a monolingual machine translation task (Specia, 2010; Nisioi et al., 2017; Dou et al., 2024), lexical simplification (LS) is specifically targeting particular lexical items to better control text generation and evaluation (Devlin, 1998; Carroll et al., 1998; De Belder and Moens, 2010; Glavaš and Štajner, 2015; Lee and Yeung, 2018; Sheang et al., 2022; Gooding and Tragut, 2022). In this way, the output can be guided towards specific target groups such as children or readers with different degrees of literacy.
+
+End-to-end lexical simplification is typically divided into two equally challenging subtasks: a) lexical complexity prediction (LCP), which assigns complexity scores to words (Yimam et al., 2018) and b) lexical simplification, which suggests simpler replacement words guided by LCP scores through candidate retrieval and re-ranking (North et al., 2023).
+
+The series of workshops on lexical complexity prediction and lexical simplification (Specia et al., 2012; Paetzold and Specia, 2016; Yimam et al., 2018; Shardlow et al., 2021; Saggion et al., 2022; Shardlow et al., 2024b; Štajner et al., 2024) along with their shared tasks have nurtured a growing international interest in multilingual simplification. Several resources have been independently developed and used in these tasks that cover well-resourced languages such as Spanish (Ferrés and Saggion, 2022; Alarcon et al., 2023; Stajner et al., 2023), German (Ebling et al., 2022), Dutch (Hobo et al., 2023), Portuguese (Hartmann and Aluísio, 2020; North et al., 2022), Japanese (Kajiwara and Yamamoto, 2015; Kodaira et al., 2016; Ide et al., 2023), Chinese (Qiang et al., 2021b), and French (Billami et al., 2018; Pintard and François, 2020). Despite its potential broad impact, this task has received relatively little attention for medium and low-resource languages, where Italian, Catalan, Sinhala, or Filipino (Shardlow et al., 2024a), have remained relatively underexplored, and Eastern Romance languages such as Romanian are completely absent from landscape text simplification research. This scarcity of resources is not unique to Romanian (Codrut, et al., 2024); many other languages worldwide face similar challenges due to their limited visibility on the global linguistic stage.
+
+In this paper, we address the twin challenges of creating annotated datasets for lexical complexity prediction and lexical simplification in Romanian, a language currently lacking resources in this domain. Furthermore, we close this resource gap by constructing several end-to-end lexical simplification models specifically adapted to the particularities of Romanian.
+>>>
+
+Facts you may use. Use only these facts. Do not add any other claim, number or citation. Cite with \citep{key}, using exactly the keys given.
+1. Many readers have difficulty understanding written text, among them language learners, children, people with cognitive disabilities and people with a low level of reading proficiency \citep{saggion-etal-2024-lexical}.
+2. Lexical simplification replaces words that may be unfamiliar or difficult with easier and more common words \citep{saggion-etal-2024-lexical}.
+3. Identifying complex words is often the first step of a text simplification pipeline \citep{qiu-etal-2024-complex}.
+4. Lexical complexity prediction (LCP) gives a word a score for how complex it is in its context. LCP models are trained on words that human annotators rated for complexity.
+5. A 2024 review of LCP resources finds datasets for only eight languages besides English \citep{shardlow-etal-2024-multilingual}.
+6. Romanian is not among those eight languages. Its first LCP dataset, RoLCP, was published in 2025 \citep{anghel-etal-2025-rals}.
+7. Without labelled data in a language, a model cannot be trained on that language, and its settings cannot be chosen on that language either.
+8. Our work: we predict the complexity of words in a language using only the labelled data of other languages.
+9. Our method combines two signals: a regressor trained on the embeddings of frozen multilingual encoders and on word features, such as word frequency, and the ratings of a large language model with openly published weights. A weighted average fuses the two signals.
+10. No label of the test language is used for training or for choosing settings. Write exactly this claim and nothing stronger: do not write that no decision ever saw any label.
+11. We evaluate on eleven languages: the ten languages of the MLSP 2024 shared task \citep{shardlow-etal-2024-bea} and Romanian. The mean Pearson correlation over the eleven languages is 0.693.
+12. Section~\ref{sec:negative} lists the experiments that did not improve the results. End the introduction with this sentence.
+
+Style rules:
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences, one idea per sentence. No figures of speech, no aphorisms, no rhetorical questions.
+- Do not start with a dictionary-style definition.
+- Do not call our work "the system"; write "our method" or "we".
+- No formulas, no bullet lists, no numbered contributions, and no roadmap of the paper apart from the last sentence.
+- Do not say the same idea twice.
+- Keep the verb tense consistent within each paragraph.
+- Do not present the work as a competition entry or as a course project.
+
+Output only the four LaTeX paragraphs, separated by blank lines, with no section heading, no comments and no explanations.

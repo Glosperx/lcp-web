@@ -1,0 +1,34 @@
+Below is the abstract of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. It is one paragraph. Make the three changes below, using the facts below. Keep the rest of the abstract exactly as it is. Keep it one paragraph.
+
+The three changes:
+1. Delete the first sentence ("Labelled data for lexical complexity prediction are available for only a few languages."). The abstract starts with the sentence that follows it.
+2. In the sentence about the second signal, do not name the model. Say that the second signal is the expected rating of an open-weight LLM, used zero-shot without fine-tuning.
+3. In the sentence about the evaluation, do not list "Romanian and the ten languages of MLSP 2024". The leave-one-language-out protocol is applied to every language. Say that we evaluate with this protocol on all the languages of the evaluation data.
+
+Current abstract:
+<<<
+Labelled data for lexical complexity prediction are available for only a few languages. We predict word complexity in a test language using only labelled data from other languages. Our method fuses two signals via a weighted average. The first signal combines ridge regression and gradient-boosted trees trained on word features and embeddings from three frozen multilingual encoders. The second signal is the expected rating of Gemma~4 12B, an open-weight language model used zero-shot without fine-tuning. We use no labels from the test language for training or setting selection. We evaluate our approach using a leave-one-language-out protocol on Romanian and the ten languages of MLSP 2024. Over these eleven languages, the mean Pearson correlation is 0.693, with a 95\% interval of 0.679 to 0.706. The mean on the ten MLSP 2024 languages is 0.690. The highest published mean on MLSP 2024 is 0.669, achieved by a method that reads 30 labels of each evaluated language.
+>>>
+
+Facts that must stay true (use only these; every number stays exactly as written):
+- We predict the complexity of words in a test language using only the labelled data of other languages.
+- The method combines two signals. A weighted average fuses them.
+- The first signal is a ridge regression and gradient-boosted trees, trained on word features and on the embeddings of three frozen multilingual encoders.
+- The second signal is the expected rating of an open-weight LLM, used zero-shot without fine-tuning.
+- No label of the test language is used for training or for choosing settings.
+- We evaluate with a leave-one-language-out protocol on all the languages of the evaluation data.
+- Over these eleven languages, the mean Pearson correlation is 0.693, with a 95\% interval of 0.679 to 0.706.
+- On the ten MLSP 2024 languages, the mean is 0.690.
+- The highest published mean on MLSP 2024 is 0.669, from a method that reads 30 labels of each evaluated language.
+
+Rules:
+- Make only the three changes. Every other sentence stays word for word.
+- Do not name the language model. Write "LLM".
+- Use only the facts above. Do not add any other claim, number, explanation, interpretation, example, motivation or citation.
+- Do not drop any fact and do not change any number. Write "95\%" exactly like this.
+- The same length as the current abstract, or shorter.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences, one idea per sentence. No chains of the form "X, and Y, so Z". No figures of speech, no aphorisms, no rhetorical questions.
+- Do not claim that our method is the best overall or the best without labels. Use "we" for the authors. Do not call our work "the system".
+
+Output only the rewritten abstract in LaTeX, with no title, no comments and no explanations.

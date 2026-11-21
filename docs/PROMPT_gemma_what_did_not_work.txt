@@ -1,0 +1,31 @@
+Below is the section "What Did Not Work" of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. It has one short paragraph followed by a list of four experiments. Rewrite it so that it reads more naturally: change the wording and the sentence structure, not the facts. Keep the paragraph, the four list items, their order and their bold titles.
+
+Current section:
+<<<
+We ran these experiments on earlier versions of the method, on the ten MLSP languages unless stated otherwise. Each difference is against the version of that time.
+
+\begin{itemize}
+\item \textbf{Eye-tracking dataset.} A version of our method for Romanian alone also used the eye-tracking measures of 95 readers from MultiplEYE \citep{jakobi-etal-2025-multipleye}, available for 95\% of the Romanian targets. They raised the correlation by about 0.007. This is an upper bound, because their weight was chosen on the test scores. The recordings cover only these Romanian texts and none of the other languages. We also tried to predict the total reading time from the XLM-R base embedding, which exists in every language. The embedding alone predicted it worse than word length and frequency, 0.517 against 0.626. Adding it to these two gave 0.622.
+\item \textbf{LLM surprisal.} We tested the surprisal of the target in its context, read from a language model, as a third signal. With Qwen3 8B it lowered the fusion by less than 0.001 and made Filipino worse. With the average of six language models, the loss was 0.001. German needed a positive weight for surprisal, and Filipino a negative one.
+\item \textbf{Fine-tuning XLM-R.} In an earlier setup without LOLO, we trained on English CompLex and tested on 2{,}827 MLSP 2024 instances. The best of 14 runs that fine-tune the whole encoder reached 0.461, against 0.551 with the encoder frozen. The best of six LoRA runs reached 0.462, against 0.515.
+\item \textbf{Few-shot prompt.} We wrote a prompt with six labelled examples from the trial split of the other languages. On the trial split, it was our best single prompt, with 0.697. On the test split, as the only prompt, it lowered the fusion by 0.012 and made five languages worse. As a fourth prompt next to our three, it changed the fusion by less than 0.001.
+\end{itemize}
+>>>
+
+Facts that must stay true (use only these; every number stays exactly as written):
+- The experiments were run on earlier versions of the method. They use the ten MLSP languages unless stated otherwise. Each difference is measured against the version of the method at that time.
+- Eye-tracking dataset: a version of the method built for Romanian alone also used eye-tracking measures of 95 readers from MultiplEYE \citep{jakobi-etal-2025-multipleye}. These measures exist for 95\% of the Romanian targets. They raised the correlation by about 0.007. This is an upper bound, because their weight was chosen on the test scores. The recordings cover only these Romanian texts, and none of the other languages. We also tried to predict the total reading time from the XLM-R base embedding, which exists in every language. The embedding alone predicted the total reading time worse than word length and frequency did: 0.517 against 0.626. The embedding together with word length and frequency gave 0.622.
+- LLM surprisal: the surprisal of the target in its context, read from a language model, was tested as a third signal. With Qwen3 8B, it lowered the fusion by less than 0.001 and made Filipino worse. With the average of six language models, it lowered the fusion by 0.001. German needed a positive weight for surprisal, and Filipino a negative one.
+- Fine-tuning XLM-R: this was an earlier setup that did not use LOLO. The model was trained on the English CompLex data and tested on 2{,}827 MLSP 2024 instances. The best of 14 runs that fine-tune the whole encoder reached 0.461, against 0.551 with the encoder frozen. The best of six LoRA runs reached 0.462, against 0.515.
+- Few-shot prompt: the prompt contains six labelled examples, taken from the trial split of the other languages. On the trial split, it was our best single prompt, with 0.697. On the test split, used as the only prompt, it lowered the fusion by 0.012 and made five languages worse. Used as a fourth prompt next to our three prompts, it changed the fusion by less than 0.001.
+
+Rules:
+- Use only the facts above. Do not add any other claim, number, explanation, interpretation, example or citation. Keep the citation \citep{jakobi-etal-2025-multipleye} exactly as written.
+- Do not drop any fact and do not change any number.
+- About the same length as the current section, or shorter.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences, one idea per sentence. No chains of the form "X, and Y, so Z". No figures of speech, no aphorisms, no rhetorical questions.
+- Use "we" for the authors. Do not call our work "the system".
+- Past tense for what we did and measured.
+
+Output only the rewritten section in LaTeX: the paragraph, then the itemize environment with the four items. No section title, no comments and no explanations.

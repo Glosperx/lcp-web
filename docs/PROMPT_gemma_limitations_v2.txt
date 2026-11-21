@@ -1,0 +1,30 @@
+Below is the Limitations section of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. It has two paragraphs. Rewrite only the sentences with a problem, using the facts below. Make only these changes. Every other sentence stays word for word. Keep the two paragraphs.
+
+The three problems:
+1. The fourth sentence of the first paragraph starts with "If". This sounds hypothetical, but we measured it. It must start with "When".
+2. The third sentence of the second paragraph says that the ten MLSP languages "included the test language". This is not true when the test language is Romanian, which is not one of the ten. It must say that the trial labels of the test language were included when the test language is one of the ten MLSP languages.
+3. The fourth and fifth sentences of the second paragraph ("We chose the third prompt..." and "We compared these prompts on the test split.") no longer say that the choice was made after the comparison on the test split. They must become one sentence saying that we chose the third prompt, which marks the target, among four candidate prompts after comparing them on the test split.
+
+Current section:
+<<<
+For signal~B, we only tested open-weight language models with 8 to 12 billion parameters. These models were quantised to 4 or 8 bits. We tested no larger language model for signal~B. If the rating of Claude Opus 5.5 replaces signal~B, the mean correlation rises from 0.693 to 0.725 (Section~\ref{sec:results-b}). We ran TabFM only in a reduced setting (Section~\ref{sec:results-a}). In this setting, the embedding was reduced from 768 to 394 dimensions, and we used XLM-R base alone and the ten MLSP languages. We did not test TabFM with the full embedding or with the three encoders.
+
+No label of the test language is used to train a model or to choose the five settings of Section~\ref{sec:method}. However, some decisions during development did use such labels. We compared the shortlist of language models on the trial labels of the ten MLSP languages, which included the test language (Section~\ref{sec:results-b}). We chose the third prompt, which marks the target, from four candidate prompts. We compared these prompts on the test split. On the trial split, the third prompt was not the best of the four. The settings that are the same for every language, such as the encoder layers and the ridge penalty, were fixed on earlier versions of the method. Some of these settings were compared on the test split before being fixed. We measured several versions of the method on the test split. Each version follows the LOLO protocol. We chose the reported version based on the test scores.
+>>>
+
+Facts that must stay true (use only these; every number stays exactly as written):
+- When the rating of Claude Opus 5.5 replaces signal~B, the mean correlation rises from 0.693 to 0.725 (Section~\ref{sec:results-b}).
+- We compared the shortlist of language models on the trial labels of the ten MLSP languages (Section~\ref{sec:results-b}). When the test language is one of these ten languages, its trial labels were included.
+- We chose the third prompt, which marks the target, among four candidate prompts after comparing them on the test split.
+- All other facts are those of the current section, unchanged.
+
+Rules:
+- Change only the three places described above. Every other sentence stays word for word.
+- Do not drop any fact and do not change any number. Keep every "Section~\ref{...}" exactly as written.
+- Use only the facts above. Do not add any other claim, number, explanation, interpretation, example, motivation, consequence or citation.
+- The same length as the current section, or shorter.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences, one idea per sentence. No chains of the form "X, and Y, so Z". No figures of speech, no aphorisms, no rhetorical questions.
+- Use "we" for the authors. Do not call our work "the system". Write "test language", not "target language".
+
+Output only the rewritten section in LaTeX, with no title, no comments and no explanations.

@@ -1,0 +1,4316 @@
+=== PDF page 1 ===
+General Paper
+
+Peer-Reviewed
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based
+Methods for Lexical Simpliﬁcation and Lexical Complexity
+Prediction
+Adam Nohejla , Akio Hayakawab , Yusuke Idea and Taro Watanabea
+Lexical simpliﬁcation (LS) is the task of making text easier to understand by replacing
+complex words with simpler equivalents. LS involves the subtask of lexical complexity prediction (LCP). We present MultiLS-Japanese, the ﬁrst uniﬁed LS and LCP
+dataset targeting non-native Japanese speakers, and one of the ten language-speciﬁc
+MultiLS datasets. We propose methods for LS and LCP based on large language
+models (LLMs) that outperform existing LLM-based methods on 7 and 8 of the 10
+MultiLS languages, respectively, while using only a fraction of their computational
+cost. Our methods rely on a single prompt across languages and introduce a novel
+calibrated token-probability scoring technique, G-Scale, for LCP. Our ablations conﬁrmed the beneﬁts of G-Scale and of concrete wording in the LLM prompt. We
+made the MultiLS-Japanese dataset available online under a CC-BY-SA license, including detailed metadata.
+Key Words: Automated Text Simpliﬁcation, Lexical Simpliﬁcation, Lexical Complexity
+Prediction, Large Language Models
+
+1 Introduction
+Lexical simpliﬁcation (LS) is the task of making text easier to understand by replacing complex
+words with simpler equivalents. Therefore, it is a speciﬁc type of automatic text simpliﬁcation
+(ATS) that operates at the word level without changing the overall sentence or text structure.
+An LS system can serve as a reading assistance tool for end users, a tool for human editors, or
+a component of a larger text simpliﬁcation system. It has been studied in the context of various
+
+a Nara Institute of Science and Technology
+b Universitat Pompeu Fabra
+
+Sections 3.1 and 3.2 of this article partially overlap in content with previous publications (Shardlow et al.
+2024b; Nohejl et al. 2024, Sec. 4.1.6 and Sec. 2, respectively); part of the MultiLS-Japanese dataset was
+brieﬂy described in these publications. As part of this work, the complete dataset is made available at
+https://huggingface.co/datasets/naist-nlp/multils-japanese
+
+(C) The Association for Natural Language Processing. Licensed under CC BY 4.0
+(https://creativecommons.org/licenses/by/4.0/).
+
+
+=== PDF page 2 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+target populations, such as non-native speakers (Hading et al. 2016; Paetzold and Specia 2016c;
+Lee and Yeung 2018, inter alia), or people with dyslexia, aphasia, or low literacy levels (Paetzold
+and Specia 2017).
+The LS process is often broken down into two subtasks: (1) lexical complexity prediction
+(LCP) and (2) LS of the identiﬁed complex words, which can be further conceptualized as a
+multi-step pipeline (Paetzold and Specia 2017). LCP can also be used for other purposes, such
+as readability assessment.
+LS datasets are scarce for languages other than English. For Japanese, only two LS datasets
+with an unspeciﬁed target audience and one LCP dataset for non-native speakers are available.
+Because each target audience has very diﬀerent needs, we constructed a dataset targeting nonnative Japanese speakers, MultiLS-Japanese, which provides gold labels for both LS and LCP. We
+carefully designed the dataset considering the target audience and the speciﬁcs of the Japanese
+language: we sampled sentences from varied genres read by non-native speakers, included target
+words from categories that pose diﬃculties to learners (e.g., compound verbs), and substituted
+the appropriate units given the Japanese morphology. For lexical complexity annotation, we
+excluded Chinese and Korean L1 speakers, whose native languages share a large part of their
+vocabulary with Japanese. The LS annotators were native speakers with experience teaching
+non-native Japanese learners.
+MultiLS-Japanese is part of a wider family of ten language-speciﬁc MultiLS datasets. We
+therefore designed and evaluated LS and LCP methods that are applicable to any of these languages. Similar to current state-of-the-art methods, our methods are based on large language
+models (LLMs); in contrast, our methods use a single LLM inference per data instance and a
+novel calibrated token-probability-based scoring technique, G-Scale, for LCP. Thus, we reduced
+the computational cost by an order of magnitude compared to other LLM-based methods while
+providing superior performance.
+Our LS and LCP methods outperform the existing methods on 7 and 8 of the 10 languages
+with available MultiLS datasets, respectively. G-Scale has the potential to be applied to other
+tasks of rating a text input on a continuous scale using LLMs. We evaluated ablations of both
+of our methods.
+
+1.1
+
+Lexical Simpliﬁcation and Automatic Text Simpliﬁcation
+
+LS is one of the many approaches to ATS. Other approaches operate at the sentence, paragraph, or text level, allowing deletions or rewriting of larger text spans, with the common goal of
+making the text easier to understand. Datasets that enable the evaluation, and to some extent,
+1130
+
+
+=== PDF page 3 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+the ﬁne-tuning of sentence simpliﬁcation models for Japanese have recently become available (see
+Section 2.2). Furthermore, recent LLMs can, in principle, be employed to simplify text even
+without ﬁne-tuning (Brown et al. 2020), and thus without extensive parallel data. This development raises a question: Should we abandon LS as an obsolete task and limit our focus to more
+general text simpliﬁcation systems?
+Because LS is both an indispensable operation for any ATS system and a practically useful
+task by itself, we believe that datasets and methods for LCP and LS are still an important
+research area complementary to higher-level ATS methods:
+Practical utility.
+
+Vocabulary knowledge has been recognized as one of the strongest factors,
+
+and possibly the strongest, in reading comprehension (Grabe and Yamashita 2022, Ch. 11). LS
+can be used as a tool to assist language learners while still displaying the original text. Even
+without the LCP component, LS can be used for on-demand simpliﬁcation or glossing of words
+using a simple user interface. In conjunction with LCP, words to be simpliﬁed can be selected
+automatically based on language proﬁciency or the particular learner’s needs (personalized LCP).
+Both of these modes of use, showing simpliﬁcations as glosses and adjusting the simpliﬁcation
+level using lexical complexity thresholds, allow balancing comprehension with opportunities to
+learn.1
+Detailed data.
+
+Both LS and LCP datasets provide detailed word-level data, consisting of
+
+multiple simpliﬁcations and complexity ratings, which are not available in sentence simpliﬁcation
+or readability datasets. Such data has been used for analyses (Gooding et al. 2021; Nohejl et al.
+2024; Saggion et al. 2024), leading to the recognition of the needs of various target populations
+or problems in human-created simpliﬁcations. The insights from analyses of LS and LCP data
+are useful for any kind of ATS systems, as they inevitably perform simpliﬁcations at the lexical
+level as well.
+Meaning preservation.
+
+Meaning preservation is a general challenge for all ATS systems, but
+
+it particularly aﬀects systems operating at the sentence level or higher, which employ deletion
+or summarization (Agrawal and Carpuat 2024). LS is well-positioned to preserve the meaning of
+the original text. See Section 5.1.1 for an analysis of our method in terms of errors in meaning
+preservation and other areas.
+
+1 Commercially available Amazon Kindle e-readers have a feature called Word Wise, oﬀering “simple deﬁnitions
+
+and synonyms displayed inline above more diﬃcult words while you read” (https://www.amazon.com/gp/help/
+customer/display.html?nodeId=201645250) based on the desired simpliﬁcation level, which demonstrates the
+desirability of this function. Word Wise, however, does not employ LS and requires publishers to supply the
+glosses and levels.
+
+1131
+
+
+=== PDF page 4 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+2 Related Work
+2.1
+
+Japanese LS and LCP Datasets
+
+Lexical simpliﬁcation.
+
+Two LS datasets are available for Japanese: The SNOW E4 dataset
+
+(Kajiwara and Yamamoto 2015) is based on newspaper articles and restricts target words to
+lemma form, although verbs and adjectives are inﬂected in Japanese. The Controlled and Balanced Dataset for Japanese Lexical Simpliﬁcation (CBDJLS) (Kodaira et al. 2016) is based on the
+Balanced Corpus of Contemporary Written Japanese (BCCWJ) (Maekawa et al. 2014). CBDJLS
+follows a more realistic setting, allowing not only target words in any word form but also substitutions spanning the adjacent fuzokugo (dependent words).2 Both datasets consist of approximately
+1,500 simpliﬁable instances (target words in sentences), covering around 200 unique target words,
+and provide a list of simpliﬁcations for each instance but no complexity ratings.
+Neither of the two LS datasets speciﬁes what population (e.g., non-natives or children) it
+targets, although it has been shown that non-native speakers have diﬀerent needs from natives,
+further diﬀerentiated by their proﬁciency level and native language (Paetzold and Specia 2016c).
+Both datasets employed ﬁve crowdsourced annotators per instance, with SNOW E4 reporting
+no details and CBDJLS specifying only that annotators have completed 95% of their previous
+assignments correctly and were native speakers. The SNOW E4 dataset is available in full text,
+although redistribution is prohibited, and the CBDJLS dataset is distributed in a stand-oﬀ format
+that requires paid access to BCCWJ to reconstruct the complete data.
+In contrast to these two available datasets, our dataset, MultiLS-Japanese, targets non-native
+Japanese speakers and is available under a permissive license, namely, the Creative Commons
+Attribution-ShareAlike (CC-BY-SA).
+Lexical complexity.
+
+The only lexical complexity dataset for Japanese, Dataset of Japanese
+
+Lexical Complexity for Non-Native Readers (JaLeCoN) (Ide et al. 2023), provides complexity
+ratings by non-native speakers for single words and multiword expressions (MWEs). It consists
+of separate complexity ratings from annotators with Chinese or Korean L1 background and
+annotators with other L1 backgrounds, addressing the considerable advantage of the former in
+Japanese reading comprehension. The study (Ide et al. 2023) showed that words of Chinese origin
+or containing Chinese characters, which form a large part of the Japanese vocabulary, result in
+increased perceived complexity for annotators other than those with a Chinese or Korean L1
+2 See Appendix A for an English–Japanese glossary of linguistic terms.
+
+The authors of CBDJLS (Kodaira
+et al. 2016) mention only “particles”; however, in the actual data, other parts of speech are included in the
+substitutable context as well, all of which may be categorized as fuzokugo, e.g., the whole sequence だったら
+撤退しなければならないので including copulas, auxiliaries, and light verbs can be substituted.
+
+1132
+
+
+=== PDF page 5 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+background. The dataset is based on texts from news and governmental press conferences and is
+available in full text for non-commercial purposes. It comprises around 18,000 words of running
+text, all of which were annotated with complexity ratings. As a natural result of this annotation
+scheme, the vast majority of the words have zero complexity, and the rest are heavily skewed to
+the low complexity levels (Ide et al. 2023).
+Our dataset, MultiLS-Japanese, also provides lexical complexity annotation for non-native
+speakers but aims to provide higher-quality ratings for a smaller number of words by explicitly
+annotating selected target words, as opposed to asking annotators to annotate complex words
+in a running text, skipping simple words at their discretion. Moreover, in contrast to JaLeCoN,
+which provides data only for LCP, MultiLS-Japanese has gold labels for both LCP and LS based
+on the MultiLS framework (North et al. 2024), enabling consistent evaluation of the whole LS
+pipeline.
+
+2.2
+
+Other Japanese ATS Datasets
+
+LS is a speciﬁc task within the broader area of ATS. Another common ATS task is sentence
+simpliﬁcation, and more recently, paragraph- and document-level simpliﬁcation tasks have been
+studied as well.
+In addition to LS datasets, there are several Japanese datasets for sentence simpliﬁcation: An
+early news-based dataset (Goto et al. 2015) is not publicly available. The SNOW T15 (Maruyama
+and Yamamoto 2018) and SNOW T23 (Katsuta and Yamamoto 2018) datasets provide simpliﬁcations of sentences from the Tanaka corpus, a collection of short example sentences from language
+textbooks. JADES (Hayakawa et al. 2022) consists of simpliﬁcations of 3,907 sentences from news
+articles targeting non-native speakers. MATCHA (Miyata et al. 2024), which is based on articles
+from a website for international visitors to Japan,3 provides 16,000 sentence simpliﬁcations targeting non-native speakers. JASMINE (Horiguchi et al. 2024) is a sentence-level medical domain
+evaluation dataset. JASMINE and the SNOW datasets focus on word- or phrase-level substitutions, forming an intermediate step between LS and sentence simpliﬁcation, whereas JADES and
+MATCHA employ larger-scale rewriting operations.
+All these datasets share the common features of being sentence-level and providing a single
+gold simpliﬁcation. JADES and MATCHA target non-native speakers at the proﬁciency level
+corresponding to the Japanese Language Proﬁciency Test (JLPT) level N4, equivalent to level A2
+(Japan Educational Exchanges and Services 2025) in the Common European Framework of Ref-
+
+3 https://matcha-jp.com
+
+1133
+
+
+=== PDF page 6 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+erence for Languages (CEFR). While MATCHA is larger, JADES has been manually annotated
+for operations (e.g., replace, delete, and split), enabling easier analysis.
+Compared with JADES and MATCHA (Hayakawa et al. 2022; Miyata et al. 2024, also see
+Section 2.2), our dataset targets more proﬁcient speakers. JADES and MATCHA target relative
+beginners (JLPT N4), who need more aggressive simpliﬁcation, involving deletions, splitting, or
+rewriting. At JLPT levels N1 and N2, which we target, we hypothesize that LS is suﬃcient
+to achieve a very high level of comprehension. Although our dataset is smaller than JADES
+or MATCHA, it covers a variety of genres and topics, whereas JADES and MATCHA are each
+based on a single source. The sentence simpliﬁcation datasets and our dataset complement each
+other by providing data for diﬀerent tasks (as discussed in Section 1.1) and targeting diﬀerent
+proﬁciency levels.
+
+2.3
+
+Lexical Simpliﬁcation
+
+The early approaches to LS were rule-based (Devlin and Tait 1998; De Belder and Moens
+2010). Data-driven approaches were soon applied (Yatskar et al. 2010; Biran et al. 2011; Horn
+et al. 2014) to English, where a large simpliﬁed corpus, Simple English Wikipedia, 4 is available.
+Later methods that did not require rules, databases, or simpliﬁed corpora were based on static
+word embeddings (Glavaš and Štajner 2015) and, more recently, on masked language models
+(MLMs) (Qiang et al. 2020a, 2020b).
+The current state-of-the-art methods for LS leverage LLMs such as OpenAI’s GPT-3 (Brown
+et al. 2020) and GPT-4 (OpenAI 2024a). An ensembled prompting method using GPT-3 (Aumiller
+and Gertz 2022) achieved a top result for English, Spanish, and Portuguese in a shared task. A
+derived method (Enomoto et al. 2024) using GPT-4 achieved the best overall result for ten
+languages in the Multilingual Lexical Simpliﬁcation Pipeline (MLSP) shared task (Shardlow
+et al. 2024b), where Japanese was evaluated on MultiLS-Japanese (our dataset introduced in
+Section 3). This method is based on aggregating results from multiple LLM inferences, thus using
+signiﬁcant resources to simplify each word.
+Our LS method is also based on LLM prompting but uses a single LLM inference while
+improving accuracy.
+
+2.4
+
+Lexical Complexity Prediction
+
+Word frequency has long been used as the variable most predictive of lexical complexity, particularly the frequency in ﬁlm or YouTube subtitles (Shardlow 2013; Nohejl et al. 2025), which
+4 https://simple.wikipedia.org
+
+1134
+
+
+=== PDF page 7 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+approximates the spoken language. Lexical dispersion measured by the number of YouTube channels or videos containing a word was demonstrated to be an even stronger predictor (Nohejl and
+Watanabe 2025). Various other word-level features have been used as well; however, their applicability (e.g., for stress patterns) and availability (e.g., for psycholinguistic data) vary based
+on language (Shardlow et al. 2022, Sec. 3 lists 20 features possibly applicable to English).
+Shardlow et al. also emphasized that context is an important factor of lexical complexity because it determines in which sense a polysemous word is used and can add to complexity if a
+word is used in an unexpected context.
+In feature-based models, attempts were made to model the interaction with context using
+n-gram probability of the immediate context of the target word or MLM-based surprisal (to
+model the unexpectedness of the word) and features based on dependency parsing. The results
+were mixed. Contextual surprisal was found to have a minimal eﬀect (Tack 2021). Two shared
+tasks (Paetzold and Specia 2016a; Yimam et al. 2018) were dominated by feature-based systems
+focused on word-level features. Features that depend on context were limited to either only
+n-grams (Paetzold and Specia 2016b), without further analysis of the feature’s contribution, or
+only dependency-based features (Gooding and Kochmar 2018), but in that case, dependencies
+were not among the top ten contributing features.
+Later, using ﬁne-tuned MLMs became the dominant approach in cases where enough training
+data was available (Shardlow et al. 2021).
+In the MLSP shared task (Shardlow et al. 2024b), where lexical complexity was predicted in
+ten languages, the top-performing systems across all languages were, depending on the metric
+used, TMU-HIT (Enomoto et al. 2024) and Archaeology (Cristea and Nisioi 2024). TMU-HIT
+was based entirely on prompting LLMs, whereas Archaeology was based entirely on word-level
+features. A study (Smădu et al. 2024) comparing LCP using feature-based models, ﬁne-tuned
+MLMs, and LLMs concluded that the computationally intensive methods based on LLMs barely
+outperform the earlier, more lightweight methods.
+The method we propose for LCP is also LLM-based, but it reduces the computational cost
+compared to TMU-HIT while providing more accurate predictions. Our method can also combine
+LLM predictions with features, such as frequency, leading to further improvements in accuracy.
+
+3 Dataset: MultiLS-Japanese
+Japanese is well known to be diﬃcult to learn as a second language (Grainger 2005; Foreign
+Service Institute 2025). Attaining reading or writing proﬁciency is particularly demanding be1135
+
+
+=== PDF page 8 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+cause it involves mastering its complex writing system. Yet, no Japanese LS dataset targeting
+non-native speakers is available. To ﬁll this gap, we constructed a uniﬁed LS and LCP dataset
+targeting non-native Japanese speakers.
+
+3.1
+
+Overview
+
+MultiLS-Japanese is the ﬁrst Japanese LS dataset targeting non-native speakers. More specifically, it targets non-native Japanese speakers whose ﬁrst language is neither Chinese nor Korean.
+The data consists of 600 instances, where each instance is a target word in a sentence context,
+for which a lexical complexity value and simpler substitutions are provided. Table 1 compares
+MultiLS-Japanese with the available Japanese datasets for LS and LCP. While MultiLS-Japanese
+consists of a relatively small number of instances, it employs more annotators per instance and
+
+Dataset
+
+SNOW E4
+(Kajiwara and
+Yamamoto 2015)
+
+CBDJLS
+(Kodaira et al. 2016)
+
+JaLeCoN
+(Ide et al. 2023)
+
+MultiLS-Japanese
+(Ours)
+
+Tasks
+
+LS
+
+LS
+
+LCP
+
+LS, LCP
+
+Target Population
+– L1
+– L2 Proﬁciency
+
+Unspeciﬁed
+—
+—
+
+Unspeciﬁed
+—
+—
+
+Non-native
+CK, non-CK
+B1–C2a
+
+Non-native
+Non-CK
+B2–C1b
+
+Annotators
+
+5 unspeciﬁed
+
+5 native
+
+– Proﬁles
+– Instructions
+
+—
+—
+
+—
+—
+
+7 CK + 7 non-CK,
+all non-native
+L1; L2 proﬁciency
+Summary
+
+LCP: 10 non-native,
+LS: 10 native
+Detailed (→Sec. 3.7)
+Full (→Appendix D)
+
+Target Words
+
+Single uninﬂected
+
+# LS Instances
+
+1,586
+
+Single + surrounding
+fuzokugo
+1,457
+
+Single or MWE
+(auto. + manual)
+—
+
+Single or MWE
+(manual)
+600
+
+– Unique Words
+
+205
+
+201
+
+—
+
+600
+
+# LCP Instances
+– Non-Zero Complexity
+
+—
+—
+
+—
+—
+
+18,220
+657 CK, 3011 non-CK
+
+600
+572
+
+– Unique Words
+
+—
+
+—
+
+433 CK, 1658 non-CK
+
+572
+
+—
+News
+
+—
+Varied (BCCWJ)
+
+—
+News, press
+conferences
+
+LS and LCP
+Varied (→Sec. 3.4)
+
+Redistribution
+prohibitedc
+
+Annotation: MIT;
+text: BCCWJd
+
+LMNU
+CC-BY-NC-SA
+
+LMU
+CC-BY-SA
+
+Individual Data
+Source Texts
+License
+
+Table 1
+
+Comparison of Japanese LS and LCP datasets.For all datasets, we count only simpliﬁable
+words as “LS Instances.” “CK” stands for Chinese or Korean L1. a Self-reported. b Holders
+of JLPT (N)1, N(2). c Details in Japanese: https://www.jnlp.org/GengoHouse/snow/e4
+d
+Annotation in stand-oﬀ format, requires paid copyrighted BCCWJ data.
+
+1136
+
+
+=== PDF page 9 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+provides lexical simpliﬁcations for more unique words (types) than the previous datasets. For
+LCP, 572 of the 600 annotated instances in MultiLS-Japanese have non-zero mean complexity
+rating, in contrast with JaLeCoN, which is larger, but only a small fraction of the annotated
+words have non-zero complexity. This is a result of a diﬀerent annotation scheme: JaLeCoN
+provides ratings for all words in a running text, whereas MultiLS-Japanese provides ratings only
+for selected target words.
+For lexical complexity, a mean value and individual ratings by ten annotators are provided.
+The annotators were holders of JLPT levels N1 or N2, or their older equivalents 1 and 2. These
+two highest levels of JLPT are often the minimum requirement for employment or university
+acceptance (Japan Student Services Organization 2024) and correspond approximately to CEFR
+levels B2 and C1 (Japan Educational Exchanges and Services 2025). JLPT has been criticized
+for not testing productive skills (Nishizawa et al. 2022); however, that actually aligns with our
+task.
+For LS, we provide an aggregated list of substitutions as well as individual substitutions from
+ten annotators. The annotators for LS were native Japanese speakers, with at least one year
+of experience teaching Japanese as a foreign language, instructed to provide simpliﬁcations for
+language learners without assuming a particular native language.
+For lexical complexity, we target non-native speakers whose native language is neither Chinese nor Korean. As the two languages largely overlap in lexicon with Japanese, Japanese LS
+targeting Chinese or Korean (CK) L1 speakers should be evaluated separately. This was reﬂected
+in diﬀerences between CK and non-CK complexity ratings in JaLeCoN (Ide et al. 2023). The
+systematic diﬀerence in Japanese lexical complexity perception by Chinese L1 speakers was further conﬁrmed by a reannotation and analysis of a subset of the present dataset, while no such
+diﬀerence was observed for a group of Czech and Slovak L1 speakers (Nohejl et al. 2024).
+We split the dataset into a trial set (30 instances) and test set (570 instances), which share a
+similar word frequency, lexical complexity, and part of speech (POS) distribution (Nohejl et al.
+2024) to make the trial set representative and suitable for training simple models or for in-context
+learning. As we explain in Section 3.6, the targets co-occur in the same sentence by groups of
+three. Therefore, the trial set comprises 10 sentences, while the test set comprises another 190
+sentences.
+The gold LS and LCP labels for the trial set were published on the open web for the MLSP
+shared task (Shardlow et al. 2024b). We therefore recommend using only the test set to evaluate
+models whose training data could have been contaminated. We made the full MultiLS-Japanese
+
+1137
+
+
+=== PDF page 10 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+dataset5 and accompanying ﬁles (annotator proﬁles and annotation instructions)6 available online. We request users not to disseminate the gold labels on the open web. The format of the
+dataset is described in Appendix B.
+
+3.2
+
+MultiLS Framework
+
+The MultiLS framework (North et al. 2024) speciﬁes that lexical simpliﬁcations and lexical
+complexity ratings are given for the same target words in the same contexts; hence, it is multitask, whereas previous datasets handled only one of these tasks. Furthermore, MultiLS datasets
+for ten diverse languages are currently provided, all available in a common format via Hugging
+Face Hub as MLSP2024,7 making MultiLS multilingual. The ten datasets are of comparable
+size and use the same annotation protocol (Shardlow et al. 2024a). Articles detailing the Portuguese data (North et al. 2024), Spanish and Catalan data (Saggion et al. 2024), and Italian
+data (Occhipinti 2024) have been published. In the following sections, we focus on the Japanese
+dataset, including its previously unpublished parts.
+
+3.3
+
+Further Goals and Additional Data
+
+In addition to providing annotation for both LCP and LS, MultiLS-Japanese fulﬁlls the following goals that are orthogonal to the MultiLS framework:
+(1)
+
+varied sources representative of texts read by non-native speakers (Section 3.4),
+
+(2)
+
+appropriate handling of Japanese morphology and MWEs (Section 3.5),
+
+(3)
+
+sampling of target words representative of multiple factors of complexity (Section 3.6),
+
+(4)
+
+minimization of external inﬂuences on perception of lexical complexity (Section 3.6.2),
+
+(5)
+
+a single set of annotators who annotate each instance, enabling individual data analysis,
+
+(6)
+
+a permissive license for the full dataset to facilitate further analysis or extension.
+
+In addition to the data in the common MultiLS format, we also release individual annotator proﬁles, individual annotations, complete annotation instructions (see Section 3.7), detailed
+automatic and manual tags, and metadata for each dataset instance (see Appendix B).
+
+3.4
+
+Source Texts
+
+A common approach to constructing LS and LCP datasets has been to use texts from a
+single source—e.g., Wikipedia (Horn et al. 2014, LexMTurk dataset) or newspaper (Kajiwara and
+5 https://huggingface.co/datasets/naist-nlp/multils-japanese
+6 https://github.com/naist-nlp/multils-japanese
+7 https://huggingface.co/datasets/MLSP2024/MLSP2024
+
+1138
+
+
+=== PDF page 11 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+Yamamoto 2015, SNOW E4 dataset)—or only a few genres, e.g., Wikipedia and news (Yimam
+et al. 2017, CWIG3G2 dataset). This may poorly represent texts read by the target population
+and severely bias the language towards certain registers or topics.
+While Wikipedia is at least relatively diverse in terms of topics and oﬀers favorable licensing
+terms, relying solely on Wikipedia would be problematic for Japanese, where a large part of the
+content is created through translation from English (Hautasaari and Ishida 2011), potentially
+leading to underrepresentation of local topics or culturally dependent vocabulary.
+Instead, we strove to sample sentences from diverse genres and topics, emphasizing sources
+that Japanese non-native speakers may read. The sources constituting the ﬁnal dataset are
+shown in Table 2. We carefully selected the sources such that the complete dataset could be
+distributed under the CC-BY-SA 4.0 International License,8 which was the main limiting factor
+for source selection. All sources had to be released under a compatible Creative Commons license
+or to be in the public domain. Although we prioritized recent texts, we felt that the inclusion
+of literary ﬁction is important for representativeness and justiﬁes a limited amount of slightly
+dated language. We have therefore included several works with expired copyrights published by
+well-known authors in the years 1945–1965.9
+
+Category
+
+Proportion
+
+Source
+
+License
+
+Web Address
+
+# Sentences
+
+50.0%
+
+Wikipedia
+
+L
+
+ja.wikipedia.org
+
+100
+
+21.0%
+
+Government of Japan
+Local Symbiotic Society
+Consumer Aﬀairs Agency
+Hikikomori Voice Station
+Hakodate City
+Hokkaido Prefecture
+Wikivoyagea
+
+L
+L
+L
+L
+L
+L
+L
+
+gov-online.go.jp
+mhlw.go.jp/kyouseisyakaiportal
+caa.go.jp
+hikikomori-voice-station.mhlw.go.jp
+city.hakodate.hokkaido.jp
+pref.hokkaido.lg.jp
+ja.wikivoyage.org
+
+27
+3
+3
+3
+3
+1
+2
+
+19.5%
+
+Aozora Bunkob
+
+R
+
+aozora.gr.jp
+
+39
+
+\ News
+
+5.5%
+
+Wikinews
+Prime Minister’s Oﬃce
+
+L
+L
+
+ja.wikinews.org
+kantei.go.jp
+
+9
+2
+
+~ Culture and History
+
+4.0%
+
+Japan Heritage
+
+L
+
+japan-heritage.bunka.go.jp
+
+8
+
+® Wikipedia
+
+ò
+
+Practical
+Information
+
+\ Fiction
+
+Table 2
+
+Sources of MultiLS-Japanese by category. The dataset is composed of a total of 200 sentences.
+Licenses: L are Creative Commons licenses compatible with CC-BY-SA, R is public domain.
+a
+b
+Only pages about locations in Japan to avoid translated content.
+Selected works of
+Dazai Osamu (†1948), Umezaki Haruo (†1965), Tanizaki Jun’ichirō (†1961), Yoshikawa Eiji
+(†1955), Sakaguchi Ango (†1955), Edogawa Ranpo (†1965), Yamamoto Shūgorō (†1967), and
+Yanagita Kunio (†1962) published 1945–1965.
+
+8 https://creativecommons.org/licenses/by-sa/4.0/
+9 Until 2019, the Japanese copyright law protected works for only 50 years after the author’s death.
+
+1139
+
+
+=== PDF page 12 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+We considered but decided not to use Tatoeba,10 which provides examples for language learners as opposed to naturally occurring sentences, and Japanese Wikiversity, 11 which was available
+only as a beta version when we were collecting data. We also could not use Japanese WikiHow 12
+because its CC-BY-NC-SA license is incompatible with the CC-BY-SA license.
+
+3.5
+
+Target Words and Japanese Morphology
+
+LS occurs at the level of words. However, this does not mean that we are merely substituting
+one lexeme for another: we are substituting word forms so that the sentence remains grammatical
+after the substitution. Some datasets make this task artiﬁcially simpler. For instance, the
+Portuguese LS dataset SIMPLEX-PB (Hartmann et al. 2018) contains substitutions only in
+lemma form (e.g., coletaram, past, 3rd pers. pl. Ñ recolher, inf.), and the Japanese SNOW E4
+(Kajiwara and Yamamoto 2015) contains only target words in uninﬂected form. The former
+approach results in ungrammatical simpliﬁed sentences, while the latter restricts the dataset to
+a small subset of language; therefore, we avoided both.
+In the case of the Japanese language, we need to deal not only with inﬂections but also with
+segmentation. Multiple units can be considered a word for the purposes of LS. Japanese script
+does not separate words in writing, and in Japanese NLP and linguistics, sentences are commonly
+segmented into short unit words (SUWs), long unit words (LUWs), or bunsetsu (Omura et al.
+2021). Table 3 illustrates that targets consisting of a single SUW or LUW would not be suﬃcient
+for LS, as verbs generally cannot be simpliﬁed by substituting a single SUW or LUW. While
+
+SUW
+Original
+
+Simpliﬁed
+(substituted
+units in bold)
+
+LUW
+Bunsetsu
+SUW
+LUW
+Bunsetsu
+
+Translation
+Table 3
+
+彼女
+は
+読書
+し
+て
+いる
+She TOP book reading do GER be-PRS
+は
+読書し
+ている
+彼女
+彼女は
+読書して
+いる
+彼女
+は
+本
+を
+読ん
+で
+いる
+She TOP book ACC read GER be-PRS
+彼女
+は
+本
+を
+読ん
+でいる
+彼女は
+本を
+読んで
+いる
+She is reading a book.
+
+。
+。
+。
+。
+。
+。
+
+Three common units of segmentation, SUW, LUW, and bunsetsu, when simplifying the verb in
+the sentence 彼女は読書している (She is reading a book). Dashed line marks an optional (traditional) bunsetsu division. Abbreviations in glosses: TOPic, ACCusative, GERund, PReSent.
+
+10 https://tatoeba.org
+11 https://ja.wikiversity.org
+12 https://www.wikihow.jp
+
+1140
+
+
+=== PDF page 13 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+a bunsetsu is long enough to support verb substitution, it would also include many dependent
+words that are unnecessary for simpliﬁcation, e.g., particles with nouns. Therefore, we decided to
+target such sequences of SUWs that are long enough to substitute the given word. The resulting
+target sequences span at most one bunsetsu, except in cases where a longer MWE needs to be
+simpliﬁed as a single unit (e.g., 人目を引く “to draw attention”). For SUW segmentation, we used
+MeCab (Kudo et al. 2004), a Japanese morphological analyzer, and the UniDic 2.1.2 dictionary
+(Den et al. 2007), which is distributed as unidic-lite. The precise guidelines for delimiting the
+boundaries of target words and an overview of MWEs in the dataset are given in Appendix C.
+Our approach slightly diﬀers from both JaLeCoN and SNOW E4. The approach used for
+JaLeCoN (Ide et al. 2023) is mostly based on SUWs and manually selected MWEs, thus typically
+preferring smaller units. This does not pose practical problems for LCP, but as we have shown in
+Table 3, it is insuﬃcient for substituting verb forms. CBDJLS (Kodaira et al. 2016), on the other
+hand, uses larger spans including all dependent words surrounding the target word on both sides
+(as discussed in Section 2.1), which generally extend over two bunsetsu. When inspecting the
+dataset, we found that dependent words on the left side of the target words were rarely altered
+by the substitutions. This was the expected result because dependent words in the Japanese
+language follow the corresponding independent words rather than precede them.
+
+3.6
+
+Selection of Target Words and Sentences
+
+To better control and partially automate the sampling of suitable sentence contexts and target
+words, we adopted a scheme in which sentences with a single target word were ﬁrst sampled
+automatically from the source texts. From this sample, we have manually selected 200 sentences
+to constitute the ﬁnal dataset, manually picking two additional target words in each sentence for
+a total of 600 target words. We refer to the automatically tagged words as primary and to the
+manually selected ones as secondary.
+Simplifying or predicting complexity for three words per sentence has the following advantages
+compared to the common format of LS datasets with a single target word per sentence:
+(1)
+
+It reduces the amount of text to be read, enabling annotators to concentrate better.
+
+(2)
+
+It reﬂects that simplifying a single word in a sentence is often insuﬃcient.
+
+(3)
+
+It allows us to analyze how lexical complexity is aﬀected by other words in the sentence.
+
+3.6.1
+
+Automated pre-selection of words
+
+With a relatively small dataset and many factors aﬀecting lexical complexity, we faced the risk
+of not representing some of the factors if we sampled the words randomly. Therefore, the primary
+1141
+
+
+=== PDF page 14 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+target words were selected to represent diverse word frequencies, character compositions, and
+parts of speech. Additionally, the primary targets include speciﬁc categories of words known to
+be diﬃcult for learners: compound verbs (Himeno 1999; National Institute for Japanese Language
+and Linguistics 2025), complex auxiliaries, complex particles (together covering most relatively
+advanced function words), and mimetics (Yoshioka 2016).
+We partitioned candidate word properties in a discrete space with three axes: word frequency,
+character composition, and POS, as shown in Figure 1. For each element of the space (e.g., nouns
+written in katakana with log10 frequency from ´4.5 to ´4.0), we pre-selected candidate words
+and sentences containing them, and determined a number to be selected manually from them
+to achieve an approximately even distribution of target words in the space, given the number of
+words with each property.
+The three groups of parts of speech are composed as follows:
+• Nouns (90): nouns except proper nouns and verbal nouns (VN)+suru (i.e., sahen verbs).
+• Verbs (50): VN+suru and independent verbs except verb+verb compound verbs.
+• Other (60): verb+verb compound verbs (10); preﬁxes (5); suﬃxes (5); adjectives (10);
+adjectival nouns (10); non-mimetic adverbs (7); mimetic adverbs (3); particles, including
+complex (5); and auxiliaries, including complex ones (5).
+The division into the three groups is only a technical means to ensure approximately even distribution of the two most important groups (Nouns and Verbs) across all combinations of word
+frequencies and character compositions. At the automatic pre-selection stage, the word candidates consist of a single SUW—except for VN+suru (e.g., 活躍する), complex particles (e.g., に
+
+Figure 1
+
+Selection of primary target words from a Cartesian product of word frequencies, character
+compositions, and parts of speech. # is the number of words with the given properties to be
+selected.
+
+1142
+
+
+=== PDF page 15 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+もかかわらず), and complex auxiliaries (e.g., ねばならぬ).13 These compound word categories
+
+are an important part of Japanese vocabulary and include words diﬃcult for learners. Without
+this special handling, it would be impossible to automatically select them based only on the
+SUW POS. On the other hand, the preﬁxes and suﬃxes are single SUWs, but we manually extended the selected targets to the whole words (e.g., 尽くめ → 黒尽くめ), except for cases of
+very productive, easy-to-substitute aﬃxes (e.g., the temporal preﬁx 翌 or the honoriﬁc suﬃx 氏;
+see Appendix C.1). We used a custom version of the Japanese TUBELEX corpus (Nohejl et al.
+2025) to determine word frequencies, including those of the aforementioned multi-SUW words.
+We determined the order of the most frequent 2,500 kanji based on Japanese Wikipedia. We
+opted for Wikipedia and a limit (2,500) slightly higher than the requirements of JLPT N1 or the
+number of the jōyō kanji,14 to enable the selection of relatively specialized or less frequent vocabulary if it satisﬁes the frequency criteria of our selection. See Limitations for further discussion
+of kanji and complexity.
+3.6.2
+
+Automated pre-selection of sentences
+
+Other than containing the primary target word, the sentences automatically pre-selected
+from the source texts had to fulﬁll the following criteria to minimize external inﬂuences on the
+perception of lexical complexity: (1) The sentence is 16–32 SUWs and 24–60 characters long. (2)
+The sentence does not contain any kanji outside the top 2,500 most frequent kanji in Japanese
+Wikipedia. (3) The primary target word is the lowest frequency word in the sentence.
+We restricted the sentence length to reduce the eﬀect that a long, complicated sentence could
+have on the judgments about lexical complexity, and we used a range in which we expected both
+to ﬁnd two more simpliﬁable words and to cover most of the high-complexity words for our target
+population by the three target words. The relatively short sentences also enabled the annotators
+to concentrate better on their task. We also avoided rare kanji or words rarer than the target
+words in order not to aﬀect the lexical complexity ratings.
+At the end of this stage, we had pools of candidate primary target words in sentences, each
+corresponding to a combination of word properties (frequency, character composition, 15 and the
+POS group) and coupled with the required number of items to be manually selected.
+
+13 The verb+verb compound verbs generally consist of a single SUW.
+14 As of 2025,
+
+there are 2,136 jōyō kanji “kanji for regular use”, promulgated by the Japanese Ministry of
+Education, Culture, Sports, Science and Technology.
+15 The main classes of characters of the Japanese script are: hiragana, a basic syllabary; katakana, a syllabary
+used mostly for foreign-origin words from Western languages and mimetic words, and kanji, Chinese characters
+used mostly for content words. In particular, kanji present a cognitive and memorization challenge for learners.
+
+1143
+
+
+=== PDF page 16 ===
+Journal of Natural Language Processing
+
+3.6.3
+
+Vol. 32 No. 4
+
+December 2025
+
+Manual selection of sentences and words
+
+The authors of the paper manually selected the required number of sentences from each pool,
+choosing two secondary target words from each and adjusting the extent of all target words to
+the appropriate morphological boundary as outlined in Section 3.5. Each selection was initially
+conducted by a native Japanese speaker and reviewed by a non-native Japanese speaker, or vice
+versa, and corrected if necessary until we completed the selection of 200 sentences with 1 primary
+and 2 secondary targets each, fulﬁlling the following criteria:
+• A missing context does not complicate the comprehension of individual words or the
+sentence.
+• Each target word is simpliﬁable and spans the appropriate SUW segments.
+• Each target word in the dataset is unique.
+• No single source contributes more than 50% to the entire dataset.
+As the least frequent word in the sentence, we expect the primary target to be among the most
+diﬃcult words in the sentence. Among the remaining words, we selected as secondary targets
+the two that we expected to be most diﬃcult for our target population. While our judgment
+may not perfectly match our target population’s aggregate perception, due to the relatively short
+length of the sentences, we expect the mismatches to be relatively rare and to aﬀect sentences
+where multiple candidates of similar complexity are available for the third target word. Table 4
+shows examples of the selected sentences and target words along with two instances of words of
+similar complexity that were not selected, i.e., cases where we may have not selected the most
+complex words as targets. The examples also illustrate target words of various parts of speech
+and character compositions.
+
+3.7
+
+Annotation and Review
+
+Annotating lexical complexity is a relatively straightforward task, which relies on the subjective judgments of the annotators from the target population. On the other hand, the annotation
+of appropriate lexical substitutions poses a conundrum: annotators from the target group cannot
+annotate appropriate substitutions when the text is diﬃcult for them to understand in the ﬁrst
+place. We addressed this problem by working with two separate annotator groups.
+We hired two groups of annotators through an intermediary company, which allowed us to
+recruit annotators fulﬁlling our requirements and to ensure quality control. The ten annotators
+performing lexical complexity annotation were non-native Japanese speakers who had JLPT levels
+N2 or N1 (or the older equivalents 2 and 1) and whose ﬁrst language was neither Chinese nor
+Korean. The ten annotators performing LS annotation were native Japanese speakers with at
+1144
+
+
+=== PDF page 17 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+Source
+
+Primary Target
+[POS, Characters]
+
+Sentence with Targets and Other
+Candidates
+
+Approximate Translation
+
+®
+Wikipedia
+
+ブッとばす
+(knock down)
+[VV, kata.+hira.]
+
+「気に入らねえ奴はブッとばす」という
+のが口癖。
+
+“I’ll knock down the fellas I don’t like”
+is his motto.
+
+®
+Wikipedia
+
+肯定して
+(aﬃrmed)
+[VN+suru, kanji ]
+
+彼らがそれらのアプリを使うのは、友人か They use those apps in an attempt to
+ら肯定してもらうことで自分の存在の正 prove the validity of their existence by
+当性を確認しようとする試みなのである。 getting it aﬃrmed from their friends.
+
+ò Consumer
+Aﬀairs
+Agency
+
+直ちに
+(immediately)
+[ADV, kanji ]
+
+旧基準の製品を使用する場合は、収納部
+分の扉のロックが壊れていたら、直ちに使
+用を中止してください。
+
+When using a product of the outdated
+standard, stop using it immediately if
+the clasp on the storage door is broken.
+
+\ Wikinews
+
+パトカー
+(patrol car)
+[N, katakana]
+
+パトカーは 600 メートルほど離れた路上
+でワゴン車を見失ったものの、その後タ
+クシーと衝突したワゴン車を発見した。
+
+Although the patrol car lost sight of the
+van on the road about 600 meters away,
+it later discovered the van after it had
+collided with a taxi.
+
+Table 4
+
+Examples of sentences and target words (bold) selected for the dataset. Other words of
+complexity comparable to the selected target words are underlined. Rather than being literal,
+the translations illustrate the complexity of the original words in English. “Kata.+hira.”
+stands for katakana+hiragana.
+
+least one year of professional experience in teaching Japanese as a foreign language and were
+instructed to provide simpliﬁcations for language learners without assuming a particular native
+language. Therefore, in the case of LS, we were relying on the professional experience of the
+annotators and their ability to follow these instructions.
+Each annotator received instructions for their task and a proﬁle questionnaire. Non-native
+speakers were given instructions and questionnaires in Japanese appropriate for their proﬁciency
+level and in English. Appendix D provides the full instructions and questionnaires along with
+English translations for cases in which the original texts were only in Japanese. The corresponding
+ﬁles are in the project’s online repository.
+We asked both groups to annotate the ﬁrst ten sentences, which constitute the trial data of the
+ﬁnal dataset. We evaluated the initial annotation both manually and by computing agreement
+measures between individuals and the rest of the group. We did not ﬁnd any outliers or errors
+that would prevent us from using the annotation or would require us to replace any annotators.
+In the case of lexical simpliﬁcations, we gave each annotator individual feedback on their
+annotation, generally encouraging them to maintain the good quality of their work and pointing
+out areas for improvement in the annotation. We also supplied more examples to all annotators,
+illustrating how we expected the instructions to apply to the items they had already annotated
+
+1145
+
+
+=== PDF page 18 ===
+Journal of Natural Language Processing
+
+Native languages
+
+JLPT level
+Studied Japanese at university
+Currently lives in Japan
+Lived in Japan (total years)
+Reading in Japanese (hours/week)
+Age (years)
+Education (total years)
+Non-native languages
+Teaching Japanese (hours/week)
+Experience teaching (total years)
+Table 5
+
+Vol. 32 No. 4
+
+December 2025
+
+Lexical Complexity
+(non-native speakers)
+
+Lexical Simpliﬁcation
+(native language teachers)
+
+English (5), Swedish (1),
+Portuguese & English (1),
+French & English (1),
+Basque & Spanish (1), French (1)
+
+Japanese (10)
+
+1 (3), N1 (3), N2 (3), 2 (1)
+7 of 10
+10 of 10
+
+(native)
+—
+10 of 10
+
+16.7 ˘ 8.3
+5.7 ˘ 7.6
+40.8 ˘ 9.1
+18.4 ˘ 3.7
+1.7 ˘ 0.5
+—
+—
+
+—
+15.9 ˘ 14.5
+54.1 ˘ 5.5
+16.8 ˘ 2.8
+1.4 ˘ 0.8
+4.4 ˘ 9.3
+2.6 ˘ 2.3
+
+Summary of the annotator proﬁles. The last seven rows report means and standard deviations
+separated by ˘. Full questions in Appendices D.2 and D.4.
+
+(provided in Figure 5 in Appendix D.3). In the case of one LS annotator, in whose annotation
+issues with simplicity or meaning preservation occurred repeatedly, we reviewed their work once
+more after they completed another ten sentences, to ensure that they understood the feedback.
+We reviewed the annotation of the entire dataset automatically for formal errors (e.g., duplicate simpliﬁcations or spurious characters) and agreement with other annotators (we did not
+detect any outliers or suspiciously similar annotations). We also performed character normalization and manual corrections based on automated screening to correct unambiguous errors such
+as ungrammatical word forms, as detailed in Appendix E. Finally, we reviewed the dataset for
+oﬀensive language (see Ethical Considerations for details).
+Each annotator was given a unique identiﬁer so that their individual annotations could be
+matched to their proﬁles. We did not collect any personally identifying information. In addition
+to aggregated data, we released all of the individual annotations for both tasks and the annotator
+proﬁle data. Table 5 summarizes the annotator proﬁles.
+
+4 Proposed Methods for LS and LCP
+The MultiLS-Japanese dataset, presented in the previous section, was used for an evaluation
+
+1146
+
+
+=== PDF page 19 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+of a shared task (Shardlow et al. 2024b), in which systems representative of the state-of-the-art
+approaches participated. We therefore proposed new methods with the goal of improving both
+accuracy and eﬃciency over the shared task results, not only on MultiLS-Japanese but across all
+languages with available MultiLS datasets.
+The current state-of-the-art methods for LS and LCP require multiple LLM inferences to
+simplify a single word or predict its complexity. In contrast, we propose methods for both
+subtasks that use only a single LLM inference per data instance. Our methods use the same
+prompt across all languages, and for LCP we employ a novel calibrated token-probability-based
+scoring technique, G-Scale.
+
+4.1
+
+Lexical Simpliﬁcation
+
+In LS, multiple substitutions are generated for target words in a sentence context. The ordered
+set of substitutions is then evaluated against an ordered set of gold substitutions. In the general
+case, the goal is to match both the gold substitutions and their order.
+The system UniHD (Aumiller and Gertz 2022), which won the TSAR 2022 shared task,
+ensembled six combinations of prompts and temperatures, combining their outputs using rank
+average. In all cases, the temperature was non-zero. As motivations for this approach, the authors
+cite safeguarding against malformed outputs (the chance of multiple outputs being discarded due
+to automatic ﬁltering is lower) and a higher diversity of substitutions. The system TMU-HIT
+(Enomoto et al. 2024) used an approach derived from UniHD but ensembled ten instances of the
+same prompt and temperature.
+We simpliﬁed the approach by using a single prompt and greedy decoding (by setting temperature to zero), as we hypothesized that the safeguarding against malformed outputs (Aumiller
+and Gertz 2022) was no longer necessary on more recent LLMs and we questioned whether sampling multiple responses to the same prompt (Enomoto et al. 2024) provides any advantage over
+greedy decoding. Our prompt (see Appendix F.1) is based on the three conditions that lexical
+simpliﬁcations must fulﬁll (i.e., grammaticality, meaning preservation, and simplicity). Additionally, we speciﬁcally mention simplicity for “language learners,” which are targeted by many of
+the MultiLS datasets.
+Note that our method does not involve any reranking: it simply outputs simpliﬁcations in
+the order in which they were generated by the LLM. The eﬀectiveness of this approach was
+previously demonstrated in the TMU-HIT system (Enomoto et al. 2024), where it outperformed
+two reranking approaches. While we did not experiment with reranking, we compared ranking
+based on a single LLM output (our method) with ordering by mean rank from multiple outputs
+1147
+
+
+=== PDF page 20 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+(TMU-HIT) and ordering by median rank, as discussed in Section 5.1.
+We conducted a few preliminary experiments with diﬀerent prompt wording on the English
+and Japanese trial sets: We observed that using complex words such as “synonym” or “substitute”
+in the prompt led to more complex words appearing near the top of the generated simpliﬁcation
+lists, and therefore, we attempted to limit them. Additionally, we saw an improvement in the
+quality and consistency of formatting on Japanese after including the identiﬁers S, X, and Y for
+the sentence, target word, and simpliﬁcations, respectively.
+
+4.2
+
+Lexical Complexity Prediction
+
+In LCP, a complexity score is predicted for target words in a sentence context. The gold
+complexity score is an average of ratings by annotators from the target population. Therefore,
+although the annotators rate complexity on a discrete scale, the prediction methods must predict
+values on a continuous scale.
+We propose a new method, G-Scale, applicable to any tasks of rating a text input on a
+continuous scale. The method is motivated by the following observations about existing LCP
+methods based on LLM prompting (Enomoto et al. 2024; Smădu et al. 2024):
+(1)
+
+Low eﬃciency: The current state-of-the-art LLM-based LCP methods are extremely
+computationally intensive, using 20 inferences (Enomoto et al. 2024; Smădu et al. 2024)
+per instance to obtain results competitive with simpler models.
+
+(2)
+
+Lack of calibration: As the LLM-based LCP methods are based on weighting the scores
+by token probabilities, they depend on two conditions: (1) that the probabilities provide
+valuable information and (2) that they have the correct magnitude. Current methods do
+not perform any calibration, taking the probabilities at face value.
+
+(3)
+
+Bad ﬁt: The LLM-based TMU-HIT (Enomoto et al. 2024) achieved a better correlation
+but a worse ﬁt, i.e., a larger error, than a feature-based model.
+
+Although we were motivated by the weaknesses of existing LCP methods, we formulated
+our method so that it is potentially applicable to other tasks where a text input is rated on a
+scale, and the model is expected to accurately predict human ratings, not only to correlate with
+them, e.g., automated essay scoring. We devised a scoring function and a training algorithm for
+G-scale by addressing the problems mentioned above:
+Eﬃcient use of token probabilities.
+
+The existing LLM-based LCP methods (Enomoto et al.
+
+2024; Smădu et al. 2024) were derived from G-Eval (Liu et al. 2023), which was proposed
+as a method for evaluating natural language generation (NLG) on a numerical scale via LLM
+prompting. G-Eval’s authors proposed weighting discrete scores by their token probabilities
+1148
+
+
+=== PDF page 21 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+or, when the probabilities are not available, estimating the probabilities by sampling multiple
+responses. Only the latter option was used in LCP (Enomoto et al. 2024; Smădu et al. 2024).
+As token probabilities are now available even for the latest OpenAI models as logprobs in the
+API,16 we used probabilities, reducing the computation cost by a factor of 20. Furthermore, we
+predict only a single token, avoiding the generation of superﬂuous explanations.
+Calibrated temperature scaling.
+
+G-Eval and the two LCP methods use the same weighting
+
+scheme, where token probabilities (or probability estimates) are used as weights for the scores:
+scoreG-Eval “
+
+n
+ÿ
+
+ppsi q ¨ si
+
+(1)
+
+i“1
+
+where si P S are discrete scores from a scale S (e.g., 1, 2, 3, 4, and 5), which the model
+is instructed to use in the prompt. Consequently, the distribution of score G-Eval depends on
+the token probability distribution. The distribution may be too spiky, i.e., assigning almost
+all probability to the top token, or too noisy, i.e., assigning the remainder of the probability
+randomly. The two LCP methods represent scores by one to two tokens (one token: 0, 1; two
+tokens: 0.25, 0.5, 0.75), which may further complicate the interpretation of the probabilities,
+and use the temperature values 0.7 (Enomoto et al. 2024) and 0.8 (Smădu et al. 2024) to sample
+tokens and estimate probabilities from them without explaining how the temperature values were
+determined.
+We use single-token scores as in the original G-Eval and replace ppsi q in its formula with
+temperature-scaled softmax:
+pT q
+
+scoresoftmax “
+
+n
+ÿ
+i“1
+
+exp
+řn
+
+´
+
+log ppsi q
+T
+
+j“1 exp
+
+´
+
+¯
+
+log ppsj q
+T
+
+¯ ¨ si
+
+(2)
+
+Note that in contrast with the previous methods, we do not use the temperature T for decoding
+an output consisting of multiple tokens but for computing a score from a single token distribution
+using the formula above. We calibrate the value of T by a search in a ﬁxed set of values using
+a training set: First, we perform LLM inference using a prompt once for each instance of the
+training set, recording the token probability distributions. Then, we select a value of T that
+maximizes the linear correlation between the scores predicted by (2) and the gold scores of the
+training set.
+
+16 https://platform.openai.com/docs/api-reference/completions/create
+
+1149
+
+
+=== PDF page 22 ===
+Journal of Natural Language Processing
+
+Fitting a linear regression.
+
+Vol. 32 No. 4
+
+December 2025
+
+To address the problem of a relatively large error despite a good
+pT q
+
+correlation, we ﬁt a linear regression model with x1 “ scoresoftmax and optionally other features
+pxi qk2 as independent variables. Because this can result in predicted values being out of the scale,
+we clip the result to the interval rs1 , sn s, assuming that s1 and sn are the lowest and highest
+discrete scores, respectively, of the scale S. This yields the ﬁnal formula of the G-Scale’s scoring
+function:
+˜
+pT,βq
+scoreG-Scale “ max
+
+˜
+s1 , min
+
+pT q
+sn , β0 ` β1 ¨ scoresoftmax `
+
+k
+ÿ
+
+¸¸
+βi ¨ xi
+
+(3)
+
+i“2
+
+Linear regression also makes it possible to ensemble predictions from multiple prompts or models
+or to add features, e.g., word frequency in the case of LCP, for a hybrid approach combining
+feature-based modeling and LLM prompting. Depending on the additional features and the
+training set size, a more powerful model (e.g., support vector machine or random forests) can be
+used instead of linear regression.
+Training steps.
+(1)
+
+The parameters T and β are trained using the following steps:
+
+Perform LLM inference using a prompt once for each instance of the training set. Record
+the token probabilities for each instance of the training set.
+
+(2)
+
+pT q
+
+Select a temperature T that maximizes the linear correlation of scoresoftmax (computed
+from the token probabilities using (2)) with the gold scores of the training set.
+
+(3)
+
+Fit a linear regression model βT x on the training set. (The clipping in (3) is applied only
+at inference time.)
+
+The temperature scaling and linear regression, which diﬀerentiate our method from G-Eval,
+are not speciﬁc to LCP and can be applied to any tasks where the ﬁt of continuous values
+is important. G-Eval (Liu et al. 2023) was originally proposed for ranking alternative LLM
+outputs in NLG tasks, where linear correlation and ﬁt are not important, as long as the score
+has a good rank correlation with human judgment.
+Prompt for LCP.
+
+We employ a few-shot prompt with simple instructions (see Appendix F.3)
+
+and the complexity scale description used for the MultiLS English dataset (Shardlow et al. 2024a).
+Similar to our LS prompt, we try to avoid diﬃcult words in the prompt itself (e.g., “complexity”),
+and explicitly target language learners. We instruct the model to rate the diﬃculty for an
+“intermediate language learner” to obtain consistent complexity ratings. The prompt is not based
+on G-Eval prompt methodology (Liu et al. 2023) and does not elicit chain-of-thought output.
+We did not perform preliminary experiments with multiple prompts; instead, we performed an
+ablation of the prompt, as detailed in Section 5.1.
+
+1150
+
+
+=== PDF page 23 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+G-Eval involves a speciﬁc methodology for creating a prompt. The ﬁxed step-by-step instructions in the prompt are referred to as “chain-of-thoughts” (CoT) by G-Eval’s authors (Liu
+et al. 2023). This is an unusual usage of the term, as “CoT prompting” has been used to refer to
+the model generating a description of thoughts leading to a conclusion in response to the prompt
+(Wei et al. 2022, also cited by Liu et al.). In the context of LCP methods based on G-Eval,
+“CoT” was implemented both as G-Eval-style ﬁxed instructions (Enomoto et al. 2024) and as
+per-instance thought process generation (Smădu et al. 2024). Both result in an increased computational cost: the former involves a longer prompt (see Appendix F.4) compared to ours and the
+latter results only in a small improvement (Smădu et al. 2024) while incurring a longer generated
+output compared to a single token in our case.
+
+5 Experiments
+For the experiments, we used GPT-4o17 (OpenAI 2024b), a paid closed-weight model, with the
+following parameters: frequency penalty=0.5 and presence penalty=0.3. For our methods,
+we used temperature=0, and when performing stochastic inference, we used temperature=0.7.
+For LCP, we additionally used logprobs=True and top logprobs=20 to obtain token log-probabilities, which are necessary for G-Scale and G-Eval. For a fair comparison, the choice of
+penalties and temperature for stochastic inference followed previous methods (Aumiller and Gertz
+2022; Enomoto et al. 2024), which also used OpenAI’s GPT models.
+For LCP using G-Scale, we selected the temperature T “ 2.0, which achieved the highest
+mean correlation on the trial sets of all languages from values (0.1, 0.2, . . . , 1.9, 2.0). The
+parameters β were ﬁtted separately using the trial set for each language using linear regression
+with L2 regularization (α “ 1).
+Unless speciﬁed otherwise, we used the prompt templates described in Appendices F.1 and
+F.3 for LS and LCP, respectively. For LCP, we used 3-shot examples sampled from the trial data
+for each language such that their scores are as close as possible to 1, 5, and 3 (the lowest point,
+highest point, and midpoint of the scale, respectively), and we rounded their scores to the nearest
+integer. The same three examples for each language were used at all times.
+We performed evaluation on the MultiLS datasets for ten languages (including MultiLSJapanese). We reported results in each language and the mean of the results computed across
+languages. The best results for each language and for the mean are printed in bold.
+
+17 gpt-4o-2024-08-06
+
+1151
+
+
+=== PDF page 24 ===
+Journal of Natural Language Processing
+
+5.1
+
+Vol. 32 No. 4
+
+December 2025
+
+Lexical Simpliﬁcation
+
+We compared the performance of our system with the top MLSP shared task submissions
+(Shardlow et al. 2024b), namely ISEP (Dutilleul et al. 2024), GMU (Goswami et al. 2024),
+and TMU-HIT (Enomoto et al. 2024) using accuracy@1@top1 and accuracy in Tables 6 and
+7, respectively. Accuracy@1@top1, which was the main evaluation metric of the shared task,
+strictly evaluates the top generated simpliﬁcation against the top simpliﬁcation given by human
+annotators, whereas accuracy evaluates the top generated simpliﬁcation against all simpliﬁcations
+given by annotators, counting less frequent simpliﬁcations as correct too. To enable comparison
+with the top shared task submission, we used the shared task’s evaluation script to compute the
+metrics. As a result, the maximum achievable accuracy and accuracy@1@top1 for languages with
+unsimpliﬁable instances was lower than 1 (Shardlow et al. 2024b, Sec. 4.2, App. A). For Filipino,
+the maximum accuracy was 0.772; for other languages, it was in the interval [0.997, 1].
+Our system outperforms the top shared task submissions on most languages, achieving the
+best performance on 7 out of 10 languages in both accuracy@1@top1 and accuracy, thereby
+setting a new state-of-the-art result on the MultiLS datasets.
+The top shared task submission, TMU-HIT used GPT-4, whereas we used GPT-4o, a newer
+model by OpenAI, which may be more eﬀective in this task, although its API usage is cheaper.
+
+System
+
+Catalan
+
+English
+
+Filipino
+
+French
+
+German
+
+Italian
+
+Japanese
+
+Portug.
+
+Sinhala
+
+Spanish
+
+Mean
+
+ISEP
+GMU
+TMU-HIT
+Ours
+
+0.272
+0.225
+0.258
+0.283
+
+0.468
+0.516
+0.524
+0.493
+
+—
+0.056
+0.065
+0.084
+
+0.374
+0.366
+0.426
+0.445
+
+0.219
+0.420
+0.488
+0.544
+
+0.424
+0.404
+0.476
+0.554
+
+—
+0.258
+0.400
+0.416
+
+0.485
+—
+0.443
+0.467
+
+—
+0.228
+0.221
+0.257
+
+—
+0.418
+0.454
+0.421
+
+—
+—
+0.376
+0.396
+
+Table 6
+
+Accuracy@1@top1 of LS on the MultiLS datasets compared with the top MLSP shared task
+submission results (ISEP, GMU, TMU-HIT) reported in the shared task ﬁndings (Shardlow
+et al. 2024b).
+
+System
+
+Catalan
+
+English
+
+Filipino
+
+French
+
+German
+
+Italian
+
+Japanese
+
+Portug.
+
+Sinhala
+
+Spanish
+
+Mean
+
+ISEP
+GMU
+TMU-HIT
+Ours
+
+0.679
+0.535
+0.661
+0.681
+
+0.765
+0.749
+0.798
+0.770
+
+—
+0.293
+0.365
+0.414
+
+0.831
+0.741
+0.856
+0.880
+
+0.302
+0.641
+0.742
+0.809
+
+0.744
+0.735
+0.803
+0.842
+
+—
+0.541
+0.723
+0.721
+
+0.633
+—
+0.601
+0.642
+
+—
+0.311
+0.320
+0.412
+
+—
+0.801
+0.847
+0.821
+
+—
+—
+0.671
+0.699
+
+Table 7
+
+Accuracy (equal to potential@1 and MAP@1) of LS on the MultiLS datasets compared with
+the top MLSP shared task submission results (ISEP, GMU, TMU-HIT) reported in the shared
+task ﬁndings (Shardlow et al. 2024b).
+
+1152
+
+
+=== PDF page 25 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+Because our system and TMU-HIT use diﬀerent underlying models, prompts, and inference
+methods, we ran another set of experiments, where we used the same model (GPT-4o) and the
+following prompt/inference method combinations to perform further analysis:
+• Ours / Median Rank: Using our prompt, we repeat the inference 10 times with temperature 0.3, similarly to TMU-HIT, but instead of ensembling the simpliﬁcations using
+the mean rank, we ensemble them using the median rank.
+• Ours / TMU-HIT: Using our prompt, we repeat inference 10 times with temperature
+0.3, and ensemble the simpliﬁcations using the mean rank, exactly as TMU-HIT did.
+• TMU-HIT / Ours: Using the TMU-HIT prompt,18 we greedily decode output, as
+outlined in Section 4.1.
+• Ours / Ours: Using our prompt, we greedily decode output.
+To evaluate the results, as shown in Table 8, we used the same 10 stochastic inferences for
+the ﬁrst two rows of the table, and a single greedy inference for each of the last two rows to
+ensure comparability. We computed p-values to indicate whether the diﬀerence from the best
+performing system in each column is statistically signiﬁcant. To this end, we used the paired
+permutation test with 20,000 resamples of the dataset instances.
+We can observe that using the TMU-HIT prompt instead of ours consistently resulted in
+poorer performance. The system using the TMU-HIT prompt achieved signiﬁcantly lower accuracy@1@top1 in Japanese and signiﬁcantly lower accuracy in Japanese and Spanish.
+None of the other results diﬀer signiﬁcantly. However, an important diﬀerence lies in the
+number of inferences used: Ensembling 10 stochastic inferences with the same prompt using mean
+
+Prompt / Infer. Method
+
+Accuracy@1@top1
+
+#Inf.
+
+Accuracy
+
+English
+
+Japanese
+
+Spanish
+
+Mean
+
+English
+
+Japanese
+
+Spanish
+
+Mean
+
+Ours / Median Rank
+Ours / TMU-HIT
+TMU-HIT / Ours
+
+10
+10
+1
+
+0.526
+0.537
+0.531
+
+0.428
+0.491
+0.424
+0.486
+0.360˚˚˚ 0.462
+
+0.482
+0.482
+0.451
+
+0.765
+0.775
+0.770
+
+0.726
+0.719
+0.665˚˚
+
+0.835
+0.831
+0.792˚
+
+0.775
+0.775
+0.743
+
+Ours / Ours
+
+1
+
+0.535
+
+0.417
+
+0.477
+
+0.770
+
+0.721
+
+0.821
+
+0.771
+
+Table 8
+
+0.477
+
+Number of inferences per instance (#Inf.), accuracy@1@top1 and accuracy of LS on the
+MultiLS English, Japanese, and Spanish datasets by prompt and inference method. Signiﬁcance levels: p ă 0.001 (˚˚˚ ), p ă 0.01 (˚˚ ), p ă 0.05 (˚ ).
+
+18 We use the TMU-HIT prompt for languages other than Japanese (see Appendix F.2).
+
+TMU-HIT’s method for the Japanese language, which requires speciﬁc postprocessing.
+
+1153
+
+We do not evaluate
+
+
+=== PDF page 26 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+rank (TMU-HIT) or median rank yields results without any signiﬁcant diﬀerence (p ě 0.05) from
+performing a single greedy inference (our method).
+In a manual analysis of the outputs, we observed a non-intuitive behavior of averaging ranks
+using the arithmetic mean: an item that has the top rank in the majority of cases may not
+obtain the top mean rank if it is weighed down by low ranks (or omission of the item) in the
+other cases. If ranks are averaged using the median instead, an item that has the top rank in the
+majority of cases will always get the top median rank. The eﬀect on accuracy metrics, however,
+was mixed—while median rank performed better for Japanese and Spanish, it performed worse
+for English—and in none of the cases was the eﬀect signiﬁcant.
+We can conclude that our prompt outperformed the prompt used by TMU-HIT (Enomoto
+et al. 2024), and more importantly, our inference method achieved essentially the same results at
+one tenth of the computational cost of TMU-HIT’s inference method.
+5.1.1
+
+Error analysis on MultiLS-Japanese
+
+On the MultiLS-Japanese dataset, our method achieved an accuracy of 0.721. In other words,
+in 72.1% of the test set instances, the top predicted simpliﬁcation was in the gold data. We
+manually analyzed the errors in the remaining 27.9% (159 instances), categorizing them by issue
+in Table 9 (examples in Appendix I). In 21% of the errors, we found the simpliﬁcations valid,
+although they did not match the gold data. For the actually invalid simpliﬁcations, most errors
+stemmed from the meaning of the sentence not being preserved.
+
+Validity
+
+Invalid
+
+Valid
+
+Proportion
+
+Issue
+
+Proportion
+
+# Instances
+
+79%
+
+Not preserving meaning
+Not a simpliﬁcation
+Ungrammatical
+Not preserving meaning & not a simpliﬁcation
+Not preserving meaning & ungrammatical
+Ungrammatical & not a simpliﬁcation
+
+21%
+13%
+5%
+5%
+4%
+1%
+
+81
+21
+8
+8
+6
+1
+
+21%
+
+Simpliﬁcation not listed by annotators
+Orthography not listed by annotators
+Superﬂuous reading in parentheses attached
+
+13%
+4%
+4%
+
+20
+7
+7
+
+100%
+
+159
+
+Total Errors in Terms of Accuracy
+Table 9
+
+Analysis of LS errors in terms of accuracy (instances where the top system simpliﬁcation is
+not among gold simpliﬁcations by human annotators) of our system on MultiLS-Japanese.
+
+1154
+
+
+=== PDF page 27 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+While the amount of meaning lost or changed varies, the inability to consistently preserve
+meaning would be a serious problem for a real-world application: a system making grammatical
+errors or occasionally producing relatively complex outputs may still be usable, but a system that
+does not preserve meaning would not be ﬁt for deployment. We therefore believe that meaning
+preservation should be prioritized in future LS research. The general formulation of LS as a
+task, which does not involve deletion or summarization, makes it well-suited for settings where
+meaning preservation is crucial.
+
+5.2
+
+Lexical Complexity Prediction
+
+In Table 10, we compare the performance of our system with the top MLSP shared task
+(Shardlow et al. 2024b) submissions Archaeology (Cristea and Nisioi 2024), GMU (Goswami
+et al. 2024), TMU-HIT (Enomoto et al. 2024), and the shared task’s frequency baseline using the
+coeﬃcient of determination R2 . We use R2 , which is computed as a linear function of the mean
+squared error,19 as it is the strictest evaluation metric. A more lenient evaluation using Pearson’s
+and Spearman’s correlation coeﬃcients can be found in Appendix G. Our method, G-Scale,
+outperformed all shared task submissions in 9 of 10 languages, and in the mean over languages,
+it outperformed them by a wide margin. It also outperformed all ablated versions of our scoring
+
+Catalan
+
+English
+
+Filipino
+
+German
+
+French
+
+Italian
+
+Japanese
+
+Portug.
+
+Sinhala
+
+Spanish
+
+Mean
+
+Shared Task Top Results:
+Freq. Baseline
+´0.370
+Archaeology
+0.011
+GMU
+´0.338
+TMU-HIT
+´0.161
+
+0.547
+0.439
+0.525
+0.515
+
+0.004
+´0.076
+´0.046
+´0.354
+
+0.073
+0.069
+´0.528
+´0.558
+
+0.146
+0.214
+0.048
+0.270
+
+0.227
+´0.417
+0.077
+0.242
+
+0.340
+´0.098
+0.024
+0.413
+
+0.489
+0.242
+—
+0.153
+
+´0.287
+´0.459
+´0.037
+´1.603
+
+0.256
+0.251
+´0.073
+0.494
+
+0.142
+0.017
+´0.039
+´0.059
+
+Ablation of the Scoring Function:
+Direct
+´1.237
+0.417
+Direct + LR
+´0.056
+0.532
+G-Eval
+´0.894
+0.536
+G-Eval + LR
+´0.056
+0.561
+´0.656
+0.591
+G-Scale – LR
+
+´2.125
+0.040
+´1.790
+0.070
+´1.545
+
+´1.003
+0.127
+´0.726
+0.136
+´0.616
+
+0.493
+0.445
+0.558
+0.458
+0.586
+
+´0.669
+0.273
+´0.411
+0.298
+´0.236
+
+0.370
+0.457
+0.475
+0.483
+0.536
+
+´0.343
+0.405
+´0.136
+0.437
+0.023
+
+´3.280
+´0.024
+´2.743
+0.037
+´2.395
+
+0.032
+0.393
+0.141
+0.417
+0.205
+
+´0.734
+0.259
+´0.499
+0.284
+´0.351
+
+0.566
+
+0.078
+
+0.146
+
+0.460
+
+0.312
+
+0.500
+
+0.461
+
+0.043
+
+0.429
+
+0.293
+
+System
+
+Ours: G-Scale
+
+Table 10
+
+´0.060
+
+R2 of lexical complexity prediction on the MultiLS datasets, compared with the top MLSP
+shared task submission and frequency baseline results reported in the shared task ﬁndings
+(Shardlow et al. 2024b), and ablated versions of the G-Scale scoring function. In addition
+to printing the best result in bold, we underlined the second best result.
+
+19 This is consistent with the shared task evaluation (Shardlow et al. 2024b) and the r2 score implementation in
+
+scikit-learn (https://scikit-learn.org/) but diﬀerent from R2 deﬁned merely as a square of the Pearson’s
+correlation coeﬃcient.
+
+1155
+
+
+=== PDF page 28 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+function (also shown in Table 10). When evaluated using correlation coeﬃcients (in Appendix
+G), the diﬀerences between methods were smaller, because errors in mean and variance (and
+linear correlation, in the case of the Spearman’s rank coeﬃcient) were not penalized. Yet, our
+method still achieved better mean correlation than the top shared task systems and ablations.
+The ablations of the scoring function were:
+• Direct: We predicted the score represented by the highest probability token (greedy
+decoding of a single token)
+• Direct + LR: We used the value represented by the highest probability token as an
+independent variable for linear regression.
+• G-Eval: We used the token probabilities to compute scoreG-Eval ((1)).
+• G-Eval + LR: We used the value of scoreG-Eval as an independent variable for linear
+regression.
+pT q
+
+• G-Scale – LR: We calibrated T and use the token probabilities to compute scoresoftmax
+((2)).
+For fairness of comparison, we always clipped the values predicted by linear regression to the
+range [0, 1], in the same way it is done for G-Scale.
+In Table 11, we ablated the prompt and compared it with a prompt adapted to our method
+from the top MLSP shared task submission, TMU-HIT. To save computational resources, we
+evaluate only on three languages (English, Japanese, and Spanish). Our prompt achieved the
+best mean performance, the best performance in English and Japanese, and the second best
+performance in Spanish. This also demonstrates that assigning a concrete role in the prompt,
+i.e., “You are an intermediate learner of {language}”, was beneﬁcial even if it did not match
+
+Table 11
+
+Prompt
+
+English
+
+Japanese
+
+Spanish
+
+Mean
+
+Ours
+– No language
+– No language, generic role
+– No language, no role
+– No role
+TMU-HIT-like
+
+0.566
+0.558
+0.557
+0.418
+0.395
+0.458
+
+0.500
+0.482
+0.486
+0.335
+0.373
+0.378
+
+0.429
+0.452
+0.424
+0.333
+0.311
+0.316
+
+0.498
+0.497
+0.489
+0.362
+0.360
+0.384
+
+R2 of lexical complexity prediction on the MultiLS English, Japanese, and Spanish datasets,
+compared with the prompt ablations (described in Appendix F.1) and the prompt used by
+TMU-HIT with a minor modiﬁcation (see Appendix F.1). Our scoring function (G-Scale)
+is used in all cases.
+
+1156
+
+
+=== PDF page 29 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+the actual target population of the datasets: Japanese was annotated by rather advanced nonnative speakers, English by 10 natives and 11 non-native university students, and Spanish was
+annotated mostly by native speakers. With G-Scale, it was not important whether the scale of
+scores output by the LLM was shifted, as long as it was consistent. The concrete role seems to
+have helped the LLM achieve this consistency. Additionally, specifying the language at the end
+of the prompt, i.e., “assign a diﬃculty rating to the {language} word” was beneﬁcial too, except
+for Spanish, where it slightly hurt the performance. Note that we used the same 3-shot examples
+in all the compared prompts.
+We aimed to further improve the performance on English, Japanese, and Spanish by adding
+corpus-based features to G-Scale, namely log-frequency and log-range. As shown in Table 12,
+the best mean performance is achieved by adding log-range from the TUBELEX corpus (Nohejl
+et al. 2025). Range is a lexical dispersion measure, whose logarithm correlates particularly
+well with lexical complexity in the MultiLS datasets and psycholinguistic variables (Nohejl and
+Watanabe 2025). The logarithm of word frequency is the most common feature used for lexical
+complexity prediction. Both log-frequency and log-range alone (upper half of the table) provided
+very competitive predictions compared to G-Scale based on LLM prompting, but the best
+performance was achieved by their combination. This shows that the LLM predictions and
+log-frequency (or log-range) were relatively uncorrelated, complementing each other in LCP. In
+Appendix H we evaluated the addition of log-frequency to all ten languages. For three of them,
+it hurt the performance, which we assume reﬂects the low quality of the respective corpora.
+
+Japanese
+
+Spanish
+
+Mean
+
+Linear Regression without LLM Prompting:
+wordfreq Log-Frequency
+0.547
+TUBELEX Log-Frequency
+0.567
+TUBELEX Log-Range
+0.601
+
+0.359
+0.409
+0.406
+
+0.256
+0.327
+0.362
+
+0.387
+0.434
+0.456
+
+G-SCALE (with LLM Prompting):
+LLM
+LLM + wordfreq Log-Frequency
+LLM + TUBELEX Log-Frequency
+LLM + TUBELEX Log-Range
+
+0.500
+0.563
+0.580
+0.576
+
+0.429
+0.468
+0.489
+0.502
+
+0.498
+0.575
+0.583
+0.591
+
+Features
+
+Table 12
+
+English
+
+0.566
+0.695
+0.681
+0.696
+
+Corpus-based features: R2 of lexical complexity prediction on the MultiLS English, Japanese,
+and Spanish datasets. We use frequency from wordfreq and TUBELEX, and range (number
+of YouTube channels in which a word occurs) from TUBELEX. Features that outperform
+LLM-only prediction are italicized.
+
+1157
+
+
+=== PDF page 30 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+6 Conclusion
+We built the ﬁrst LS dataset targeting non-native Japanese speakers, MultiLS-Japanese.
+Among Japanese LS datasets, the proposed dataset has the unique feature of providing gold labels
+not only for LS but also for the subtask of LCP. MultiLS-Japanese is based on diverse source texts,
+has a permissive license (CC-BY-SA), and is part of the larger family of ten language-speciﬁc
+MultiLS datasets.
+We proposed and evaluated methods for LS and LCP that are applicable to any language
+supported by an LLM. In the case of LCP, our method can be calibrated on a small number
+of examples (we used the trial set of 30 examples from each language-speciﬁc MultiLS dataset)
+and it can leverage corpus-based features in addition to LLM prompting. The computational
+cost of both methods is an order of magnitude smaller than that of the previous state-of-the-art
+LLM-based approaches.
+For LS, we used a simple prompting approach, which nonetheless outperformed the state-ofthe-art results for most languages. Our approach consists of a prompt that led to this performance
+improvement and an inference method that reduces the computational cost to one tenth of the
+previous state of the art.
+We proposed G-Scale, a novel method for rating text input on a continuous scale using
+LLMs. G-Scale outperformed the previous state-of-the-art LLM-based LCP method (Enomoto
+et al. 2024), which is based on G-Eval (Liu et al. 2023), as well as a previous feature-based
+approach (Cristea and Nisioi 2024). G-Scale can eﬃciently combine other features with LLM
+prompting and leverage training examples while keeping the computational cost at a single LLM
+inference per data instance. Through ablation, we demonstrated that both diﬀerences of our
+method from G-Eval result in improved performance on LCP. We plan to apply G-Scale to
+other rating tasks in future work.
+We believe that together with the Japanese LS and LCP dataset, our LS and LCP methods,
+which are widely applicable across languages, form a solid basis for future research into languagespeciﬁc or personalized methods.
+
+Limitations
+MultiLS-Japanese was carefully constructed as an evaluation dataset. Its main limitation,
+shared with the other currently available MultiLS datasets, is that it provides only 30 training
+examples in the trial set. We attempted to provide resources for the evaluation of personalization,
+
+1158
+
+
+=== PDF page 31 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+with lexical complexity ratings and demographic proﬁles for ten individuals. The lack of data
+for personalization is a weak point shared by all LS and LCP datasets and an important area for
+future research.
+MultiLS-Japanese targets non-native speakers of Japanese, holders of JLPT levels N2 or N1
+(or the older equivalents 2 and 1) whose ﬁrst language is not Chinese or Korean. While lexical
+complexity annotation was performed by individuals from this population, lexical substitutions
+were provided by professionals: as explained in Section 3.7, the individuals from the target population would not be able to perform the simpliﬁcation of words that are diﬃcult to understand for
+them. We strove to ﬁnd professionals capable of performing the task and to provide them with
+appropriate instructions. Nonetheless, our approach does not guarantee optimal substitutions
+for the target population. We suggest exploring annotation methods that would involve feedback
+from individuals in the target population for future research.
+Uncommon kanji, namely characters outside the top 2,500 kanji in Japanese Wikipedia, do
+not occur in the MultiLS-Japanese dataset. In Japanese Wikipedia, which has a relatively high
+proportion of both proper names and specialized vocabulary, such characters are used to spell
+only 0.32% of the words in running text.20 Similarly, words with frequency less than 10´7.5 in
+TUBELEX, corresponding to 0.24% tokens in TUBELEX, were excluded.21 Given the limited size
+of our dataset (600 target words), we preferred to represent words that are diﬃcult for the target
+population, yet relatively frequent. This may be limiting in the future as LS systems improve: it
+will become desirable for evaluation datasets to focus more on lower-frequency words, which are
+potentially also more diﬃcult to simplify. As for lower frequency kanji, a distinction can be made
+between lexical complexity proper and complexity stemming from rare kanji, which is commonly
+handled in Japanese by adding furigana (a phonetic guide in the form of ruby characters, e.g.,
+かいらい
+
+the small characters かいらい in 傀儡政権, a puppet regime). MultiLS-Japanese does not contain
+furigana; we have not speciﬁcally tested annotators for kanji proﬁciency or experimented with
+the eﬀect of adding furigana on perceived complexity or comprehension.
+In both tasks, we used the same method across datasets for all ten languages, avoiding prompt
+or feature engineering for individual datasets. We did this to demonstrate the general applicability
+of our methods; however, at the same time, it is a limitation of our approach. We expect that
+
+20 The top 50 of the excluded words by frequency include Japanese and Chinese proper names, e.g., 齋藤 (Saitō),
+
+馮 (Féng); words that have a more common alternative spelling, e.g., 蛋白質 (protein), commonly spelled タン
+パク質; and words regularly spelled using the uncommon characters, e.g., 嫉妬 (jealousy), 弾劾 (impeachment ).
+21 Many of such words are proper nouns or English words in katakana and the alphabet. Simpliﬁable Japanese
+words in the top 50 excluded words by frequency include 多党 (multiparty) or 綬章 (a medal of honor with a
+ribbon).
+
+1159
+
+
+=== PDF page 32 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+further performance gains can be achieved by considering language speciﬁcs, target population,
+or the text genre, and adjusting the prompts and features used by our methods accordingly.
+We evaluated G-Scale, our method for rating text input on a continuous scale using LLMs,
+only on LCP. Its performance on other tasks is yet to be investigated. Both of our methods
+were devised to be applicable to closed-weight LLMs available only via API, such as OpenAI’s
+GPT model family, relying only on prompting and access to token probabilities. In principle, our
+methods are applicable to any LLM, but we have not evaluated them on other models.
+
+Ethical Considerations
+We manually reviewed the content and language of the MultiLS-Japanese dataset, both original sentences and their simpliﬁcations, and found no ethically problematic content. Nevertheless,
+some instances of colloquial language may be considered inappropriate depending on the context. Discretion is therefore advised when using the dataset for purposes beyond its intended use
+(evaluating LCP and LS systems), for instance, in a classroom setting.
+The following target words occurring in the dataset are informal and may be inappropriate in
+certain contexts, though none of them is particularly oﬀensive: 奴 (fella, see Table 4 for context),
+ブッとばす (send ﬂying, knock down, also in Table 4), おまえ (you, informal), 愚かな (silly,
+
+stupid ), ケチる (to be stingy, to skimp, informal), キレさせる (make sb. lose their temper, make
+sb. snap, informal). Other informal words appear in the sentence contexts and sometimes in
+simpliﬁcations. Such words are also listed in existing pedagogical vocabulary resources: やつ,
+おまえ, 愚か, けち (Sunakawa et al. 2012), and ぶっ飛ばす (National Institute for Japanese
+
+Language and Linguistics 2025) are variants of the words above. While not typical examples of
+textbook vocabulary, we believe that such words are an important part of the complex lexicon
+that LS for non-native speakers should be tested against.
+Text simpliﬁcation, including LS, involves a trade-oﬀ between simplicity and meaning preservation (Agrawal and Carpuat 2024). We have highlighted meaning preservation as a priority for
+future research in Section 5.1.1. However, several issues beyond the preservation of factual meaning are worth noting. Compared to translation, it is more diﬃcult for simpliﬁcation to preserve
+the register or negative and positive nuances. For example, in our dataset, the simpliﬁcations
+of the formal and neutral word 犯人 (criminal, culprit ) include 悪い人 (bad person) and 悪い奴
+(bad guy, informal), which could be perceived as more negative, and simpliﬁcations of ケチる (to
+skimp, informal), which carries a negative connotation, include 節約する (to save, to economize),
+introducing a more positive tone. Similar issues were identiﬁed in the Catalan MultiLS dataset
+1160
+
+
+=== PDF page 33 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+(Saggion et al. 2024). We therefore recommend that text simpliﬁcation systems, particularly
+when intended to assist vulnerable individuals, are deployed only with human oversight.
+
+Acknowledgement
+The MultiLS-Japanese dataset was created as part of a joint research project between Nara
+Institute of Science and Technology and Nikkei, Inc. We are grateful to the anonymous reviewers
+for their insightful comments and suggestions.
+
+References
+Agrawal, S. and Carpuat, M. (2024). “Do Text Simpliﬁcation Systems Preserve Meaning? A
+Human Evaluation via Reading Comprehension.” Transactions of the Association for Computational Linguistics, 12, pp. 432–448.
+Aumiller, D. and Gertz, M. (2022). “UniHD at TSAR-2022 Shared Task: Is Compute All We
+Need for Lexical Simpliﬁcation?” In Proceedings of the Workshop on Text Simpliﬁcation,
+Accessibility, and Readability (TSAR-2022), pp. 251–258, Abu Dhabi, United Arab Emirates
+(Virtual). Association for Computational Linguistics.
+Biran, O., Brody, S., and Elhadad, N. (2011). “Putting It Simply: A Context-Aware Approach
+to Lexical Simpliﬁcation.” In Proceedings of the 49th Annual Meeting of the Association for
+Computational Linguistics: Human Language Technologies, pp. 496–501, Portland, Oregon,
+USA. Association for Computational Linguistics.
+Brown, T., Mann, B., Ryder, N., Subbiah, M., Kaplan, J. D., Dhariwal, P., Neelakantan, A.,
+Shyam, P., Sastry, G., Askell, A., Agarwal, S., Herbert-Voss, A., Krueger, G., Henighan, T.,
+Child, R., Ramesh, A., Ziegler, D., Wu, J., Winter, C., Hesse, C., Chen, M., Sigler, E., Litwin,
+M., Gray, S., Chess, B., Clark, J., Berner, C., McCandlish, S., Radford, A., Sutskever, I.,
+and Amodei, D. (2020). “Language Models Are Few-Shot Learners.” In Advances in Neural
+Information Processing Systems, Vol. 33, pp. 1877–1901. Curran Associates, Inc.
+Cristea, P. and Nisioi, S. (2024). “Archaeology at MLSP 2024: Machine Translation for Lexical
+Complexity Prediction and Lexical Simpliﬁcation.” In Kochmar, E., Bexte, M., Burstein, J.,
+Horbach, A., Laarmann-Quante, R., Tack, A., Yaneva, V., and Yuan, Z. (Eds.), Proceedings
+of the 19th Workshop on Innovative Use of NLP for Building Educational Applications (BEA
+2024), pp. 610–617, Mexico City, Mexico. Association for Computational Linguistics.
+De Belder, J. and Moens, M.-F. (2010). “Text Simpliﬁcation for Children.” In Proceedings of the
+1161
+
+
+=== PDF page 34 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+2010 SIGIR Workshop on Accessible Search Systems, pp. 19–26.
+Den, Y., Ogiso, T., Ogura, H., Yamada, A., Menematsu, N., Uchimoto, K., and Koiso, H. (2007).
+“The Development of an Electronic Dictionary for Morphological Analysis and Its Application to Japanese Corpus Linguistics [Kōpasu Nihongogaku No Tame No Gengo Shigen :
+Keitaiso Kaiseki Yō Denshika Jisho No Kaihatsu to Sono Ōyō] (in Japanese).” Japanese
+Linguistics [Nihongo Kagaku], 22 (5), pp. 101–123.
+Devlin, S. and Tait, J. (1998). “The Use of a Psycholinguistic Database in the Simpliﬁcation of
+Text for Aphasic Readers.” In Nerbonne, J. A. (Ed.), Linguistic Databases, Lecture Notes,
+pp. 161–173. CSLI Publications, Stanford, USA.
+Dutilleul, B., Debaillon, M., and Mathias, S. (2024). “ISEP Presidency University at MLSP
+2024 Shared Task: Using GPT-3.5 to Generate Substitutes for Lexical Simpliﬁcation.” In
+Kochmar, E., Bexte, M., Burstein, J., Horbach, A., Laarmann-Quante, R., Tack, A., Yaneva,
+V., and Yuan, Z. (Eds.), Proceedings of the 19th Workshop on Innovative Use of NLP for
+Building Educational Applications (BEA 2024), pp. 605–609, Mexico City, Mexico. Association for Computational Linguistics.
+Enomoto, T., Kim, H., Hirasawa, T., Nagai, Y., Sato, A., Nakajima, K., and Komachi, M. (2024).
+“TMU-HIT at MLSP 2024: How Well Can GPT-4 Tackle Multilingual Lexical Simpliﬁcation?” In Kochmar, E., Bexte, M., Burstein, J., Horbach, A., Laarmann-Quante, R., Tack,
+A., Yaneva, V., and Yuan, Z. (Eds.), Proceedings of the 19th Workshop on Innovative Use of
+NLP for Building Educational Applications (BEA 2024), pp. 590–598, Mexico City, Mexico.
+Association for Computational Linguistics.
+Fernando, A. and Dias, G. (2021). “Building a Linguistic Resource : A Word Frequency List
+for Sinhala.” In Bandyopadhyay, S., Devi, S. L., and Bhattacharyya, P. (Eds.), Proceedings
+of the 18th International Conference on Natural Language Processing (ICON), pp. 606–610,
+National Institute of Technology Silchar, Silchar, India. NLP Association of India (NLPAI).
+Foreign Service Institute (2025).
+
+“Foreign Language Training.”
+
+https://www.state.gov/
+
+foreign-service-institute/foreign-language-training/.
+Glavaš, G. and Štajner, S. (2015). “Simplifying Lexical Simpliﬁcation: Do We Need Simpliﬁed
+Corpora?” In Proceedings of the 53rd Annual Meeting of the Association for Computational
+Linguistics and the 7th International Joint Conference on Natural Language Processing (Volume 2: Short Papers), pp. 63–68, Beijing, China. Association for Computational Linguistics.
+Gooding, S. and Kochmar, E. (2018). “CAMB at CWI Shared Task 2018: Complex Word
+Identiﬁcation with Ensemble-Based Voting.” In Tetreault, J., Burstein, J., Kochmar, E.,
+Leacock, C., and Yannakoudakis, H. (Eds.), Proceedings of the 13th Workshop on Innovative
+1162
+
+
+=== PDF page 35 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+Use of NLP for Building Educational Applications, pp. 184–194, New Orleans, Louisiana.
+Association for Computational Linguistics.
+Gooding, S., Kochmar, E., Yimam, S. M., and Biemann, C. (2021). “Word Complexity Is in
+the Eye of the Beholder.” In Proceedings of the 2021 Conference of the North American
+Chapter of the Association for Computational Linguistics: Human Language Technologies,
+pp. 4439–4449, Online. Association for Computational Linguistics.
+Goswami, D., North, K., and Zampieri, M. (2024). “GMU at MLSP 2024: Multilingual Lexical
+Simpliﬁcation with Transformer Models.” In Kochmar, E., Bexte, M., Burstein, J., Horbach,
+A., Laarmann-Quante, R., Tack, A., Yaneva, V., and Yuan, Z. (Eds.), Proceedings of the 19th
+Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2024),
+pp. 627–634, Mexico City, Mexico. Association for Computational Linguistics.
+Goto, I., Tanaka, H., and Kumano, T. (2015). “Japanese News Simpliﬁcation: Tak Design, Data
+Set Construction, and Analysis of Simpliﬁed Text.” In Proceedings of Machine Translation
+Summit XV: Papers, pp. 17–31, Miami, USA.
+Grabe, W. and Yamashita, J. (2022). Reading in a Second Language: Moving from Theory
+to Practice (2nd edition). Cambridge Applied Linguistics. Cambridge University Press,
+Cambridge.
+Grainger, P. (2005). “Second Language Learning Strategies and Japanese: Does Orthography
+Make a Diﬀerence?” System, 33 (2), pp. 327–339.
+Hading, M., Matsumoto, Y., and Sakamoto, M. (2016). “Japanese Lexical Simpliﬁcation for
+Non-Native Speakers.” In Proceedings of the 3rd Workshop on Natural Language Processing
+Techniques for Educational Applications (NLPTEA2016), pp. 92–96, Osaka, Japan. The
+COLING 2016 Organizing Committee.
+Hartmann, N. S., Paetzold, G. H., and Aluı́sio, S. M. (2018). “SIMPLEX-PB: A Lexical Simpliﬁcation Database and Benchmark for Portuguese.” In Villavicencio, A., Moreira, V., Abad,
+A., Caseli, H., Gamallo, P., Ramisch, C., Gonçalo Oliveira, H., and Paetzold, G. H. (Eds.),
+Computational Processing of the Portuguese Language, Lecture Notes in Computer Science,
+pp. 272–283, Cham. Springer International Publishing.
+Hautasaari, A. and Ishida, T. (2011). “Discussion about Translation in Wikipedia.” In 2011 2nd
+International Conference on Culture and Computing, pp. 127–128.
+Hayakawa, A., Kajiwara, T., Ouchi, H., and Watanabe, T. (2022). “JADES: New Text Simpliﬁcation Dataset in Japanese Targeted at Non-Native Speakers.” In Proceedings of the
+Workshop on Text Simpliﬁcation, Accessibility, and Readability (TSAR-2022), pp. 179–187,
+Abu Dhabi, United Arab Emirates (Virtual). Association for Computational Linguistics.
+1163
+
+
+=== PDF page 36 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+Himeno, M. (1999). Fukugō Dōshi No Kōzō to Imi Yōho [in Japanese]. Hitsuji Shobō, Tōkyō.
+Horiguchi, K., Kajiwara, T., Arase, Y., and Ninomiya, T. (2024). “Evaluation Dataset for
+Japanese Medical Text Simpliﬁcation.”
+
+In Cao, Y. T., Papadimitriou, I., Ovalle, A.,
+
+Zampieri, M., Ferraro, F., and Swayamdipta, S. (Eds.), Proceedings of the 2024 Conference
+of the North American Chapter of the Association for Computational Linguistics: Human
+Language Technologies (Volume 4: Student Research Workshop), pp. 219–225, Mexico City,
+Mexico. Association for Computational Linguistics.
+Horn, C., Manduca, C., and Kauchak, D. (2014).
+
+“Learning a Lexical Simpliﬁer Using
+
+Wikipedia.” In Proceedings of the 52nd Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers), pp. 458–463, Baltimore, Maryland. Association
+for Computational Linguistics.
+Ide, Y., Mita, M., Nohejl, A., Ouchi, H., and Watanabe, T. (2023). “Japanese Lexical Complexity
+for Non-Native Readers: A New Dataset.” In Proceedings of the 18th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2023), pp. 477–487, Toronto,
+Canada. Association for Computational Linguistics.
+Japan Educational Exchanges and Services (2025). “Indication of the CEFR Level for Reference | JLPT Japanese-Language Proﬁciency Test.” https://www.jlpt.jp/e/about/cefr_
+reference.html.
+Japan Student Services Organization (2024). “Universities (Undergraduate) and Junior Colleges | Study in Japan Oﬃcial Website.” https://www.studyinjapan.go.jp/en/planning/
+learn-about-schools/universities/.
+Kajiwara, T. and Yamamoto, K. (2015). “Evaluation Dataset and System for Japanese Lexical Simpliﬁcation.” In Proceedings of the ACL-IJCNLP 2015 Student Research Workshop,
+pp. 35–40, Beijing, China. Association for Computational Linguistics.
+Katsuta, A. and Yamamoto, K. (2018). “Crowdsourced Corpus of Sentence Simpliﬁcation with
+Core Vocabulary.” In Calzolari, N., Choukri, K., Cieri, C., Declerck, T., Goggi, S., Hasida,
+K., Isahara, H., Maegaard, B., Mariani, J., Mazo, H., Moreno, A., Odijk, J., Piperidis, S.,
+and Tokunaga, T. (Eds.), Proceedings of the 11th International Conference on Language
+Resources and Evaluation (LREC 2018), Miyazaki, Japan. European Language Resources
+Association (ELRA).
+Kodaira, T., Kajiwara, T., and Komachi, M. (2016). “Controlled and Balanced Dataset for
+Japanese Lexical Simpliﬁcation.” In Proceedings of the ACL 2016 Student Research Workshop, pp. 1–7, Berlin, Germany. Association for Computational Linguistics.
+Kudo, T., Yamamoto, K., and Matsumoto, Y. (2004). “Applying Conditional Random Fields to
+1164
+
+
+=== PDF page 37 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+Japanese Morphological Analysis.” In Lin, D. and Wu, D. (Eds.), Proceedings of the 2004
+Conference on Empirical Methods in Natural Language Processing, pp. 230–237, Barcelona,
+Spain. Association for Computational Linguistics.
+Lee, J. and Yeung, C. Y. (2018). “Personalizing Lexical Simpliﬁcation.” In Proceedings of the
+27th International Conference on Computational Linguistics, pp. 224–232, Santa Fe, New
+Mexico, USA. Association for Computational Linguistics.
+Liu, Y., Iter, D., Xu, Y., Wang, S., Xu, R., and Zhu, C. (2023). “G-Eval: NLG Evaluation
+Using Gpt-4 with Better Human Alignment.” In Bouamor, H., Pino, J., and Bali, K. (Eds.),
+Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing,
+pp. 2511–2522, Singapore. Association for Computational Linguistics.
+Maekawa, K., Yamazaki, M., Ogiso, T., Maruyama, T., Ogura, H., Kashino, W., Koiso, H.,
+Yamaguchi, M., Tanaka, M., and Den, Y. (2014). “Balanced Corpus of Contemporary
+Written Japanese.” Language Resources and Evaluation, 48 (2), pp. 345–371.
+Maruyama, T. and Yamamoto, K. (2018).
+
+“Simpliﬁed Corpus with Core Vocabulary.”
+
+In
+
+Calzolari, N., Choukri, K., Cieri, C., Declerck, T., Goggi, S., Hasida, K., Isahara, H.,
+Maegaard, B., Mariani, J., Mazo, H., Moreno, A., Odijk, J., Piperidis, S., and Tokunaga, T.
+(Eds.), Proceedings of the 11th International Conference on Language Resources and Evaluation (LREC 2018), Miyazaki, Japan. European Language Resources Association (ELRA).
+Miyata, R., Koretaka, H., Yamauchi, H., Yanamoto, D., Kajiwara, T., Ninomiya, T., and
+Nishiwaki, Y. (2024). “MATCHA: Parallel Corpus for Japanese Text Simpliﬁcation Based
+on Professionally Simpliﬁed Articles [in Japanese].” Journal of Natural Language Processing,
+31 (2), pp. 590–609.
+National Institute for Japanese Language and Linguistics (2025). “Compound Verb Lexicon.”
+https://www2.ninjal.ac.jp/vvlexicon/.
+Nishizawa, H., Isbell, D. R., and Suzuki, Y. (2022). “Review of the Japanese-Language Proﬁciency
+Test.” Language Testing, 39 (3), pp. 494–503.
+Nohejl, A., Hayakawa, A., Ide, Y., and Watanabe, T. (2024). “Diﬃcult for Whom? A Study of
+Japanese Lexical Complexity.” In Shardlow, M., Saggion, H., Alva-Manchego, F., Zampieri,
+M., North, K., Štajner, S., and Stodden, R. (Eds.), Proceedings of the 3rd Workshop on Text
+Simpliﬁcation, Accessibility and Readability (TSAR 2024), pp. 69–81, Miami, Florida, USA.
+Association for Computational Linguistics.
+Nohejl, A., Hudi, F., Kardinata, E. A., Ozaki, S., Riera Machin, M. A., Sun, H., Vasselli, J.,
+and Watanabe, T. (2025). “Beyond Film Subtitles: Is YouTube the Best Approximation of
+Spoken Vocabulary?” In Rambow, O., Wanner, L., Apidianaki, M., Al-Khalifa, H., Eugenio,
+1165
+
+
+=== PDF page 38 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+B. D., and Schockaert, S. (Eds.), Proceedings of the 31st International Conference on Computational Linguistics, pp. 9566–9585, Abu Dhabi, UAE. Association for Computational
+Linguistics.
+Nohejl, A. and Watanabe, T. (2025). “Dispersion Measures as Predictors of Lexical Decision
+Time, Word Familiarity, and Lexical Complexity.” arXiv preprint arXiv:2501.06536.
+North, K., Ranasinghe, T., Shardlow, M., and Zampieri, M. (2024). “MultiLS: An End-toEnd Lexical Simpliﬁcation Framework.” In Shardlow, M., Saggion, H., Alva-Manchego, F.,
+Zampieri, M., North, K., Štajner, S., and Stodden, R. (Eds.), Proceedings of the 3rd Workshop on Text Simpliﬁcation, Accessibility and Readability (TSAR 2024), pp. 1–11, Miami,
+Florida, USA. Association for Computational Linguistics.
+Occhipinti, L. (2024). “Introducing MultiLS-IT: A Dataset for Lexical Simpliﬁcation in Italian.”
+In Proceedings of the 10th Italian Conference on Computational Linguistics, Pisa, Italy.
+Omura, M., Wakasa, A., and Asahara, M. (2021). “Word Delimitation Issues in UD Japanese.”
+In de Lhoneux, M. and Tsarfaty, R. (Eds.), Proceedings of the 5th Workshop on Universal Dependencies (UDW, SyntaxFest 2021), pp. 142–150, Soﬁa, Bulgaria. Association for
+Computational Linguistics.
+OpenAI (2024a). “GPT-4 Technical Report.” arXiv preprint arXiv:2303.08774.
+OpenAI (2024b). “GPT-4o System Card.” arXiv preprint arXiv:2410.21276.
+Paetzold, G. and Specia, L. (2016a). “SemEval 2016 Task 11: Complex Word Identiﬁcation.” In
+Bethard, S., Carpuat, M., Cer, D., Jurgens, D., Nakov, P., and Zesch, T. (Eds.), Proceedings
+of the 10th International Workshop on Semantic Evaluation (SemEval-2016), pp. 560–569,
+San Diego, California. Association for Computational Linguistics.
+Paetzold, G. and Specia, L. (2016b). “SV000gg at SemEval-2016 Task 11: Heavy Gauge Complex
+Word Identiﬁcation with System Voting.” In Bethard, S., Carpuat, M., Cer, D., Jurgens,
+D., Nakov, P., and Zesch, T. (Eds.), Proceedings of the 10th International Workshop on
+Semantic Evaluation (SemEval-2016), pp. 969–974, San Diego, California. Association for
+Computational Linguistics.
+Paetzold, G. and Specia, L. (2016c). “Understanding the Lexical Simpliﬁcation Needs of NonNative Speakers of English.” In Proceedings of COLING 2016, the 26th International Conference on Computational Linguistics: Technical Papers, pp. 717–727, Osaka, Japan. The
+COLING 2016 Organizing Committee.
+Paetzold, G. H. and Specia, L. (2017). “A Survey on Lexical Simpliﬁcation.” Journal of Artiﬁcial
+Intelligence Research, 60, pp. 549–593.
+Qiang, J., Li, Y., Zhu, Y., Yuan, Y., and Wu, X. (2020a). “Lexical Simpliﬁcation with Pretrained
+1166
+
+
+=== PDF page 39 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+Encoders.” 34th AAAI Conference on Artiﬁcial Intelligence, pp. 8649–8656.
+Qiang, J., Li, Y., Zhu, Y., Yuan, Y., and Wu, X. (2020b). “LSBert: A Simple Framework for
+Lexical Simpliﬁcation.” arXiv preprint arXiv:2006.14939v1.
+Saggion, H., Bott, S., Szasz, S., Pérez, N., Calderón, S., and Solı́s, M. (2024). “Lexical Complexity
+Prediction and Lexical Simpliﬁcation for Catalan and Spanish: Resource Creation, Quality
+Assessment, and Ethical Considerations.” In Shardlow, M., Saggion, H., Alva-Manchego,
+F., Zampieri, M., North, K., Štajner, S., and Stodden, R. (Eds.), Proceedings of the 3rd
+Workshop on Text Simpliﬁcation, Accessibility and Readability (TSAR 2024), pp. 82–94,
+Miami, Florida, USA. Association for Computational Linguistics.
+Shardlow, M. (2013). “A Comparison of Techniques to Automatically Identify Complex Words.”
+In 51st Annual Meeting of the Association for Computational Linguistics Proceedings of the
+Student Research Workshop, pp. 103–109, Soﬁa, Bulgaria. Association for Computational
+Linguistics.
+Shardlow, M., Alva-Manchego, F., Batista-Navarro, R., Bott, S., Calderon Ramirez, S., Cardon,
+R., François, T., Hayakawa, A., Horbach, A., Huelsing, A., Ide, Y., Imperial, J. M., Nohejl,
+A., North, K., Occhipinti, L., Peréz Rojas, N., Raihan, N., Ranasinghe, T., Solis Salazar,
+M., Zampieri, M., and Saggion, H. (2024a). “An Extensible Massively Multilingual Lexical
+Simpliﬁcation Pipeline Dataset Using the MultiLS Framework.” In Wilkens, R., Cardon, R.,
+Todirascu, A., and Gala, N. (Eds.), Proceedings of the 3rd Workshop on Tools and Resources
+for People with REAding DIﬃculties (READI) @ LREC-COLING 2024, pp. 38–46, Torino,
+Italia. ELRA and ICCL.
+Shardlow, M., Alva-Manchego, F., Batista-Navarro, R., Bott, S., Calderon Ramirez, S., Cardon,
+R., François, T., Hayakawa, A., Horbach, A., Hülsing, A., Ide, Y., Imperial, J. M., Nohejl, A.,
+North, K., Occhipinti, L., Rojas, N. P., Raihan, N., Ranasinghe, T., Salazar, M. S., Štajner,
+S., Zampieri, M., and Saggion, H. (2024b). “The BEA 2024 Shared Task on the Multilingual
+Lexical Simpliﬁcation Pipeline.” In Kochmar, E., Bexte, M., Burstein, J., Horbach, A.,
+Laarmann-Quante, R., Tack, A., Yaneva, V., and Yuan, Z. (Eds.), Proceedings of the 19th
+Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2024),
+pp. 571–589, Mexico City, Mexico. Association for Computational Linguistics.
+Shardlow, M., Evans, R., Paetzold, G. H., and Zampieri, M. (2021). “SemEval-2021 Task 1: Lexical Complexity Prediction.” In Proceedings of the 15th International Workshop on Semantic
+Evaluation (SemEval-2021), pp. 1–16, Online. Association for Computational Linguistics.
+Shardlow, M., Evans, R., and Zampieri, M. (2022). “Predicting Lexical Complexity in English
+Texts: The Complex 2.0 Dataset.” Language Resources and Evaluation. arXiv preprint
+1167
+
+
+=== PDF page 40 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+arXiv:2102.08773, pp. 1153–1194.
+Smădu, R.-A., Ion, D.-G., Cercel, D.-C., Pop, F., and Cercel, M.-C. (2024). “Investigating
+Large Language Models for Complex Word Identiﬁcation in Multilingual and Multidomain
+Setups.” In Al-Onaizan, Y., Bansal, M., and Chen, Y.-N. (Eds.), Proceedings of the 2024
+Conference on Empirical Methods in Natural Language Processing, pp. 16764–16800, Miami,
+Florida, USA. Association for Computational Linguistics.
+Speer, R. (2022). “Rspeer/Wordfreq: V3.0.” Zenodo. https://zenodo.org/record/7199437.
+Sunakawa, Y., Lee, J.-h., and Takahara, M. (2012). “The Construction of a Database to Support
+the Compilation of Japanese Learners’ Dictionaries.” Acta Linguistica Asiatica, 2 (2).
+Tack, A. (2021). Mark My Words! On the Automated Prediction of Lexical Diﬃculty for Foreign
+Language Readers. Ph.D. thesis, KU Leuven.
+Wei, J., Wang, X., Schuurmans, D., Bosma, M., Ichter, B., Xia, F., Chi, E. H., Le, Q. V., and
+Zhou, D. (2022). “Chain-of-Thought Prompting Elicits Reasoning in Large Language Models.” In Proceedings of the 36th International Conference on Neural Information Processing
+Systems, NIPS ’22, pp. 24824–24837, Red Hook, NY, USA. Curran Associates Inc.
+Yatskar, M., Pang, B., Danescu-Niculescu-Mizil, C., and Lee, L. (2010). “For the Sake of Simplicity: Unsupervised Extraction of Lexical Simpliﬁcations from Wikipedia.” In Kaplan, R.,
+Burstein, J., Harper, M., and Penn, G. (Eds.), Human Language Technologies: The 2010
+Annual Conference of the North American Chapter of the Association for Computational
+Linguistics, pp. 365–368, Los Angeles, California. Association for Computational Linguistics.
+Yimam, S. M., Biemann, C., Malmasi, S., Paetzold, G., Specia, L., Štajner, S., Tack, A., and
+Zampieri, M. (2018). “A Report on the Complex Word Identiﬁcation Shared Task 2018.”
+In Proceedings of the 13th Workshop on Innovative Use of NLP for Building Educational
+Applications, pp. 66–78, New Orleans, Louisiana. Association for Computational Linguistics.
+Yimam, S. M., Štajner, S., Riedl, M., and Biemann, C. (2017). “CWIG3G2 - Complex Word
+Identiﬁcation Task across Three Text Genres and Two User Groups.” In Proceedings of
+the 8th International Joint Conference on Natural Language Processing (Volume 2: Short
+Papers), pp. 401–407, Taipei, Taiwan. Asian Federation of Natural Language Processing.
+Yoshioka, K. (2016). “Acquisition of Mimetics and the Development of Proﬁciency in L2 Japanese:
+A Longitudinal Case Study of an L1 Dutch Speaker’s Speech and Gesture.” In The Grammar
+of Japanese Mimetics, pp. 172–192. Routledge.
+
+1168
+
+
+=== PDF page 41 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+Appendix
+A English–Japanese Glossary and Manual Dataset Tags
+Term
+
+Abbreviation (U Tag)
+
+auxiliary (convenience categorya )
+auxiliary verb
+bunsetsu
+adjective
+adjectival noun
+adverb
+classiﬁer → numeral classiﬁer
+conjunction
+complex particle
+complex auxiliary
+dependent word
+formal noun
+fuzokugo → dependent word
+honoriﬁc preﬁx
+independent word
+interjection
+long unit word
+noun phrase
+numeral classiﬁer
+particleb
+preﬁx
+prenominal modiﬁer
+pronoun
+mimetic word
+sahen verb
+short unit word
+suﬃx
+verb
+verb+verb compound verb
+verbal noun
+
+U AUX
+
+Japanese Term
+助動詞
+文節
+形容詞
+形容動詞（形状詞）
+副詞
+
+U ADJ
+U AN
+U ADV
+U CONJ
+U CPART
+
+U FN
+U HON
+U INTERJEC
+
+LUW
+U NP
+U CLF
+U PART
+U PREF
+U PREN
+U PRON
+U MIM
+
+SUW
+SUF
+UV
+U VV
+U VN
+
+接続詞
+複合助詞
+複合助動詞
+付属語
+形式名詞
+敬語接頭辞
+自立語
+感動詞
+長単位
+名詞句
+助数詞
+助詞
+接頭辞
+連体詞
+代名詞
+擬声語・擬音語・擬態語・擬情語
+サ変動詞 ＝ サ行変格活用動詞
+長単位
+接尾辞
+動詞
+動詞＋動詞型の複合動詞
+動名詞
+
+U marks abbreviations that are also used as manual tags in the dataset (see Appendix B).
+a
+
+For convenience, we understand as auxiliaries (AUX) all of the following: auxiliary verbs, including
+copulas (e.g., だ), attached typically to AN; the so-called “conjunctive particles” ( 接続助詞) that attach
+to verbs (e.g., て, ば); the light verb する used in honoriﬁc verb templates or with attributive forms AN,
+ADV (e.g., はっきりした); the dummy verb いる (after て); and the dummy copula ある (in である).
+b
+In the dataset, we categorize the so-called “conjunctive particles” ( 接続助詞) that attach to verbs (e.g.,
+て, ば) in the convenience auxiliary category (AUX).
+
+1169
+
+
+=== PDF page 42 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+B The MultiLS-Japanese Dataset Format
+The dataset is available in a TSV (tab-separated values) format, where the ﬁelds below are
+columns and data instances are rows. See Appendix A for POS tags used for manual tagging.
+Field
+
+Also in MLSP2024: l Description
+
+id
+context
+target
+position
+—— Metadata: ——
+primary pos
+primary wf
+primary cf
+source category
+source id
+source name
+source doc url
+source doc title
+—— Annotation: ——
+lcp annotator t1 . . . 10u
+ls annotator t1 . . . 10u
+complexity
+substitution t1 . . . 28u
+
+l Unique identiﬁer in the MLSP2024 dataset.
+l Sentence context.
+l Target (a substring of context).
+Target span in context as “start:stop” 0-based Unicode code point indices.
+,
+/
+.For primary targets, the triple (POS, word frequency band, character
+composition band) identiﬁes them in the space of candidate word prop/
+-erties (see Section 3.6.1). For other targets, the ﬁelds are empty.
+Category of the source (identiﬁes Category in Table 2).
+Identiﬁer of the source (identiﬁes Source in Table 2).
+Full website title.
+Full document URL (e.g., Wikipedia page or Aozora card).
+Full document title (e.g., Wikipedia page, literary work name and author).
+Individual lexical complexity ratings P t1 . . . 5u.
+Individual LS annotations, up to 3 separated by comma. Equal to target
+if none given.
+l Mean lexical complexity normalized to [0, 1].
+l Aggregated LS annotations, repeated as many times as given by the annotators. Right-padded with empty ﬁelds.
+
+—— Automatic segmentation and tagging: ——
+SUW in following ﬁeld names represents tokenized, base, lemma, type, and pos, ﬁelds resulting from
+MeCab/Unidic SUW segmentation, namely: surface (表層形), orthBase (書字形基本形), lemma+subLemma
+(語彙素+語彙素細分類), goshu/wType (語種), and pos (品詞). The SUWs are separated by vertical bars.
+token position
+context SUW
+target SUW
+
+Target span in context tokenized as “start:stop” 0-based SUWs indices.
+SUW segmentation and tags of context.
+SUW segmentation and tags of target.
+
+—— Manual segmentation and tagging: ——
+Fields named * pos use tags ADJ, ADV, AN, AUX, CONJ, INTERJEC, N, PART, PREF, PREN, PRON, SUF,
+V. Fields named * morphology additionally use CLF, FN, HON (subtypes of SUF, N, PREF, respectively).
+,
+/
+main
+.target manually split into the independent word main, auxiliaries that we
+consider advanced (likely to contribute to complexity) aux, and (other)
+aux
+/
+-dependent words dep. Any of aux and dep may be empty.
+dep
+A POS manually assigned to main, or “MWE” if main is an MWE.
+main pos
+POS manually assigned to morphemes of main, where words of an MWE
+main morphology
+are separated by hyphens, morphemes of a word by vertical bars.
+A special subtype of main. May be ADV:MIM, N:FN, PART:CPART,
+main special
+SUF:CLF, V:VN, V:VV, or empty.
+If main pos is “MWE”, one of N-V (noun-verb), NP (noun phrase), ADV-V
+main mwe type
+(adverb-verb), else empty.
+POS manually assigned to morphemes of aux, separated by vertical bars.
+aux morphology
+A POS manually assigned to dep.
+dep pos
+—— If main is part of a longer productively formed word (LUW), e.g. “翌” in “翌 1988 年 8 月 29 日”: ——
+whole
+A productively formed word of which main is a part.
+A POS manually assigned to whole.
+whole pos
+May be “start” or “end” based on whether whole starts or ends with main.
+whole part
+l: ﬁelds common with other languages in MLSP2024: https://huggingface.co/datasets/MLSP2024/MLSP2024
+
+1170
+
+
+=== PDF page 43 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+C Guidelines for Determining Target Word Spans
+The Guidelines we used to determine the boundaries of each of the 600 target words in the
+MultiLS-Japanese dataset are divided into Appendices C.1, C.2, and C.3, going bottom–up in
+terms of linguistic structure. In each section’s Results, we report how the respective guidelines
+are reﬂected in targets’ manual tags, and how many targets they were applied to. See Section
+3.5 for our motivation and an overview of basic segmentation units (SUW, LUW, and bunsetsu).
+
+C.1
+
+Compounding and Derivation
+
+In Japanese, compounding and derivation can be very productive and the resulting words
+eﬀectively constitute Sino-Japanese phrases (e.g., “962 名収容可能” “able to accommodate 962
+persons”). These words would typically constitute a single LUW. In many cases, it is possible to
+simplify their constituents independently, targeting units smaller than words from the perspective
+of Japanese morphology.
+Note that two-morpheme native Japanese (wago) compounds, of which verb+verb compound
+verbs are a prominent example, and some words that could be considered Sino-Japanese (kango)
+compounds are segmented as a single SUW, and therefore do not require special handling.
+Guidelines:
+1.
+
+If a word is productively formed by derivation or compounding and the target part can be
+simpliﬁed independently, include only the necessary SUWs of the word. e.g., the preﬁx 翌
+in “翌 1988 年 8 月 29 日” or the two-SUW compound 収容可能 in a longer compound “962
+名収容可能” can be easily simpliﬁed independently.
+
+2.
+
+Otherwise, include all constituents (SUWs) of a word, in particular:
+a.
+
+preﬁxes, including honoriﬁc, e.g., ほの暗い, お菓子,
+
+b.
+
+suﬃxes, e.g., 配偶者, 何ら,
+
+c.
+
+compound constituents, e.g., チケット販売委託会社,
+
+d.
+
+all constituents of a complex particle, e.g.について, につきまして,
+
+e.
+
+all constituents of a complex auxiliary, e.g., ざるを得ない, and the verb it attaches to.
+
+Results:
+
+We manually tagged the morphology of the target words in the ﬁeld main morphology.
+
+Target words that are part of a larger whole have a non-empty ﬁeld whole. See Appendix B for
+details. There are 30 such target words: 29 nouns and 1 adjectival noun.
+
+1171
+
+
+=== PDF page 44 ===
+Journal of Natural Language Processing
+
+C.2
+
+Vol. 32 No. 4
+
+December 2025
+
+Dependent Words (Fuzokugo)
+
+A sequence of dependent words (SUWs) may be included in a target word, typically spanning
+at most one bunsetsu. In many cases, these dependent words (SUWs) can be thought of as
+inﬂections. Note, however, that inﬂections not analyzed as separate SUWs do not need special
+handling, e.g., ない → なけれ, and we therefore do not discuss them.
+Guidelines:
+3.
+
+Always include the following dependent words (SUWs):
+a.
+
+the light verb する, e.g., はっきりする, がっかりする,
+
+b.
+
+auxiliary verbs attached to verbs and adjectives, e.g., なすべき, 麗しかった,
+
+c.
+
+the conjunctive particle て/で in the te-form of verbs and adjectives, e.g., 浮んで, 麗し
+くて, and the dummy verb いる attached to the te-form if expressing a state, e.g., 酔っ
+払っている,
+
+d.
+
+copula forms (inﬂections) attached to adjectival nouns, e.g., 巨大な, で, 頻繁に,
+
+e.
+
+particles attached to adverbs, e.g., ぽつんと,
+
+f.
+
+particles and copula forms attached to attributively (adverbially) used nouns, e.g., ぼ
+ろぼろの, ぼろぼろだ, 常に,
+
+g.
+4.
+
+sequences of the above words, e.g., 取り上げられた(aux. られる + aux. た).
+
+Do not include the following dependent words (SUWs), except if necessary for simpliﬁcation:
+a.
+
+particles other than those mentioned above: among others, case particles, e.g., が, から,
+
+b.
+
+anything following the te-form, except the dummy verb いる expressing a state,
+
+c.
+
+syntactically compounding (suﬃx-like) verbs attached to the adverbal form ( 連用形),
+e.g., 忘れる, 得る, すぎる, にくい
+
+d.
+
+dependent words preceding the independent word, e.g., を連れて unless they form a
+complex particle e.g., をめぐって or a similar ﬁxed expressions, e.g., にならい.
+
+5.
+
+When in doubt about dependent words, think of the possible simpliﬁcations and include
+them if necessary to allow those simpliﬁcations.
+
+Results:
+
+You can ﬁnd the dependent parts of targets in the ﬁelds aux and dep, see Appendix
+
+B. 201 of the targets have at least one.
+Note that the so-called “conjunctive particle” (接続助詞) て/で, used pervasively in the teform of verbs and adjectives, requires special handling (see 3.c and 4.b above). We generally do
+include other conjunctive particles in targets (e.g., ば in 手に入れなければ, see 4.a), except when
+they are part of complex auxiliaries (e.g., ば in なければならない, or つつ in つつも, see 2.d).
+
+1172
+
+
+=== PDF page 45 ===
+Nohejl et al.
+
+C.3
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+Multiword Expressions
+
+Guidelines:
+6.
+
+If an expression (collocation) can be easily simpliﬁed independently, do not include unnecessary words, e.g., 愚痴 in the collocation 愚痴を言う (to complain, lit. “to say a complaint”)
+can be simpliﬁed independently.
+
+7.
+
+Otherwise, include the minimal expression that can be simpliﬁed easily, e.g., all words of the
+idiom 愚痴をこぼす (to complain, lit. “to spill a complaint”) need to be included.
+
+Results:
+
+All MWE target words in the dataset have main pos value “MWE”, see Appendix B.
+
+The dataset contains the following MWEs:
+– 36 noun-verb (N-V): e.g., 責任を持つ (to bear responsibility)
+– 2 noun phrase (NP), e.g., 川の氾濫 (river ﬂooding),
+– 1 noun-adjective (N-ADJ): 体格のいい (to have a good physique),
+– 1 verb-verb (V-V): 打って変わって (completely change to).
+– 1 adverb-verb (ADV-V): ぱっとせん (to be inconspicuous),
+– 1 particle-verb (PART-V): にならい (following the example of),
+
+1173
+
+
+=== PDF page 46 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+D Annotation Instructions and Proﬁle Questionnaires
+D.1
+
+Lexical Complexity Annotation Instructions
+
+Figure 2
+
+Lexical complexity instructions, page 1 of 2: instructions in Japanese.
+
+1174
+
+
+=== PDF page 47 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+Figure 3
+
+Lexical complexity instructions, page 2 of 2: instructions in English.
+
+1175
+
+
+=== PDF page 48 ===
+Journal of Natural Language Processing
+
+D.2
+(1)
+
+Vol. 32 No. 4
+
+December 2025
+
+Lexical Complexity Proﬁle Questionnaire
+日本語能力試験 (JLPT) レベル。過去に合格したレベルのうち、最も高いものをメニュー
+から選んでください。
+
+Your JLPT level. Please choose from the menu the highest level you hold a JLPT certiﬁcate
+for.
+Options: N5, N4, N3, N2, N1, (2009 以前) 4, (2009 以前) 3, (2009 以前) 2, (2009 以前) 1
+(2)
+
+年齢。
+
+Your age.
+例: 「25」
+
+(3)
+
+小学校から数えて、あなたが学校に行った年数。
+
+How many years did you go to school (spent in formal education) counting from elementary
+school?
+例: 「16」(小学校 6 年、中学校 3 年、高校 3 年、 大学 4 年のとき、6+3+3+4 → 16 /
+
+elementary 8y, high school 4y, university 4y: 8+4+4 → 16)
+(4)
+
+母語。いくつかある場合は、コンマ（、）で区切り、記入してください。
+
+Your native language. If you have multiple native languages, please separate them with
+commas.
+例: 「タイ語」「Tagalog, English」
+
+(5)
+
+母語を除いて話せる言語の数。
+
+How many languages can you speak, except your native language(s)?
+例: 「1」(母語と日本語だけの場合 / if you speak only your native language and Japanese)
+
+(6)
+
+1 週間で日本語を読む時間数。
+How many hours a week do you read in Japanese?
+例: 「3」「0.5」
+
+(7)
+
+大学や大学の「日本語予備教育」で日本語を勉強したことがありますか。
+
+Have you studied Japanese at university, or in “Japanese language preparatory education”
+for university?
+Options: はい, いいえ
+(8)
+
+今、日本に住んでいますか。
+
+Do you currently live in Japan? Options: はい, いいえ
+(9)
+
+合わせて日本に住んでいた年数。
+
+How many years have you lived in Japan in total?
+例: 「0」「0.5」「3」
+
+1176
+
+
+=== PDF page 49 ===
+Nohejl et al.
+
+D.3
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+Lexical Simpliﬁcation Annotation Instructions
+
+Figure 4
+
+LS instructions, page 1 of 2: initial instructions.
+
+1177
+
+
+=== PDF page 50 ===
+Journal of Natural Language Processing
+
+Figure 5
+
+Vol. 32 No. 4
+
+December 2025
+
+LS instructions, page 2 of 2: additional examples given after reviewing the trial set annotation
+(ﬁrst 10 sentences).
+
+English Translation
+The following translation of the text shown in Figures 4 and 5 was not given to the annotators,
+who were all native Japanese speakers.
+1. Fill in information about yourself
+Please, ﬁll in information about yourself in the “Proﬁle” sheet.
+2. Annotation
+Annotation work is performed in the “Annotation” sheet. The “Annotation” sheet contains 200
+sentences to be annotated. Each sentence contains exactly three underlined words or phrases
+(targets). The task is to list simple paraphrases (simpliﬁcations) that can be substituted for
+these targets. The following conditions must be met:
+• The simpliﬁcation preserves most of the meaning of the target in the original sentence.
+• The simpliﬁcation is easier for learners of Japanese (do not assume they are native speakers
+of Chinese or Korean) to understand than the target.
+• When the target is replaced by the simpliﬁcation, the sentence is grammatically correct
+and the meaning is understandable.
+List at most three simpliﬁcations for each target. Below the sentence, there is a table for simpliﬁcations of each target. Please ﬁll in the simpliﬁcation starting from the leftmost column. If you
+
+1178
+
+
+=== PDF page 51 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+can’t think of any, just enter the target as it is in the ﬁeld “Simpliﬁcation (1)”.
+You may refer to dictionaries and other resources while working, but please do not use ChatGPT
+or other automated tools. Please list simpliﬁcations that you consider appropriate, based on your
+knowledge and experience in Japanese language teaching.
+[Image of the annotation interface, with ﬁelds for each target word labeled “Simpliﬁcation (1–3)”]
+When listing simpliﬁcations, please pay attention to the following points:
+• If the diﬃculty of the target is due to word forms or functional expressions, feel free to
+change them:
+○ ought to do → should do
+
+○ know not → don’t know [English approximations]
+
+• However, assume that the terminal form (dictionary form) and the adverbal form + masu
+(masu-form), or the adverbal form and the adverbal form + te (te-form) are all easy to
+understand word forms, and do not change one to the other.
+[Examples of unnecessary changes of verb form]
+• The POS and the number of words in the target and the simpliﬁcation can be diﬀerent if
+they ﬁt the context.
+○ bottomless → without end [English approximation]
+
+• Simply changing the target’s kanji is to hiragana or katakana is not a simpliﬁcation.
+× 望ましい → のぞましい [Change to an easier spelling]
+
+• Simpliﬁcations should use the most common orthography:
+× ほんとう [Easier but less common]
+
+○ 本当
+
+× 所為 [More diﬃcult and also less common]
+
+○ せい
+
+• Simpliﬁcation should not be supplemented with readings.
+× 躊躇する → 躊躇 (ちゅうちょ) する [Reading (ruby) supplied in parentheses]
+
+Examples based on the ﬁrst part of the annotation
+[Summary: The Japanese text uses actual good and bad examples of substitutions from the ﬁrst
+part of annotation to illustrate the following points:
+(1)
+
+Prefer rough equivalents over accurate but long explanations, which make the resulting
+sentence more diﬃcult to comprehend.
+
+(2)
+
+Make sure the substitutions are grammatical.
+
+(3)
+
+Make sure the substitutions are easier for language learners than the original word.
+
+(4)
+
+Do not change the verb form unless necessary for the simpliﬁcation.
+
+(5)
+
+Do not suppose that the learners understand English. Only use loanwords to the extent
+they are natural in Japanese.]
+1179
+
+
+=== PDF page 52 ===
+Journal of Natural Language Processing
+
+D.4
+
+Vol. 32 No. 4
+
+December 2025
+
+Lexical Simpliﬁcation Proﬁle Questionnaire
+
+The questions 1, 2, 3, 4 in the following questionnaire are identical to questions 2, 3, 5, 6
+given to lexical complexity annotators (see Appendix D.2). All of the LS annotators were native
+Japanese speakers living in Japan.
+(1)
+
+年齢。
+
+例: 「25」
+
+(2)
+
+小学校から数えて、あなたが学校に行った年数。
+
+例: 「16」
+
+(小学校 6 年、中学校 3 年、高校 3 年、 大学 4 年のとき、6+3+3+4 → 16)
+(3)
+
+母語を除いて話せる言語の数。
+
+例: 「1」
+
+(4)
+
+1 週間のうち日本語を読む時間数。 例: 「3」「0.5」
+
+(5)
+
+日本語教育の経験年数。
+
+(6)
+
+1 週間のうち日本語を教える時間数。 例: 「1」
+
+例: 「4」
+
+English Translation
+The following translation of the text above was not given to the annotators, who were all
+native Japanese speakers.
+(1)
+
+Your age.
+
+(2)
+
+How many years did you go to school (spent in formal education), counting from elementary school?
+
+(3)
+
+How many languages can you speak, except your native language(s)?
+
+(4)
+
+How many hours a week do you read in Japanese?
+
+(5)
+
+How many years of experience teaching Japanese as a second language do you have?
+
+(6)
+
+How many hours a week do you teach Japanese?
+
+E Lexical Simpliﬁcation Corrections
+The authors corrected the LS annotations, making 134 manual edits, among which 45 edits
+were made in the trial set (0.150 edits per instance and annotator) and 89 in the test set (0.016 edits per instance and annotator), reﬂecting that the implemented quality control measures (manual
+check, individual feedback, instruction clariﬁcation using additional examples) were eﬀective.
+The corrections are outlined below:
+(1)
+
+Perform a conventional character normalization. We automatically normalize the substitutions to Unicode NFKC, except for the full-width tilde character ( 〜), which is almost
+exclusively used in the full-width form in Japanese.
+
+1180
+
+
+=== PDF page 53 ===
+Nohejl et al.
+
+(2)
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+Ensure simpliﬁcations are diﬀerent from targets. (a) If the simpliﬁcation is just an orthographic variant of the target or its reading in hiragana, we delete it, e.g., 強力な: 剛力な,
+もの: 者. (b) In ambiguous cases, we do not delete the simpliﬁcation, e.g., 凸凹 (reading
+でこぼこ or とつおう): でこぼこ. (c) If the simpliﬁcation diﬀers from the target just by
+
+lacking a very common productive preﬁx or suﬃx while keeping the stem, we delete it,
+e.g., 男っぽ過ぎる: 男っぽい, お菓子: 菓子.
+(3)
+
+Ensure the simpliﬁcations preserve the original word form. Simpliﬁcations should not
+unnecessarily change the word form, in particular, the basic level of formality or politeness.
+In cases they do, we adjust the word form.
+
+(4)
+
+Correct grammatical errors. Simpliﬁcations should ﬁt the context grammatically. (a) If a
+simpliﬁcation can be corrected by a simple change of word form, we correct it, e.g., 死ん
+だ → 死んで. (b) If a simpliﬁcation repeats a word (typically a particle or a light verb)
+
+that is already contained in the context, we remove the repeated word, e.g., 家で → 家
+(で already follows the target). (c) If a simpliﬁcation misses a word (typically a particle
+or a light verb) that is part of the target, we add that word, e.g., 発表 → 発表されます
+(されます was in the target). (d) If more substantial changes are necessary (addition of
+a word not present in the target, replacement of a word, or a POS conversion), we delete
+the simpliﬁcation. In particular, we do not make any changes that would require a choice
+between several possible edits.
+(5)
+
+Perform an orthographic normalization. Simpliﬁcations should use the most common
+spelling of each word. If the simpliﬁcation uses a less common spelling, we correct it, e.g.,
+阿呆 → アホ.
+
+(6)
+
+Check simplicity. Simpliﬁcations should be easier to understand than the target words.
+In general, we do not examine simpliﬁcation for complexity or frequency. If, however, a
+simpliﬁcation has any of the issues above, and in addition to that, contains words much
+rarer or diﬃcult to comprehend than the target, we delete it.
+
+(7)
+
+Check semantics. Simpliﬁcations should preserve meaning. In general, we do not examine
+simpliﬁcation for preservation of meaning. If, however, during the formal checks, we
+discover a simpliﬁcation that clearly does not preserve the core meaning, we delete it,
+e.g., an aﬃrmative instead of a negative, or 美容師 “beautician” simpliﬁed as 技術者
+“technician”.
+
+1181
+
+
+=== PDF page 54 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+F Prompt Templates
+In the following prompt templates, only the ê symbols represent line breaks. Italic text in
+curly braces (e.g., {word}) denotes placeholders to be replaced when constructing the prompt.
+
+F.1
+
+Our Lexical Simpliﬁcation Prompt
+
+For English, the placeholder {language} and the subsequent space in the following prompt
+template are omitted; for other languages, it is replaced with the name of the language (e.g.,
+“Japanese”):
+Answer with a list of ten different, simpler {language} words Y to replace the
+difficult word X in the given sentence S. Each of the simpler words Y must follow
+these rules:ê
+1. When we replace the difficult word X with the simpler word Y, the sentence S is
+grammatically correct.ê
+2. When we replace the difficult word X with the simpler word Y, the sentence S
+has the same meaning as before.ê
+3. The simpler word Y is easier to understand than the difficult word X for
+language learners.ê
+### Sentence S: {context}ê
+### Difficult word X: {word}ê
+### List of simpler words Y:
+
+F.2
+
+TMU-HIT Lexical Simpliﬁcation Prompt
+
+We run a separate experiment using exactly the same prompt template as that used for
+languages other than Japanese by the TMU-HIT system (Enomoto et al. 2024). For English, the
+placeholder {language} and the subsequent space in the following prompt template are omitted;
+for other languages, it is replaced with the name of the language (e.g., “Japanese”):
+I will give you a {language} sentence and a word in the 'Sentence' and 'Word'
+format. List ten alternatives for the Word that are easier to understand,
+separated by ','. ê
+You must follow these four rules.ê
+1. Take into account the meaning of the Word in the Sentence.ê
+2. Alternatives must be easier to understand than the Word.ê
+3. Each alternative consists of one word.ê
+4. Do not generate an explanation.ê
+ê
+Sentence: {context}ê
+Word: {word}ê
+Alternatives:
+
+1182
+
+
+=== PDF page 55 ===
+Nohejl et al.
+
+F.3
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+Our Lexical Complexity Prediction Prompt
+
+The placeholder {language} in the following prompt template is replaced with the name of
+the language (e.g., “Japanese”, “English”), and the placeholder {examples} is replaced with a
+concatenation of n few-shot examples in the following format:
+Sentence: {contexti }ê
+ê
+Word: {wordi }ê
+ê
+Difficulty rating: {scorei }ê
+ê
+
+The prompt template:
+You are an intermediate learner of {language}.[role] You will be given a sentence and
+a word included in the sentence. Your task is to assign a rating to the word based
+on how difficult to understand the word is for you.ê
+ê
+Based on the following list, assign a difficulty rating from 1 to 5 to the word.ê
+- 1: Very Easy - Words which are very familiar to youê
+- 2: Easy - Words which are mostly familiar to youê
+- 3: Neutral - When the word is neither difficult or easyê
+- 4: Difficult - Words which you are unclear of the meaning, but may be able to
+infer from the contextê
+- 5: Very Difficult - Words that you have never seen before, or are very unclearê
+ê
+Please assign a difficulty rating to the {language} word.[ﬁnal] ê
+ê
+{examples}Sentence: {context}ê
+ê
+Word: {word}ê
+ê
+Difficulty rating:
+
+In addition to this prompt, we experiment with the following ablations:
+(1)
+
+No language: The underlined sentence marked as [ﬁnal] is replaced with:
+Please assign a difficulty rating to the word.
+
+(2)
+
+No language, generic role: The combination of (1) and replacing the underlined sentence marked as [role] with:
+You are an intermediate language learner.
+
+(3)
+
+No language, no role: The combination of (1) and (4).
+
+(4)
+
+No role: The underlined sentence marked as [role] is removed.
+
+1183
+
+
+=== PDF page 56 ===
+Journal of Natural Language Processing
+
+F.4
+
+Vol. 32 No. 4
+
+December 2025
+
+TMU-HIT-like Lexical Complexity Prediction Prompt
+
+We run a separate experiment using a prompt template based on the prompt Prole used by the
+TMU-HIT system (Enomoto et al. 2024) for English and Portuguese. We modify their prompt
+only by replacing the original scores represented by multiple tokens (0.0, 0.25, 0.5, 0.75, 1.0) with
+single-token ones (1, 2, 3, 4, 5), so that it can be used in our G-Scale method.
+The placeholder {examples} is replaced with a concatenation of n few-shot examples in the
+following format:
+Sentence: {contexti }ê
+ê
+Word: {wordi }ê
+ê
+Complexity: {scorei }ê
+ê
+
+The prompt template:
+You are an individual without specialized knowledge or expertise in a specific area.ê
+ê
+You will be given a sentence and a word included in the sentence.ê
+ê
+Your task is to rate the word on one metric.ê
+ê
+Please make sure you read and understand these instructions carefully. Please keep this
+document open while reviewing, and refer to it as needed.ê
+ê
+ê
+Evaluation Criteria:ê
+ê
+Complexity (1, 2, 3, 4, 5): the complexity of a word in terms of how difficult the word is
+to understand.ê
+ê
+Evaluation steps:ê
+1. Read the sentence and word carefully to understand the context.ê
+2. Determine the complexity of the word based on the following criteria:ê
+- 1: The word is simple and easily understandable to most people.ê
+- 2: The word may have some complexity or be specific to a certain field, but can still
+be understood with some effort.ê
+- 3: The word is moderately complex and may require some background knowledge or
+explanation to understand fully.ê
+- 4: The word is quite complex and may be difficult to understand without significant
+knowledge or explanation.ê
+- 5: The word is extremely complex and likely only understood by experts or individuals
+with specialized knowledge.ê
+3. Assign a complexity rating to the word.ê
+ê
+Note: Your own familiarity with a word should not impact your rating. This should be based
+on an average person 's understanding of the word.ê
+ê
+{examples}Sentence: '{context}'ê
+ê
+Word: '{word}'ê
+ê
+Complexity:
+
+1184
+
+
+=== PDF page 57 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+G Evaluation of LCP Using Correlation
+Table 13 and Table 14 evaluate the same systems as Table 10, but using Pearson’s and
+Spearman’s correlation coeﬃcients, respectively, instead of R2 . As both correlation coeﬃcients
+are invariant to the application of a linear function with a positive slope, ablations of linear
+regression are omitted.
+
+System
+
+Catalan
+
+English
+
+Filipino
+
+German
+
+French
+
+Italian
+
+Japanese
+
+Portug.
+
+Sinhala
+
+Spanish
+
+Mean
+
+Shared Task Top Results:
+Freq. Baseline
+0.301
+Archaeology
+0.274
+GMU
+0.155
+TMU-HIT
+0.616
+
+0.748
+0.790
+0.850
+0.820
+
+0.389
+0.443
+0.282
+0.569
+
+0.591
+0.551
+0.140
+0.718
+
+0.517
+0.533
+0.319
+0.625
+
+0.519
+0.534
+0.292
+0.601
+
+0.642
+0.485
+0.177
+0.733
+
+0.713
+0.683
+—
+0.786
+
+´0.196
+0.044
+0.125
+0.308
+
+0.551
+0.527
+0.244
+0.762
+
+0.478
+0.487
+0.287
+0.654
+
+Ablation of the Scoring Function:
+Direct
+0.534
+0.794
+G-Eval
+0.573
+0.827
+G-Scale
+0.583
+0.840
+
+0.463
+0.494
+0.504
+
+0.690
+0.711
+0.714
+
+0.738
+0.764
+0.774
+
+0.589
+0.629
+0.654
+
+0.715
+0.745
+0.767
+
+0.729
+0.761
+0.774
+
+0.303
+0.328
+0.330
+
+0.719
+0.739
+0.749
+
+0.627
+0.657
+0.669
+
+Table 13
+
+System
+
+Pearson’s correlation coeﬃcient of lexical complexity prediction on the MultiLS datasets,
+compared with the top MLSP shared task submission and frequency baseline results reported
+in the shared task ﬁndings (Shardlow et al. 2024b), and ablated versions of the G-Scale
+scoring function.
+
+Catalan
+
+English
+
+Filipino
+
+German
+
+French
+
+Italian
+
+Japanese
+
+Portug.
+
+Sinhala
+
+Spanish
+
+Mean
+
+Shared Task Top Results:
+Freq. Baseline
+0.311
+Archaeology
+0.265
+GMU
+0.157
+TMU-HIT
+0.599
+
+0.745
+0.755
+0.798
+0.755
+
+0.418
+0.448
+0.277
+0.582
+
+0.610
+0.573
+0.147
+0.737
+
+0.522
+0.531
+0.321
+0.630
+
+0.542
+0.532
+0.296
+0.622
+
+0.668
+0.513
+0.183
+0.731
+
+0.743
+0.692
+—
+0.799
+
+´0.256
+0.030
+0.130
+0.334
+
+0.530
+0.479
+0.198
+0.746
+
+0.483
+0.482
+0.279
+0.653
+
+Ablation of the Scoring Function:
+Direct
+0.519
+0.756
+G-Eval
+0.575
+0.809
+G-Scale
+0.576
+0.811
+
+0.476
+0.523
+0.524
+
+0.687
+0.711
+0.710
+
+0.713
+0.762
+0.762
+
+0.583
+0.655
+0.657
+
+0.703
+0.804
+0.805
+
+0.743
+0.789
+0.789
+
+0.295
+0.308
+0.308
+
+0.658
+0.695
+0.696
+
+0.613
+0.663
+0.664
+
+Table 14
+
+Spearman’s rank correlation coeﬃcient of lexical complexity prediction on the MultiLS
+datasets, compared with the top MLSP shared task submission and frequency baseline results reported in the shared task ﬁndings (Shardlow et al. 2024b), and ablated versions of
+the G-Scale scoring function.
+
+1185
+
+
+=== PDF page 58 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+H Wordfreq Log-Frequency as a Feature
+In Table 15, we compare the performance of linear regression based on log-frequency only, GScale without additional variables and G-Scale with log-frequency as an additional variable.
+For log-frequency, we use wordfreq, a Python library (Speer 2022) combining frequency data
+from multiple corpora, e.g. Wikipedia, Twitter, and ﬁlm subtitle corpora. For Sinhala, wordfreq
+does not provide any data. Therefore, we substitute a word frequency list representative of diverse
+domains 22 (Fernando and Dias 2021). The MLSP shared task’s baseline was also based mostly
+on wordfreq.
+The mean R2 drops when we add log-frequency as a feature, but this drop is actually driven
+by only three languages: Catalan, Filipino, and Sinhala. For all other languages, the addition of
+log-frequency results in an improvement. For Catalan, Filipino, and Sinhala, the log-frequency
+alone has a negative R2 and hence the negative eﬀect is not surprising. As all three are lowresource languages, we hypothesize that this reﬂects the limited quality of the wordfreq data for
+them. Without further analysis, however, we also cannot rule out issues with annotation quality
+or word distribution of the trial sets of these languages.
+
+System
+
+Catalan
+
+Filipino
+
+German
+
+French
+
+Italian
+
+Japanese
+
+Portug.
+
+Sinhala
+
+Spanish
+
+Mean
+
+Linear Regression without LLM Prompting:
+Log-Frequency ´0.385
+0.547 ´0.165
+
+0.073
+
+0.149
+
+0.227
+
+0.359
+
+0.514
+
+´0.346
+
+0.256
+
+0.123
+
+G-SCALE (with LLM Prompting):
+LLM
+´0.060
+0.566
+LLM + Log-F. ´0.081
+0.695
+
+0.146
+0.163
+
+0.460
+0.463
+
+0.312
+0.313
+
+0.500
+0.563
+
+0.461
+0.560
+
+0.043
+´0.319
+
+0.429
+0.468
+
+0.293
+0.276
+
+Table 15
+
+English
+
+0.078
+´0.066
+
+Using wordfreq log-frequency as an additional variable: R2 of lexical complexity prediction
+on the MultiLS datasets.
+
+22 https://github.com/nlpcuom/Word-Frequency-List-for-Sinhala
+
+1186
+
+
+=== PDF page 59 ===
+Nohejl et al.
+
+A Japanese Dataset and Eﬃcient Multilingual LLM-Based Methods for LS & LCP
+
+I Examples of Lexical Simpliﬁcation Errors
+
+Validity
+
+Issue
+
+Example: [Context] Target →
+Simpliﬁcation
+
+Gold Data Example
+
+Not preserving
+meaning
+
+メディア → 新聞
+media → newspapers
+
+マスコミ
+mass media
+
+Not a simpliﬁcation
+
+想像上の → 架空の
+imaginary → ﬁctitious
+
+非現実的な
+unreal
+
+Ungrammatical
+
+悪化 [について] → 悪くなる
+[about] deterioration → worsen
+
+低下
+decline
+
+Not preserving
+meaning & not a
+simpliﬁcation
+
+責任を持つ → 責任を果たす
+have a responsibility → fulﬁll a
+responsibility
+
+担当する
+be in charge (of)
+
+Not preserving
+meaning &
+ungrammatical
+
+[くる] 可能性があります → あります
+there is a possibility that [it comes] →
+there is
+
+かもしれません
+maybe
+
+Ungrammatical
+& not a simpliﬁcation
+
+溺れたり [すること] → 溺れる
+[cases of] drowning → drown
+
+水に飲まれたり
+being
+swallowed by the
+water
+
+Simpliﬁcation not
+listed by annotators
+
+匿名の → 名前なしの
+anonymous → without a name
+
+名前がない
+not having a name
+
+Orthography not
+listed by annotators
+
+詳細に → くわしく
+minutely → in detail
+
+詳しく
+in detail
+
+Superﬂuous reading
+in parentheses
+attached
+
+櫓 → 台（だい）
+turret → tower (reading)
+
+台
+tower
+
+Invalid
+
+Valid
+
+Table 16
+
+/
+
+Examples of LS errors in terms of accuracy (instances where the top system simpliﬁcation is
+not among gold simpliﬁcations by human annotators) of our system on MultiLS-Japanese.
+See analysis in Table 9.
+
+1187
+
+
+=== PDF page 60 ===
+Journal of Natural Language Processing
+
+Vol. 32 No. 4
+
+December 2025
+
+Adam Nohejl: Adam Nohejl received his bachelor’s and master’s degrees in
+computer science from Charles University in 2009 and 2011, respectively, and
+a bachelor’s degree in Japanese studies from Charles University in 2018. He
+worked as an independent software developer. He is currently a Ph.D. student
+at the Nara Institute of Science and Technology. His research interests include
+applications of natural language processing to text simpliﬁcation, readability,
+and language learning.
+Akio Hayakawa: Akio Hayakawa received his bachelor’s and master’s degrees
+in education from the University of Tokyo in 2015 and 2017, respectively, and
+obtained a master’s degree in engineering from the Nara Institute of Science
+and Technology in 2023. He is currently a Ph.D. student at the Universitat
+Pompeu Fabra. His research focuses on applying natural language processing
+to education and social inclusion.
+Yusuke Ide: Yusuke Ide received his B.A. degree from the University of Tokyo
+in 2017 and a master’s degree in engineering from the Nara Institute of Science
+and Technology in 2023. He is currently a Ph.D. student at the Nara Institute of Science and Technology. His research interests lie in natural language
+processing, particularly lexical semantics and readability.
+Taro Watanabe:
+
+Taro Watanabe received his B.E. and M.E. degrees in in-
+
+formation science from Kyoto University in 1994 and 1997, respectively, and
+obtained an M.S. degree in Language and Information Technologies from the
+School of Computer Science, Carnegie Mellon University in 2000. In 2004, he
+received a Ph.D. in informatics from Kyoto University. After working as a
+researcher at ATR, NTT and NICT, and as a software engineer at Google, he
+is a professor at the Nara Institute of Science and Technology starting in 2020.
+His research interests include natural language processing, machine learning,
+language modeling and machine translation.
+(Received April 1, 2025)
+(Revised June 28, 2025)
+(Accepted August 5, 2025)
+
+1188
+
+

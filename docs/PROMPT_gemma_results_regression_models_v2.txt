@@ -1,0 +1,24 @@
+Below is one paragraph of the Results section of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. It reports a comparison of ten regression models for one part of the method (signal~A). The authors want it much shorter. Rewrite it so that it is at most 80 words (the current text has 116): merge sentences, drop connecting phrases, keep every number. Keep it as one paragraph.
+
+Current text:
+<<<
+The average of ridge and HGB gives the best signal~A and the best fusion. Every single model loses in the fusion: 0.002 to 0.003 for ridge and the boosted trees, and 0.006 to 0.007 for ExtraTrees, RandomForest and the MLP. For HGB, LightGBM and CatBoost the interval of this loss includes zero. The boosted trees make almost the same predictions: their signal~A correlates at 0.974 to 0.995. Ridge correlates with them at only 0.88. Between ridge and HGB, the correlation is lowest on Sinhala, 0.571, and between 0.831 and 0.957 on the other languages (Table~\ref{tab:corr-ab}). The average of ridge and HGB is better than either of them: it combines two models that make partly different errors.
+>>>
+
+Facts that must stay true (use only these; every number stays exactly as written):
+- The average of ridge and HGB gives the best signal~A and the best fusion.
+- Every single model loses in the fusion: 0.002 to 0.003 for ridge and the boosted trees, and 0.006 to 0.007 for ExtraTrees, RandomForest and the MLP.
+- For HGB, LightGBM and CatBoost the interval of this loss includes zero.
+- The boosted trees make almost the same predictions: their signal~A correlates at 0.974 to 0.995. Ridge correlates with them at only 0.88.
+- Between ridge and HGB, the correlation is lowest on Sinhala, 0.571, and between 0.831 and 0.957 on the other languages (Table~\ref{tab:corr-ab}).
+- The average of ridge and HGB is better than either of them, because it combines two models that make partly different errors.
+
+Rules:
+- Use only the facts above. Do not add any other claim, number, explanation, interpretation, example, motivation, consequence or citation.
+- Do not change any number. Keep every "Table~\ref{...}", "Section~\ref{...}", "Appendix~\ref{...}" and every "\citep{...}" or "\citet{...}" exactly as written, and write "signal~A", "signal~B", "Gemma~4", "Claude Opus 5.5" and "Claude Sonnet 5.5" exactly like this.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences. Merge sentences that say related things. Do not repeat an idea. No chains of the form "X, and Y, so Z". No figures of speech, no aphorisms, no rhetorical questions.
+- Use "we" for the authors. Do not call our work "the system". Write "test language" for the language we predict, and "grouping", not "blocks".
+- At most 80 words. Do not drop any of the facts above.
+
+Output only the rewritten text in LaTeX, with no title, no comments and no explanations.

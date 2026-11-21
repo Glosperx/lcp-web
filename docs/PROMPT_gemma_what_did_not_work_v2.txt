@@ -1,0 +1,33 @@
+Below is the section "What Did Not Work" of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX, in LaTeX. It has a short introduction and a list of four experiments that did not improve the method. The authors want it shorter and more concrete. Rewrite it so that it is at most 250 words (the current text has 335). For every experiment, say in one or two sentences what was changed and on which data, and give the result as a number with the number it is compared with. Keep the introduction, the list of four items and the four bold titles.
+
+Current text:
+<<<
+We conducted these experiments on earlier versions of the method using the ten MLSP languages unless otherwise specified. Each difference is reported relative to the version of the method used at that time.
+
+\begin{itemize}
+\item \textbf{Eye-tracking dataset.} We tested a version of our method for Romanian alone that included eye-tracking measures from 95 readers in MultiplEYE \citep{jakobi-etal-2025-multipleye}. These measures exist for 95\% of the Romanian targets. They raised the correlation by 0.007, with a 95\% interval of $-0.001$ to 0.014, which includes zero. This is an upper bound because their weight was chosen on the test scores. The recordings cover only these Romanian texts. We also tried to predict the total reading time from the XLM-R base embedding. This embedding exists in every language. The embedding alone predicted the total reading time worse than word length and frequency did: 0.517 against 0.626. The embedding together with word length and frequency gave 0.622.
+\item \textbf{LLM surprisal.} We tested the surprisal of the target in its context as a third signal from a language model. With Qwen3 8B, it lowered the fusion by less than 0.001 and made Filipino worse. With the average of six language models, it lowered the fusion by 0.001. German required a positive weight for surprisal. Filipino required a negative weight.
+\item \textbf{Fine-tuning XLM-R.} In an earlier setup without LOLO, we trained on the English CompLex data and tested on 2{,}827 MLSP 2024 instances. The best of 14 runs fine-tuning the whole encoder reached 0.461. This was against 0.551 with the encoder frozen. The best of six LoRA runs reached 0.462. This was against 0.515.
+\item \textbf{Few-shot prompt.} We wrote a prompt with six labelled examples from the trial split of the other languages. On the trial split, it was our best single prompt with 0.697. On the test split, it lowered the fusion by 0.012 as the only prompt and made five languages worse. As a fourth prompt next to our three prompts, it changed the fusion by less than 0.001.
+\end{itemize}
+>>>
+
+Facts that must stay true (use only these; every number stays exactly as written):
+- The experiments were run on earlier versions of the method, on the ten MLSP languages unless otherwise specified. Each difference is relative to the version of the method used at that time.
+- Eye-tracking dataset: a version of the method for Romanian alone included eye-tracking measures from 95 readers in MultiplEYE \citep{jakobi-etal-2025-multipleye}. They raised the correlation by 0.007, with a 95\% interval of $-0.001$ to 0.014, which includes zero. This is an upper bound because the weight of the measures was chosen on the test scores. The recordings cover only these Romanian texts. We also tried to predict the total reading time from the XLM-R base embedding, which exists in every language. The correlation with the total reading time was 0.517 for the embedding alone and 0.626 for word length and frequency. The embedding together with word length and frequency gave 0.622.
+- LLM surprisal: we tested the surprisal of the target word in its context, from a language model, as a third signal. With Qwen3 8B, it lowered the fusion by less than 0.001 and made Filipino worse. With the average of six language models, it lowered the fusion by 0.001.
+- Fine-tuning XLM-R: in an earlier setup without LOLO, we trained on the English CompLex data and tested on 2{,}827 MLSP 2024 instances. The best of 14 runs fine-tuning the whole encoder reached 0.461, against 0.551 with the encoder frozen. The best of six LoRA runs reached 0.462, against 0.515 with the encoder frozen.
+- Few-shot prompt: a prompt with six labelled examples from the trial split of the other languages. On the trial split, it was our best single prompt, with 0.697. On the test split, it lowered the fusion by 0.012 as the only prompt and made five languages worse. As a fourth prompt next to our three prompts, it changed the fusion by less than 0.001.
+- These facts may be dropped: that the eye-tracking measures exist for 95\% of the Romanian targets; that German required a positive weight for surprisal and Filipino a negative one.
+
+Rules:
+- Use only the facts above. Do not add any other claim, number, explanation, interpretation, example, motivation, consequence or citation.
+- Do not change any number. Keep every "Table~\ref{...}", "Section~\ref{...}", "Appendix~\ref{...}" and every "\citep{...}" or "\citet{...}" exactly as written, and write "signal~A", "signal~B", "Gemma~4", "Claude Opus 5.5" and "Claude Sonnet 5.5" exactly like this.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences. Merge sentences that say related things. Do not repeat an idea. No chains of the form "X, and Y, so Z". No figures of speech, no aphorisms, no rhetorical questions.
+- Use "we" for the authors. Do not call our work "the system". Write "test language" for the language we predict, and "grouping", not "blocks".
+- In this section, "target" means the target word. Do not replace it by "test language".
+- "The best of 14 runs", "the best of six LoRA runs" and "which includes zero" must stay. A number such as 0.517 is a correlation: never write that something "predicted ... as 0.517".
+- At most 250 words. Do not drop any fact that is not marked as droppable.
+
+Output only the rewritten text in LaTeX, with no title, no comments and no explanations.

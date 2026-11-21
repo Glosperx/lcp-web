@@ -1,0 +1,36 @@
+Below is the Limitations section of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. It has two paragraphs. Rewrite it so that it reads more naturally: change the wording and the sentence structure, not the facts. Keep the two paragraphs.
+
+Current section:
+<<<
+For signal~B, we tested only open-weight language models with 8 to 12 billion parameters, quantised to 4 or 8 bits, and no larger model. When the rating of Claude Opus 5.5 replaces signal~B, the mean correlation rises from 0.693 to 0.725 (Section~\ref{sec:results-b}). We ran TabFM only in a reduced setting, with the embedding reduced from 768 to 394 dimensions, XLM-R base alone and the ten MLSP languages (Section~\ref{sec:results-a}). We did not test it with the full embedding or with the three encoders.
+
+No label of the test language is used to train a model or to choose the five settings of Section~\ref{sec:method}. Some decisions made during development did use such labels. The shortlist of language models was compared on the trial labels of the ten MLSP languages, the test language included (Section~\ref{sec:results-b}). The third prompt, which marks the target, was chosen among four candidate prompts after we compared them on the test split. On the trial split, it was not the best of the four. The settings that are the same for every language, such as the encoder layers and the ridge penalty, were fixed on earlier versions of the method. Some of them were compared on the test split before being fixed. We also measured several versions of the method on the test split. Each of them follows the LOLO protocol. The version we report was chosen by us, with the test scores in view.
+>>>
+
+Facts that must stay true (use only these; every number stays exactly as written):
+- For signal~B, we tested only open-weight language models with 8 to 12 billion parameters.
+- These models were quantised to 4 or 8 bits.
+- We tested no larger language model for signal~B.
+- When the rating of Claude Opus 5.5 replaces signal~B, the mean correlation rises from 0.693 to 0.725 (Section~\ref{sec:results-b}).
+- We ran TabFM only in a reduced setting (Section~\ref{sec:results-a}): the embedding was reduced from 768 to 394 dimensions, with XLM-R base alone and the ten MLSP languages.
+- We did not test TabFM with the full embedding or with the three encoders.
+- No label of the test language is used to train a model or to choose the five settings of Section~\ref{sec:method}.
+- Some decisions made during development did use such labels.
+- The shortlist of language models was compared on the trial labels of the ten MLSP languages, the test language included (Section~\ref{sec:results-b}).
+- The third prompt, which marks the target, was chosen among four candidate prompts after we compared them on the test split.
+- On the trial split, the third prompt was not the best of the four.
+- The settings that are the same for every language, such as the encoder layers and the ridge penalty, were fixed on earlier versions of the method.
+- Some of these settings were compared on the test split before being fixed.
+- We measured several versions of the method on the test split. Each of them follows the LOLO protocol.
+- The version we report was chosen by us, with the test scores in view.
+
+Rules:
+- Use only the facts above. Do not add any other claim, number, explanation, interpretation, example, motivation, consequence or citation.
+- Do not drop any fact and do not change any number. Keep every "Section~\ref{...}" exactly as written, and write "signal~B", "Claude Opus 5.5", "TabFM", "XLM-R base", "MLSP" and "LOLO" exactly like this.
+- Do not make the limitations sound smaller or larger than they are. No apology and no promise of future work.
+- The same length as the current section, or shorter.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences, one idea per sentence. No chains of the form "X, and Y, so Z". No figures of speech, no aphorisms, no rhetorical questions.
+- Use "we" for the authors. Do not call our work "the system". Write "test language", not "target language".
+
+Output only the rewritten section in LaTeX, with no title, no comments and no explanations.

@@ -92,6 +92,23 @@ Link-ul repo-ului anonim: https://anonymous.4open.science/r/zero-label-lcp
   CompLex 2.0, RoLCP).
 - Deschis: ce intra in anexa (prompturile lui B au fost oferite).
 
+## Decizii luate pe 10 oct, au prioritate fata de cele de mai sus
+
+- Modelul principal dupa care ne ghidam e RALS: Anghel, Cristea, Creanga si Nisioi, EMNLP 2025 main,
+  pp. 31481-31492 (`~/Downloads/2025.emnlp-main.1603.pdf`, citat deja ca `anghel-etal-2025-rals`).
+  Structura, tonul, sectiunea de date si Related Work se iau de acolo.
+- Model secundar: Ispas si Nisioi, Archaeology la SemEval-2026 Task 13
+  (`~/Downloads/2026.semeval-1.383.pdf`), doar pentru ce RALS nu are: Results and Analysis cu Error
+  Analysis si anexa de hiperparametri. Ghidul hgs ramane pentru introducere. Glioma ramane doar pentru
+  ce nu acopera RALS (keywords, Implementation, declaratiile din Acknowledgments).
+- Figurile din corp sunt trei: diagrama de pipeline (verticala), SHAP (`fig_shap_signal_a.pdf`) si
+  t-SNE-ul principal (`fig_tsne_encoders.png`). Orice alta figura merge in anexa.
+- Consecintele propuse, care se aplica abia dupa "go": Data devine sectiune proprie, inainte de Method,
+  cu tabel de statistici per limba ca Tabelul 1 din RALS; Related Work devine "Challenges and Related
+  Work", in proza, fara subtitluri, fiecare paragraf inchis cu pozitia noastra; anexa A hiperparametri,
+  anexa B prompturile lui B cuvant cu cuvant.
+- Deschise: Ethics Statement (RALS are, cursul nu cere); grantul InstRead/HRIA la Acknowledgments.
+
 ## Pasii
 
 Pas 0. Citesti tot ce e mai sus si rulezi fuse.py pe 10 si pe 11 limbi, cu `--out` pentru cifrele per

@@ -1,0 +1,27 @@
+Below is the section "What Did Not Work" of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX, in LaTeX. Rewrite only the three problems described below. Make only these changes. Every other sentence stays word for word. Keep the introduction, the four items and the four bold titles.
+
+The three problems, all in the first item (Eye-tracking dataset):
+1. The interval "($-0.001$ to 0.014, which includes zero)" no longer says that it is a 95\% interval. It must say that the interval is a 95\% interval of $-0.001$ to 0.014, and that it includes zero.
+2. "covering only these Romanian texts" is attached to MultiplEYE and "these" has no clear meaning. Remove it from that sentence and make it a separate short sentence after the sentence on the weight of the measures: "The recordings cover only Romanian texts."
+3. "XLM-R base embedding" appears twice in the sentence on the reading time. After the first mention, write "the embedding alone", not "the XLM-R base embedding alone".
+
+Current text:
+<<<
+We conducted these experiments on earlier versions of the method using the ten MLSP languages unless otherwise specified. Each difference is reported relative to the version of the method used at that time.
+
+\begin{itemize}
+\item \textbf{Eye-tracking dataset.} For Romanian, we included eye-tracking measures from 95 readers in MultiplEYE \citep{jakobi-etal-2025-multipleye} covering only these Romanian texts. These raised the correlation by 0.007 ($-0.001$ to 0.014, which includes zero). This is an upper bound because the weight of the measures was chosen on the test scores. We also tried to predict the total reading time from the XLM-R base embedding; the correlation with the total reading time is 0.517 for the XLM-R base embedding alone, 0.626 for word length and frequency, and 0.622 for the embedding together with them.
+\item \textbf{LLM surprisal.} We tested the surprisal of the target word in its context from a language model as a third signal. With Qwen3 8B, it lowered the fusion by less than 0.001 and made Filipino worse. With the average of six language models, it lowered the fusion by 0.001.
+\item \textbf{Fine-tuning XLM-R.} In an earlier setup without LOLO, we trained on the English CompLex data and tested on 2{,}827 MLSP 2024 instances. The best of 14 runs fine-tuning the whole encoder reached 0.461 against 0.551 with the encoder frozen, while the best of six LoRA runs reached 0.462 against 0.515 with the encoder frozen.
+\item \textbf{Few-shot prompt.} We used a prompt with six labelled examples from the trial split of the other languages. On the trial split, it was our best single prompt with 0.697. On the test split, it lowered the fusion by 0.012 as the only prompt and made five languages worse. As a fourth prompt next to our three prompts, it changed the fusion by less than 0.001.
+\end{itemize}
+>>>
+
+Rules:
+- Make only the changes described above. Every other sentence stays word for word.
+- Do not change any number. Keep every "Table~\ref{...}", "Section~\ref{...}", "Appendix~\ref{...}" and every "\citep{...}" or "\citet{...}" exactly as written.
+- Do not add any claim, number, explanation or citation. Not longer than the current text.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Use "we" for the authors.
+
+Output only the rewritten text in LaTeX, with no title, no comments and no explanations.

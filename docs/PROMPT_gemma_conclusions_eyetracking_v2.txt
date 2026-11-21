@@ -1,0 +1,28 @@
+Below is the Conclusions section of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. It is one paragraph. Rewrite only the sentences about the eye-tracking data, using the facts below: they must also say that even on Romanian the eye-tracking data did not bring a significant gain in correlation. Keep the rest of the paragraph exactly as it is. Keep it one paragraph.
+
+Current Conclusions:
+<<<
+We predicted lexical complexity in a language without using any of its labels. Our method combines two signals. Signal~A is a ridge regression and HGB, trained on the embeddings of three frozen multilingual encoders and on four word features. Signal~B is the expected rating of Gemma~4 over three zero-shot prompts. A weighted average fuses the two signals. We chose the language model, the temperature, the grouping and the weights on the other languages. Over eleven languages, the mean Pearson correlation is 0.693, with a 95\% interval of 0.679 to 0.706. The fusion is above both signals in ten of the eleven languages. The correlation is lowest on Sinhala (0.430) and Filipino (0.504). On the ten MLSP 2024 languages, the mean is 0.690. The highest published mean on these languages is 0.669, from a method that reads 30 labels of each evaluated language. The eye-tracking data did not help the multilingual method. They exist only for Romanian texts. On Romanian, in an earlier version of the method, they raised the correlation by at most about 0.007. Claude Opus 5.5, used zero-shot, reaches 0.721 over the eleven languages, which is above our method.
+>>>
+
+Facts that must stay true (use only these; every number stays exactly as written):
+- We predicted lexical complexity in a language without using any of its labels.
+- The method combines two signals. Signal~A is a ridge regression and HGB, trained on the embeddings of three frozen multilingual encoders and on four word features. Signal~B is the expected rating of Gemma~4 over three zero-shot prompts. A weighted average fuses the two signals.
+- The language model, the temperature, the grouping and the weights are chosen on the other languages.
+- Over eleven languages, the mean Pearson correlation is 0.693, with a 95\% interval of 0.679 to 0.706.
+- The fusion is above both signals in ten of the eleven languages.
+- The correlation is lowest on Sinhala (0.430) and Filipino (0.504).
+- On the ten MLSP 2024 languages, the mean is 0.690. The highest published mean on these languages is 0.669, from a method that reads 30 labels of each evaluated language.
+- The eye-tracking data did not help the multilingual method. They exist only for Romanian texts. Even on Romanian, in an earlier version of the method, they did not bring a significant gain in correlation: 0.007, with a 95\% interval of $-0.001$ to 0.014, which includes zero.
+- Claude Opus 5.5, used zero-shot, reaches 0.721 over the eleven languages, which is above our method.
+
+Rules:
+- Use only the facts above. Do not add any other claim, number, explanation, interpretation, example, future work or citation.
+- Do not drop any fact and do not change any number. Write "Signal~A", "Signal~B" and "Gemma~4" exactly like this.
+- At most two sentences longer than the current paragraph.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences, one idea per sentence. No chains of the form "X, and Y, so Z". No figures of speech, no aphorisms, no rhetorical questions.
+- Do not claim that our method is the best overall. Use "we" for the authors. Do not call our work "the system".
+- Past tense for what we did, present tense for the results.
+
+Output only the rewritten paragraph in LaTeX, with no section title, no comments and no explanations.

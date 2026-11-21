@@ -1,0 +1,25 @@
+Below is the text of one subsection of the Results section of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. Rewrite only the problem described below. Make only this change. Every other sentence stays word for word. Keep the paragraph breaks.
+
+The problem: the third sentence of the first paragraph, "The published values are from (\citet{...} for most, ..., and ... for TMU-HIT zero-shot averaged).", has the citations inside parentheses, which gives nested parentheses, and "for TMU-HIT zero-shot averaged" is not clear. Rewrite this one sentence without parentheses, using commas. It must say that the published values are from \citet{nohejl-etal-2025-japanese}, except Archaeology run~1, which is from \citet{cristea-nisioi-2024-machine}, and TMU-HIT zero-shot, which we average from the per-language values in \citet{shardlow-etal-2024-bea}.
+
+Current text:
+<<<
+Published results on MLSP 2024 cover only its ten languages. In Table~\ref{tab:published} (Appendix~\ref{sec:appendix-published}) we use our run without Romanian, which reaches 0.690 (95\% interval 0.675 to 0.703). We compare only the means, without paired intervals. The published values are from (\citet{nohejl-etal-2025-japanese} for most, \citet{cristea-nisioi-2024-machine} for Archaeology run~1, and \citet{shardlow-etal-2024-bea} for TMU-HIT zero-shot averaged). They are computed on the original release of the test split (5{,}627 instances) and ours on the cleaned release (5{,}624).
+
+Archaeology run~1 is the only published method that reads no label of the test language, as we do. Its mean is 0.419 over nine languages, all except English, and our value is higher on each of the nine. The other methods read the 30 trial labels of the test language. Compared with TMU-HIT zero-shot \citep{enomoto-etal-2024-tmu} (mean 0.610), our mean is 0.080 higher. Our value is higher on every language except Filipino (0.508 against 0.569). The per-language best of TMU-HIT also chooses between its two runs on the test scores.
+
+The highest published mean is that of G-Scale \citep{nohejl-etal-2025-japanese}, 0.669, and our mean is 0.021 higher. Our value is higher on eight languages and lower only on Catalan (0.562 against 0.583) and French (0.667 against 0.774). On seven languages our value is the highest in Table~\ref{tab:published}.
+
+Claude Opus 5.5 (Section~\ref{sec:results-b}) also reads no label, and its mean on the ten languages, 0.711, is higher than every mean in Table~\ref{tab:published}.
+
+On Romanian, the authors of RoLCP report a mean correlation of 0.71 over folds (standard deviation 0.05) from a model trained on Romanian labels \citep{anghel-etal-2025-rals}. With Romanian as the test language, we reach 0.739 (Table~\ref{tab:per-language}).
+>>>
+
+Rules:
+- Make only the changes described above. Every other sentence stays word for word.
+- Do not change any number. Keep every "Table~\ref{...}", "Section~\ref{...}", "Appendix~\ref{...}" and every "\citep{...}" or "\citet{...}" exactly as written.
+- Do not add any claim, number, explanation or citation. Not longer than the current text.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Use "we" for the authors.
+
+Output only the rewritten text in LaTeX, with no title, no comments and no explanations.

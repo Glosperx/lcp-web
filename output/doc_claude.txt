@@ -1,0 +1,143 @@
+
+=== 11 languages ===
+  signal A               0.609568 [0.5931, 0.6260]
+  signal B               0.663474 [0.6489, 0.6769]
+  full method            0.692521 [0.6789, 0.7057]
+  sonnet                 0.684942 [0.6714, 0.6985]
+  opus                   0.721250 [0.7085, 0.7329]
+  A + sonnet             0.694997 [0.6812, 0.7087]
+  A + opus               0.724900 [0.7118, 0.7368]
+  method + sonnet        0.712961 [0.6998, 0.7255]
+  method + opus          0.732395 [0.7197, 0.7440]
+
+paired differences (mean over languages, 95% interval, languages where the first is higher):
+  sonnet           - method       -0.0076 [-0.0176, +0.0020] higher on 2/11
+  opus             - method       +0.0287 [+0.0188, +0.0376] higher on 8/11
+  opus             - sonnet       +0.0363 [+0.0280, +0.0445] higher on 11/11
+  sonnet           - signal B     +0.0215 [+0.0101, +0.0323] higher on 6/11
+  A + sonnet       - method       +0.0025 [-0.0059, +0.0103] higher on 5/11
+  A + opus         - method       +0.0324 [+0.0236, +0.0403] higher on 9/11
+  A + sonnet       - sonnet       +0.0101 [+0.0064, +0.0137] higher on 10/11
+  A + opus         - opus         +0.0037 [+0.0018, +0.0056] higher on 9/11
+  method + sonnet  - method       +0.0204 [+0.0157, +0.0252] higher on 9/11
+  method + opus    - method       +0.0399 [+0.0333, +0.0460] higher on 11/11
+  method + sonnet  - sonnet       +0.0280 [+0.0227, +0.0334] higher on 10/11
+  method + opus    - opus         +0.0111 [+0.0080, +0.0146] higher on 8/11
+  method + opus    - A + opus     +0.0075 [+0.0049, +0.0102] higher on 9/11
+  method + sonnet  - A + sonnet   +0.0180 [+0.0141, +0.0221] higher on 9/11
+
+per-language r (11 languages):
+         A      B  method  sonnet   opus  A + sonnet  A + opus  method + sonnet  method + opus
+ca  0.4561 0.5187  0.5632  0.5604 0.6172      0.5672    0.6179           0.5872         0.6233
+de  0.6830 0.7067  0.7704  0.7693 0.8285      0.7878    0.8339           0.8069         0.8424
+en  0.8064 0.8471  0.8695  0.8455 0.8637      0.8582    0.8693           0.8739         0.8764
+es  0.7058 0.7553  0.7672  0.7587 0.8114      0.7671    0.8075           0.7828         0.8086
+fil 0.4176 0.5000  0.5045  0.4564 0.5006      0.4740    0.5079           0.5016         0.5200
+fr  0.5452 0.6721  0.6608  0.6206 0.6436      0.6219    0.6434           0.6569         0.6652
+it  0.6464 0.6406  0.6801  0.7410 0.7462      0.7379    0.7488           0.7271         0.7436
+ja  0.6159 0.7795  0.7909  0.7825 0.8039      0.7932    0.8118           0.8183         0.8250
+pt  0.7876 0.8243  0.8416  0.8183 0.8522      0.8292    0.8558           0.8475         0.8607
+ro  0.7302 0.6588  0.7394  0.7876 0.8226      0.8009    0.8268           0.7903         0.8180
+si  0.3111 0.3951  0.4302  0.3940 0.4439      0.4078    0.4509           0.4500         0.4731
+            A        B   method   sonnet     opus  A + sonnet  A + opus  method + sonnet  method + opus
+mean 0.609568 0.663474 0.692521 0.684942 0.721250    0.694997  0.724900         0.712961       0.732395
+
+weights chosen leave-one-language-out (11 languages): w_src and the Claude weight in A + Claude; the Claude weight in method + Claude
+     sonnet w_src  sonnet w_claude(A+)  sonnet w_claude(m+)  opus w_src  opus w_claude(A+)  opus w_claude(m+)
+ca          0.750                0.700                0.450       0.875              0.850              0.650
+de          0.875                0.750                0.450       1.000              0.850              0.650
+en          0.875                0.750                0.450       0.750              0.850              0.650
+es          1.000                0.750                0.450       0.750              0.800              0.650
+fil         0.625                0.750                0.500       0.625              0.850              0.650
+fr          0.625                0.700                0.500       0.625              0.850              0.650
+it          0.625                0.700                0.450       0.250              0.850              0.650
+ja          0.625                0.700                0.450       0.500              0.850              0.650
+pt          0.875                0.750                0.450       0.875              0.850              0.650
+ro          0.875                0.750                0.450       1.000              0.850              0.600
+si          0.500                0.750                0.500       0.375              0.850              0.650
+
+Pearson correlation of the Claude rating with signal A, signal B (Gemma 4) and the full method, per language (11 languages; A, B and method as in output/doc_fuse_ro11.csv):
+     sonnet ~A  sonnet ~B  sonnet ~method  opus ~A  opus ~B  opus ~method
+ca      0.6998     0.7457          0.8298   0.6908   0.7481        0.8273
+de      0.7361     0.7458          0.8190   0.7474   0.7482        0.8250
+en      0.8624     0.9068          0.9305   0.8725   0.9256        0.9465
+es      0.8451     0.8761          0.9010   0.8684   0.9095        0.9316
+fil     0.6967     0.8235          0.8346   0.6957   0.8485        0.8504
+fr      0.8257     0.8643          0.9028   0.8249   0.8580        0.8984
+it      0.8463     0.8422          0.8928   0.8249   0.8353        0.8801
+ja      0.6534     0.8418          0.8489   0.6647   0.8590        0.8654
+pt      0.8810     0.8919          0.9226   0.8795   0.9180        0.9382
+ro      0.8206     0.7722          0.8533   0.8306   0.7712        0.8564
+si      0.5575     0.5762          0.6768   0.5182   0.6278        0.6949
+      sonnet ~A  sonnet ~B  sonnet ~method  opus ~A  opus ~B  opus ~method
+mean     0.7659     0.8079          0.8556   0.7652   0.8227        0.8649
+
+=== 10 languages ===
+  signal A               0.596033 [0.5783, 0.6141]
+  signal B               0.664934 [0.6502, 0.6790]
+  full method            0.689745 [0.6751, 0.7035]
+  sonnet                 0.674672 [0.6599, 0.6892]
+  opus                   0.711120 [0.6973, 0.7240]
+  A + sonnet             0.684993 [0.6701, 0.6993]
+  A + opus               0.714853 [0.7008, 0.7279]
+  method + sonnet        0.706484 [0.6924, 0.7200]
+  method + opus          0.724129 [0.7105, 0.7369]
+
+paired differences (mean over languages, 95% interval, languages where the first is higher):
+  sonnet           - method       -0.0151 [-0.0254, -0.0048] higher on 1/10
+  opus             - method       +0.0214 [+0.0110, +0.0310] higher on 7/10
+  opus             - sonnet       +0.0364 [+0.0272, +0.0451] higher on 10/10
+  sonnet           - signal B     +0.0097 [-0.0018, +0.0213] higher on 5/10
+  A + sonnet       - method       -0.0048 [-0.0137, +0.0037] higher on 4/10
+  A + opus         - method       +0.0251 [+0.0159, +0.0338] higher on 9/10
+  A + sonnet       - sonnet       +0.0103 [+0.0063, +0.0145] higher on 9/10
+  A + opus         - opus         +0.0037 [+0.0016, +0.0060] higher on 8/10
+  method + sonnet  - method       +0.0167 [+0.0120, +0.0212] higher on 8/10
+  method + opus    - method       +0.0344 [+0.0276, +0.0409] higher on 10/10
+  method + sonnet  - sonnet       +0.0318 [+0.0257, +0.0378] higher on 9/10
+  method + opus    - opus         +0.0130 [+0.0094, +0.0170] higher on 8/10
+  method + opus    - A + opus     +0.0093 [+0.0063, +0.0123] higher on 9/10
+  method + sonnet  - A + sonnet   +0.0215 [+0.0167, +0.0264] higher on 9/10
+
+per-language r (10 languages):
+         A      B  method  sonnet   opus  A + sonnet  A + opus  method + sonnet  method + opus
+ca  0.4602 0.5187  0.5625  0.5604 0.6172      0.5673    0.6168           0.5867         0.6221
+de  0.6781 0.7108  0.7710  0.7693 0.8285      0.7866    0.8339           0.8062         0.8417
+en  0.7896 0.8471  0.8692  0.8455 0.8637      0.8597    0.8705           0.8751         0.8783
+es  0.7017 0.7553  0.7666  0.7587 0.8114      0.7676    0.8069           0.7825         0.8069
+fil 0.4184 0.5000  0.5078  0.4564 0.5006      0.4745    0.5080           0.5057         0.5208
+fr  0.5426 0.6752  0.6670  0.6206 0.6436      0.6231    0.6442           0.6624         0.6676
+it  0.6486 0.6406  0.6798  0.7410 0.7462      0.7364    0.7481           0.7231         0.7413
+ja  0.6148 0.7795  0.7954  0.7825 0.8039      0.7943    0.8107           0.8195         0.8266
+pt  0.7858 0.8243  0.8412  0.8183 0.8522      0.8289    0.8558           0.8476         0.8608
+si  0.3205 0.3979  0.4370  0.3940 0.4439      0.4115    0.4538           0.4561         0.4752
+            A        B   method   sonnet     opus  A + sonnet  A + opus  method + sonnet  method + opus
+mean 0.596033 0.664934 0.689745 0.674672 0.711120    0.684993  0.714853         0.706484       0.724129
+
+weights chosen leave-one-language-out (10 languages): w_src and the Claude weight in A + Claude; the Claude weight in method + Claude
+     sonnet w_src  sonnet w_claude(A+)  sonnet w_claude(m+)  opus w_src  opus w_claude(A+)  opus w_claude(m+)
+ca          0.625                0.700                0.400       0.625              0.800              0.600
+de          0.500                0.750                0.400       1.000              0.850              0.600
+en          0.625                0.750                0.450       0.625              0.850              0.600
+es          0.375                0.750                0.400       0.500              0.800              0.600
+fil         0.625                0.750                0.450       0.500              0.850              0.650
+fr          0.625                0.700                0.450       0.625              0.850              0.650
+it          0.500                0.700                0.400       0.625              0.850              0.600
+ja          0.500                0.700                0.400       1.000              0.850              0.600
+pt          0.625                0.750                0.450       1.000              0.850              0.600
+si          0.750                0.750                0.450       0.500              0.850              0.650
+
+Pearson correlation of the Claude rating with signal A, signal B (Gemma 4) and the full method, per language (10 languages; A, B and method as in output/doc_fuse_mlsp10.csv):
+     sonnet ~A  sonnet ~B  sonnet ~method  opus ~A  opus ~B  opus ~method
+ca      0.7055     0.7457          0.8260   0.6975   0.7481        0.8246
+de      0.7325     0.7479          0.8186   0.7427   0.7511        0.8248
+en      0.8280     0.9068          0.9241   0.8402   0.9256        0.9415
+es      0.8427     0.8761          0.8997   0.8668   0.9095        0.9311
+fil     0.6879     0.8235          0.8359   0.6871   0.8485        0.8530
+fr      0.8230     0.8651          0.9020   0.8207   0.8591        0.8970
+it      0.8509     0.8422          0.8930   0.8285   0.8353        0.8800
+ja      0.6506     0.8418          0.8538   0.6625   0.8590        0.8708
+pt      0.8802     0.8919          0.9211   0.8779   0.9180        0.9378
+si      0.5553     0.5809          0.6741   0.5143   0.6351        0.6988
+      sonnet ~A  sonnet ~B  sonnet ~method  opus ~A  opus ~B  opus ~method
+mean     0.7557     0.8122          0.8548   0.7538   0.8289        0.8659

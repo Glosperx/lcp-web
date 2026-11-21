@@ -1,0 +1,32 @@
+Below are two paragraphs of the Results section of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. They report how five language models were compared for one part of the method, called signal~B. Rewrite them so that they read more naturally: change the wording and the sentence structure, not the facts. Keep the two paragraphs.
+
+Current text:
+<<<
+\paragraph{Language models.} We compared five language models with openly published weights (Table~\ref{tab:llms}). In development, we first compared them on the trial split of MLSP 2024, with the first two prompts and $T = 1$, using the 30 trial labels of each of the ten languages, the test language included. Gemma~4 12B had the highest mean correlation, 0.686, and Llama~3.1 8B and Aya Expanse 8B the lowest, 0.547 and 0.514. We computed the ratings of the other three on the test data, and those of Llama and Aya afterwards, to complete the table. With the five models as candidates, the language model chosen on the other languages (Section~\ref{sec:signal-b}) is still Gemma~4 for every test language, and the mean correlation of the fusion stays 0.693.
+
+Replacing Gemma~4 costs far more than any change of encoder. With Qwen3 8B as the only candidate, signal~B alone falls from 0.663 to 0.381 and the fusion from 0.693 to 0.622 on eleven languages. These rows also lack the temperature, the grouping and the third prompt (steps 5 to 7); Gemma~4 read in the same way reaches 0.681. Qwen3.5 9B, the best of the other four, is better than Gemma~4 on Romanian alone, for signal~B (0.684 against 0.659) and for the fusion (0.784 against 0.739). Gemma~4 is chosen because its signal~B has the higher mean correlation on the other ten languages (0.664 against 0.591 for Qwen3.5 9B).
+>>>
+
+Facts that must stay true (use only these; every number stays exactly as written):
+- We compared five language models with openly published weights (Table~\ref{tab:llms}).
+- In development, we first compared them on the trial split of MLSP 2024, with the first two prompts and $T = 1$.
+- This comparison used the 30 trial labels of each of the ten languages, the test language included.
+- Gemma~4 12B had the highest mean correlation, 0.686. Llama~3.1 8B and Aya Expanse 8B had the lowest, 0.547 and 0.514.
+- We computed the ratings of the other three models on the test data, and those of Llama~3.1 8B and Aya Expanse 8B afterwards, to complete Table~\ref{tab:llms}.
+- With the five models as candidates, the language model chosen on the other languages (Section~\ref{sec:signal-b}) is still Gemma~4 for every test language, and the mean correlation of the fusion stays 0.693.
+- Replacing Gemma~4 costs far more than any change of encoder.
+- With Qwen3 8B as the only candidate, signal~B alone falls from 0.663 to 0.381 and the fusion from 0.693 to 0.622 on eleven languages.
+- In Table~\ref{tab:llms}, the models are read without the temperature, the grouping and the third prompt (steps 5 to 7). Gemma~4 read in the same way reaches 0.681 in the fusion.
+- Qwen3.5 9B is the best of the four other models. On Romanian alone it is better than Gemma~4, for signal~B (0.684 against 0.659) and for the fusion (0.784 against 0.739).
+- Gemma~4 is chosen because its signal~B has the higher mean correlation on the other ten languages (0.664 against 0.591 for Qwen3.5 9B).
+
+Rules:
+- Use only the facts above. Do not add any other claim, number, explanation, interpretation, example, motivation, consequence or citation.
+- Do not drop any fact and do not change any number. Keep every "Table~\ref{...}" and "Section~\ref{...}" exactly as written, and write "signal~B", "Gemma~4", "Gemma~4 12B", "Llama~3.1 8B", "Aya Expanse 8B", "Qwen3 8B", "Qwen3.5 9B", "MLSP" and "$T = 1$" exactly like this.
+- The same length as the current text, or shorter.
+- Keep "\paragraph{Language models.}" at the start of the first paragraph. Keep the two paragraphs.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences, one idea per sentence. No chains of the form "X, and Y, so Z". No figures of speech, no aphorisms, no rhetorical questions.
+- Use "we" for the authors. Do not call our work "the system". Write "test language", not "target language", and "grouping", not "blocks".
+
+Output only the rewritten text in LaTeX, with no title, no comments and no explanations.

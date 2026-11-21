@@ -1,0 +1,45 @@
+Claude baselines for the documentation, Table 2. Results pasted by Alexandru in chat on 2026-10-10,
+from a separate Claude session. The predictions themselves are not in this repo. Copied verbatim below.
+Note: "sistemul vostru" 0.6900 [0.676, 0.704] on 10 languages is the historical 0.690001, and .694 on
+11 languages is the historical 0.693718; the documentation uses 0.689745 and 0.692521 from release/fuse.py.
+
+----------------------------------------------------------------------------------------------------
+Am rulat Sonnet pe tot testul (7211 itemi, 11 limbi), cu aceleasi loturi si acelasi prompt ca la Opus. Pe scurt: Sonnet e sub Opus si sub sistemul vostru, cam la nivelul lui Gemma.
+
+Media r pe cele 10 limbi MLSP, CI 95%:
+
+Opus                         0.7111  [0.697, 0.724]
+sistemul vostru              0.6900  [0.676, 0.704]
+Sonnet (5 + 100)             0.6747  [0.660, 0.689]
+Sonnet doar scara 0-100      0.6854  [0.671, 0.699]
+Gemma4                       0.6649  [0.650, 0.679]
+
+sistem + Opus  (w LOLO)      0.7240
+sistem + Sonnet (w LOLO)     0.7065
+Opus + Sonnet                0.7117
+sistem + Opus + Sonnet       0.7212
+
+Diferente pereche pe 10 limbi:
+
+Sonnet - Opus                -0.036  [-0.045, -0.027]
+Sonnet - sistem              -0.015  [-0.026, -0.005]
+Sonnet - Gemma               +0.010  [-0.002, +0.021]   (nu se distinge)
+sistem+Sonnet - sistem       +0.017  [+0.012, +0.021]
+sistem+Opus - sistem+Sonnet  +0.018  [+0.012, +0.023]
+Opus+Sonnet - Opus           +0.001  (nu aduce nimic)
+
+Corelatii, media pe 10 limbi:
+
+Sonnet - Opus     0.890
+Sonnet - sistem   0.856
+Sonnet - Gemma    0.812
+
+Rezultatul complet:
+
+                         10 limbi MLSP   11 limbi
+Opus 5.5, zero-shot          .711          .721
+Sonnet, zero-shot            .675          .685
+Gemma 4 (r_B)                .664          .663
+sistemul vostru              .690          .694 (din paper)
+sistem + Opus  (w LOLO)      .724            -
+sistem + Sonnet (w LOLO)     .706            -

@@ -1,0 +1,22 @@
+Below is one paragraph of the Results section of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. It describes an experiment with TabFM, a tabular foundation model. Rewrite only the first two sentences, which describe TabFM: shorten them into one sentence, or two shorter ones. Make only this change. Every other sentence stays word for word. Keep it as one paragraph.
+
+Current text:
+<<<
+We also tried TabFM, a tabular foundation model from Google Research. TabFM fits no parameters: it reads the training rows as context and predicts each new row from them, and it averages 8 such predictions. We ran TabFM on fewer dimensions. Before step~3, we reduced the embedding from 768 to 394 dimensions with principal component analysis (PCA), which keeps the directions along which the embeddings vary most. This run was made before the final experiments, with XLM-R base alone, the multilingual regressor alone and the ten MLSP languages. The last three rows of Table~\ref{tab:signal-a-models} compare TabFM with ridge and HGB in this run. TabFM alone lowers the fusion by 0.002, and ridge with TabFM raises it by less than 0.001. Both intervals include zero.
+>>>
+
+Facts that must stay true (use only these; every number stays exactly as written):
+- TabFM is a tabular foundation model from Google Research.
+- TabFM fits no parameters: it reads the training rows as context and predicts each new row from them.
+- The detail that it averages 8 such predictions may be dropped.
+- All other facts are those of the current text, unchanged.
+
+Rules:
+- Use only the facts above. Do not add any other claim, number, explanation, interpretation, example, motivation, consequence or citation.
+- Do not change any number. Keep every "Table~\ref{...}", "Section~\ref{...}", "Appendix~\ref{...}" and every "\citep{...}" or "\citet{...}" exactly as written, and write "signal~A", "signal~B", "Gemma~4", "Claude Opus 5.5" and "Claude Sonnet 5.5" exactly like this.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences, one idea per sentence. No chains of the form "X, and Y, so Z". No figures of speech, no aphorisms, no rhetorical questions.
+- Use "we" for the authors. Do not call our work "the system". Write "test language", not "target language", and "grouping", not "blocks".
+- Not longer than the current text.
+
+Output only the rewritten text in LaTeX, with no title, no comments and no explanations.

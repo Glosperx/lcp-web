@@ -1,0 +1,26 @@
+Below is one paragraph of the Results section of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. It reports a baseline made with two Claude models, and how it compares with the method. Rewrite it shorter: change the wording and the sentence structure, not the facts. Keep it as one paragraph, starting with "\paragraph{Baseline.}".
+
+Current text:
+<<<
+\paragraph{Baseline.} We also built a baseline with current foundation models. We first tested Claude Sonnet 5.5 and Claude Opus 5.5 as standalone models: each model rated the complexity of every test instance, zero-shot and with the same prompt. Sonnet reached 0.685 on eleven languages and 0.675 on ten, below our method by 0.008 and 0.015, and close to signal~B alone (0.663 and 0.665). Opus reached 0.721 and 0.711, above our method by 0.028 and 0.021. We then fused each Claude model with our already trained method, with a weighted average as in step~8. With Sonnet, the fusion reached 0.706 on the ten MLSP languages. With Opus, it reached 0.724, 0.013 more than Opus alone. Fusing Sonnet with Opus gave almost no gain, 0.001. Table~\ref{tab:ablations} gives the results on eleven languages next to our two signals and the full method. In its last two rows, the rating of the Claude model replaces signal~B in the fusion. With signal~A, Opus reaches 0.725 and Sonnet 0.695 on eleven languages. This is 0.004 above Opus alone and 0.010 above Sonnet alone, and both intervals exclude zero. With Gemma~4, the same fusion adds 0.029 to signal~B (Section~\ref{sec:results-fusion}). The ratings of Opus and of Sonnet both correlate with signal~A at 0.77 on average over the eleven languages. For Gemma~4, this correlation is 0.685 (Table~\ref{tab:corr-ab}).
+>>>
+
+Facts that must stay true (use only these; every number stays exactly as written):
+- We built a baseline with current foundation models: Claude Sonnet 5.5 and Claude Opus 5.5, used as standalone models. Each model rated the complexity of every test instance, zero-shot and with the same prompt.
+- Sonnet reached 0.685 on eleven languages and 0.675 on ten, below our method by 0.008 and 0.015, and close to signal~B alone (0.663 and 0.665).
+- Opus reached 0.721 and 0.711, above our method by 0.028 and 0.021.
+- We then fused each Claude model with our already trained method, with a weighted average as in step~8. With Sonnet, the fusion reached 0.706 on the ten MLSP languages. With Opus, it reached 0.724, 0.013 more than Opus alone. Fusing Sonnet with Opus gave almost no gain, 0.001.
+- Table~\ref{tab:ablations} gives the results on eleven languages next to our two signals and the full method. In its last two rows, the rating of the Claude model replaces signal~B in the fusion.
+- With signal~A, Opus reaches 0.725 and Sonnet 0.695 on eleven languages. This is 0.004 above Opus alone and 0.010 above Sonnet alone, and both intervals exclude zero.
+- With Gemma~4, the same fusion adds 0.029 to signal~B (Section~\ref{sec:results-fusion}).
+- The ratings of Opus and of Sonnet both correlate with signal~A at 0.77 on average over the eleven languages. For Gemma~4, this correlation is 0.685 (Table~\ref{tab:corr-ab}).
+
+Rules:
+- Use only the facts above. Do not add any other claim, number, explanation, interpretation, example, motivation, consequence or citation.
+- Do not change any number. Keep every "Table~\ref{...}", "Section~\ref{...}", "Appendix~\ref{...}" and every "\citep{...}" or "\citet{...}" exactly as written, and write "signal~A", "signal~B", "Gemma~4", "Claude Opus 5.5" and "Claude Sonnet 5.5" exactly like this.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences, one idea per sentence. No chains of the form "X, and Y, so Z". No figures of speech, no aphorisms, no rhetorical questions.
+- Use "we" for the authors. Do not call our work "the system". Write "test language", not "target language", and "grouping", not "blocks".
+- At most 170 words (the current text has 218). Do not drop any fact.
+
+Output only the rewritten text in LaTeX, with no title, no comments and no explanations.

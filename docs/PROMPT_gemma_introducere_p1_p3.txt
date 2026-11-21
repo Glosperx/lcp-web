@@ -1,0 +1,32 @@
+Below is the Introduction of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. It has four paragraphs. Paragraphs 2 and 4 stay as they are. Rewrite paragraphs 1 and 3 so that they read somewhat differently from the current version: change the wording and the sentence structure, not the facts.
+
+Current Introduction:
+<<<
+Many readers have difficulty understanding written text. This includes language learners, children, people with cognitive disabilities, and people with a low level of reading proficiency \citep{saggion-etal-2024-lexical}. Lexical simplification addresses this by replacing words that may be unfamiliar or difficult with easier and more common words \citep{saggion-etal-2024-lexical}. Such efforts are important for making information accessible to a wider audience.
+
+Identifying complex words is often the first step of a text simplification pipeline \citep{qiu-etal-2024-complex}. Lexical complexity prediction (LCP) gives a word a score for how complex it is in its context. LCP models are typically trained on words that human annotators rated for complexity.
+
+A 2024 review of LCP resources finds datasets for only eight languages besides English \citep{shardlow-etal-2024-multilingual}. Romanian is not among those eight languages. Its first LCP dataset, RoLCP, was published in 2025 \citep{anghel-etal-2025-rals}. Without labelled data in a language, a model cannot be trained on that language, and its settings cannot be chosen on that language either.
+
+In this paper, we address the challenge of predicting the complexity of words in a language using only the labelled data of other languages. Our method combines two signals: a regressor trained on the embeddings of frozen multilingual encoders and on word features, such as word frequency, and the ratings of a large language model with openly published weights. A weighted average fuses the two signals. No label of the test language is used for training or for choosing settings. We evaluate on eleven languages: the ten languages of the MLSP 2024 shared task \citep{shardlow-etal-2024-bea} and Romanian. The mean Pearson correlation over the eleven languages is 0.693. Section~\ref{sec:negative} lists the experiments that did not improve the results.
+>>>
+
+Notes for the new paragraph 1 (use only these facts; the citation goes at the end of the sentence it supports):
+- groups of readers who have problems understanding written text: language learners, children, people with cognitive disabilities, people with a generally low level of reading proficiency \citep{saggion-etal-2024-lexical}
+- lexical simplification: substitutes words that may be unfamiliar and difficult to understand with easier and more common words \citep{saggion-etal-2024-lexical}
+
+Notes for the new paragraph 3 (use only these facts):
+- a 2024 review of lexical complexity prediction resources \citep{shardlow-etal-2024-multilingual}: nine datasets published between 2018 and 2024; besides English, they cover only eight languages
+- Romanian is not one of these eight languages; its first lexical complexity prediction dataset, RoLCP, was published in 2025 \citep{anghel-etal-2025-rals}
+- without labelled data in a language, there is nothing to train a model on in that language, and nothing to choose its settings with
+
+Rules:
+- Use only the facts in the notes. Do not add any other claim, number, example or citation. Cite with \citep{key}, using exactly the keys given.
+- Each new paragraph must connect naturally with the paragraph that follows it (paragraph 2 after the new paragraph 1, paragraph 4 after the new paragraph 3) and must not repeat what paragraphs 2 and 4 say.
+- About the same length as the current paragraphs 1 and 3.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences, one idea per sentence. No figures of speech, no aphorisms, no rhetorical questions.
+- Do not start with a dictionary-style definition.
+- Keep the verb tense consistent within each paragraph.
+
+Output only the two new paragraphs in LaTeX, the new paragraph 1 first and the new paragraph 3 second, separated by one blank line, with no labels, no comments and no explanations.

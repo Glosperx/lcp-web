@@ -1,0 +1,31 @@
+Below is the Introduction of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. It has four paragraphs. Paragraphs 2, 3 and 4 stay as they are. Rewrite paragraph 1. Its point: the complexity of words is a problem for people who are learning a new language, and also for other groups of readers.
+
+The author gave this sentence as an example of the opening he wants:
+"Understanding written text can be challenging for language learners, as well as for children, individuals with cognitive disabilities, and people with limited reading proficiency (Saggion et al., 2024)."
+Write the paragraph in this spirit: language learners first, the other groups after them in the same sentence, and the citation as \citep{saggion-etal-2024-lexical}.
+
+Current Introduction:
+<<<
+Language learners often face difficulties understanding written text. Other groups with similar problems include children, individuals with cognitive disabilities, and people with a generally low level of reading proficiency \citep{saggion-etal-2024-lexical}. The 2018 shared task on complex word identification aimed to predict which words challenge non-native speakers \citep{yimam-etal-2018-report}. Lexical simplification helps these readers by substituting unfamiliar and difficult words with easier and more common ones \citep{saggion-etal-2024-lexical}.
+
+Identifying complex words is often the first step of a text simplification pipeline \citep{qiu-etal-2024-complex}. Lexical complexity prediction (LCP) gives a word a score for how complex it is in its context. LCP models are typically trained on words that human annotators rated for complexity.
+
+A 2024 review of lexical complexity prediction resources \citep{shardlow-etal-2024-multilingual} identifies nine datasets published between 2018 and 2024. These datasets cover only eight languages besides English. Romanian is not included among these eight languages. Its first lexical complexity prediction dataset, RoLCP, was published in 2025 \citep{anghel-etal-2025-rals}. Without labelled data in a language, there is nothing to train a model on in that language. Furthermore, there is nothing to choose its settings with.
+
+In this paper, we address the challenge of predicting the complexity of words in a language using only the labelled data of other languages. Our method combines two signals: a regressor trained on the embeddings of frozen multilingual encoders and on word features, such as word frequency, and the ratings of a large language model with openly published weights. A weighted average fuses the two signals. No label of the test language is used for training or for choosing settings. We evaluate on eleven languages: the ten languages of the MLSP 2024 shared task \citep{shardlow-etal-2024-bea} and Romanian. The mean Pearson correlation over the eleven languages is 0.693. Section~\ref{sec:negative} lists the experiments that did not improve the results.
+>>>
+
+Notes for the new paragraph 1 (use only these facts; each citation goes at the end of the sentence it supports):
+- readers who may have problems understanding written text: language learners, children, people with cognitive disabilities, people with a generally low level of reading proficiency \citep{saggion-etal-2024-lexical}
+- the 2018 shared task on complex word identification set as its goal to predict which words challenge non-native speakers \citep{yimam-etal-2018-report}
+- lexical simplification substitutes words that may be unfamiliar and difficult to understand with easier and more common words \citep{saggion-etal-2024-lexical}
+
+Rules:
+- Use only the facts in the notes. Do not add any other claim, number, example or citation. Cite with \citep{key}, using exactly the keys given.
+- The new paragraph must lead naturally into paragraph 2 and must not repeat what paragraphs 2, 3 and 4 say.
+- About the same length as the current paragraph 1.
+- No em-dashes or en-dashes ("---", "--", "—", "–"). Use commas, periods or colons instead.
+- Short, concrete sentences, one idea per sentence. No figures of speech, no aphorisms, no rhetorical questions.
+- Keep the verb tense consistent within the paragraph.
+
+Output only the new paragraph 1 in LaTeX, with no label, no comments and no explanations.

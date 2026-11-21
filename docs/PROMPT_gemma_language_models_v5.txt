@@ -1,0 +1,16 @@
+Below are two paragraphs of the Results section of a short NLP paper titled "Lexical Complexity Prediction Without Target-Language Labels", in LaTeX. Rewrite only the problem described below. Make only this change. Every other sentence stays word for word. Keep the two paragraphs.
+
+The one problem: the second sentence of the first paragraph ends with "; Romanian is not one of those ten languages". The authors do not want this clause. Remove it, and keep the rest of the sentence: we first compared the models on the trial split of MLSP 2024, including the trial labels for the test language when it is one of the ten MLSP languages.
+
+Current text:
+<<<
+\paragraph{Language models.} We compared five language models with openly published weights (Table~\ref{tab:llms}). In development, we first compared them on the trial split of MLSP 2024, including the trial labels for the test language when it is one of the ten MLSP languages; Romanian is not one of those ten languages. Gemma~4 12B achieved the highest mean correlation of 0.686. Llama~3.1 8B and Aya Expanse 8B had the lowest correlations at 0.547 and 0.514, respectively. We computed the ratings of the other three models on the test data, and afterwards those of Llama~3.1 8B and Aya Expanse 8B, to complete Table~\ref{tab:llms}. With the five models as candidates, the language model chosen on the other languages (Section~\ref{sec:signal-b}) is still Gemma~4 for every test language, and the mean correlation of the fusion stays 0.693.
+
+Replacing Gemma~4 costs far more than any change of encoder. If Qwen3 8B is the only candidate, signal~B alone falls from 0.663 to 0.381 and the fusion falls from 0.693 to 0.622 on eleven languages. In Table~\ref{tab:llms}, the models are presented without the temperature, the grouping and the third prompt (steps 5 to 7). Under these same conditions, Gemma~4 reaches 0.681 in the fusion. Qwen3.5 9B is the best of the four other models. On Romanian alone, it is better than Gemma~4 for signal~B (0.684 against 0.659) and for the fusion (0.784 against 0.739). We chose Gemma~4 because its signal~B has a higher mean correlation on the other ten languages (0.664 against 0.591 for Qwen3.5 9B).
+>>>
+
+Rules:
+- Make only the change described above. Every other sentence stays word for word, including the LaTeX commands and numbers.
+- No em-dashes or en-dashes. Not longer than the current text.
+
+Output only the rewritten text in LaTeX, with no title, no comments and no explanations.
