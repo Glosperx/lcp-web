@@ -45,6 +45,15 @@
   .legend span { display: inline-block; padding: 1px 8px; border-radius: 4px; margin: 2px 4px 2px 0;
                  font-size: 14px; }
   #msg { margin-top: 8px; font-size: 14px; }
+  .out-wrap { position: relative; }
+  .w.sel { outline: 2px solid var(--accent); }
+  .w.fn { opacity: .75; }
+  #pop { position: absolute; z-index: 5; min-width: 220px; max-width: 300px; padding: 10px 12px;
+         background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+         box-shadow: 0 6px 24px rgba(0,0,0,.18); font-size: 14px; line-height: 1.45; }
+  #pop .t { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+  #pop .lv { display: inline-block; padding: 0 8px; border-radius: 4px; margin-bottom: 6px; }
+  #pop .small { color: var(--muted); font-size: 12px; margin-top: 4px; }
   .err { color: #c0392b; }
   [hidden] { display: none !important; }
 </style>
@@ -80,7 +89,7 @@
       </div>
       <div class="card">
         <div class="legend" id="legend"></div>
-        <div id="out"></div>
+        <div class="out-wrap"><div id="out"></div><div id="pop" hidden></div></div>
         <div id="msg" class="muted"></div>
       </div>
     </div>
@@ -155,22 +164,70 @@ function render(text, pend, words) {
     return pi < pend.length && pend[pi].start <= i;
   };
   const chunk = (s, off) => !s ? "" : pending(off) ? `<span class="pending">${esc(s)}</span>` : esc(s);
-  for (const w of [...words].sort((a, b) => a.start - b.start)) {
-    if (w.start < pos) continue;
+  SHOWN = [...words].sort((a, b) => a.start - b.start);
+  SHOWN.forEach((w, k) => {
+    if (w.start < pos) return;
     html += chunk(text.slice(pos, w.start), pos);
-    const tip = `${w.level} ${LABELS[w.level]} | scor ${w.score.toFixed(2)} | lema ${w.lemma || "-"}` +
-                ` | Zipf ${w.zipf == null ? "-" : w.zipf} | A ${w.A} B ${w.B}` +
-                (w.cropped ? " | context scurtat" : "");
-    html += `<span class="w w${w.level}" title="${esc(tip)}">${esc(text.slice(w.start, w.end))}</span>`;
+    html += `<span class="w w${w.level}${w.function ? " fn" : ""}" data-k="${k}" tabindex="0">` +
+            `${esc(text.slice(w.start, w.end))}</span>`;
     pos = w.end;
-  }
+  });
   html += chunk(text.slice(pos), pos);
   $("out").innerHTML = html;
   const n = [0, 0, 0, 0, 0];
-  for (const w of words) n[w.level - 1]++;
-  $("legend").innerHTML = [1, 2, 3, 4, 5]
-    .map(k => `<span class="w${k}">${k} ${LABELS[k]}: ${n[k - 1]}</span>`).join("");
+  let nf = 0;
+  for (const w of words) { n[w.level - 1]++; if (w.function) nf++; }
+  $("legend").innerHTML = [1, 2, 3, 4, 5].map(k => `<span class="w${k}">${k} ${LABELS[k]}: ` +
+    `${n[k - 1]}${k === 1 && nf ? ` (${nf} functionale)` : ""}</span>`).join("");
 }
+
+// popover with the details of a word, on click / tap / Enter
+let SHOWN = [], SEL = null;            // SEL: start offset of the word whose popover is open
+function rerender(text, pend, words) {
+  // redraw while the analysis streams in, keeping an open popover on the same word
+  const keep = $("pop").hidden ? null : SEL;
+  render(text, pend, words);
+  if (keep === null) return;
+  const k = SHOWN.findIndex(w => w.start === keep);
+  const el = k >= 0 && document.querySelector(`.w[data-k="${k}"]`);
+  if (el) openPop(el); else closePop();
+}
+function closePop() {
+  $("pop").hidden = true;
+  document.querySelectorAll(".w.sel").forEach(e => e.classList.remove("sel"));
+}
+function openPop(el) {
+  const w = SHOWN[+el.dataset.k];
+  if (!w) return;
+  closePop();
+  SEL = w.start;
+  el.classList.add("sel");
+  const rows = w.function
+    ? `<div>cuvant functional, neevaluat de model</div>`
+    : `<div>scor <b>${w.score.toFixed(2)}</b> (0 = foarte usor, 1 = foarte dificil)</div>` +
+      `<div>lema: ${esc(w.lemma || "-")}</div>` +
+      `<div>frecventa Zipf: ${w.zipf == null ? "indisponibila" : w.zipf}</div>` +
+      `<div class="small">A ${w.A} &middot; B ${w.B} &middot; fuziune ${w.fused}` +
+      `${w.cropped ? " &middot; context scurtat" : ""}</div>`;
+  const pop = $("pop");
+  pop.innerHTML = `<div class="t">${esc(w.text)}</div>` +
+    `<span class="lv w${w.level}">${w.level} ${LABELS[w.level]}</span>${rows}`;
+  pop.hidden = false;
+  const wrap = el.closest(".out-wrap").getBoundingClientRect(), r = el.getBoundingClientRect();
+  let left = r.left - wrap.left, top = r.bottom - wrap.top + 6;
+  left = Math.max(0, Math.min(left, wrap.width - pop.offsetWidth));
+  pop.style.left = left + "px"; pop.style.top = top + "px";
+}
+$("out").addEventListener("click", e => {
+  const el = e.target.closest(".w");
+  if (el) { e.stopPropagation(); openPop(el); }
+});
+$("out").addEventListener("keydown", e => {
+  const el = e.target.closest(".w");
+  if (el && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openPop(el); }
+});
+document.addEventListener("click", e => { if (!e.target.closest("#pop")) closePop(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closePop(); });
 
 $("go").addEventListener("click", async () => {
   const text = $("text").value, l = lang();
@@ -214,7 +271,7 @@ $("go").addEventListener("click", async () => {
         } else if (ev.type === "error") {
           throw new Error(ev.message);
         }
-        if (ev.type !== "ping") render(text, pend(), words);
+        if (ev.type !== "ping") rerender(text, pend(), words);
       }
     }
   } catch (e) {

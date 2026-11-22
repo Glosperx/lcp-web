@@ -37,7 +37,7 @@ import signal_b
 from lcp import rater as R
 from lcp.encoders import Encoders
 from lcp.fusion import Fusion, LEVELS
-from lcp.segment import LANGS, Segmenter
+from lcp.segment import LANGS, Segmenter, _has_letter
 
 PROMPTS = list(signal_b.PROMPTS)        # reading order, as scripts/b_reference.py and bench_cpu.py
 CROP_STEPS = (data.CHAR_WINDOW, 400, 300, 200, 150, 100, 60, 30)
@@ -106,7 +106,7 @@ class Cancelled(Exception):
 
 class Pipeline:
     def __init__(self, artifacts=None, gpu_layers=None, flash_attn=None, n_ctx=None, n_batch=None,
-                 threads=None, margin=16, stanza_keep=0, log=print):
+                 threads=None, margin=16, stanza_keep=0, preload_stanza=False, log=print):
         t0 = time.perf_counter()
         self.fz = Fusion(artifacts) if artifacts else Fusion()
         rt_cfg = self.fz.params["b"].get("runtime", {})
@@ -135,6 +135,12 @@ class Pipeline:
         self.seg = Segmenter()
         self.stanza_keep = stanza_keep
         self._stanza_used = []
+        if preload_stanza:          # the first text of a language then waits no 2-3 s for it
+            t = time.perf_counter()
+            for lg in data.STANZA_LANGS:
+                self.seg.pipeline(lg)
+                self._stanza_lru(lg)
+            self.load_seconds["stanza"] = time.perf_counter() - t
         self.log = log
         # Warm-up: page in the weights, one reading and one encoder pass (not timed).
         t = time.perf_counter()
@@ -306,7 +312,7 @@ class Pipeline:
         tot = {"t_A": 0.0, "t_B": 0.0, "t_fusion": 0.0, "readings": 0, "prompt_tokens": 0,
                "evaluated_tokens": 0, "low_mass": 0}
         self.rt._prev = []                       # KV reuse starts afresh for every text
-        t_seg, t_first, words_all, cropped, n_sent = 0.0, None, 0, 0, 0
+        t_seg, t_first, words_all, cropped, n_sent, n_function = 0.0, None, 0, 0, 0, 0
         for pi, (a, b) in enumerate(paras):
             if cancel is not None and cancel.is_set():
                 raise Cancelled()
@@ -338,6 +344,13 @@ class Pipeline:
                             r["cropped"] = True
                     words_all += len(res)
                     cropped += sum(1 for r in res if r.get("cropped"))
+                # Function words (with a letter, not content) are shown as level 1 without being
+                # scored: the system was evaluated on content words (MLSP targets) only.
+                fw = [{"start": s.start + w.start, "end": s.start + w.end, "text": w.text,
+                       "lemma": w.lemma, "level": 1, "label": LEVELS[1], "function": True}
+                      for w in s.words if not w.content and _has_letter(w.text)]
+                n_function += len(fw)
+                res = sorted(res + fw, key=lambda r: r["start"])
                 if t_first is None and cw:
                     t_first = time.perf_counter() - t0
                 yield {"type": "sentence", "i": n_sent, "paragraph": pi, "start": s.start,
@@ -345,7 +358,7 @@ class Pipeline:
                 n_sent += 1
         total = time.perf_counter() - t0
         yield {"type": "done", "lang": lang, "paragraphs": len(paras), "sentences": n_sent,
-               "content_words": words_all,
+               "content_words": words_all, "function_words": n_function,
                "cropped": cropped, "low_mass": tot["low_mass"],
                "timings": {"segment_s": round(t_seg, 3), "stanza_loaded": not loaded,
                            "A_s": round(tot["t_A"], 3), "B_s": round(tot["t_B"], 3),

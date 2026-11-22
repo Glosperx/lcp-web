@@ -109,7 +109,8 @@ def validate(lang, text, ev):
             nxt_i += 1
             for w in e["words"]:
                 if not (check(text[w["start"]:w["end"]] == w["text"], f"{lang}: word offsets")
-                        and check(1 <= w["level"] <= 5 and 0.0 <= w["score"] <= 1.0,
+                        and check(1 <= w["level"] <= 5 and (w.get("function") and w["level"] == 1
+                                                            or 0.0 <= w["score"] <= 1.0),
                                   f"{lang}: level/score out of range")):
                     return False
         else:
@@ -192,9 +193,11 @@ def main():
                 continue
             done = ev[-1]
             t = done["timings"]
-            lv = [w["level"] for e in ev if e["type"] == "sentence" for w in e["words"]]
+            lv = [w["level"] for e in ev if e["type"] == "sentence" for w in e["words"]
+                  if not w.get("function")]                 # content words only, as before
             row = dict(lang=lg, size=sz, chars=len(text), paragraphs=done["paragraphs"],
                        sentences=done["sentences"], content_words=done["content_words"],
+                       function_words=done.get("function_words"),
                        readings=t["readings"], cropped=done["cropped"],
                        stanza_loaded=t["stanza_loaded"], segment_s=t["segment_s"], A_s=t["A_s"],
                        B_s=t["B_s"], total_s=t["total_s"], first_s=t["first_sentence_s"],

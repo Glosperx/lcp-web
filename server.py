@@ -97,7 +97,9 @@ class Worker:
 
     def _run(self):
         try:
-            self.pipeline = Pipeline(stanza_keep=int(os.environ.get("LCP_STANZA_KEEP", "0")))
+            self.pipeline = Pipeline(
+                stanza_keep=int(os.environ.get("LCP_STANZA_KEEP", "0")),
+                preload_stanza=os.environ.get("LCP_PRELOAD_STANZA", "1") == "1")
             log.warning("models loaded in %.1fs %s", self.pipeline.load_seconds["total"],
                         {k: round(v, 1) for k, v in self.pipeline.load_seconds.items()})
         except Exception as e:                       # noqa: BLE001
