@@ -31,7 +31,7 @@ import urllib.request
 
 LOG = []
 FAILS = []
-PARTS = ["texts", "long", "interleave", "queue", "cancel"]
+PARTS = ["access", "texts", "long", "interleave", "queue", "cancel"]
 
 
 def say(msg=""):
@@ -46,31 +46,38 @@ def check(cond, msg):
     return cond
 
 
-def get(url):
-    with urllib.request.urlopen(url, timeout=30) as r:
+HEADERS = {}                     # X-Access-Code when --code is given
+
+
+def get(url, headers=None):
+    req = urllib.request.Request(url, headers={**HEADERS, **(headers or {})})
+    with urllib.request.urlopen(req, timeout=30) as r:
         return r.status, json.loads(r.read().decode("utf-8"))
 
 
-def post(url, body):
+def post(url, body, headers=None):
     req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"), method="POST",
-                                 headers={"Content-Type": "application/json"})
+                                 headers={"Content-Type": "application/json", **HEADERS,
+                                          **(headers or {})})
     return urllib.request.urlopen(req, timeout=900)
 
 
-def status_of(url, body):
+def status_of(url, body=None, headers=None, method=None):
     try:
-        with post(url, body) as r:
+        if method == "GET":
+            return get(url, headers)[0]
+        with post(url, body, headers) as r:
             r.read()
             return r.status
     except urllib.error.HTTPError as e:
         return e.code
 
 
-def analyze(url, lang, text, stop_after_first=False):
+def analyze(url, lang, text, stop_after_first=False, headers=None):
     """(events, client timings). Reads the NDJSON stream line by line."""
     t0 = time.perf_counter()
     ev, t_first = [], None
-    with post(url + "/api/analyze", {"lang": lang, "text": text}) as r:
+    with post(url + "/api/analyze", {"lang": lang, "text": text}, headers) as r:
         for line in r:
             e = json.loads(line.decode("utf-8"))
             ev.append(e)
@@ -82,7 +89,7 @@ def analyze(url, lang, text, stop_after_first=False):
 
 
 def validate(lang, text, ev):
-    evs = [e for e in ev if e["type"] != "queued"]
+    evs = [e for e in ev if e["type"] not in ("queued", "ping")]
     if not check(evs and evs[0]["type"] == "paragraphs" and evs[-1]["type"] == "done",
                  f"{lang}: stream must start with paragraphs and end with done"):
         return False
@@ -136,8 +143,12 @@ def main():
     ap.add_argument("--sizes", nargs="+", type=int, default=[1, 2])
     ap.add_argument("--out", default="bench/results/api_check")
     ap.add_argument("--parts", nargs="+", default=PARTS, choices=PARTS)
+    ap.add_argument("--code", default=os.environ.get("LCP_ACCESS_CODE", ""),
+                    help="access code (default: the environment variable LCP_ACCESS_CODE)")
     a = ap.parse_args()
     U = a.url.rstrip("/")
+    if a.code:
+        HEADERS["X-Access-Code"] = a.code
     T = lambda lg, sz: read(os.path.join(a.texts, f"{lg}_{sz}.txt"))      # noqa: E731
 
     # ------------------------------------------------------------ 1. health, languages
@@ -167,6 +178,8 @@ def main():
     e3 = status_of(U + "/api/analyze", {"lang": "ja", "text": "あ" * (L["max_chars"] + 1)})
     say(f"[api] errors: unknown language {e1}, empty {e2}, {L['max_chars'] + 1} chars {e3}")
     check((e1, e2, e3) == (400, 400, 413), "error codes")
+    if "access" in a.parts:
+        access_test(U, h)
 
     # ------------------------------------------------------------ 3. benchmark texts
     ref = stage7("bench/results/gpu_docker_pc_summary.txt")
@@ -232,8 +245,8 @@ def main():
         solo[("en", 1)] = analyze(U, "en", T("en", 1))[1]["client_total_s"]
     res = {}
 
-    def run(key, lang, text):
-        res[key] = analyze(U, lang, text)
+    def run(key, lang, text, ip=None):
+        res[key] = analyze(U, lang, text, headers={"X-Forwarded-For": ip} if ip else None)
 
     if "interleave" in a.parts:
         interleave(U, T, solo, res, run)
@@ -244,9 +257,72 @@ def main():
     finish(a)
 
 
+def access_test(U, h):
+    """Access code, wrong-code limit, CORS, at most 2 texts per address."""
+    if not h.get("access_code"):
+        say("[api] access: no access code configured on the server, skipped")
+        return
+    nobody = {"X-Access-Code": ""}
+    a1 = status_of(U + "/api/languages", headers=nobody, method="GET")
+    a2 = status_of(U + "/api/analyze", {"lang": "en", "text": "A test."}, headers=nobody)
+    a3 = status_of(U + "/api/languages", headers={"X-Access-Code": "wrong"}, method="GET")
+    a4 = status_of(U + "/api/auth", {"code": HEADERS.get("X-Access-Code", "")}, headers=nobody)
+    a5 = status_of(U + "/api/health", headers=nobody, method="GET")
+    say(f"[api] access: no code languages {a1} analyze {a2}, wrong code {a3}, /api/auth with the "
+        f"right code {a4}, health without code {a5}")
+    check((a1, a2, a3, a4, a5) == (401, 401, 401, 200, 200), "access codes")
+    # 10 wrong codes from one (simulated) address block it; another address is not affected
+    bad = {"X-Access-Code": "wrong", "X-Forwarded-For": "198.51.100.66"}
+    codes = [status_of(U + "/api/languages", headers=bad, method="GET") for _ in range(11)]
+    other = status_of(U + "/api/languages", headers={"X-Forwarded-For": "198.51.100.67"},
+                      method="GET")
+    right_blocked = status_of(U + "/api/languages", headers={"X-Forwarded-For": "198.51.100.66"},
+                              method="GET")
+    say(f"[api] access: 11 wrong codes from one address -> {codes}; right code from that address "
+        f"{right_blocked}, from another {other}")
+    check(codes[:10] == [401] * 10 and codes[10] == 429 and right_blocked == 429 and other == 200,
+          "wrong-code limit")
+
+    def preflight(origin):
+        req = urllib.request.Request(U + "/api/analyze", method="OPTIONS", headers={
+            "Origin": origin, "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type,x-access-code"})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                return r.status, r.headers.get("access-control-allow-origin")
+        except urllib.error.HTTPError as e:
+            return e.code, e.headers.get("access-control-allow-origin")
+    c1 = preflight("https://lcp-web.vercel.app")
+    c2 = preflight("https://lcp-web-abc123-glosperx.vercel.app")
+    c3 = preflight("https://evil.example")
+    say(f"[api] cors: lcp-web.vercel.app {c1}, a preview deployment {c2}, another origin {c3}")
+    check(c1 == (200, "https://lcp-web.vercel.app")
+          and c2[1] == "https://lcp-web-abc123-glosperx.vercel.app" and c3[1] is None, "cors")
+    # at most 2 texts at once from one address
+    ip = {"X-Forwarded-For": "198.51.100.70"}
+    res = {}
+
+    def run(k):
+        try:
+            res[k] = analyze(U, "en", read("bench/texts/en_1.txt"), headers=ip)
+        except urllib.error.HTTPError as e:
+            res[k] = e.code
+    ths = [threading.Thread(target=run, args=(k,)) for k in range(2)]
+    for th in ths:
+        th.start()
+    time.sleep(1.5)
+    third = status_of(U + "/api/analyze", {"lang": "en", "text": "A test."}, headers=ip)
+    for th in ths:
+        th.join()
+    after = status_of(U + "/api/analyze", {"lang": "en", "text": "A test."}, headers=ip)
+    say(f"[api] per address: third text while two run -> {third}; after they finish -> {after}")
+    check(third == 429 and after == 200 and all(isinstance(res[k], tuple) for k in res),
+          "per-address limit")
+
+
 def interleave(U, T, solo, res, run):
     big = "\n\n".join([T("en", 2), T("en", 1)] * 3)
-    th = threading.Thread(target=run, args=("big", "en", big))
+    th = threading.Thread(target=run, args=("big", "en", big, "198.51.100.30"))
     th.start()
     time.sleep(4.0)
     ev_s, cl_s = analyze(U, "en", "The committee postponed the ratification of the treaty.")
@@ -268,7 +344,8 @@ def interleave(U, T, solo, res, run):
 
 
 def queue_test(T, res, run):
-    ths = [threading.Thread(target=run, args=(k, "en", T("en", 1))) for k in range(7)]
+    ths = [threading.Thread(target=run, args=(k, "en", T("en", 1), f"198.51.100.{10 + k}"))
+           for k in range(7)]
     for k, th in enumerate(ths):
         th.start()
         time.sleep(0.3)
@@ -278,8 +355,11 @@ def queue_test(T, res, run):
     tt = [round(res[k][1]["client_total_s"], 1) for k in range(7)]
     say(f"[api] queue: 7 texts at once, queued {queued} "
         f"(positions {[res[k][0][0].get('position') for k in queued]}), client times {tt}s")
+    pings = sum(1 for e in res[6][0] if e["type"] == "ping")
+    say(f"[api] queue: the queued text got {pings} ping(s) while waiting")
     check(queued == [6] and all(validate("en q", T("en", 1), res[k][0]) for k in range(7)),
           "queue: expected only the 7th text queued")
+    check(pings > 0, "queue: no ping while waiting")
 
 
 def cancel_test(U, T):

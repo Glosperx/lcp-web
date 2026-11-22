@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCP - pagina de test</title>
+<script src="config.js"></script>
+<style>
+  :root {
+    --bg: #fafafa; --fg: #1d1d1f; --muted: #6e6e73; --card: #fff; --line: #d2d2d7;
+    --l1: #c8f0c8; --l2: #e6f5b0; --l3: #fff0a0; --l4: #ffd0a0; --l5: #ffb0b0;
+    --accent: #0a66c2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161617; --fg: #f5f5f7; --muted: #a1a1a6; --card: #1f1f21; --line: #3a3a3c;
+      --l1: #1f5a2a; --l2: #4a5a1a; --l3: #6a5a10; --l4: #7a3f12; --l5: #7a1f1f;
+      --accent: #4ea1f3;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .muted { color: var(--muted); font-size: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  textarea { width: 100%; min-height: 260px; resize: vertical; font: inherit; color: inherit;
+             background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+  select, input, button { font: inherit; }
+  select, input { padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px;
+                  background: var(--card); color: inherit; }
+  button { padding: 7px 16px; border: 0; border-radius: 8px; background: var(--accent);
+           color: #fff; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .spread { justify-content: space-between; margin-top: 8px; }
+  #out { white-space: pre-wrap; min-height: 260px; }
+  .pending { opacity: .45; }
+  .w { border-radius: 4px; padding: 0 1px; cursor: help; }
+  .w1 { background: var(--l1); } .w2 { background: var(--l2); } .w3 { background: var(--l3); }
+  .w4 { background: var(--l4); } .w5 { background: var(--l5); }
+  .legend span { display: inline-block; padding: 1px 8px; border-radius: 4px; margin: 2px 4px 2px 0;
+                 font-size: 14px; }
+  #msg { margin-top: 8px; font-size: 14px; }
+  .err { color: #c0392b; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Complexitate lexicala, 11 limbi</h1>
+  <div class="muted">Pagina de test a API-ului. Interfata finala vine la Etapa 5.</div>
+
+  <div id="down" class="card" style="margin-top:16px" hidden>
+    Serverul e oprit momentan. Incearca din nou mai tarziu.
+  </div>
+
+  <form id="login" class="card row" style="margin-top:16px" hidden>
+    <label for="code">Cod de acces:</label>
+    <input id="code" type="password" autocomplete="current-password" required>
+    <button type="submit">Intra</button>
+    <span id="loginmsg" class="muted"></span>
+  </form>
+
+  <section id="app" hidden>
+    <div class="grid">
+      <div class="card">
+        <div class="row">
+          <select id="lang" aria-label="Limba"></select>
+          <span id="langr" class="muted"></span>
+        </div>
+        <textarea id="text" style="margin-top:8px" placeholder="Lipeste un text..."></textarea>
+        <div class="row spread">
+          <span id="count" class="muted">0</span>
+          <button id="go">Analizeaza</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="legend" id="legend"></div>
+        <div id="out"></div>
+        <div id="msg" class="muted"></div>
+      </div>
+    </div>
+    <p class="muted">Scorul e relativ la limba aleasa; nu compara scoruri intre limbi.</p>
+  </section>
+</main>
+<script>
+const API = window.LCP_API || "";
+const LABELS = {1: "foarte usor", 2: "usor", 3: "neutru", 4: "dificil", 5: "foarte dificil"};
+let INFO = null, code = "";
+try { code = localStorage.getItem("lcp_code") || ""; } catch (e) {}
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+
+async function api(path, opts = {}) {
+  const r = await fetch(API + path, {...opts, headers: {"X-Access-Code": code, ...(opts.headers || {})}});
+  return r;
+}
+
+async function start() {
+  try {
+    const h = await fetch(API + "/api/health");
+    if (!h.ok) throw new Error();
+  } catch (e) { $("down").hidden = false; return; }
+  const r = await api("/api/languages");
+  if (r.status === 401 || r.status === 429) {
+    $("login").hidden = false;
+    if (r.status === 429) $("loginmsg").textContent = "Prea multe incercari; revino mai tarziu.";
+    return;
+  }
+  INFO = await r.json();
+  $("login").hidden = true; $("app").hidden = false;
+  $("lang").innerHTML = INFO.languages.map(l => `<option value="${l.code}">${l.name}</option>`).join("");
+  const saved = (() => { try { return localStorage.getItem("lcp_lang"); } catch (e) { return null; } })();
+  if (saved) $("lang").value = saved;
+  showLang(); count();
+}
+
+$("login").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  code = $("code").value;
+  const r = await fetch(API + "/api/auth", {method: "POST", headers: {"Content-Type": "application/json"},
+                                            body: JSON.stringify({code})});
+  if (r.ok) { try { localStorage.setItem("lcp_code", code); } catch (e) {} start(); }
+  else $("loginmsg").textContent = r.status === 429 ? "Prea multe incercari; revino mai tarziu."
+                                                     : "Cod gresit.";
+});
+
+function lang() { return INFO.languages.find(l => l.code === $("lang").value); }
+function showLang() {
+  const l = lang();
+  $("langr").textContent = `r = ${l.r.toFixed(2)} pe setul de test`;
+  try { localStorage.setItem("lcp_lang", l.code); } catch (e) {}
+  count();
+}
+function count() {
+  if (!INFO) return;
+  const n = $("text").value.length, l = lang();
+  $("count").textContent = `${n} / ${INFO.max_chars} caractere` + (n > l.warn_chars ? " (text lung)" : "");
+  $("go").disabled = n === 0 || n > INFO.max_chars;
+}
+$("lang").addEventListener("change", showLang);
+$("text").addEventListener("input", count);
+$("text").addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") $("go").click(); });
+
+function render(text, pend, words) {
+  // the text with its scored words coloured; parts not analysed yet are faded.
+  // pend: [{start, end}] sorted, not overlapping; chunks are visited in increasing offset.
+  let html = "", pos = 0, pi = 0;
+  const pending = i => {
+    while (pi < pend.length && pend[pi].end <= i) pi++;
+    return pi < pend.length && pend[pi].start <= i;
+  };
+  const chunk = (s, off) => !s ? "" : pending(off) ? `<span class="pending">${esc(s)}</span>` : esc(s);
+  for (const w of [...words].sort((a, b) => a.start - b.start)) {
+    if (w.start < pos) continue;
+    html += chunk(text.slice(pos, w.start), pos);
+    const tip = `${w.level} ${LABELS[w.level]} | scor ${w.score.toFixed(2)} | lema ${w.lemma || "-"}` +
+                ` | Zipf ${w.zipf == null ? "-" : w.zipf} | A ${w.A} B ${w.B}` +
+                (w.cropped ? " | context scurtat" : "");
+    html += `<span class="w w${w.level}" title="${esc(tip)}">${esc(text.slice(w.start, w.end))}</span>`;
+    pos = w.end;
+  }
+  html += chunk(text.slice(pos), pos);
+  $("out").innerHTML = html;
+  const n = [0, 0, 0, 0, 0];
+  for (const w of words) n[w.level - 1]++;
+  $("legend").innerHTML = [1, 2, 3, 4, 5]
+    .map(k => `<span class="w${k}">${k} ${LABELS[k]}: ${n[k - 1]}</span>`).join("");
+}
+
+$("go").addEventListener("click", async () => {
+  const text = $("text").value, l = lang();
+  if (text.length > l.warn_chars) {
+    const min = Math.max(1, Math.round(text.length / 1000 * (l.est_s_per_1000_chars || 20) / 60));
+    if (!confirm(`Textul are ${text.length} caractere; analiza dureaza aproximativ ${min} min. Continui?`)) return;
+  }
+  $("go").disabled = true; $("msg").textContent = "Se analizeaza..."; $("msg").className = "muted";
+  let paras = [{start: 0, end: text.length}];        // paragraphs not segmented yet
+  const sents = new Map(), words = [];               // sentence i -> span, while not done
+  const pend = () => [...paras, ...sents.values()].sort((a, b) => a.start - b.start);
+  let n_done = 0;
+  render(text, pend(), words);
+  try {
+    const r = await api("/api/analyze", {method: "POST", headers: {"Content-Type": "application/json"},
+                                         body: JSON.stringify({lang: l.code, text})});
+    if (r.status === 401) { try { localStorage.removeItem("lcp_code"); } catch (e) {} location.reload(); return; }
+    if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || `HTTP ${r.status}`); }
+    const reader = r.body.getReader(), dec = new TextDecoder();
+    let buf = "";
+    for (;;) {
+      const {value, done} = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, {stream: true});
+      let k;
+      while ((k = buf.indexOf("\n")) >= 0) {
+        const ev = JSON.parse(buf.slice(0, k));
+        buf = buf.slice(k + 1);
+        if (ev.type === "queued") {
+          $("msg").textContent = `In asteptare (pozitia ${ev.position})...`;
+        } else if (ev.type === "paragraphs") {
+          paras = ev.paragraphs.map(p => ({i: p.i, start: p.start, end: p.end}));
+        } else if (ev.type === "sentences") {
+          paras = paras.filter(p => p.i !== ev.paragraph);
+          for (const s of ev.sentences) sents.set(s.i, {start: s.start, end: s.end});
+        } else if (ev.type === "sentence") {
+          sents.delete(ev.i); words.push(...ev.words); n_done++;
+          $("msg").textContent = `Se analizeaza... ${n_done} propozitii gata`;
+        } else if (ev.type === "done") {
+          $("msg").textContent = `Gata: ${ev.content_words} cuvinte in ${ev.timings.total_s.toFixed(1)} s.`;
+        } else if (ev.type === "error") {
+          throw new Error(ev.message);
+        }
+        if (ev.type !== "ping") render(text, pend(), words);
+      }
+    }
+  } catch (e) {
+    $("msg").textContent = "Eroare: " + e.message; $("msg").className = "err";
+  } finally { $("go").disabled = false; count(); }
+});
+
+start();
+</script>
+</body>
+</html>

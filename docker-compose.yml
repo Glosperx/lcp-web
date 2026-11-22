@@ -1,0 +1,45 @@
+# lcp-web on the PC (stage 8): the API (server.py) on the GPU, reachable from the internet only
+# through Tailscale Funnel on this machine (the port is bound to 127.0.0.1).
+#
+#   docker compose up -d                 start (and after every reboot, through restart: below)
+#   docker compose logs -f api           logs (texts are never logged)
+#   docker compose down                  stop
+#
+# Secrets and settings in .env (gitignored; see .env.example). The image is the stage 7 CUDA image
+# (docker/Dockerfile.cuda); code and artifacts come from this repo, mounted at /app, and the models
+# from the Docker volumes lcp-hf (Hugging Face cache) and lcp-stanza, as with docker/run_cuda.sh.
+name: lcp-web
+
+services:
+  api:
+    image: lcp-web:cuda
+    command: ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - .:/app
+      - lcp-hf:/hf/hub:ro
+      - lcp-stanza:/stanza
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys, urllib.request; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=5).status == 200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 180s
+      retries: 3
+
+volumes:
+  lcp-hf:
+    external: true
+  lcp-stanza:
+    external: true

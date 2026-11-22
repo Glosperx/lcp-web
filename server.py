@@ -14,18 +14,29 @@
                         frequency, A, B), and "done" with the timings; {"type": "error"} if
                         something fails.
 
+  POST /api/auth        {"code": "..."} -> 200 if the access code is right, 401 if not
+
 One worker thread owns the models (llama.cpp and torch are not used concurrently). Up to
 ACTIVE_MAX texts run at once, taking turns sentence by sentence, so a short text is not held up by
-a long one; further texts wait in a queue of at most QUEUE_MAX. A client that disconnects cancels
-its text at the next reading. Texts are never logged. Static files (stage 5) are served from
-static/ when it exists.
+a long one; further texts wait in a queue of at most QUEUE_MAX, and one address may have at most
+PER_IP_MAX texts running or waiting. A stream that has nothing to say for 15 s sends
+{"type": "ping"}. A client that disconnects cancels its text at the next reading. Texts are never
+logged. Static files (stage 5) are served from static/ when it exists.
 
-  docker run ... uvicorn server:app --host 0.0.0.0 --port 8000
+Access: with LCP_ACCESS_CODE set, /api/languages and /api/analyze need the header X-Access-Code;
+10 wrong codes from one address in 10 minutes block it for the rest of the window. /api/health
+stays open. CORS: LCP_CORS_ORIGINS (comma-separated) and LCP_CORS_REGEX (Vercel previews).
+The visitor's address is the last entry of X-Forwarded-For, set by Tailscale Funnel; the port is
+bound to 127.0.0.1 (docker-compose.yml), so nothing else can reach the server.
+
+  docker compose up -d          (docker-compose.yml, secrets in .env)
 Environment: LCP_STANZA_KEEP (stanza pipelines kept in memory, least recently used dropped; default
-0 = all nine, ~7.2 GB for the container in all), LCP_ACTIVE_MAX (6), LCP_QUEUE_MAX (16).
+0 = all nine, ~7.2 GB for the container in all), LCP_ACTIVE_MAX (6), LCP_QUEUE_MAX (16),
+LCP_PER_IP_MAX (2), LCP_ACCESS_CODE, LCP_CORS_ORIGINS, LCP_CORS_REGEX.
 """
 import asyncio
 import collections
+import hmac
 import json
 import logging
 import os
@@ -34,14 +45,24 @@ import threading
 import time
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from pydantic import BaseModel
 
 from lcp.pipeline import MAX_CHARS, Cancelled, Pipeline
 
 ACTIVE_MAX = int(os.environ.get("LCP_ACTIVE_MAX", "6"))
 QUEUE_MAX = int(os.environ.get("LCP_QUEUE_MAX", "16"))
+PER_IP_MAX = int(os.environ.get("LCP_PER_IP_MAX", "2"))
+ACCESS_CODE = os.environ.get("LCP_ACCESS_CODE", "")
+FAIL_MAX, FAIL_WINDOW = 10, 600              # wrong access codes per address per 10 minutes
+PING_S = 15.0
+CORS_ORIGINS = [o.strip() for o in os.environ.get(
+    "LCP_CORS_ORIGINS", "https://lcp-web.vercel.app,http://localhost:8000,http://127.0.0.1:8000"
+).split(",") if o.strip()]
+# Vercel's preview deployments of the project: lcp-web-<hash>-<team>.vercel.app
+CORS_REGEX = os.environ.get("LCP_CORS_REGEX", r"https://lcp-web(-[a-z0-9-]+)?\.vercel\.app")
 STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 log = logging.getLogger("lcp")
 
@@ -154,11 +175,69 @@ async def lifespan(app):
 
 
 app = FastAPI(title="lcp-web", lifespan=lifespan, docs_url=None, redoc_url=None)
+app.add_middleware(CORSMiddleware, allow_origins=CORS_ORIGINS, allow_origin_regex=CORS_REGEX,
+                   allow_methods=["GET", "POST"], allow_headers=["Content-Type", "X-Access-Code"],
+                   max_age=600)
 
 
 class AnalyzeIn(BaseModel):
     lang: str
     text: str
+
+
+class AuthIn(BaseModel):
+    code: str
+
+
+def client_ip(request):
+    """The visitor's address. The port is bound to 127.0.0.1, so every request comes through the
+    tunnel on this machine (Tailscale Funnel), which puts the visitor's address last in
+    X-Forwarded-For; earlier entries could be sent by the client and are ignored."""
+    xff = request.headers.get("x-forwarded-for", "")
+    parts = [x.strip() for x in xff.split(",") if x.strip()]
+    return parts[-1] if parts else (request.client.host if request.client else "?")
+
+
+class Gate:
+    """The access code (LCP_ACCESS_CODE; no code = open) with a limit on wrong attempts, and the
+    number of texts each address has running or waiting."""
+
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.fails = collections.defaultdict(collections.deque)
+        self.per_ip = collections.Counter()
+
+    def check(self, ip, given):
+        if not ACCESS_CODE:
+            return
+        now = time.time()
+        with self.lock:
+            f = self.fails[ip]
+            while f and now - f[0] > FAIL_WINDOW:
+                f.popleft()
+            if len(f) >= FAIL_MAX:
+                raise HTTPException(429, "too many wrong access codes; try again later")
+            if hmac.compare_digest(given.encode("utf-8"), ACCESS_CODE.encode("utf-8")):
+                return
+            if given:                                # an empty header is not an attempt
+                f.append(now)
+        raise HTTPException(401, "access code required")
+
+    def acquire(self, ip):
+        with self.lock:
+            if self.per_ip[ip] >= PER_IP_MAX:
+                return False
+            self.per_ip[ip] += 1
+            return True
+
+    def release(self, ip):
+        with self.lock:
+            self.per_ip[ip] -= 1
+            if self.per_ip[ip] <= 0:
+                del self.per_ip[ip]
+
+
+G = Gate()
 
 
 def _ready():
@@ -175,16 +254,26 @@ def health():
         return JSONResponse({"status": "error"}, status_code=500)
     if W.pipeline is None:
         return JSONResponse({"status": "loading"}, status_code=503)
-    return {"status": "ok", "active": W.active, "waiting": W.waiting}
+    return {"status": "ok", "active": W.active, "waiting": W.waiting,
+            "access_code": bool(ACCESS_CODE)}
+
+
+@app.post("/api/auth")
+def auth(body: AuthIn, request: Request):
+    """Checks an access code (the frontend asks for it once and then sends it as X-Access-Code)."""
+    G.check(client_ip(request), body.code)
+    return {"ok": True}
 
 
 @app.get("/api/languages")
-def languages():
+def languages(request: Request):
+    G.check(client_ip(request), request.headers.get("x-access-code", ""))
     return _ready().languages()
 
 
 @app.post("/api/analyze")
-async def analyze(body: AnalyzeIn):
+async def analyze(body: AnalyzeIn, request: Request):
+    G.check(client_ip(request), request.headers.get("x-access-code", ""))
     p = _ready()
     if body.lang not in p.langs:
         raise HTTPException(400, f"unsupported language; one of {p.langs}")
@@ -193,21 +282,34 @@ async def analyze(body: AnalyzeIn):
         raise HTTPException(400, "empty text")
     if len(text) > MAX_CHARS:
         raise HTTPException(413, f"text longer than {MAX_CHARS} characters ({len(text)})")
+    ip = client_ip(request)
+    if not G.acquire(ip):
+        raise HTTPException(429, f"at most {PER_IP_MAX} texts at once from one address")
     job, ahead = W.submit(body.lang, text)
     if job is None:
+        G.release(ip)
         raise HTTPException(503, "too many texts waiting; try again in a minute")
+
+    def next_event():
+        # A ping when nothing happened for PING_S seconds: the tunnel and browsers may close a
+        # connection that stays silent, and a queued text can wait longer than that.
+        try:
+            return job.events.get(timeout=PING_S)
+        except queue.Empty:
+            return {"type": "ping"}
 
     async def stream():
         try:
             if ahead:
                 yield json.dumps({"type": "queued", "position": ahead}) + "\n"
             while True:
-                ev = await asyncio.to_thread(job.events.get)
+                ev = await asyncio.to_thread(next_event)
                 if ev is None:
                     break
                 yield json.dumps(ev, ensure_ascii=False) + "\n"
         finally:
             job.cancel.set()                         # no-op if the text is finished
+            G.release(ip)
 
     return StreamingResponse(stream(), media_type="application/x-ndjson",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
@@ -216,3 +318,8 @@ async def analyze(body: AnalyzeIn):
 if os.path.isdir(STATIC):
     from fastapi.staticfiles import StaticFiles
     app.mount("/", StaticFiles(directory=STATIC, html=True), name="static")
+else:
+    @app.get("/", response_class=HTMLResponse)
+    def root():
+        return ("<!doctype html><meta charset=utf-8><title>lcp-web API</title>"
+                "<p>lcp-web API. Status: <a href=/api/health>/api/health</a>.</p>")
