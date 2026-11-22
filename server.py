@@ -59,10 +59,11 @@ ACCESS_CODE = os.environ.get("LCP_ACCESS_CODE", "")
 FAIL_MAX, FAIL_WINDOW = 10, 600              # wrong access codes per address per 10 minutes
 PING_S = 15.0
 CORS_ORIGINS = [o.strip() for o in os.environ.get(
-    "LCP_CORS_ORIGINS", "https://lcp-web.vercel.app,http://localhost:8000,http://127.0.0.1:8000"
+    "LCP_CORS_ORIGINS", "https://lcp-web-static.vercel.app,https://lcp.tail6e4ef5.ts.net,"
+    "http://localhost:8000,http://127.0.0.1:8000"
 ).split(",") if o.strip()]
-# Vercel's preview deployments of the project: lcp-web-<hash>-<team>.vercel.app
-CORS_REGEX = os.environ.get("LCP_CORS_REGEX", r"https://lcp-web(-[a-z0-9-]+)?\.vercel\.app")
+# Vercel's preview deployments of the project: lcp-web-static-<hash>-<team>.vercel.app
+CORS_REGEX = os.environ.get("LCP_CORS_REGEX", r"https://lcp-web-static(-[a-z0-9-]+)?\.vercel\.app")
 STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 log = logging.getLogger("lcp")
 
