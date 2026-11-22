@@ -5,7 +5,8 @@
   3. every benchmark text (bench/texts, 1 and 2 paragraphs, 11 languages) through POST /api/analyze,
      one at a time: the stream must be "paragraphs", per paragraph "sentences" then its "sentence"
      events in order, then "done"; every word's offsets must point at its text in the input,
-     level in 1..5, score in [0, 1]. Timings from the server and the client, next to the stage 7
+     content words with level in 1..5 and score in [0, 1], function words level 1 without a
+     score, other words (proper nouns, numerals...) without either. Timings from the server and the client, next to the stage 7
      benchmark (same texts, reuse);
   4. a single sentence without sentence ends (a benchmark text repeated) in ja (1000 characters)
      and si (~1990), longer than the 192 tokens of a piece: it must come back in pieces, its
@@ -109,15 +110,24 @@ def validate(lang, text, ev):
             nxt_i += 1
             for w in e["words"]:
                 if not (check(text[w["start"]:w["end"]] == w["text"], f"{lang}: word offsets")
-                        and check(1 <= w["level"] <= 5 and (w.get("function") and w["level"] == 1
-                                                            or 0.0 <= w["score"] <= 1.0),
-                                  f"{lang}: level/score out of range")):
+                        and check(word_ok(w), f"{lang}: kind/level/score out of range")):
                     return False
         else:
             check(False, f"{lang}: unexpected event {e['type']}")
             return False
     return (check(par_seen == list(range(n_par)), f"{lang}: paragraphs {par_seen} of {n_par}")
             and check(evs[-1]["sentences"] == nxt_i, f"{lang}: sentence count"))
+
+
+def word_ok(w):
+    """content: level 1..5 and score in [0, 1]; function: level 1, no score; other (proper nouns,
+    numerals...): neither level nor score."""
+    k = w.get("kind")
+    if k == "content":
+        return 1 <= w["level"] <= 5 and 0.0 <= w["score"] <= 1.0
+    if k == "function":
+        return w.get("function") is True and w["level"] == 1 and "score" not in w
+    return k == "other" and "level" not in w and "score" not in w
 
 
 def stage7(path):
@@ -194,10 +204,11 @@ def main():
             done = ev[-1]
             t = done["timings"]
             lv = [w["level"] for e in ev if e["type"] == "sentence" for w in e["words"]
-                  if not w.get("function")]                 # content words only, as before
+                  if w.get("kind") == "content"]            # content words only, as before
             row = dict(lang=lg, size=sz, chars=len(text), paragraphs=done["paragraphs"],
                        sentences=done["sentences"], content_words=done["content_words"],
                        function_words=done.get("function_words"),
+                       other_words=done.get("other_words"),
                        readings=t["readings"], cropped=done["cropped"],
                        stanza_loaded=t["stanza_loaded"], segment_s=t["segment_s"], A_s=t["A_s"],
                        B_s=t["B_s"], total_s=t["total_s"], first_s=t["first_sentence_s"],

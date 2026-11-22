@@ -37,7 +37,7 @@ import signal_b
 from lcp import rater as R
 from lcp.encoders import Encoders
 from lcp.fusion import Fusion, LEVELS
-from lcp.segment import LANGS, Segmenter, _has_letter
+from lcp.segment import FUNCTION_UPOS, LANGS, Segmenter, _has_letter
 
 PROMPTS = list(signal_b.PROMPTS)        # reading order, as scripts/b_reference.py and bench_cpu.py
 CROP_STEPS = (data.CHAR_WINDOW, 400, 300, 200, 150, 100, 60, 30)
@@ -338,7 +338,10 @@ class Pipeline:
                                                     when paragraph p is segmented (stanza/regex)
           {"type": "sentence", "i", "paragraph", "start", "end", "words": [...]}  per sentence
           {"type": "done", ...}                     counts and timings
-        Sentence indices run over the whole text; offsets are in characters of `text`."""
+        Sentence indices run over the whole text; offsets are in characters of `text`. Every word
+        has "kind" and "upos" (stanza's UPOS; empty for fil and si): "content" (scored), "function"
+        (closed class: level 1 with "function": true, no score) or "other" (proper nouns,
+        numerals, foreign words...: no level, no score)."""
         if lang not in self.langs:
             raise ValueError(f"unsupported language {lang!r}")
         t0 = time.perf_counter()
@@ -350,7 +353,8 @@ class Pipeline:
         tot = {"t_A": 0.0, "t_B": 0.0, "t_fusion": 0.0, "readings": 0, "prompt_tokens": 0,
                "evaluated_tokens": 0, "low_mass": 0}
         self.rt._prev = []                       # KV reuse starts afresh for every text
-        t_seg, t_first, words_all, cropped, n_sent, n_function = 0.0, None, 0, 0, 0, 0
+        t_seg, t_first, words_all, cropped, n_sent = 0.0, None, 0, 0, 0
+        n_function = n_other = 0
         for pi, (a, b) in enumerate(paras):
             if cancel is not None and cancel.is_set():
                 raise Cancelled()
@@ -375,19 +379,31 @@ class Pipeline:
                                                               for w in cw], cancel)
                     for k in tot:
                         tot[k] += st[k]
-                    for r in res:
+                    for r, w in zip(res, cw):
                         r["start"] += s.start
                         r["end"] += s.start
+                        r["kind"], r["upos"] = "content", w.upos
                         if s.split:
                             r["cropped"] = True
                     words_all += len(res)
                     cropped += sum(1 for r in res if r.get("cropped"))
-                # Function words (with a letter, not content) are shown as level 1 without being
-                # scored: the system was evaluated on content words (MLSP targets) only.
-                fw = [{"start": s.start + w.start, "end": s.start + w.end, "text": w.text,
-                       "lemma": w.lemma, "level": 1, "label": LEVELS[1], "function": True}
-                      for w in s.words if not w.content and _has_letter(w.text)]
-                n_function += len(fw)
+                # The other tokens with a letter are not scored: the system was evaluated on
+                # content words (MLSP targets) only. Closed-class words (FUNCTION_UPOS; for fil and
+                # si the regex segmenter's function-word list) are shown as level 1 without the
+                # model; proper nouns, numerals, foreign words etc. ("other") get no level.
+                fw = []
+                for w in s.words:
+                    if w.content or not _has_letter(w.text):
+                        continue
+                    d = {"start": s.start + w.start, "end": s.start + w.end, "text": w.text,
+                         "lemma": w.lemma, "upos": w.upos}
+                    if w.upos in FUNCTION_UPOS or lang not in data.STANZA_LANGS:
+                        d.update(kind="function", level=1, label=LEVELS[1], function=True)
+                        n_function += 1
+                    else:
+                        d["kind"] = "other"
+                        n_other += 1
+                    fw.append(d)
                 res = sorted(res + fw, key=lambda r: r["start"])
                 if t_first is None and cw:
                     t_first = time.perf_counter() - t0
@@ -397,6 +413,7 @@ class Pipeline:
         total = time.perf_counter() - t0
         yield {"type": "done", "lang": lang, "paragraphs": len(paras), "sentences": n_sent,
                "content_words": words_all, "function_words": n_function,
+               "other_words": n_other,
                "cropped": cropped, "low_mass": tot["low_mass"],
                "timings": {"segment_s": round(t_seg, 3), "stanza_loaded": not loaded,
                            "A_s": round(tot["t_A"], 3), "B_s": round(tot["t_B"], 3),

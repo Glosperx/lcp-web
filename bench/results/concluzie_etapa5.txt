@@ -1,0 +1,210 @@
+Etapa 5 pe PC: frontend-ul
+22 noiembrie 2026
+
+Fisiere: static/index.html, static/app.css, static/app.js (pagina, in locul paginii de test din
+Etapa 8); lcp/segment.py (FUNCTION_UPOS), lcp/pipeline.py (campurile kind, upos, other_words),
+scripts/api_check.py (validarea cuvintelor dupa kind), README.md (sectiunea Stage 5), docstring-ul
+din server.py.
+
+
+1. Deciziile lui Alexandru (22 noiembrie)
+
+- Scala de culori ramane cea din plan: percentila cuvantului in distributia de test a limbii,
+  trecuta prin cuantilele etichetelor MLSP. Pe texte obisnuite iese mai ales verde; pagina spune
+  de ce (cuvintele alese pentru adnotare sunt in medie mai grele decat cele dintr-un text oarecare).
+- P1 din audit: numele proprii, numeralele, cuvintele straine, interjectiile (PROPN, NUM, X, INTJ,
+  SYM...) nu mai sunt "functionale". Serverul trimite acum pe fiecare cuvant "kind" si "upos":
+    content   cuvant de continut, scorat (ca inainte);
+    function  clasele inchise DET, ADP, CCONJ, SCONJ, PRON, AUX, PART: nivel 1 fara model,
+              "function": true, fara scor (ca inainte);
+    other     restul cuvintelor cu litere: fara nivel si fara scor; pagina le lasa necolorate,
+              cu "neevaluat de model" in popover.
+  "done" numara si "other_words". La fil si si nu exista POS (segmentarea e regex): raman listele de
+  cuvinte functionale, deci acolo un nume propriu e tot cuvant de continut.
+- Interfata in romana si engleza, cu comutator RO/EN in antet; implicit dupa limba browserului,
+  alegerea tinuta in localStorage. Textele in romana au diacritice.
+- Miscare discreta (skill-ul apple-design): raspuns la apasare (butoanele se strang la 97%),
+  popover-ul si dialogul apar cu o tranzitie scurta, ancorata in cuvant; o propozitie terminata
+  trece din estompat in culori cu un fade scurt. prefers-reduced-motion opreste miscarea si lasa
+  doar schimbarile de opacitate.
+
+
+2. Ce face pagina
+
+- Asezare ca DeepL: un singur card cu doua panouri egale, unul langa altul; sub 760 px, unul sub
+  altul. Stanga: limba textului (11 limbi, numele traduse), r-ul limbii cu un calificativ
+  (incredere mare de la 0.75, medie de la 0.60, mica sub; legatura duce la lista de r), caseta de
+  text (creste cu textul), butonul de golire, contorul "n / 20.000", butonul Analizeaza si
+  Ctrl+Enter (Cmd+Enter pe Mac). Dreapta: legenda, textul colorat, linia de stare.
+- Contorul numara code points, ca serverul. Peste warn_chars (2000, ja 700) se coloreaza si
+  analiza cere confirmare intr-un dialog, cu durata estimata din est_s_per_1000_chars (dublata
+  cand /api/health spune slow) si cu numarul de texte la care mai lucreaza serverul. Peste 20.000
+  butonul e oprit.
+- In timpul analizei butonul devine Opreste (AbortController; serverul anuleaza textul). Bara de
+  progres (2 px, sub legenda) si starea "Se analizeaza · 42% · 12 s" arata cat s-a facut; la final
+  "Gata: N cuvinte evaluate in T s · F cuvinte functionale (nivel 1, fara model) · O nume proprii,
+  numerale sau cuvinte straine, necolorate".
+- Textul din dreapta se construieste pe evenimente: la "paragraphs" cate un bloc estompat pe
+  paragraf, la "sentences" blocul paragrafului se imparte in propozitii estompate, la "sentence"
+  propozitia primeste cuvintele colorate. Offseturile se convertesc o data pe text (code points ->
+  UTF-16), deci emoji, steaguri si litere din afara BMP nu decaleaza nimic.
+- Colorarea: fundal pe cuvant, cinci culori de la verde la rosu, alte valori in dark mode;
+  cuvintele functionale au verdele nivelului 1 mai deschis; cuvintele "other" raman fara fundal.
+  Legenda arata numarul de cuvinte pe nivel (nivelul 1 include functionalele); un click pe un
+  nivel lasa colorate doar cuvintele lui, al doilea click le reda pe toate.
+- Popover-ul (click sau Enter): cuvantul, partea de vorbire, nivelul cu eticheta, scorul de
+  complexitate 0-1 pe o scala cu cele cinci benzi de nivel (latimile benzilor sunt intervalele
+  notei celei mai apropiate: 0.125, 0.375, 0.625, 0.875) si ca numar, lema. Frecventa Zipf, A, B
+  si fuziunea nu se mai afiseaza (decizia lui Alexandru dupa prima versiune: ajung lema si scorul;
+  serverul le trimite in continuare). Pentru functionale si "other": lema si textul "neevaluat de
+  model". Escape, click in afara sau X il inchid; Escape intoarce focusul pe cuvant.
+- Tastatura: cuvintele de continut sunt in ordinea Tab; sagetile trec la cuvantul urmator sau
+  anterior (si prin functionale si "other") si popover-ul deschis il urmeaza; Home/End.
+- Sub panouri: "Cum se citeste" (scorul e relativ la limba si nu se compara intre limbi, nivelul,
+  ce se scoreaza, sistemul, timpii, textele nu se pastreaza pe server) si r-ul pe cele 11 limbi, cu
+  intervalul de incredere 95% si media, limba aleasa evidentiata. Niciun exemplu de text, nimic
+  din MLSP, RoLCP sau CompLex. Pagina nu are link catre paper.
+- Pastrate din Etapa 8: codul de acces (cerut o data, tinut in localStorage, butonul Iesi il
+  sterge), lista de limbi din cache (pagina apare imediat), mesajele pentru server oprit (cu
+  Reincearca), server in pornire (verifica /api/health la 8 s si continua singur), GPU lent,
+  coada, 429 si celelalte erori HTTP, flux intrerupt, eroare in flux. Un 401 in timpul analizei
+  cere codul din nou fara sa piarda textul din caseta.
+- Legenda si capul panoului din dreapta raman sub antet, iar contorul si butonul raman jos pe
+  ecran cand textul e lung (sticky).
+- Adresa API-ului: servita de server (127.0.0.1, localhost sau adresa ts.net), pagina vorbeste cu
+  propria origine; de oriunde altundeva (Vercel) cu https://lcp.tail6e4ef5.ts.net.
+- Accesibilitate: etichete pe controale, aria-pressed pe legenda si pe RO/EN, popover anuntat,
+  starea anuntata doar la coada si la final (nu in fiecare secunda), prefers-reduced-motion,
+  prefers-reduced-transparency, prefers-contrast: more.
+
+
+3. Culorile nivelurilor
+
+  light   1 #c3fdda   2 #d3eb85   3 #f6c343   4 #fb985d   5 #e8777d   text #1d1d1f
+  dark    1 #0b4c2b   2 #46560f   3 #7a5800   4 #a54b26   5 #b4506a   text #ffffff
+
+Masurate cu validatorul skill-ului dataviz (OKLab, simularea Machado 2009):
+- Contrastul textului pe fundal: light 14.7 / 12.8 / 10.3 / 7.8 / 5.9; dark 10.1 / 8.1 / 6.5 /
+  5.8 / 4.9. Toate peste 4.5:1.
+- Luminozitatea scade cu nivelul in light si creste in dark, deci ordinea se vede si fara culoare.
+- Separarea intre niveluri vecine (ΔE x100): light minim 9.6 la vedere normala, 6.9 la
+  deuteranopie (banda 6-8, acceptata doar cu o a doua codare); dark minim 7.7 la vedere normala,
+  dar la protanopie nivelurile 3 si 4 (auriu si portocaliu) aproape coincid (2.0). Pragul de 15 al
+  skill-ului e gandit pentru marcajele unui grafic; aici fundalurile trebuie sa lase textul
+  lizibil, ceea ce limiteaza separarea. A doua codare: numarul nivelului in legenda si in popover
+  si filtrul din legenda.
+
+
+4. Serverul (lcp/pipeline.py) si restartul
+
+- Schimbarea e doar de clasificare a cuvintelor necontinut; scorurile, nivelurile si cuvintele de
+  continut sunt neschimbate. Testata intai cu un scorer fals (stanza real pe CPU, fara GPU), apoi
+  pe live: "Einstein visited Paris two times and admired the old bridges." -> Einstein, Paris
+  (PROPN) si two (NUM) "other", and (CCONJ) si the (DET) "function", restul "content".
+- Restartul: 18:51:52 docker compose stop (VRAM ocupat de restul aplicatiilor: 474 MiB), apoi
+  start; /api/health ok dupa 76 s, proba 981 tokeni/s, slow false, VRAM 7854 MiB.
+- Inainte de restart serverul era din nou in memoria shared: 650 tokeni/s la proba de la 18:40 si
+  511 la 18:51 (slow true). Restartul cu placa libera l-a readus la normal. Proba din /api/health
+  si-a facut treaba: a aratat starea fara alta investigatie.
+- Calea publica (curl --resolve pe adresa A publica): /api/health 200, iar /, /app.js si /app.css
+  se servesc din repo (fara restart pentru fisierele statice).
+
+
+5. Testarea
+
+Pagina, in Chrome headless (--disable-gpu, VRAM neschimbat), condusa prin DevTools Protocol din
+node 24, fara dependinte; scripturile stau in scratchpad, nu in repo.
+
+a) Cu un API fals in pagina (acelasi protocol NDJSON, liniile taiate in bucati si in mijlocul
+   caracterelor UTF-8): 64 PASS, 0 FAIL. Printre ele:
+   - login: cod gresit, cod corect, 11 limbi, focus in caseta;
+   - un text cu emoji, steag si litera matematica (U+1D4B3) pe doua paragrafe: fiecare cuvant
+     colorat exact pe textul lui (27 din 27), textul din dreapta identic cu cel trimis;
+   - dupa prima propozitie terminata celelalte raman estompate, iar paragraful al doilea ramane
+     un bloc estompat; nimic estompat dupa "done";
+   - in timpul analizei: butonul e Opreste, o tasta nu reactiveaza Analizeaza, Ctrl+Enter nu mai
+     trimite nimic;
+   - legenda: numerele pe nivel; filtrul pe un nivel lasa fara fundal celelalte cuvinte; al
+     doilea click il scoate;
+   - popover: pe cuvantul apasat, sub el, cu scor si lema; click in afara il inchide;
+     "neevaluat" pe "other" si pe functionale; Escape il inchide si intoarce focusul;
+   - tastatura: Tab din caseta ajunge la primul cuvant de continut, Enter deschide, sageata
+     dreapta muta si popover-ul urmeaza, Escape inchide, Tab merge la urmatorul cuvant;
+   - RO/EN: toate textele, limba paginii, starea redesenata, numerele cu virgula in romana;
+   - text lung: avertizare in contor, dialog cu estimarea ("2.190 de caractere ... aproximativ
+     40 s"), Escape renunta fara cerere, OK porneste, Opreste anuleaza si lasa partea colorata;
+   - erorile: flux taiat, eveniment error, 429, 503 coada plina, 503 in pornire, 413, retea
+     cazuta, coada ("queued"), 401 in timpul analizei (login din nou, textul ramane);
+   - pornirea: server oprit (pagina din cache si mesaj), server in pornire (mesajul dispare
+     singur cand /api/health spune ok), GPU lent (mesaj);
+   - un server fara campul "kind" (cel vechi): pagina merge si cu el;
+   - dark mode, telefon (390 px): panourile unul sub altul, fara scroll orizontal, popover-ul
+     in ecran.
+b) Pe live, prin pagina, cu texte scurte scrise pentru test (cate un paragraf de 2 propozitii pe
+   limba): toate PASS. Pe fiecare: cuvintele din pagina = cuvintele din flux, pe pozitiile lor,
+   cu clasa nivelului; nimic estompat la final; suma legendei = continut + functionale.
+     limba   cuvinte  niveluri 1/2/3/4/5   prima culoare   server
+     en      19       7/5/0/0/0            2.1 s           3.2 s
+     ro      20       4/7/1/0/0            1.5 s           3.2 s
+     de      20       13/0/0/0/0           2.0 s           3.6 s
+     es      18       6/6/0/0/0            2.1 s           3.1 s
+     fr      20       8/4/0/0/0            1.7 s           3.1 s
+     it      19       9/2/0/0/0            1.8 s           3.0 s
+     pt      20       8/5/0/0/0            2.0 s           3.3 s
+     ca      19       11/0/0/0/0           1.5 s           2.9 s
+     ja      25       12/3/0/0/0           1.7 s           3.7 s
+     fil     16       4/6/0/0/0            1.4 s           2.6 s
+     si      15       12/0/0/0/0           1.7 s           3.3 s
+     en, emoji si steag, 2 paragrafe: 25 de cuvinte, 3 "other", 1.2 s, 3.4 s.
+   (Cuvinte = toate cuvintele cu litere; nivelurile sunt doar pentru cele de continut.) Popover-ul
+   arata nivelul si scorul din flux. Un text englez de 2125 de caractere: dialogul cu ~40 s, OK,
+   Opreste dupa prima propozitie -> "Oprita dupa 1 propozitie", serverul cu 0 texte active
+   ("analysis cancelled" in log).
+c) scripts/api_check.py --parts texts --sizes 1 pe live, cu iesirea in scratchpad: vezi
+   sectiunea 7.
+d) Capturi de ecran (light, dark, popover, filtru, dialog, telefon) verificate vizual. Gasite si
+   reparate asa: butonul Opreste ajungea sub marginea ecranului la un text lung (acum subsolul e
+   sticky); secunda din starea finala ramanea "3.2" dupa trecerea in romana (acum numerele se
+   formateaza la afisare); in dark mode nivelul 1 abia se vedea pe fundal (culori mai deschise);
+   in japoneza cuvintele colorate se lipeau intr-un singur bloc (acum 1 px intre ele).
+
+
+6. De stiut
+
+- Vercel publica pagina noua doar dupa push. Pana atunci pagina de test de pe Vercel vorbeste cu
+  serverul nou: un click pe un nume propriu sau un numeral da acolo o eroare in popover (pagina
+  veche citeste un scor care nu mai exista). Pe adresa ts.net pagina noua e deja live.
+- Testat doar in Chrome (headless). Telefonul real (Safari pe iOS: sticky, dialog,
+  backdrop-filter) il testeaza Alexandru; Firefox si Safari pe desktop nu sunt testate.
+- Pe Windows fara font de steaguri, steagurile apar ca litere (RO); e fontul sistemului.
+- La fil si si numele proprii sunt cuvinte de continut (fara POS).
+- Dark mode, protanopie: nivelurile 3 si 4 se confunda (sectiunea 3).
+- Ramase din audit: P3 (/api/health nu vede un fir de lucru blocat), regex-ul CORS (D-b),
+  Etapele 6 si 7, "tailscale down/up" dupa restart.
+
+
+7. api_check pe live (dupa restart)
+
+scripts/api_check.py --parts texts --sizes 1, cu --out in scratchpad (rezultatele din repo raman
+cele din Etapa 4): PASS. Validarea noua a cuvintelor (content cu nivel si scor, function cu nivel 1
+fara scor, other fara nivel si fara scor) trece pe toate cele 11 texte bench de un paragraf.
+- median 15.3 s pe 11 limbi (Etapa 7: 14.3 s; dupa audit: 15.6 s), 0.073-0.093 s pe citire;
+- cuvinte "other" pe text: 0 (fil, si: fara POS) pana la 13 (pt); functionale 10 (si) - 82 (pt).
+
+
+8. Codul de acces, oprit temporar (22 noiembrie, ~19:20, la cererea lui Alexandru)
+
+- Serverul: linia LCP_ACCESS_CODE din .env e comentata (valoarea a ramas in fisier), containerul
+  recreat cu docker compose up -d. /api/health spune "access_code": false; /api/languages si
+  /api/analyze raspund fara cod, local si prin Funnel (verificat: 200).
+- Pagina: formularul de cod apare doar cand serverul raspunde 401, deci acum nu mai apare; butonul
+  Iesi e comentat in static/index.html (codul JS il ignora cand lipseste). Testat in Chrome cu
+  API-ul fals in ambele moduri (66 PASS, 0 FAIL).
+- Raman limitele: 2 texte pe adresa, 6 active, coada de 16, 20.000 de caractere, corp de 256 KiB.
+  Oricine are link-ul (Vercel sau ts.net) poate folosi GPU-ul.
+- Revenirea: se decomenteaza linia in .env, apoi docker compose up -d (restart nu ajunge: env_file
+  se citeste la crearea containerului). Pagina cere singura codul la primul 401; butonul Iesi se
+  decomenteaza in static/index.html.
+- Primul start dupa recreare a intrat in memoria shared: 561 MiB ocupati inainte (Firefox 114 MiB
+  pe placa), proba 557 tokeni/s. Cu Firefox inchis: 478 MiB inainte, proba 1009 tokeni/s. Pragul
+  de 700 MiB din site_start nu garanteaza deci nimic; cu ~480 MiB a mers de doua ori azi.

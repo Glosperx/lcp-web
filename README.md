@@ -137,9 +137,12 @@ running), `paragraphs` (paragraph spans), per paragraph `sentences` (its sentenc
 `sentence` per finished sentence (its content words: `start`, `end`, `text`, `lemma`, `level`,
 `label`, `score`, `zipf`, `A`, `B`, `fused`, and the flags `cropped`, `no_A`, `no_B`), then `done`
 with the timings. Offsets count Unicode code points (Python string indices), not the UTF-16 units of
-JavaScript: a page converts them before slicing (an emoji is 1 here, 2 in JavaScript). Tokens with
-a letter that are not content words come as level 1 with `"function": true` and no score; that
-covers every other part of speech, proper nouns and numerals included, not only closed-class words.
+JavaScript: a page converts them before slicing (an emoji is 1 here, 2 in JavaScript). Every word
+has `kind` and `upos` (stanza's UPOS, empty for fil and si): `content` (scored), `function`
+(closed classes DET, ADP, CCONJ, SCONJ, PRON, AUX, PART, and the regex function-word lists of fil
+and si: level 1 with `"function": true`, no score) or `other` (proper nouns, numerals, foreign
+words, interjections...: no level, no score; the page leaves them uncoloured). `done` counts
+`function_words` and `other_words`.
 A text may have up to 20000 characters (`max_chars`); above `warn_chars` (2000,
 700 for Japanese, which has about three times more content words per character) the frontend asks
 for confirmation, with the estimate `est_s_per_1000_chars` of `/api/languages`. One worker thread
@@ -173,8 +176,7 @@ visitor -> https://lcp-web-static.vercel.app      static/ (Vercel project lcp-we
 docker-compose.yml       the API container: GPU, repo mounted at /app, restart: unless-stopped,
                          healthcheck on /api/health, port bound to 127.0.0.1
 .env.example             template for .env (gitignored): access code, CORS origins, texts per address
-static/index.html        the page: access code, streaming analysis, colours per level (function words
-                         as level 1 without the model), score popover; the API address is inline
+static/                  the page (stage 5, below); the API address is inline in static/app.js
 scripts/site_start.cmd   double-click: Docker Desktop if needed, VRAM check, docker compose up -d,
                          wait for /api/health, Funnel on port 8000, GPU speed check (tok_s)
 scripts/site_stop.cmd    double-click: docker compose stop (frees the GPU, stays stopped after a reboot);
@@ -190,10 +192,33 @@ docker compose up -d                        # or scripts\site_start.cmd
 After a reboot the site comes back by itself in ~2.5 min: autologon, Docker Desktop (starts at
 login), the container (restart policy), Funnel (persistent). UptimeRobot checks
 `https://lcp.tail6e4ef5.ts.net/api/health` every 5 minutes (it sends HEAD, which the route accepts).
-`/api/languages` and `/api/analyze` need the header `X-Access-Code` (the page itself, `/api/health`
-and `/api/auth` do not); `POST /api/auth` checks a code,
+`/api/languages` and `/api/analyze` need the header `X-Access-Code` when `LCP_ACCESS_CODE` is set (the
+page itself, `/api/health` and `/api/auth` do not; since 22 Nov 2026 the code is temporarily unset,
+so the API is open and the page shows its code form only on a 401); `POST /api/auth` checks a code,
 10 wrong codes from one address in 10 minutes block it for the rest of the window, and one address
 may have 2 texts running or waiting. The address is the last `X-Forwarded-For` entry, which Funnel
 sets itself. CORS allows the Vercel site and its preview deployments (`LCP_CORS_REGEX`). On this PC
 MagicDNS answers with the tailnet address, so test the public path with the public relay address:
 `curl --resolve lcp.tail6e4ef5.ts.net:443:<A record from public DNS> https://lcp.tail6e4ef5.ts.net/api/health`.
+
+### Stage 5: the page
+
+Results and conclusion: `bench/results/concluzie_etapa5.txt`.
+
+```
+static/index.html        markup: header (interface language RO/EN), access code form, the two panes,
+                         notes on reading the score, r per language, the long-text dialog
+static/app.css           tokens for light and dark mode, the five level colours, layout (side by side,
+                         stacked under 760 px), reduced motion / transparency, higher contrast
+static/app.js            plain JavaScript, no build: login, cached language list, streaming analysis
+                         with code point -> UTF-16 offsets, fading of the parts still running,
+                         legend filter, word popover, keyboard, confirmation above warn_chars, Stop
+```
+
+Plain files, no build step: Vercel publishes `static/` as it is, and the server serves the same
+files at the root of its own address (from the mounted repository, no restart needed). Served by
+the server itself (localhost, 127.0.0.1 or the ts.net address) the page calls its own origin; from
+anywhere else it calls `https://lcp.tail6e4ef5.ts.net`. Content words are coloured by level, function
+words as level 1 without the model (lighter), proper nouns, numerals and foreign words (`kind`
+`other`) stay uncoloured; every word opens a popover (click, or Enter on a focused word; arrow keys
+move between words, Escape closes).

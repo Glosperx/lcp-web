@@ -28,6 +28,9 @@ import data
 
 LANGS = ("ca", "de", "en", "es", "fil", "fr", "it", "ja", "pt", "ro", "si")
 CONTENT_UPOS = frozenset({"NOUN", "VERB", "ADJ", "ADV"})
+# Closed classes: the tokens shown as level 1 without the model ("function" words). The other
+# non-content tokens with a letter (PROPN, NUM, X, INTJ, SYM...) are left unscored and uncoloured.
+FUNCTION_UPOS = frozenset({"DET", "ADP", "CCONJ", "SCONJ", "PRON", "AUX", "PART"})
 
 # Closed-class words: case markers, linkers, conjunctions, pronouns, particles. Deictic adverbs
 # (dito, doon, ganito...) are kept as content words: they are MLSP targets in Filipino.

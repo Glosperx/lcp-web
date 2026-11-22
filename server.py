@@ -15,10 +15,11 @@
   POST /api/analyze     {"lang": "en", "text": "..."} -> application/x-ndjson, one JSON object per
                         line: optionally {"type": "queued", "position": n}, then "paragraphs", per
                         paragraph "sentences" (its sentence spans) and one "sentence" per finished
-                        sentence (its content words with offsets, level, score 0-1, lemma, Zipf
-                        frequency, A, B), and "done" with the timings; {"type": "error"} if
-                        something fails. Offsets count Unicode code points (Python str indices),
-                        not UTF-16 units.
+                        sentence (its words with offsets and "kind": content words with level,
+                        score 0-1, lemma, Zipf frequency, A, B; "function" words as level 1
+                        without a score; "other" words, proper nouns and numerals, with neither),
+                        and "done" with the timings; {"type": "error"} if something fails.
+                        Offsets count Unicode code points (Python str indices), not UTF-16 units.
 
   POST /api/auth        {"code": "..."} -> 200 if the access code is right, 401 if not
 
