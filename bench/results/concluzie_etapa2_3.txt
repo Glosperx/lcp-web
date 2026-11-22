@@ -1,0 +1,162 @@
+Etapele 2 si 3 pe PC: exportul modelului si B de referinta cu llama.cpp pe GPU
+22 noiembrie 2026
+
+Fisiere: export_parity.txt (Etapa 2, poarta de paritate), ../../reference/b_reference.log (Etapa 3,
+toti pasii), ../../reference/signal_b_llamacpp.csv (B nou, formatul signal_b.csv, fara text),
+../../reference/b_reference_readings.csv (tokeni, secunde si masa pe cifre pe citire),
+../../artifacts/ (params.json, centering.npz, signal_a_{xlmr,labse,e5}.joblib). Codul:
+scripts/export_model.py, scripts/b_reference.py, lcp/fusion.py.
+
+
+1. Paritatea exportului (Etapa 2)
+
+- Datele sunt cele din signal_a.run (setarea mlsp+ro), cu embedding-urile si lemele din cache-ul
+  release-ului. Nimic nu s-a recalculat cu encoderele, iar data.lemmas nu a avut nimic de scris.
+  CompLex are 8423/8423 randuri, testul 7211/7211, la toate cele trei encodere.
+- Pe fiecare encoder sunt 12 perechi ridge + HGB: p_en si cate un p_multi_L pe limba. Fiecare
+  pereche da bit cu bit aceeasi predictie ca blend_ridge_hgb pe aceleasi date, la toate cele 36,
+  si la fel dupa salvarea si reincarcarea cu joblib. Centrarea salvata (mu_L, fert_mu_L) reface
+  exact trasaturile din per_language. Timp: ~110 s pe encoder, 412 s cu tot cu verificarile.
+- Fata de signal_a.csv din release (fitat pe arm64), predictiile exportate (fit pe x86) nu sunt
+  bit-identice: max |dp| intre 2.8e-6 si 1.2e-5 pe p_en si intre 4.9e-6 si 6.5e-5 pe p_multi,
+  iar r e 1.000000 (la 6 zecimale) pe fiecare limba, encoder si brat. Pragul era 0.9999.
+- Fuziunea calculata de lcp/fusion.py doar din artefacte, fata de fuse.py pe acelasi A (exportat):
+  max |d| 1.8e-15 pe A, 0 pe B, 8.9e-16 pe scorul fuzionat. Restul de 1e-15 vine din parsarea CSV
+  pe care o face fuse.py.
+- Fata de "fuse.py --with-ro --out" pe release (A-ul paperului): max |d| 1.35e-4 pe A si 5.4e-5 pe
+  scorul fuzionat, la 7211 randuri. Parametrii LOLO sunt identici cu ai paperului, la fel r-urile pe
+  limba la 4 zecimale. Media pe 11 limbi e 0.692521, CI [0.6789, 0.7057], exact ca in paper.
+  Poarta: PASS.
+- Artefactele au 36 MB, nu "cativa MB" ca in plan: 3 x 12 MB de modele (joblib compress=3, mare
+  parte din marime vine din pragurile de binning ale HGB: 775 de coloane x 255 pe model), plus
+  params.json (~300 KB) si centering.npz (119 KB). Contin doar numere: revizii, hash-uri sha256 ale
+  fisierelor de date folosite, constante, cuantile. Niciun text din MLSP, RoLCP sau CompLex.
+
+
+2. Lungimea prompturilor fata de n_ctx
+
+Toate cele 21.633 de prompturi (7211 randuri x 3 prompturi, render plus apply_chat_template) au
+fost tokenizate fara model. Limita era n_ctx 1024 minus o margine de 16, deci 1008 tokeni.
+- Pe limba, p99 / maxim: ca 196/202, de 206/226, en 140/147, es 154/161, fil 130/145, fr 181/210,
+  it 185/223, ja 130/145, pt 189/265, ro 258/675, si 280/340. Pe toate, mediana e 114, p99 222,
+  iar maximul 675 (ro, promptul expert). Poarta: PASS, cu o marja mare.
+- Pentru limita din Etapa 4 s-au masurat si tokenii pe caracter ai propozitiilor. La p99: ja 0.82,
+  si 0.61, iar celelalte limbi cel mult 0.42 (maxim 0.50 la fil si ro). Instructiunea si sablonul
+  ocupa cel mult ~100 de tokeni, deci propozitia are loc pentru ~900. Asta inseamna ~1000 de
+  caractere in japoneza, ~1400 in sinhaleza si ~1800-2000 in rest. Limita de 2000 de caractere pe
+  text nu ajunge singura: o propozitie neobisnuit de lunga (fara punct) in ja, si, fil sau ro poate
+  trece de 1008. In Etapa 4, pipeline-ul trebuie sa masoare fiecare prompt inainte de citire. Daca
+  trece de 1008, taie contextul in jurul cuvantului (ca data.crop_around) pana incape, si noteaza
+  asta in raspuns. n_ctx 2048 nu e o solutie pe placa de 8 GB, pentru ca acolo ar trece in RAM
+  (Etapa 7).
+
+
+3. Timpii lui B pe GPU (configuratia site-ului, cu refolosire)
+
+Configuratia: 49 de straturi pe GPU, flash attention, n_ctx 1024, n_batch 256, 16 thread-uri, KV
+refolosit. Ordinea e cea din bench_cpu.analyze: context, prompt, cuvant.
+- 21.633 de citiri in 31.7 minute de citiri (~32 de minute de rulare): 0.088 s pe citire in medie,
+  mediana 0.084, p95 0.139. In medie, 118 tokeni de prompt si 88 evaluati (74%), 1002 tokeni/s.
+- Pe limba, s/citire: en 0.074, ja 0.073, fr 0.078, es 0.079, ro 0.082, fil 0.086, it 0.086,
+  de 0.090, ca 0.096, pt 0.104, si 0.130. Sinhaleza e cea mai lenta (152 de tokeni pe prompt,
+  143 evaluati).
+- Refolosirea economiseste aici mai putin decat pe textele Wikipedia ale Etapei 7, pentru ca un
+  context MLSP are in medie doar ~2.2 cuvinte tinta (3283 de contexte pentru 7211 randuri). Pe
+  site, o propozitie are mai multe cuvinte de continut, deci cifra de 0.08 s/citire din Etapa 7
+  ramane cea relevanta.
+- VRAM: procesul a avut 7389-7400 MiB dedicati si 123-131 MiB "shared" toata rularea (memoria
+  fixata de CUDA, ca la Etapa 7), iar placa intreaga 7826-7907 MiB din 8192. Gemma s-a incarcat
+  in 13 s.
+- Prima pornire a fost oprita dupa ~400 de citiri. Cu doua monitoare la 2560x1440 si 179 Hz,
+  ecranul Windows tinea ~850 MiB de VRAM. Procesul a primit doar 7333 MiB dedicati si 187-201
+  MiB "shared", placa a mers la 116-130 W in loc de ~210 W, iar citirile au fost de ~2 ori mai
+  lente la acelasi numar de tokeni evaluati (0.186 s/citire). Citirile acelea au fost aruncate.
+  Rularea a fost refacuta cu un singur ecran la 50 Hz, cu 655 MiB ocupati la pornire.
+- La 20.955 de citiri (97%), procesul s-a oprit cu "ggml-cuda.cu:113: CUDA error" (cod 139). In
+  acelasi moment, driverul NVIDIA a scris un eveniment in Windows (nvlddmkm 153), primul din
+  ultimele 3 zile. Nu tine de prompt (cel mai lung trecuse deja) si nici de memorie ("shared" era
+  la 131 MiB). Rularea a fost reluata din fisierul .part, cu contextele complete pastrate, si a
+  terminat cele 678 de citiri ramase in 0.9 minute. Verificare: ultimele 10 contexte de dinaintea
+  erorii (174 de citiri), recitite in acelasi mod, dau r 0.99999 cu cele scrise, 167 identice,
+  max |d scor| 0.0067. Deci nu s-a scris nimic stricat.
+
+
+4. Portile lui B (aceleasi ca in spike)
+
+- Masa pe cifre: minim 0.9965, mediana 1.0000 (prag 0.5), niciun NaN. PASS.
+- r intre media celor 3 prompturi (scor la T = 1) si B-ul MLX stocat (gemma4-12b-4bit), pe limba:
+  ca 0.980, de 0.984, en 0.990, es 0.991, fil 0.981, fr 0.990, it 0.987, ja 0.988, pt 0.991,
+  ro 0.982, si 0.967 (prag 0.90). Pe toate randurile 0.9862 (prag 0.95). Diferenta medie de scor
+  e 0.029. PASS.
+- Pe prompt, pe toate randurile: expert 0.960 (cel mai slab la ca 0.918 si si 0.924), short 0.984,
+  marked 0.969. Media celor trei e mai stabila decat orice prompt luat singur.
+
+
+5. r pe limba si media cu llama.cpp, fata de paper
+
+Rularea fuse.py --with-ro --out, cu signal_b.csv avand doar gemma4-12b-qat-gguf si cu aceeasi
+procedura LOLO (T, partitia, w_src si w alese din nou). Cu A-ul paperului si cu A-ul exportat
+ies aceiasi parametri si aceeasi medie. Artefactele sunt facute cu A-ul exportat, adica exact ce
+calculeaza site-ul.
+- Media pe 11 limbi: 0.691328, CI 95% [0.6775, 0.7043], fata de 0.692521 [0.6789, 0.7057] in
+  paper. Diferenta e -0.0012, in interiorul CI-ului, iar pragul de oprire era -0.01. PASS.
+- Pe limba, llama.cpp (paper): ca 0.5634 (0.5632), de 0.7709 (0.7704), en 0.8704 (0.8695),
+  es 0.7697 (0.7672), fil 0.4977 (0.5045), fr 0.6535 (0.6608), it 0.6825 (0.6801), ja 0.7809
+  (0.7909), pt 0.8442 (0.8416), ro 0.7458 (0.7394), si 0.4256 (0.4302). 7 limbi urca, 4 scad.
+  Cea mai mare scadere e la ja (-0.010), cea mai mare crestere la ro (+0.006).
+- B singur: media 0.6624 (paper 0.6635). A singur: 0.6109 (paper 0.6096; se schimba doar prin
+  w_src).
+
+
+6. Parametrii schimbati
+
+- T: 4 in loc de 6 la ca, en, es, fil, it, pt si ro. de, fr si si raman la 4, iar ja ramane la 6.
+  Singurul lucru schimbat fata de paper e B (alta cuantizare si alt backend), iar alegerea lui T
+  il urmeaza; diferenta de r intre cele doua valori nu a fost masurata separat.
+- Partitia: 1|23|45 peste tot, ca in paper, mai putin si, unde devine 1|2|3|4|5 (scara intreaga).
+- w_src: en 0.625 -> 0.75, fr 0.875 -> 0.625, ja 0.875 -> 0.5. Restul raman la fel.
+- w (ponderea lui A in fuziune): neschimbat la toate limbile, 0.35 la de, it si ro, 0.40 in rest.
+- Modelul de limba: unul singur in pool, gemma4-12b-qat-gguf.
+Parametrii paperului (Etapa 2) sunt pastrati in params.json, sub cheia paper_stage2.
+
+
+7. Ce inseamna pentru site
+
+- Cifra de afisat pe site e media pe 11 limbi 0.691, langa cea din paper (0.693). Pe limba, pentru
+  GET /api/languages (r-ul sistemului, cu B-ul site-ului): en 0.87, pt 0.84, ja 0.78, de 0.77,
+  es 0.77, ro 0.75, it 0.68, fr 0.65, ca 0.56, fil 0.50, si 0.43. Increderea difera mult intre
+  limbi, iar pagina trebuie sa spuna asta.
+- B-ul site-ului e acum calibrat pe propriul backend: media si deviatia lui B pe limba, T si
+  partitia vin din citirile llama.cpp pe GPU, in modul site-ului. Pe test, lcp/fusion.py din
+  artefacte reproduce fuziunea pana la 9e-16.
+- Scala de afisare: percentila cuvantului in distributia fuziunii din limba lui (1001 cuantile),
+  trecuta prin cuantilele etichetelor din toate cele 11 limbi la un loc. Toate etichetele sunt pe
+  0-1, RoLCP inclus. Mediana lor e 0.27, p95 0.68, p99 0.85, iar maximul 0.977. Nivelul e nota
+  cea mai apropiata de 1 + 4 x scor.
+  Pe setul de test, asta da aceeasi impartire in fiecare limba: ~18% nivel 1, ~50% nivel 2,
+  ~24% nivel 3, ~7% nivel 4, ~1% nivel 5 (la en: 101/288/137/40/4 din 570). E consecinta
+  alegerii din plan, adica scala adnotarilor MLSP, unde majoritatea cuvintelor sunt notate usor.
+  Pe site, culorile vor fi mai ales verde si galben, iar rosul (nivel 5) va aparea doar la
+  cuvintele din primul ~1% al limbii. Scorul e relativ la distributia setului de test a limbii,
+  nu la textul dat: un text usor va avea in mare parte niveluri mici.
+- Viteza ramane cea din Etapa 7 (~0.08 s/citire, ~15 s pentru un paragraf), cu conditia ca placa
+  sa fie libera. Cu doua monitoare la frecventa mare, procesul nu mai incape si totul merge de
+  ~2 ori mai incet. Inainte de pornirea site-ului, VRAM-ul ocupat in gol trebuie sa fie sub
+  ~700 MiB (un ecran, 50-60 Hz, fara jocuri sau browser cu accelerare).
+- Robustete: llama.cpp poate opri tot procesul la o eroare CUDA (aici o data in ~32 de minute de
+  incarcare continua, impreuna cu o eroare de driver). In Etapele 4 si 6, serverul trebuie
+  repornit automat (restart: unless-stopped in docker-compose), iar textul in lucru trebuie sa
+  primeasca o eroare clara, nu sa se blocheze.
+- Limita pe propozitie pentru Etapa 4: promptul are cel mult 1008 tokeni, iar contextul se taie in
+  jurul cuvantului daca trece (vezi punctul 2).
+
+
+8. Limitari
+
+- A pe site vine din modelele fitate pe x86. Fata de paper, diferenta e de ordinul 1e-5, fara
+  efect pe nicio cifra afisata.
+- Pe GPU, refolosirea KV nu e bit-identica cu citirea fara refolosire (Etapa 7). Statisticile lui B
+  au fost calculate in modul site-ului, dar ordinea pe site (cuvintele de continut stanza din
+  textul dat) difera de cea din test, deci zgomotul numeric de ~1e-3 pe scor ramane.
+- Constantele de z-score si scala sunt luate din setul de test al fiecarei limbi, ca in paper
+  (standardizare in limba). Sunt deci fixe pe site si nu se adapteaza la texte din alte domenii.

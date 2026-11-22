@@ -7,3 +7,6 @@ __pycache__/
 *.npy
 data/
 cache/
+# Stage 2/3 scratch (copies of release predictions, fuse.py outputs) and interrupted runs
+reference/_work/
+reference/*.part.csv

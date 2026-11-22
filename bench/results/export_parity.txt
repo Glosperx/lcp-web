@@ -1,0 +1,54 @@
+[data] test 7211 rows (11 languages), CompLex 8423
+[A] xlmr: CompLex 8423/8423, test 7211/7211, 12 model pairs in 108s (each checked against blend_ridge_hgb: identical)
+[A] labse: CompLex 8423/8423, test 7211/7211, 12 model pairs in 112s (each checked against blend_ridge_hgb: identical)
+[A] e5: CompLex 8423/8423, test 7211/7211, 12 model pairs in 124s (each checked against blend_ridge_hgb: identical)
+
+[gate A] exported predictions (per language, from the stored centring) vs the release's signal_a.csv
+  xlmr  p_en    max|dp|/r: ca 4.3e-06/1.000000  de 4.8e-06/1.000000  en 1e-05/1.000000  es 5.1e-06/1.000000  fil 4.5e-06/1.000000  fr 6.1e-06/1.000000  it 4.2e-06/1.000000  ja 3.9e-06/1.000000  pt 4.5e-06/1.000000  ro 5.6e-06/1.000000  si 5.7e-06/1.000000
+  xlmr  p_multi max|dp|/r: ca 5.9e-06/1.000000  de 2.5e-05/1.000000  en 1e-05/1.000000  es 6.5e-05/1.000000  fil 5.3e-05/1.000000  fr 4.2e-05/1.000000  it 3e-05/1.000000  ja 1.7e-05/1.000000  pt 5.9e-05/1.000000  ro 5.9e-05/1.000000  si 2.1e-05/1.000000
+  labse p_en    max|dp|/r: ca 4e-06/1.000000  de 3.8e-06/1.000000  en 9.8e-06/1.000000  es 3.7e-06/1.000000  fil 5.3e-06/1.000000  fr 2.8e-06/1.000000  it 4e-06/1.000000  ja 3.7e-06/1.000000  pt 2.8e-06/1.000000  ro 5.4e-06/1.000000  si 6.3e-06/1.000000
+  labse p_multi max|dp|/r: ca 4.9e-06/1.000000  de 1.5e-05/1.000000  en 9.8e-06/1.000000  es 7.1e-06/1.000000  fil 3e-05/1.000000  fr 1.2e-05/1.000000  it 1.9e-05/1.000000  ja 1.2e-05/1.000000  pt 1.7e-05/1.000000  ro 1.7e-05/1.000000  si 1.2e-05/1.000000
+  e5    p_en    max|dp|/r: ca 4.1e-06/1.000000  de 4.1e-06/1.000000  en 1.2e-05/1.000000  es 3.2e-06/1.000000  fil 4.6e-06/1.000000  fr 3.1e-06/1.000000  it 4.8e-06/1.000000  ja 2.8e-06/1.000000  pt 3e-06/1.000000  ro 5.6e-06/1.000000  si 7.6e-06/1.000000
+  e5    p_multi max|dp|/r: ca 5.9e-06/1.000000  de 1.6e-05/1.000000  en 1.2e-05/1.000000  es 1.1e-05/1.000000  fil 3.2e-05/1.000000  fr 1.1e-05/1.000000  it 2.2e-05/1.000000  ja 1.5e-05/1.000000  pt 1.6e-05/1.000000  ro 1.7e-05/1.000000  si 1.3e-05/1.000000
+[gate A] bit-identical: False; lowest r 1.000000
+
+[gate fusion] lcp/fusion.py from the artifacts vs fuse.py functions on the same (exported) A: max |d| A 1.78e-15, B 0, fused 8.88e-16
+
+`fuse.py --with-ro` on the release (paper):
+lang    n           model      T partition  w_src      w    r_A    r_B  r_fused     lo     hi
+  ca  445 gemma4-12b-4bit 6.0000   1|23|45 0.8750 0.4000 0.4561 0.5187   0.5632 0.5005 0.6183
+  de  570 gemma4-12b-4bit 4.0000   1|23|45 0.7500 0.3500 0.6830 0.7067   0.7704 0.7367 0.8016
+  en  570 gemma4-12b-4bit 6.0000   1|23|45 0.6250 0.4000 0.8064 0.8471   0.8695 0.8437 0.8920
+  es  593 gemma4-12b-4bit 6.0000   1|23|45 0.7500 0.4000 0.7058 0.7553   0.7672 0.7302 0.7998
+ fil  570 gemma4-12b-4bit 6.0000   1|23|45 0.7500 0.4000 0.4176 0.5000   0.5045 0.4374 0.5639
+  fr  569 gemma4-12b-4bit 4.0000   1|23|45 0.8750 0.4000 0.5452 0.6721   0.6608 0.6086 0.7080
+  it  570 gemma4-12b-4bit 6.0000   1|23|45 1.0000 0.3500 0.6464 0.6406   0.6801 0.6358 0.7232
+  ja  570 gemma4-12b-4bit 6.0000   1|23|45 0.8750 0.4000 0.6159 0.7795   0.7909 0.7487 0.8262
+  pt  567 gemma4-12b-4bit 6.0000   1|23|45 0.6250 0.4000 0.7876 0.8243   0.8416 0.8108 0.8685
+  ro 1587 gemma4-12b-4bit 6.0000   1|23|45 0.7500 0.3500 0.7302 0.6588   0.7394 0.7051 0.7704
+  si  600 gemma4-12b-4bit 4.0000   1|23|45 0.6250 0.4000 0.3111 0.3951   0.4302 0.3694 0.4884
+
+mean over 11 languages: A 0.609568 | B 0.663474 | fused 0.692521  95% CI [0.6789, 0.7057]
+
+`fuse.py --with-ro` on the exported A:
+lang    n           model      T partition  w_src      w    r_A    r_B  r_fused     lo     hi
+  ca  445 gemma4-12b-4bit 6.0000   1|23|45 0.8750 0.4000 0.4561 0.5187   0.5632 0.5005 0.6183
+  de  570 gemma4-12b-4bit 4.0000   1|23|45 0.7500 0.3500 0.6830 0.7067   0.7704 0.7367 0.8016
+  en  570 gemma4-12b-4bit 6.0000   1|23|45 0.6250 0.4000 0.8064 0.8471   0.8695 0.8437 0.8920
+  es  593 gemma4-12b-4bit 6.0000   1|23|45 0.7500 0.4000 0.7058 0.7553   0.7672 0.7302 0.7998
+ fil  570 gemma4-12b-4bit 6.0000   1|23|45 0.7500 0.4000 0.4176 0.5000   0.5045 0.4374 0.5639
+  fr  569 gemma4-12b-4bit 4.0000   1|23|45 0.8750 0.4000 0.5452 0.6721   0.6608 0.6086 0.7080
+  it  570 gemma4-12b-4bit 6.0000   1|23|45 1.0000 0.3500 0.6464 0.6406   0.6801 0.6358 0.7232
+  ja  570 gemma4-12b-4bit 6.0000   1|23|45 0.8750 0.4000 0.6159 0.7795   0.7909 0.7487 0.8262
+  pt  567 gemma4-12b-4bit 6.0000   1|23|45 0.6250 0.4000 0.7876 0.8243   0.8416 0.8108 0.8685
+  ro 1587 gemma4-12b-4bit 6.0000   1|23|45 0.7500 0.3500 0.7302 0.6588   0.7394 0.7051 0.7704
+  si  600 gemma4-12b-4bit 4.0000   1|23|45 0.6250 0.4000 0.3111 0.3951   0.4302 0.3694 0.4884
+
+mean over 11 languages: A 0.609569 | B 0.663474 | fused 0.692521  95% CI [0.6789, 0.7057]
+[gate fusion] lcp/fusion.py vs fuse.py --out on the release (paper), 7211 rows: max |d| A 0.000135, B 0, fused 5.4e-05
+[gate fusion] lcp/fusion.py vs fuse.py --out on the exported A, 7211 rows: max |d| A 1.78e-15, B 0, fused 8.88e-16
+[gate fusion] r per language (lcp/fusion.py): ca 0.5632  de 0.7704  en 0.8695  es 0.7672  fil 0.5045  fr 0.6608  it 0.6801  ja 0.7909  pt 0.8416  ro 0.7394  si 0.4302
+[gate fusion] mean over 11 languages 0.692521 (paper 0.692521), 95% CI [0.6789, 0.7057]
+[params] per language: ca T6 1|23|45 w_src 0.875 w 0.4  de T4 1|23|45 w_src 0.75 w 0.35  en T6 1|23|45 w_src 0.625 w 0.4  es T6 1|23|45 w_src 0.75 w 0.4  fil T6 1|23|45 w_src 0.75 w 0.4  fr T4 1|23|45 w_src 0.875 w 0.4  it T6 1|23|45 w_src 1 w 0.35  ja T6 1|23|45 w_src 0.875 w 0.4  pt T6 1|23|45 w_src 0.625 w 0.4  ro T6 1|23|45 w_src 0.75 w 0.35  si T4 1|23|45 w_src 0.625 w 0.4
+
+[gate] PASS: lowest r of A 1.000000 (>= 0.9999), mean 0.692521; 412s in all

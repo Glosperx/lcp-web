@@ -80,4 +80,33 @@ GPU=0 docker/run_cuda.sh python scripts/bench_cpu.py --skip-a --modes reuse --la
 
 With n_ctx 2048 and n_batch 512 the process needs ~8.1 GB on the card; on Windows the driver then
 pages part of it into system memory ("shared GPU memory") instead of failing, and readings get
-2-3 times slower. n_ctx 1024 / n_batch 256 keeps it at ~7.4 GB.
+2-3 times slower. n_ctx 1024 / n_batch 256 keeps it at ~7.4 GB. The Windows desktop must leave room
+for it: with two screens at a high refresh rate it held ~850 MiB and Gemma spilled (check that
+`nvidia-smi` shows under ~700 MiB in use before a GPU run).
+
+### Stages 2 and 3 on the PC: exported model and the site's own signal B
+
+Results and conclusion: `bench/results/concluzie_etapa2_3.txt`.
+
+```
+lcp/fusion.py            A (z), B (z), fused score, 0-1 score and level 1-5 from artifacts/
+scripts/export_model.py  stage 2: signal A models (ridge + HGB per encoder: p_en, 11 x p_multi_L),
+                         centring, z-score constants, LOLO parameters; parity gate against the paper
+scripts/b_reference.py   stage 3: prompt length gate, B on the whole test set through llama.cpp in
+                         the site's configuration, gates, LOLO fusion with that B, final params.json
+artifacts/               params.json, centering.npz, signal_a_{xlmr,labse,e5}.joblib (numbers only)
+reference/               signal_b_llamacpp.csv (format of signal_b.csv, model gemma4-12b-qat-gguf,
+                         no text), per-reading timings, log
+```
+
+```bash
+GPU=0 docker/run_cuda.sh python scripts/export_model.py                # ~7 min, CPU
+GPU=0 docker/run_cuda.sh python scripts/b_reference.py --steps lengths
+docker/run_cuda.sh python scripts/b_reference.py --steps run           # ~32 min on the GPU, resumable
+GPU=0 docker/run_cuda.sh python scripts/b_reference.py --steps gates artifacts \
+    --signal-a reference/_work/export/signal_a.csv --work reference/_work/fuse_llamacpp_exportA
+```
+
+`artifacts` reruns the LOLO fusion (`fuse.py --with-ro --out`) on the exported signal A and the
+llama.cpp signal B and writes the final `params.json`; `reference/_work/` (gitignored) holds the
+copies and outputs it needs.
