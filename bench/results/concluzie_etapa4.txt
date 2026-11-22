@@ -1,0 +1,131 @@
+Etapa 4 pe PC: pipeline si API
+22 noiembrie 2026
+
+Fisiere: pipeline_check.txt (poarta de paritate), api_check.txt si api_check.csv (testul complet
+al API-ului, o linie pe text), api_check_sched.txt (alternarea, coada si anularea dupa ultima
+modificare a planificatorului). Codul: lcp/pipeline.py, server.py, scripts/pipeline_check.py,
+scripts/api_check.py, docker/requirements.server.txt (stratul nou din Dockerfile.cuda).
+
+
+1. Ce s-a construit
+
+- lcp/pipeline.py: textul brut trece prin segmentare (stanza pentru 9 limbi, regex pentru fil si
+  si), A (cele 3 encodere, regresorii exportati), B (3 citiri Gemma pe cuvant, cu refolosire KV),
+  fuziune, scor 0-1 si nivel 1-5, totul din artefactele Etapelor 2-3. Pe fiecare cuvant de
+  continut: pozitia in text, nivelul si eticheta, scorul 0-1, lema, frecventa Zipf, A, B si
+  scorul fuzionat.
+- server.py (FastAPI):
+  POST /api/analyze raspunde in flux (NDJSON, cate o linie JSON) cu "paragraphs" (pozitiile
+  paragrafelor), apoi pe paragraf "sentences" (pozitiile propozitiilor) si cate un "sentence" pe
+  propozitie terminata, iar la final "done" cu timpii. GET /api/languages da cele 11 limbi cu r,
+  CI, pragul de avertizare si estimarea de timp. GET /api/health raspunde "loading" in cele ~40 s
+  de incarcare, apoi "ok".
+- Un singur fir de lucru tine modelele. Pana la 6 texte ruleaza deodata, cu randul, propozitie cu
+  propozitie, iar celelalte asteapta la coada (cel mult 16). Un client care se deconecteaza isi
+  anuleaza textul la urmatoarea citire. Textele nu se logheaza nicaieri.
+- Imaginea lcp-web:cuda are acum un strat in plus: fastapi 0.115.12, starlette 0.46.1 si uvicorn
+  0.34.0. pydantic 2.14.4 era deja in imagine. Build-ul a luat cateva secunde.
+
+
+2. Paritatea caii site-ului (scripts/pipeline_check.py)
+
+Am luat primele 6 contexte din fiecare limba (186 de randuri) si le-am trecut prin codul site-ului
+(Pipeline.score_words, deci encodere pe propozitie, lexical, fertilitate, regresori, cele 3
+prompturi cu refolosire). Rezultatele s-au comparat cu referinta din Etapa 3 (embedding-urile din
+cache si citirile din reference/signal_b_llamacpp.csv, prin lcp/fusion.py).
+- Fertilitatea e identica cu data.fertility. Pipeline-ul tine tokenizer-ul incarcat; data.fertility
+  il reincarca la fiecare apel (7.8 s), cu aceeasi formula.
+- A: r 1.00000 pe fiecare limba, max |d| 0.0005 (iesirea e rotunjita la 1e-3).
+- B: r 1.0000 pe fiecare limba, diferenta mediana 0.0003.
+- Scorul fuzionat: r 1.00000, iar nivelul iese acelasi la 186 din 186 de cuvinte. PASS.
+
+
+3. Propozitiile lungi
+
+- Problema gasita: o propozitie lunga, fara punct, costa (cuvinte x lungimea propozitiei). La
+  prompturile expert si marked, cuvantul vine inaintea propozitiei, deci fiecare citire reevalueaza
+  toata propozitia. In plus, nimic nu apare in flux pana la final. Primul test (1990 de caractere
+  japoneze, o singura propozitie) a depasit timeout-ul clientului de 600 s.
+- Solutia: o propozitie cu mai mult de 192 de tokeni Gemma sau 40 de cuvinte de continut se
+  imparte in bucati, la limite de cuvant, de preferinta dupa virgula. Fiecare bucata e o
+  propozitie de sine statatoare: context comun pentru A si B, refolosire KV, eveniment propriu,
+  un rand la alternare. Cuvintele ei sunt marcate "cropped". 192 de tokeni acopera ~99% din
+  contextele de test. In textele bench nu e impartita nicio propozitie: cea mai lunga are 145 de
+  tokeni (si), iar cele mai multe cuvinte de continut intr-o propozitie sunt 31 (si).
+- Rezultat: japoneza, 1000 de caractere intr-o singura propozitie, iese in 10 bucati, 318 cuvinte,
+  77 s, cu prima bucata dupa 5.6 s. Sinhaleza, 1983 de caractere, iese in 7 bucati, 228 de cuvinte,
+  83 s.
+- Siguranta in plus: daca un prompt tot nu incape in 1008 tokeni (de exemplu un cuvant enorm),
+  contextul se taie in jurul cuvantului. Daca nici asa nu incape, cuvantul primeste media limbii
+  la B si e marcat no_B.
+
+
+4. Limita de lungime (decizia lui Alexandru)
+
+- Fara blocare la 2000 de caractere. Plafonul tare e 20.000 de caractere (~10 pagini), la fel la
+  toate limbile; peste el serverul raspunde 413.
+- Peste pragul de avertizare (2000 de caractere, la japoneza 700), frontend-ul (Etapa 5) cere
+  confirmare si arata durata estimata. Japoneza are ~0.31 cuvinte de continut pe caracter, fata
+  de 0.07-0.11 in celelalte limbi, deci 700 de caractere japoneze costa cat 2000 in rest.
+- Estimarea (secunde pe 1000 de caractere, un text singur, masurata pe textele bench): de 17,
+  en 18, es 20, pt 20, ca 21, it 21, ro 22, fr 22, fil 23, si 34, ja 67. Asta inseamna ~35-45 s
+  pentru 2000 de caractere in limbile latine si ~6-8 minute pentru 20.000 (ja: ~22 de minute).
+
+
+5. Alternarea, coada si anularea (api_check_sched.txt)
+
+- In timp ce ruleaza un text englez de 5122 de caractere (9 paragrafe, 390 de cuvinte, 103 s), un
+  text scurt trimis atunci termina in 5.4 s, iar un paragraf englez in 22.7 s (singur 11.4 s).
+  Textul lung isi continua treaba si iese complet. Inainte de alternare, textul scurt ar fi
+  asteptat tot textul lung, adica ~100 s.
+- Pasii fara model (paragrafele, segmentarea) nu consuma un rand, iar un text nou intra la rand
+  inaintea celui care tocmai a lucrat. Un text nou asteapta deci cel mult pasul in curs (o
+  propozitie, de obicei 1-5 s).
+- Coada: din 7 texte trimise deodata, al 7-lea primeste {"type": "queued", "position": 1}; toate
+  termina in ~58 s.
+- Anularea: dupa ce clientul se deconecteaza, numarul de texte active revine la 0 in 0.5 s.
+
+
+6. Timpii prin API (api_check.txt, un text pe rand)
+
+- Textele bench de 2 paragrafe dau un median de 22.6 s pe 11 limbi, identic cu Etapa 7. Pe limba,
+  fata de Etapa 7: ca 30.3 (30.2), de 21.4 (21.2), en 22.6 (22.6), es 16.2 (16.1), fil 24.2
+  (24.1), fr 21.4 (21.5), it 14.2 (14.1), ja 21.0 (20.8), pt 44.5 (44.2), ro 29.5 (29.3), si 28.0
+  (27.8).
+- Textele de 1 paragraf dau un median de 16.7 s (Etapa 7: 14.3 s). Diferenta e prima incarcare
+  stanza pe limba, 2-3 s, o singura data dupa pornirea serverului.
+- B costa 0.07-0.10 s pe citire, iar prima propozitie colorata apare dupa 1-6 s.
+- Memoria: toate cele 9 limbi stanza raman incarcate, iar containerul foloseste ~7.2 GiB din cei
+  11.7 GiB ai VM-ului (cu 4 limbi: 5.9 GiB). Fara asta, schimbarea limbii costa 2-3 s de
+  reincarcare. Incarcarea modelelor la pornire ia ~40 s (encodere 11 s, Gemma 21 s, incalzire
+  1-2 s).
+- Erorile intorc codurile corecte: limba necunoscuta 400, text gol 400, peste 20.000 de caractere
+  413.
+
+
+7. Nivelurile pe texte reale
+
+Pe textele Wikipedia din bench (1648 de cuvinte de continut, 11 limbi) nivelurile ies: 1 50%,
+2 35%, 3 10%, 4 3%, 5 2%. Pe setul de test iesisera 18/50/24/7/1%. Nu e o eroare. Tintele MLSP
+sunt cuvinte alese pentru adnotare, nu toate cuvintele textului, pe cand site-ul scoreaza toate
+cuvintele de continut, inclusiv cele foarte frecvente. Scala e cea din plan (percentila in distributia de test a limbii, trecuta
+prin etichete), asa ca un text obisnuit iese mai ales verde.
+Daca la Etapa 5 vrei mai multa varietate de culori, scala se poate schimba fara sa atinga modelul:
+de exemplu percentila in distributia cuvintelor din texte obisnuite, in loc de tintele MLSP. Asta
+e o decizie de afisare, nu de model.
+
+
+8. Limitari si de stiut pentru etapele urmatoare
+
+- Pe GPU, refolosirea KV nu e bit-identica (Etapa 7). La alternare, prefixul se schimba intre
+  textele diferite, deci zgomotul numeric pe scor ramane de ~1e-3. Nivelurile nu se schimba practic
+  (la paritate: 186 din 186 identice).
+- Estimarea de timp e pentru un text singur. Cu mai multe texte active, fiecare dureaza
+  proportional mai mult.
+- Un paragraf mai lung de 4000 de caractere fara linie goala se taie la ultima linie noua (sau la
+  ultimul spatiu) inainte de limita, ca stanza sa nu primeasca bucati uriase.
+- In japoneza, stanza da unitati mai scurte decat tintele MLSP (limitare cunoscuta din plan).
+- Etapa 6: docker-compose trebuie sa aiba restart: unless-stopped si healthcheck pe /api/health,
+  pentru ca llama.cpp poate opri procesul la o eroare CUDA (s-a intamplat o data la Etapa 3).
+- Placa trebuie sa ramana libera cat ruleaza serverul: ~650 MiB ocupati in gol sunt in regula, dar
+  doua monitoare la frecventa mare au dus la ~850 MiB si la mutarea in RAM.

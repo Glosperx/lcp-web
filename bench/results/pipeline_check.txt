@@ -1,0 +1,8 @@
+[check] 186 rows in 66 contexts (6 per language)
+[check] pipeline loaded in 28.5s, config {'n_gpu_layers': 49, 'flash_attn': True, 'n_ctx': 1024, 'n_batch': 256}, prompt limit 1008 tokens
+[gate] fertility: identical to data.fertility on 186 rows
+[check] 558 readings, 0.102s per reading; cropped 0
+[gate] A: r per language ca 1.00000  de 1.00000  en 1.00000  es 1.00000  fil 1.00000  fr 1.00000  it 1.00000  ja 1.00000  pt 1.00000  ro 1.00000  si 1.00000 | max |dA| 0.0005 (outputs rounded to 1e-3)
+[gate] B: r per language ca 1.0000  de 1.0000  en 1.0000  es 1.0000  fil 1.0000  fr 1.0000  it 1.0000  ja 1.0000  pt 1.0000  ro 1.0000  si 1.0000 | pooled 1.0000, max |dB| 0.000, median 0.0003
+[gate] fused: pooled r 1.00000, max |d| 0.0005; same level 100.0% (186/186), off by more than one level 0
+[gate] PASS

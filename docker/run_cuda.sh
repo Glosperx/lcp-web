@@ -3,6 +3,7 @@
 #   docker/run_cuda.sh python scripts/fit_gpu_layers.py
 #   GPU=0 docker/run_cuda.sh python scripts/bench_cpu.py --skip-a ...     # x86 CPU only
 #   HF_ONLINE=1 docker/run_cuda.sh hf download ...                       # downloads
+#   PORT=8000 docker/run_cuda.sh uvicorn server:app --host 0.0.0.0 --port 8000   # the API
 #
 # Mounts: this repo at /app; the named volume lcp-hf at /hf/hub (the Hugging Face cache, on the
 # Docker VM's own disk rather than /mnt/c, so the 7 GB GGUF reads fast), read-only unless
@@ -26,6 +27,9 @@ fi
 PAPER="${PAPER:-$(cd "$(dirname "$0")/../../lcp-paper" 2>/dev/null && (pwd -W 2>/dev/null || pwd) || true)}"
 if [ -n "$PAPER" ] && [ -d "$PAPER/release" ]; then
   ARGS+=(-v "$PAPER/release":/paper/release:ro)
+fi
+if [ -n "${PORT:-}" ]; then          # PORT=8000 publishes the API (server.py listens on 8000)
+  ARGS+=(-p "$PORT":8000)
 fi
 if [ "${GPU:-1}" = 1 ]; then
   ARGS+=(--gpus all)

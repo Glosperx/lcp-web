@@ -1,0 +1,34 @@
+[api] health ok after 49s of waiting
+[api] languages: ca r 0.563 warn 2000 ~21.0s/1000  de r 0.771 warn 2000 ~17.4s/1000  en r 0.870 warn 2000 ~17.9s/1000  es r 0.770 warn 2000 ~19.5s/1000  fil r 0.498 warn 2000 ~23.1s/1000  fr r 0.653 warn 2000 ~22.2s/1000  it r 0.682 warn 2000 ~21.0s/1000  ja r 0.781 warn 700 ~67.1s/1000  pt r 0.844 warn 2000 ~19.5s/1000  ro r 0.746 warn 2000 ~21.9s/1000  si r 0.426 warn 2000 ~33.9s/1000 | mean 0.6913 (paper 0.6925), max_chars 20000
+[api] errors: unknown language 400, empty 400, 20001 chars 413
+[api] ca 1: 812 chars, 1 par., 68 words, 204 readings, total 19.5s (stage 7 17.1), first sentence 3.649s, 0.0791s/reading, seg 2.272s incl. stanza load, A 1.131s, 24.1s/1000 chars, levels 50/14/3/1/0
+[api] de 1: 825 chars, 1 par., 63 words, 189 readings, total 17.4s (stage 7 14.9), first sentence 4.792s, 0.0695s/reading, seg 2.734s incl. stanza load, A 1.546s, 21.1s/1000 chars, levels 52/7/3/1/0
+[api] en 1: 458 chars, 1 par., 36 words, 108 readings, total 10.3s (stage 7 8.5), first sentence 3.084s, 0.0701s/reading, seg 2.137s incl. stanza load, A 0.618s, 22.5s/1000 chars, levels 12/15/7/2/0
+[api] es 1: 400 chars, 1 par., 31 words, 93 readings, total 10.0s (stage 7 7.9), first sentence 7.114s, 0.0788s/reading, seg 2.182s incl. stanza load, A 0.515s, 25.1s/1000 chars, levels 13/10/5/1/2
+[api] fil 1: 336 chars, 1 par., 29 words, 87 readings, total 6.8s (stage 7 6.8), first sentence 1.377s, 0.072s/reading, seg 0.001s, A 0.562s, 20.3s/1000 chars, levels 15/8/5/0/1
+[api] fr 1: 656 chars, 1 par., 57 words, 171 readings, total 16.4s (stage 7 14.3), first sentence 6.459s, 0.0771s/reading, seg 2.253s incl. stanza load, A 0.942s, 25.0s/1000 chars, levels 25/18/10/3/1
+[api] it 1: 405 chars, 1 par., 32 words, 96 readings, total 10.6s (stage 7 8.4), first sentence 8.174s, 0.0816s/reading, seg 2.256s incl. stanza load, A 0.548s, 26.3s/1000 chars, levels 25/6/1/0/0
+[api] ja 1: 111 chars, 1 par., 30 words, 90 readings, total 9.4s (stage 7 7.0), first sentence 4.583s, 0.0724s/reading, seg 2.191s incl. stanza load, A 0.696s, 84.7s/1000 chars, levels 15/14/1/0/0
+[api] pt 1: 1107 chars, 1 par., 87 words, 261 readings, total 23.8s (stage 7 21.8), first sentence 3.907s, 0.0762s/reading, seg 2.304s incl. stanza load, A 1.6s, 21.5s/1000 chars, levels 45/32/5/0/5
+[api] ro 1: 691 chars, 1 par., 64 words, 192 readings, total 17.1s (stage 7 15.1), first sentence 2.98s, 0.0746s/reading, seg 1.578s incl. stanza load, A 1.177s, 24.7s/1000 chars, levels 23/34/6/1/0
+[api] si 1: 529 chars, 1 par., 62 words, 186 readings, total 17.2s (stage 7 16.9), first sentence 1.844s, 0.0858s/reading, seg 0.002s, A 1.217s, 32.5s/1000 chars, levels 24/28/5/4/1
+[api] ca 2: 1437 chars, 2 par., 124 words, 372 readings, total 30.2s (stage 7 30.2), first sentence 1.187s, 0.0758s/reading, seg 0.157s, A 1.884s, 21.0s/1000 chars, levels 92/26/3/3/0
+[api] de 2: 1233 chars, 2 par., 91 words, 273 readings, total 21.2s (stage 7 21.2), first sentence 1.951s, 0.0687s/reading, seg 0.617s, A 1.84s, 17.2s/1000 chars, levels 67/18/5/1/0
+[api] en 2: 1246 chars, 2 par., 94 words, 282 readings, total 22.6s (stage 7 22.6), first sentence 1.06s, 0.0717s/reading, seg 0.746s, A 1.677s, 18.2s/1000 chars, levels 40/41/10/3/0
+[api] es 2: 819 chars, 2 par., 66 words, 198 readings, total 16.4s (stage 7 16.1), first sentence 4.946s, 0.0752s/reading, seg 0.66s, A 0.896s, 20.1s/1000 chars, levels 26/23/12/1/4
+[api] fil 2: 1042 chars, 2 par., 93 words, 279 readings, total 24.4s (stage 7 24.1), first sentence 1.358s, 0.082s/reading, seg 0.007s, A 1.462s, 23.4s/1000 chars, levels 39/29/16/4/5
+[api] fr 2: 958 chars, 2 par., 80 words, 240 readings, total 21.5s (stage 7 21.5), first sentence 4.376s, 0.0827s/reading, seg 0.593s, A 1.075s, 22.5s/1000 chars, levels 32/29/14/4/1
+[api] it 2: 673 chars, 2 par., 53 words, 159 readings, total 14.3s (stage 7 14.1), first sentence 5.907s, 0.0825s/reading, seg 0.467s, A 0.685s, 21.2s/1000 chars, levels 43/9/1/0/0
+[api] ja 2: 310 chars, 2 par., 95 words, 285 readings, total 21.1s (stage 7 20.8), first sentence 2.271s, 0.0678s/reading, seg 0.426s, A 1.366s, 68.1s/1000 chars, levels 50/35/7/3/0
+[api] pt 2: 2161 chars, 2 par., 174 words, 522 readings, total 44.4s (stage 7 44.2), first sentence 1.967s, 0.0777s/reading, seg 1.163s, A 2.701s, 20.6s/1000 chars, levels 75/78/15/0/6
+[api] ro 2: 1345 chars, 2 par., 126 words, 378 readings, total 29.5s (stage 7 29.3), first sentence 1.153s, 0.0722s/reading, seg 0.128s, A 2.065s, 21.9s/1000 chars, levels 38/65/18/5/0
+[api] si 2: 823 chars, 2 par., 93 words, 279 readings, total 28.0s (stage 7 27.8), first sentence 1.733s, 0.0954s/reading, seg 0.003s, A 1.385s, 34.0s/1000 chars, levels 28/40/13/8/4
+[api] size 1: median total 16.4s over 11 languages (stage 7 median 14.3s)
+[api] size 2: median total 22.6s over 11 languages (stage 7 median 22.6s)
+[api] long ja: 1000 chars, 10 pieces, 318 words, cropped 318, total 77.3s, 0.0781s/reading, first piece after 5.6s
+[api] long si: 1983 chars, 7 pieces, 228 words, cropped 228, total 82.5s, 0.1178s/reading, first piece after 12.9s
+[api] interleave: long text 5122 chars, 9 paragraphs, 390 words, done in 101.6s (server 101.6s); meanwhile a short text took 6.7s and en 1 paragraph 26.6s (alone 10.3s); long text still running then: True
+[api] queue: 7 texts at once, queued [6] (positions [1]), client times [50.1, 49.8, 50.5, 50.2, 49.9, 49.6, 56.7]s
+[api] cancel: disconnected after the first sentence (1.2s); active texts back to 0 after 0.5s
+
+[api] PASS

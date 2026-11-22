@@ -1,0 +1,5 @@
+# Stage 4: the API (server.py). pydantic, anyio, h11 and click are already in the image (pulled by
+# the pins of requirements.cpu.txt) and are left as they are.
+fastapi==0.115.12
+starlette==0.46.1
+uvicorn==0.34.0

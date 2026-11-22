@@ -1,0 +1,8 @@
+[api] health ok after 42s of waiting
+[api] languages: ca r 0.563 warn 2000 ~21.0s/1000  de r 0.771 warn 2000 ~17.4s/1000  en r 0.870 warn 2000 ~17.9s/1000  es r 0.770 warn 2000 ~19.5s/1000  fil r 0.498 warn 2000 ~23.1s/1000  fr r 0.653 warn 2000 ~22.2s/1000  it r 0.682 warn 2000 ~21.0s/1000  ja r 0.781 warn 700 ~67.1s/1000  pt r 0.844 warn 2000 ~19.5s/1000  ro r 0.746 warn 2000 ~21.9s/1000  si r 0.426 warn 2000 ~33.9s/1000 | mean 0.6913 (paper 0.6925), max_chars 20000
+[api] errors: unknown language 400, empty 400, 20001 chars 413
+[api] interleave: long text 5122 chars, 9 paragraphs, 390 words, done in 102.8s (server 102.8s); meanwhile a short text took 5.4s and en 1 paragraph 22.7s (alone 11.4s); long text still running then: True
+[api] queue: 7 texts at once, queued [6] (positions [1]), client times [59.5, 59.2, 58.9, 58.6, 58.3, 58.0, 57.7]s
+[api] cancel: disconnected after the first sentence (3.4s); active texts back to 0 after 0.5s
+
+[api] PASS

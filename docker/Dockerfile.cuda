@@ -39,6 +39,10 @@ RUN CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=75 -DGGML_NATIVE=ON" \
 RUN mkdir -p /opt/cuda-stub \
  && ln -s /usr/local/cuda/lib64/stubs/libcuda.so /opt/cuda-stub/libcuda.so.1
 
+# Stage 4: the API. Last, so the layers above stay cached.
+COPY docker/requirements.server.txt /tmp/requirements.server.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.server.txt
+
 ENV PYTHONPATH=/app/lcp_model:/app \
     PYTHONUNBUFFERED=1 \
     HF_HUB_CACHE=/hf/hub \

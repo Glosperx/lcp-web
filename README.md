@@ -110,3 +110,36 @@ GPU=0 docker/run_cuda.sh python scripts/b_reference.py --steps gates artifacts \
 `artifacts` reruns the LOLO fusion (`fuse.py --with-ro --out`) on the exported signal A and the
 llama.cpp signal B and writes the final `params.json`; `reference/_work/` (gitignored) holds the
 copies and outputs it needs.
+
+### Stage 4: pipeline and API
+
+Results and conclusion: `bench/results/concluzie_etapa4.txt`.
+
+```
+lcp/pipeline.py          raw text -> per content word: level 1-5, score 0-1, lemma, Zipf, A, B
+server.py                FastAPI: POST /api/analyze (NDJSON stream), GET /api/languages, /api/health
+scripts/pipeline_check.py  gate: the site's code path on test rows against the stage 3 reference
+scripts/api_check.py     the running API on the benchmark texts, limits, long sentences, queue, cancel
+docker/requirements.server.txt  fastapi, starlette, uvicorn (last layer of Dockerfile.cuda)
+```
+
+```bash
+docker/run_cuda.sh python scripts/pipeline_check.py
+PORT=8000 docker/run_cuda.sh uvicorn server:app --host 0.0.0.0 --port 8000
+python scripts/api_check.py --url http://localhost:8000      # host, standard library only
+curl -N -X POST localhost:8000/api/analyze -H 'Content-Type: application/json' \
+    -d '{"lang": "en", "text": "The committee postponed the ratification of the treaty."}'
+```
+
+`POST /api/analyze` answers with one JSON object per line: `queued` (only when 6 texts are already
+running), `paragraphs` (paragraph spans), per paragraph `sentences` (its sentence spans), one
+`sentence` per finished sentence (its content words: `start`, `end`, `text`, `lemma`, `level`,
+`label`, `score`, `zipf`, `A`, `B`, `fused`, and the flags `cropped`, `no_A`, `no_B`), then `done`
+with the timings. A text may have up to 20000 characters (`max_chars`); above `warn_chars` (2000,
+700 for Japanese, which has about three times more content words per character) the frontend asks
+for confirmation, with the estimate `est_s_per_1000_chars` of `/api/languages`. One worker thread
+owns the models; up to 6 texts run at once and take turns sentence by sentence, so a short text is
+not held up by a long one. Sentences of more than 192 tokens or 40 content words are split into
+pieces. A client that disconnects cancels its text. Texts are never logged. The models take ~40 s
+to load; `/api/health` answers 503 until then. All nine stanza pipelines stay loaded
+(`LCP_STANZA_KEEP=0`, ~7.2 GB for the container).
