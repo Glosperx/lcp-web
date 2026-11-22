@@ -5,14 +5,20 @@
                         language the length above which the frontend asks for confirmation
                         (warn_chars: 2000, 700 for Japanese, which has ~3 times more content words
                         per character) with an estimate of the time per 1000 characters
-  GET  /api/health      "loading" while the models load (~40 s), then "ok" with the active and
-                        waiting texts (HEAD too, for uptime monitors)
+  GET  /api/health      "loading" while the models load (~70 s), then "ok" with the active and
+                        waiting texts and the GPU's speed: "tok_s" from a fixed probe (3 readings
+                        without KV reuse, at start and after every PROBE_IDLE_S idle seconds) and
+                        "slow" when it is below SLOW_TOK_S (the model partly paged into shared
+                        memory by Windows; ~1000 tokens/s is normal on the RTX 2070 SUPER),
+                        plus "last_text_tok_s" of the last finished text (HEAD too, for uptime
+                        monitors)
   POST /api/analyze     {"lang": "en", "text": "..."} -> application/x-ndjson, one JSON object per
                         line: optionally {"type": "queued", "position": n}, then "paragraphs", per
                         paragraph "sentences" (its sentence spans) and one "sentence" per finished
                         sentence (its content words with offsets, level, score 0-1, lemma, Zipf
                         frequency, A, B), and "done" with the timings; {"type": "error"} if
-                        something fails.
+                        something fails. Offsets count Unicode code points (Python str indices),
+                        not UTF-16 units.
 
   POST /api/auth        {"code": "..."} -> 200 if the access code is right, 401 if not
 
@@ -21,7 +27,9 @@ ACTIVE_MAX texts run at once, taking turns sentence by sentence, so a short text
 a long one; further texts wait in a queue of at most QUEUE_MAX, and one address may have at most
 PER_IP_MAX texts running or waiting. A stream that has nothing to say for 15 s sends
 {"type": "ping"}. A client that disconnects cancels its text at the next reading. Texts are never
-logged. Static files (stage 5) are served from static/ when it exists.
+logged. Static files (stage 5) are served from static/ when it exists. A request body larger than
+MAX_BODY (256 KiB; 20000 characters take at most ~240 KB of JSON) gets 413 before it is read. If
+the models fail to load, the process exits, so that Docker's restart policy starts it again.
 
 Access: with LCP_ACCESS_CODE set, /api/languages and /api/analyze need the header X-Access-Code;
 10 wrong codes from one address in 10 minutes block it for the rest of the window. /api/health
@@ -31,8 +39,10 @@ bound to 127.0.0.1 (docker-compose.yml), so nothing else can reach the server.
 
   docker compose up -d          (docker-compose.yml, secrets in .env)
 Environment: LCP_STANZA_KEEP (stanza pipelines kept in memory, least recently used dropped; default
-0 = all nine, ~7.2 GB for the container in all), LCP_ACTIVE_MAX (6), LCP_QUEUE_MAX (16),
-LCP_PER_IP_MAX (2), LCP_ACCESS_CODE, LCP_CORS_ORIGINS, LCP_CORS_REGEX.
+0 = all nine; the container then uses ~4.2 GB after loading, ~7.4 GB after some use),
+LCP_ACTIVE_MAX (6), LCP_QUEUE_MAX (16),
+LCP_PER_IP_MAX (2), LCP_ACCESS_CODE, LCP_CORS_ORIGINS, LCP_CORS_REGEX, LCP_PROBE_IDLE_S (600),
+LCP_SLOW_TOK_S (700).
 """
 import asyncio
 import collections
@@ -58,6 +68,9 @@ PER_IP_MAX = int(os.environ.get("LCP_PER_IP_MAX", "2"))
 ACCESS_CODE = os.environ.get("LCP_ACCESS_CODE", "")
 FAIL_MAX, FAIL_WINDOW = 10, 600              # wrong access codes per address per 10 minutes
 PING_S = 15.0
+MAX_BODY = 256 * 1024
+PROBE_IDLE_S = float(os.environ.get("LCP_PROBE_IDLE_S", "600"))
+SLOW_TOK_S = float(os.environ.get("LCP_SLOW_TOK_S", "700"))
 CORS_ORIGINS = [o.strip() for o in os.environ.get(
     "LCP_CORS_ORIGINS", "https://lcp-web-static.vercel.app,https://lcp.tail6e4ef5.ts.net,"
     "http://localhost:8000,http://127.0.0.1:8000"
@@ -86,8 +99,18 @@ class Worker:
         self.jobs = queue.Queue()
         self.active = 0
         self.waiting = 0
+        self.last_text_tok_s = None
         self.lock = threading.Lock()
         threading.Thread(target=self._run, name="lcp-worker", daemon=True).start()
+
+    def _probe(self):
+        try:
+            sp = self.pipeline.probe()
+            if sp["tok_s"] < SLOW_TOK_S:
+                log.warning("GPU slow: %.0f tokens/s in the speed probe (model partly in shared "
+                            "GPU memory?)", sp["tok_s"])
+        except Exception as e:                       # noqa: BLE001
+            log.error("speed probe failed: %s", type(e).__name__)
 
     def _finish(self, job, ev=None):
         if ev is not None:
@@ -105,16 +128,26 @@ class Worker:
                         {k: round(v, 1) for k, v in self.pipeline.load_seconds.items()})
         except Exception as e:                       # noqa: BLE001
             self.error = f"{type(e).__name__}: {e}"
-            log.exception("loading the models failed")
-            return
+            # Docker restarts a container whose process exits, not one that is only unhealthy.
+            log.exception("loading the models failed; exiting so that the container restarts")
+            logging.shutdown()
+            os._exit(1)
+        if self.pipeline.speed["tok_s"] < SLOW_TOK_S:
+            log.warning("GPU slow: %.0f tokens/s in the speed probe (model partly in shared GPU "
+                        "memory?)", self.pipeline.speed["tok_s"])
         turn = collections.deque()
 
-        def admit(block):
-            # admit waiting texts while there is room (block only when nothing is running)
-            while len(turn) < ACTIVE_MAX:
+        def admit(block, room=ACTIVE_MAX):
+            # Admit waiting texts while fewer than `room` are in `turn` (block only when nothing is
+            # running; after PROBE_IDLE_S idle seconds the GPU's speed is measured again).
+            while len(turn) < room:
+                wait = block and not turn
                 try:
-                    job = self.jobs.get(block=block and not turn)
+                    job = self.jobs.get(block=wait, timeout=PROBE_IDLE_S if wait else None)
                 except queue.Empty:
+                    if wait:
+                        self._probe()
+                        continue
                     return
                 with self.lock:
                     self.waiting -= 1
@@ -148,12 +181,17 @@ class Worker:
                                    "message": f"analysis failed ({type(e).__name__})"})
                 continue
             job.events.put(ev)
+            if ev.get("type") == "done":
+                t = ev.get("timings", {})
+                if t.get("B_s"):
+                    self.last_text_tok_s = t["evaluated_tokens"] / t["B_s"]
             # Only a scored sentence ends a turn: the paragraph list and a paragraph's
             # segmentation are cheap, so the same text goes on to its next sentence at once.
             if ev.get("type") in ("paragraphs", "sentences"):
                 turn.appendleft(job)
             else:
-                admit(block=False)                   # a text sent meanwhile goes before this one
+                # a text sent meanwhile goes before this one; this one is out of `turn` now
+                admit(block=False, room=ACTIVE_MAX - 1)
                 turn.append(job)
 
     def submit(self, lang, text):
@@ -177,7 +215,38 @@ async def lifespan(app):
     yield
 
 
-app = FastAPI(title="lcp-web", lifespan=lifespan, docs_url=None, redoc_url=None)
+class BodyLimit:
+    """413 for a request body over MAX_BODY, before the route reads and parses it (which FastAPI
+    does before the access code is checked): by Content-Length at once, and for a chunked body
+    as soon as the bytes received pass the limit."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            return await self.app(scope, receive, send)
+        for k, v in scope["headers"]:
+            if k == b"content-length" and (not v.isdigit() or int(v) > MAX_BODY):
+                return await JSONResponse({"detail": f"request body over {MAX_BODY} bytes"},
+                                          status_code=413)(scope, receive, send)
+        seen = 0
+
+        async def limited():
+            nonlocal seen
+            msg = await receive()
+            if msg["type"] == "http.request":
+                seen += len(msg.get("body", b""))
+                if seen > MAX_BODY:          # FastAPI passes an HTTPException from here through
+                    raise HTTPException(413, f"request body over {MAX_BODY} bytes")
+            return msg
+
+        return await self.app(scope, limited, send)
+
+
+app = FastAPI(title="lcp-web", lifespan=lifespan, docs_url=None, redoc_url=None,
+              openapi_url=None)
+app.add_middleware(BodyLimit)                  # inside CORS, so a 413 still has the CORS headers
 app.add_middleware(CORSMiddleware, allow_origins=CORS_ORIGINS, allow_origin_regex=CORS_REGEX,
                    allow_methods=["GET", "POST"], allow_headers=["Content-Type", "X-Access-Code"],
                    max_age=600)
@@ -207,23 +276,36 @@ class Gate:
 
     def __init__(self):
         self.lock = threading.Lock()
-        self.fails = collections.defaultdict(collections.deque)
+        self.fails = {}                 # address -> deque of the times of its recent wrong codes
         self.per_ip = collections.Counter()
+        self.swept = time.time()
+
+    def _sweep(self, now):
+        """Forget the addresses whose wrong codes are all older than the window (at most once per
+        window), so the dictionary does not grow with every address ever seen."""
+        if now - self.swept < FAIL_WINDOW:
+            return
+        self.swept = now
+        for ip in [ip for ip, f in self.fails.items() if now - f[-1] > FAIL_WINDOW]:
+            del self.fails[ip]
 
     def check(self, ip, given):
         if not ACCESS_CODE:
             return
         now = time.time()
         with self.lock:
-            f = self.fails[ip]
+            self._sweep(now)
+            f = self.fails.get(ip)
             while f and now - f[0] > FAIL_WINDOW:
                 f.popleft()
-            if len(f) >= FAIL_MAX:
+            if f is not None and not f:
+                del self.fails[ip]
+            elif f and len(f) >= FAIL_MAX:
                 raise HTTPException(429, "too many wrong access codes; try again later")
             if hmac.compare_digest(given.encode("utf-8"), ACCESS_CODE.encode("utf-8")):
                 return
             if given:                                # an empty header is not an attempt
-                f.append(now)
+                self.fails.setdefault(ip, collections.deque()).append(now)
         raise HTTPException(401, "access code required")
 
     def acquire(self, ip):
@@ -257,8 +339,11 @@ def health():
         return JSONResponse({"status": "error"}, status_code=500)
     if W.pipeline is None:
         return JSONResponse({"status": "loading"}, status_code=503)
+    sp = W.pipeline.speed
     return {"status": "ok", "active": W.active, "waiting": W.waiting,
-            "access_code": bool(ACCESS_CODE)}
+            "access_code": bool(ACCESS_CODE), "tok_s": round(sp["tok_s"]),
+            "slow": sp["tok_s"] < SLOW_TOK_S, "probe_age_s": round(time.time() - sp["at"]),
+            "last_text_tok_s": None if W.last_text_tok_s is None else round(W.last_text_tok_s)}
 
 
 @app.post("/api/auth")

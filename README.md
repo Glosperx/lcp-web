@@ -9,7 +9,7 @@ unchanged from the paper's release; it is imported with `PYTHONPATH=lcp_model`. 
 stored here: scripts that need MLSP or RoLCP read them read-only from the paper's release folder
 (`--paper-release`).
 
-## Status: stage 1, inference time without a GPU
+## Stage 1: inference time without a GPU
 
 ```
 lcp/segment.py     stanza (9 languages) or regex (fil, si) segmentation, content words
@@ -136,14 +136,25 @@ curl -N -X POST localhost:8000/api/analyze -H 'Content-Type: application/json' \
 running), `paragraphs` (paragraph spans), per paragraph `sentences` (its sentence spans), one
 `sentence` per finished sentence (its content words: `start`, `end`, `text`, `lemma`, `level`,
 `label`, `score`, `zipf`, `A`, `B`, `fused`, and the flags `cropped`, `no_A`, `no_B`), then `done`
-with the timings. A text may have up to 20000 characters (`max_chars`); above `warn_chars` (2000,
+with the timings. Offsets count Unicode code points (Python string indices), not the UTF-16 units of
+JavaScript: a page converts them before slicing (an emoji is 1 here, 2 in JavaScript). Tokens with
+a letter that are not content words come as level 1 with `"function": true` and no score; that
+covers every other part of speech, proper nouns and numerals included, not only closed-class words.
+A text may have up to 20000 characters (`max_chars`); above `warn_chars` (2000,
 700 for Japanese, which has about three times more content words per character) the frontend asks
 for confirmation, with the estimate `est_s_per_1000_chars` of `/api/languages`. One worker thread
 owns the models; up to 6 texts run at once and take turns sentence by sentence, so a short text is
 not held up by a long one. Sentences of more than 192 tokens or 40 content words are split into
-pieces. A client that disconnects cancels its text. Texts are never logged. The models take ~40 s
-to load; `/api/health` answers 503 until then. All nine stanza pipelines stay loaded
-(`LCP_STANZA_KEEP=0`, ~7.2 GB for the container).
+pieces. A client that disconnects cancels its text. Texts are never logged. A request body over
+256 KiB gets 413 before it is read. The models take ~70 s to load (with the nine stanza pipelines,
+which stay loaded: `LCP_STANZA_KEEP=0`; the container then uses ~4.2 GB after loading and ~7.4 GB
+after some use, measured with up to 7 texts at once); `/api/health` answers 503
+until then. If loading fails, the process exits and Docker starts it again.
+
+`/api/health` also reports the GPU's speed: `tok_s` from a fixed prompt read 3 times without KV
+reuse, after loading and after every 10 idle minutes, `slow` when it is under 700, and
+`last_text_tok_s`. ~1000 tokens/s is normal on the RTX 2070 SUPER; ~500 means Windows has paged part
+of the model into shared GPU memory (another program took VRAM): close it and restart the site.
 
 ### Stage 8: hosting from the PC
 
@@ -165,7 +176,7 @@ docker-compose.yml       the API container: GPU, repo mounted at /app, restart: 
 static/index.html        the page: access code, streaming analysis, colours per level (function words
                          as level 1 without the model), score popover; the API address is inline
 scripts/site_start.cmd   double-click: Docker Desktop if needed, VRAM check, docker compose up -d,
-                         wait for /api/health, Funnel on port 8000, spill check
+                         wait for /api/health, Funnel on port 8000, GPU speed check (tok_s)
 scripts/site_stop.cmd    double-click: docker compose stop (frees the GPU, stays stopped after a reboot);
                          site_stop.ps1 -Docker also quits Docker Desktop
 ```
@@ -179,7 +190,8 @@ docker compose up -d                        # or scripts\site_start.cmd
 After a reboot the site comes back by itself in ~2.5 min: autologon, Docker Desktop (starts at
 login), the container (restart policy), Funnel (persistent). UptimeRobot checks
 `https://lcp.tail6e4ef5.ts.net/api/health` every 5 minutes (it sends HEAD, which the route accepts).
-Every request except `/api/health` needs the header `X-Access-Code`; `POST /api/auth` checks a code,
+`/api/languages` and `/api/analyze` need the header `X-Access-Code` (the page itself, `/api/health`
+and `/api/auth` do not); `POST /api/auth` checks a code,
 10 wrong codes from one address in 10 minutes block it for the rest of the window, and one address
 may have 2 texts running or waiting. The address is the last `X-Forwarded-For` entry, which Funnel
 sets itself. CORS allows the Vercel site and its preview deployments (`LCP_CORS_REGEX`). On this PC

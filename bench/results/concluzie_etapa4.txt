@@ -129,3 +129,18 @@ e o decizie de afisare, nu de model.
   pentru ca llama.cpp poate opri procesul la o eroare CUDA (s-a intamplat o data la Etapa 3).
 - Placa trebuie sa ramana libera cat ruleaza serverul: ~650 MiB ocupati in gol sunt in regula, dar
   doua monitoare la frecventa mare au dus la ~850 MiB si la mutarea in RAM.
+
+
+9. Dupa audit (22 noiembrie, bench/results/audit.txt)
+
+- Pana la audit rulau deodata 7 texte, nu 6: textul curent nu era numarat cand intra unul nou.
+  Reparat; acum sunt 6 active si 16 la coada.
+- Un paragraf de peste 4000 de caractere fara linie noua se taia la exact 4000, adesea in mijlocul
+  unui cuvant (max() alegea mereu taietura tare). Acum se taie la ultima linie noua, altfel la
+  ultimul spatiu, altfel dupa ultimul "。" (japoneza), si doar daca nu exista niciunul la limita.
+- Cifrele din sectiunile 1 si 6 erau corecte atunci. Dupa Etapa 8, cu cele 9 limbi stanza
+  preincarcate la pornire, incarcarea ia 67-77 s. Containerul are ~4.2 GiB dupa incarcare si
+  ~7.4 GiB dupa ce a lucrat (masurat dupa api_check, cu pana la 7 texte deodata), deci cifra de
+  ~7.2 GiB de mai sus ramane cea de luat in calcul.
+- Offseturile din flux sunt in code points (indici Python). O pagina in JavaScript trebuie sa le
+  converteasca in UTF-16, altfel un emoji decaleaza culorile.

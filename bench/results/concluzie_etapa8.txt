@@ -59,7 +59,8 @@ Nu e frontend-ul din Etapa 5, ci o pagina simpla ca sa se poata folosi site-ul d
   16:25:58  containerul e healthy, Funnel e pornit singur
 
 Site-ul revine singur in ~2.5 minute de la boot. Dupa incarcare: VRAM 7.9 din 8.2 GB, memorie
-shared a containerului ~110-190 MiB (normala, fara spill).
+shared a containerului ~110-190 MiB. (Corectie dupa audit: ~190 MiB shared, cu ~7300 MiB dedicati,
+era deja starea lenta; vezi sectiunea 9.)
 
 Problema gasita: imediat dupa boot tunelul era lent. Pe PC totul e rapid (TLS prin tailscaled
 11 ms, /api/health local 3 ms), dar nodurile de ingress Funnel nu se conecteaza niciodata direct, ci
@@ -116,3 +117,23 @@ Etapa 5, frontend-ul adevarat. Decizii de luat inainte: scala de culori (cum e a
 nivel 1 si ~35% nivel 2 pe texte reale, sau recalibrata pe texte obisnuite), limba interfetei
 (ro, en sau ambele) si skill-ul apple-design (nu e instalat aici). Dupa ea: Etapa 6 (imaginea
 finala) si Etapa 7 (benchmark-ul final).
+
+
+9. Dupa audit (22 noiembrie, bench/results/audit.txt)
+
+- Spill-ul nu fusese prins. Containerul pornit la testul de oprire si pornire din sectiunea 6
+  (636 MiB inainte, 195 MiB shared dupa) a mers de atunci ~1.8x mai incet: 0.134 s pe citire, 467
+  tokeni/s, placa la 130 W, fata de 0.08 s, ~1000 tokeni/s si ~200 W la Etapa 7. Memoria dedicata
+  a containerului era 7299 MiB, fata de 7389-7400 MiB la rularea sanatoasa din Etapa 3. Pragul de
+  300 MiB shared din site_start era prea larg, iar 700 MiB ocupati inainte de pornire nu garanteaza
+  ca modelul incape.
+- Acum serverul masoara viteza dupa incarcare si dupa fiecare 10 minute fara texte (un prompt fix,
+  3 citiri fara refolosire). /api/health raporteaza tok_s si slow (sub 700 tokeni/s), iar
+  site_start afiseaza viteza si avertizeaza cand placa merge incet.
+- Tot dupa audit: un corp de cerere peste 256 KiB primeste 413 inainte sa fie citit; daca
+  incarcarea modelelor da eroare, procesul iese si Docker il reporneste; /openapi.json nu mai e
+  public; dictionarul de coduri gresite nu mai creste cu fiecare adresa; testul CORS din
+  api_check.py verifica originile lcp-web-static.
+- In pagina de test: offseturile serverului (code points) se convertesc in UTF-16, deci emoji-urile
+  nu mai decaleaza culorile; propozitiile in lucru raman estompate pana la final; Analizeaza ramane
+  blocat cat ruleaza o analiza; un flux intrerupt afiseaza o eroare.

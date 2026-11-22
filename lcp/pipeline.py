@@ -54,15 +54,33 @@ WARN_CHARS, WARN_CHARS_LANG = 2000, {"ja": 700}
 # pt 1 paragraph, stanza loaded, one text at a time), for the frontend's estimate.
 EST_S_PER_1000 = {"ca": 21.0, "de": 17.4, "en": 17.9, "es": 19.5, "fil": 23.1, "fr": 22.2,
                   "it": 21.0, "ja": 67.1, "pt": 19.5, "ro": 21.9, "si": 33.9}
+# Speed probe (Pipeline.probe): the same prompt read 3 times without KV reuse. On the RTX 2070
+# SUPER ~1000 tokens/s; with part of the model paged into shared GPU memory by Windows ~500.
+PROBE = ("en", "The committee postponed the ratification of the treaty until the parliament had "
+         "examined every amendment proposed by the opposition during the long winter session.",
+         "ratification")
 
 
 def warn_chars(lang):
     return WARN_CHARS_LANG.get(lang, WARN_CHARS)
 
 
+def _cut(text, a):
+    """Where to cut a paragraph that starts at `a` and is longer than PARA_MAX: the last line break
+    in the second half before the limit, else the last space, else just after the last sentence
+    end of Japanese and Chinese, else at the limit."""
+    lo, hi = a + PARA_MAX // 2, a + PARA_MAX
+    for sep in ("\n", " "):
+        k = text.rfind(sep, lo, hi)
+        if k >= 0:
+            return k
+    k = max(text.rfind(c, lo, hi - 1) for c in "。！？．")
+    return k + 1 if k >= 0 else hi
+
+
 def paragraphs(text):
     """[(start, end)] of the paragraphs of `text` (separated by blank lines), whitespace stripped;
-    a paragraph longer than PARA_MAX is cut at its last line break (else space) before the limit."""
+    a paragraph longer than PARA_MAX is cut at a line break, a space or a sentence end (_cut)."""
     spans, pos = [], 0
     for m in re.finditer(r"\n[ \t\r]*\n\s*", text):
         spans.append((pos, m.start()))
@@ -75,9 +93,7 @@ def paragraphs(text):
         while b > a and text[b - 1].isspace():
             b -= 1
         while b - a > PARA_MAX:
-            cut = text.rfind("\n", a + PARA_MAX // 2, a + PARA_MAX)
-            if cut < 0:
-                cut = max(text.rfind(" ", a + PARA_MAX // 2, a + PARA_MAX), a + PARA_MAX)
+            cut = _cut(text, a)
             e = cut
             while e > a and text[e - 1].isspace():
                 e -= 1
@@ -146,7 +162,29 @@ class Pipeline:
         t = time.perf_counter()
         self.score_words("en", "The cat sat on the mat.", [(4, 7, "cat", "cat")])
         self.load_seconds["warmup"] = time.perf_counter() - t
+        t = time.perf_counter()
+        self.probe()
+        self.load_seconds["probe"] = time.perf_counter() - t
         self.load_seconds["total"] = time.perf_counter() - t0
+
+    def probe(self, n=3):
+        """The GPU's speed on a fixed prompt, n readings without KV reuse: {"tok_s",
+        "s_per_reading", "tokens", "at"}, also kept in self.speed. Run it only between texts."""
+        lang, sent, word = PROBE
+        content = signal_b.render(PROMPTS[0], lang, sent, word)
+        reuse, self.rt.reuse = self.rt.reuse, False
+        ev, t = 0, time.perf_counter()
+        try:
+            for _ in range(n):
+                self.rt.digit_probs(content)
+                ev += self.rt.last[1]
+        finally:
+            self.rt.reuse = reuse
+            self.rt._prev = []
+        dt = time.perf_counter() - t
+        self.speed = {"tok_s": ev / dt, "s_per_reading": dt / n, "tokens": ev // n,
+                      "at": time.time()}
+        return self.speed
 
     # ------------------------------------------------------------------ features
     def fertility(self, tokens):

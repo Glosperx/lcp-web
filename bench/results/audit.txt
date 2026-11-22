@@ -1,0 +1,433 @@
+Auditul a tot ce s-a facut pana la Etapa 8 (commit 4d4c655)
+22 noiembrie 2026
+
+Ce s-a verificat: cerintele din docs/PLAN.md, docs/PROMPT_etapa2_3_pc.md si docs/PROMPT_etapa7_pc.md
+fata de cod si rezultate; codul din lcp/, server.py, static/index.html, scripts/, docker/,
+docker-compose.yml; securitatea si regulile datelor; documentatia fata de cod.
+Cum s-a testat (testele de reproducere sunt in scratchpad, nu in repo):
+- logica fara modele, intr-un container fara GPU: paragraphs(), segmentarea regex, scala;
+- server.py cu un pipeline fals (fara modele), uvicorn in container, pe 127.0.0.1:8123;
+- logica paginii (scriptul din static/index.html) in node 24, cu un DOM minimal si un fetch fals;
+- pe serverul live, doar texte scurte scrise pentru audit (cateva secunde de GPU fiecare),
+  api_check.py --parts access texts --sizes 1 (iesirea in scratchpad, nu peste rezultatele din
+  repo) si calea publica prin Funnel cu curl --resolve;
+- cautarea textelor din date: n-grame de 8 cuvinte (si de 20 de caractere pentru japoneza) din
+  toate fisierele MLSP, RoLCP si CompLex din /paper/release, cautate in fisierele urmarite din main
+  si in tot "git log -p main", cu un control pozitiv.
+Site-ul nu a fost oprit si nici repornit in timpul auditului.
+
+
+==================================================================================================
+1. Acoperirea cerintelor, pe etape
+==================================================================================================
+
+Stare: facuta, partiala, lipsa, schimbata (prin decizia lui Alexandru).
+
+Etapa 1 (timpi pe CPU, Docker pe Mac)
+- imaginea CPU: docker/Dockerfile.cpu:9-23 (python:3.11-slim arm64, pinurile release-ului,
+  llama-cpp-python 0.3.37 compilat pentru CPU). Facuta.
+- GGUF-ul, revizie fixata: lcp/rater.py:21-22; sha256 verificat in scripts/fetch_models.py.
+  Facuta.
+- modulele: lcp/segment.py:79-124 (stanza, continut = NOUN VERB ADJ ADV, segment.py:30),
+  segment.py:146-173 (regex fil si si), lcp/encoders.py:27-56 (un forward pe fereastra,
+  pooling pe span), lcp/rater.py:58-117 (id-uri prin apply_chat_template, masa pe cifre).
+  Facuta.
+- spike-ul cu porti: scripts/spike_llama.py; concluzie_etapa1.txt sectiunea 2 (r 0.9809 pe
+  toate randurile, asteptat ~0.97). Facuta.
+- textele Wikipedia, sursa si licenta: scripts/fetch_texts.py, bench/texts/sources.json,
+  bench/texts/README.md. Facuta (italiana are 111 cuvinte la 2 paragrafe, documentat).
+- masuratoarea: scripts/bench_cpu.py, bench/results/cpu_docker_mac*. Partiala, prin alegere
+  documentata: B o singura trecere pe text in loc de 1 + 3 repetari (concluzie_etapa1.txt:20-22).
+- concluzia: bench/results/concluzie_etapa1.txt. Facuta. Poarta "s/citire > 0.36": 1.32. Trece.
+
+Etapa 7, partea de PC (docs/PROMPT_etapa7_pc.md)
+- pasul 0, verificarile: concluzie_etapa7_pc.txt sectiunile 1-2. Facut.
+- pasul 1: docker/Dockerfile.cuda:10-51, docker/run_cuda.sh. Facut.
+- pasul 2, descarcarile: scripts/fetch_models.py. Facut.
+- pasul 3, optiunile: lcp/rater.py:59-81 (n_gpu_layers, flash_attn, use_mmap, **llama_kw),
+  scripts/bench_cpu.py:166-176 (--gpu-layers, --flash-attn, --n-ctx, --n-batch, --no-mmap,
+  --skip-a). Facut.
+- pasul 4: scripts/fit_gpu_layers.py, fit_gpu_layers*.csv. Facut.
+- pasul 5, paritatea: scripts/parity_mac.py, parity_gpu_pc.txt (r 0.99901, prag 0.99). Facut.
+- pasii 6-8: gpu_docker_pc*, cpu_docker_pc*, concluzie_etapa7_pc.txt. Facut.
+
+Etapa 2 (exportul modelului)
+- p_en si 11 p_multi_L pe encoder, aceiasi hiperparametri: scripts/export_model.py:103-153,
+  lcp/fusion.py:34-51. Facut; fiecare pereche reproduce bit cu bit blend_ridge_hgb.
+- mu_L, fert_mu_L, centrarea CompLex: export_model.py:119-126, artifacts/centering.npz. Facut.
+- constantele de z-score (encoder si brat, media encoderelor, amestecul cu w_src):
+  export_model.py:198-236, fusion.py:108-125. Facut.
+- parametrii LOLO cu functiile din fuse.py: export_model.py:169-195. Facut.
+- artefacte joblib + params.json cu revizii si hash-uri: export_model.py:408-426. Facut; 36 MB in
+  loc de "cativa MB" (documentat in concluzie_etapa2_3.txt:145-148).
+- poarta de paritate: export_parity.txt. Facuta, PASS: A nu e bit-identic (fit pe x86, max |dp|
+  6.5e-5, r 1.000000), media 0.692521 exacta.
+
+Etapa 3 (B de referinta)
+- poarta de lungime: scripts/b_reference.py:99-125. Facuta (maxim 675 de tokeni, limita 1008).
+- rularea in modul site-ului, reluabila: b_reference.py:128-213, reference/signal_b_llamacpp.csv,
+  reference/b_reference.log. Facuta. Schimbata prin decizie: pe GPU-ul PC-ului, nu pe Metal.
+- portile lui B: b_reference.py:216-268. Facute, PASS (r 0.9862 pe toate randurile).
+- fuziunea cu B nou si artefactele: b_reference.py:282-369, artifacts/params.json. Facute:
+  media 0.691328 (paper 0.692521), lcp/fusion.py reproduce fuziunea pana la 9e-16.
+- scala de afisare (percentila in limba, cuantilele etichetelor): export_model.py:239-246,
+  fusion.py:144-152. Facuta, ca in plan. Iese mai ales verde pe texte reale (decizie deschisa).
+- concluzia: concluzie_etapa2_3.txt. Facuta.
+
+Etapa 4 (pipeline si API)
+- lcp/pipeline.py: segmentare, A, B, fuziune, scor 0-1, nivel. Facut.
+- POST /api/analyze in flux NDJSON, ultima linie cu timpii: server.py:277-318,
+  pipeline.py:296-371. Facut.
+- GET /api/languages (11 limbi + r): server.py:271-274, pipeline.py:373-387. Facut.
+- "un singur lock pe model": un singur fir de lucru, server.py:78-167. Schimbat prin decizie
+  (texte alternate, propozitie cu propozitie); vezi bugul B5 (7 texte, nu 6).
+- limita de 2000 de caractere: schimbata prin decizie: warn_chars si estimarea
+  (pipeline.py:52-60, 380-381), plafon 20000 cu 413 (server.py:286-287). Facuta.
+- textele nu se logheaza: server.py:137-148 scrie doar limba, lungimea si tipul erorii;
+  confirmat in "docker compose logs api" (niciun text din testele auditului). Facut.
+- paritatea caii site-ului: scripts/pipeline_check.py, pipeline_check.txt PASS. Facuta.
+
+Etapa 5 (frontend) - neinceputa, ca in plan. Ce acopera deja pagina de test static/index.html:
+- doua panouri, unul sub altul pe telefon: index.html:27-28. Partial (fara apple-design).
+- selectorul de limba si r-ul limbii: index.html:82-83, 161-166. Facut.
+- contorul: index.html:167-172 ("n / 20000", schimbat prin decizie). Facut.
+- Analizeaza si Ctrl/Cmd+Enter: index.html:88, 175. Facut, dar vezi B7.
+- cinci culori, cu dark mode: index.html:10, 16, 42-43. Facut.
+- legenda cu numarul de cuvinte pe nivel: index.html:196-200. Facuta. Click pe nivel ca filtru:
+  lipsa.
+- propozitiile in lucru estompate: index.html:180-185. Partial: merge doar pana la prima
+  propozitie terminata (bugul B6).
+- popover cu nivel, eticheta, scor, lema, Zipf, A si B; Enter; Escape si click in afara:
+  index.html:218-249. Facut.
+- cuvintele functionale: schimbat prin decizie (nivel 1, fara model), index.html:190, 224-225;
+  vezi P1 (numele proprii si numeralele intra si ele aici).
+- nota "scorurile se compara doar in aceeasi limba": index.html:97. Facuta.
+- fara text din MLSP pe site: 0 potriviri (sectiunea 3). Facut.
+- static/app.css, static/app.js separate, skill-ul apple-design: lipsa (Etapa 5).
+
+Etapa 6 (imaginea finala) - lipsa, confirmat:
+- nu exista un Dockerfile cu ARG TARGET=cpu|cuda; exista doar docker/Dockerfile.cpu (Etapa 1) si
+  docker/Dockerfile.cuda (Etapa 7), fara modele in imagine (se monteaza volumele lcp-hf si
+  lcp-stanza, codul se monteaza din repo);
+- docker-compose.yml nu are profilele cpu si gpu, doar serviciul GPU;
+- requirements.txt la radacina lipseste (sunt docker/requirements.*.txt);
+- incercarea use_mmap=False recomandata in concluzie_etapa1.txt:76-77: nefacuta.
+
+Etapa 7 din PLAN (benchmark-ul complet prin API) - lipsa, confirmat: scripts/benchmark.py nu
+exista; nu s-a masurat prin API pe Mac (Docker CPU si Metal nativ). scripts/api_check.py
+acopera doar PC-ul.
+
+Etapa 8 (serverul) - facuta, schimbata prin decizie (PC-ul de acasa, Vercel, Tailscale Funnel):
+- docker-compose.yml:18-40: restart unless-stopped, healthcheck, port pe 127.0.0.1. Facut.
+- codul de acces si limita de coduri gresite: server.py:204-227, 264-268 (10 in 10 minute,
+  server.py:59). Facut, confirmat pe live (429 la al 11-lea).
+- cel mult 2 texte pe adresa: server.py:229-240, 288-294. Facut, confirmat pe live si prin Funnel.
+- fara limita pe ora: confirmat in cod.
+- CORS: server.py:61-66, 181-183. Facut; vezi D2.
+- HEAD pe /api/health (UptimeRobot): server.py:254. Facut.
+- scripts/site_start.ps1 si site_stop.ps1. Facute; vezi B1 si D4.
+- lcp_model/ copiat NESCHIMBAT: blob-urile git ale celor 4 fisiere din main sunt identice cu cele
+  din branch-ul lcp_model (release/). In working tree au CRLF (core.autocrlf=true), fara efect.
+
+
+==================================================================================================
+2. Constatarile, de la cea mai grava
+==================================================================================================
+
+--- Buguri confirmate -----------------------------------------------------------------------------
+
+B1. Site-ul live ruleaza acum cu modelul partial in memoria shared (~1.8x mai lent), iar
+    site_start nu observa.
+    Unde: scripts/site_start.ps1:16 (pragul de 300 MiB) si :101-105; concluzie_etapa8.txt:62 si
+    docs/PROMPT_audit.md:162 numesc "normale" valorile de 110-190 MiB.
+    Scenariul: containerul pornit la 16:51 (testul din Etapa 8: 636 MiB inainte, shared 195 MiB
+    dupa). Acum vmwp are 7299 MiB dedicati si 184 + 23 MiB shared. Firefox tine 191 MiB, dwm
+    365 MiB, VS Code 87 MiB.
+    Cum s-a confirmat: un paragraf englez prin API (108 citiri): 0.134 s/citire, 467 tokeni/s,
+    placa la 130 W (median, 97% ocupata). In Etapa 7: 0.08 s/citire, ~1000 tokeni/s, ~200 W.
+    api_check pe 1 paragraf: median 25.0 s pe 11 limbi, fata de 14.3 s in Etapa 7 (0.12-0.17
+    s/citire). E exact semnatura de la Etapa 3: 7333 MiB dedicati, 187-201 MiB shared, 116-130 W,
+    0.186 s/citire. Rularea sanatoasa de la Etapa 3 avea 7389-7400 MiB dedicati si 123-131 MiB
+    shared. Deci pragul de 300 MiB nu prinde spill-ul, iar pragul de 700 MiB dinainte de pornire
+    nu ajunge (636 MiB au dat tot spill).
+    Repararea propusa: (a) acum: site_stop, inchis Firefox (sau accelerarea lui), apoi
+    site_start, si verificata viteza; (b) in cod: dupa incalzire, Pipeline masoara tokenii/s pe
+    un prompt fix (de exemplu 3 citiri fara refolosire) si /api/health ii raporteaza;
+    site_start avertizeaza sub ~800 tokeni/s. Alternativ, pragul pe memoria dedicata a lui vmwp
+    (sub ~7350 MiB = spill) in loc de pragul pe shared.
+
+B2. Un corp de cerere oricat de mare e citit si parsat intreg, fara cod de acces, inainte de
+    orice verificare.
+    Unde: server.py:265 (auth) si :278 (analyze). FastAPI parseaza AnalyzeIn/AuthIn inainte sa
+    apeleze functia, deci G.check si limita de 20000 vin dupa.
+    Scenariul: oricine stie adresa ts.net (e in sursa paginii de pe Vercel) trimite cateva
+    cereri de sute de MB la /api/analyze sau /api/auth. Containerul foloseste 4-7 GB din cei
+    12 GB ai VM-ului; cateva cereri paralele il pot duce la OOM (container omorat, ~75 s jos).
+    Cum s-a confirmat: serverul real cu pipeline fals: 200 MB fara cod -> 401 dupa 1.2 s, RSS
+    566 -> 1057 MiB; la /api/auth la fel (varf 1257 MiB). Prin Funnel nu s-a testat cu MB
+    (nu se stie daca Funnel limiteaza corpul).
+    Repararea propusa: un middleware ASGI inaintea rutelor: 413 daca Content-Length > 256 KiB
+    (20000 de caractere x maxim 6 octeti in JSON) si numararea octetilor la corpurile chunked.
+
+B3. Pagina coloreaza gresit dupa orice caracter din afara BMP (emoji, steaguri, unele CJK).
+    Unde: static/index.html:185-191 (text.slice cu offseturile serverului); serverul da offseturi
+    in code points (Python), JavaScript taie in unitati UTF-16.
+    Scenariul: "The 😀 committee postponed the ratification of the 🇷🇴 treaty." Fiecare emoji
+    decaleaza cu 1 (steagul cu 2) toate cuvintele de dupa el.
+    Cum s-a confirmat: pe live, offseturile sunt corecte in Python (8/8). In logica paginii, cu
+    evenimentele reale: 1 din 8 cuvinte colorate corect (" committe", " postpone", "🇴 tre"...).
+    Repararea propusa: protocolul spune explicit "offseturi in code points"; pagina face o data
+    pe text harta code point -> index UTF-16 (Array.from) si o foloseste la cuvinte, propozitii
+    si paragrafe. Pentru Etapa 5 e obligatoriu; in pagina de test e o schimbare mica.
+
+B4. Un paragraf de peste 4000 de caractere fara linie noua se taie la exact 4000, in mijlocul
+    unui cuvant.
+    Unde: lcp/pipeline.py:80: cut = max(text.rfind(" ", ...), a + PARA_MAX). rfind intoarce
+    mereu ceva mai mic decat a + PARA_MAX, deci max alege mereu taietura tare.
+    Scenariul: un text lipit ca un singur paragraf lung (frecvent la copierea din PDF): un cuvant
+    la fiecare 4000 de caractere iese rupt in doua "cuvinte", scorate separat, in paragrafe
+    diferite.
+    Cum s-a confirmat: 600 de cuvinte de 13 litere (8999 de caractere): bucatile 0:4000,
+    4000:8000, 8000:8999, toate taiate in cuvant; ultimul spatiu inainte de 4000 era la 3989.
+    Repararea propusa: sp = rfind(" "); cut = sp if sp >= 0 else a + PARA_MAX; pentru japoneza,
+    de preferat "。" inainte de taietura tare.
+
+B5. Ruleaza 7 texte deodata, nu 6 (LCP_ACTIVE_MAX).
+    Unde: server.py:114 si :156. admit(block=False) e chemat cat textul curent e scos din
+    "turn", deci mai intra unul.
+    Scenariul: 23 de texte deodata: 7 active, 16 la coada. Evenimentul "queued" (server.py:163)
+    presupune 6, deci al 7-lea text primeste "queued, position 1" desi porneste imediat.
+    Cum s-a confirmat: serverul real cu pipeline fals: W.active = 7; cu 40 de propozitii x 0.2 s,
+    fiecare grup a terminat in 56 s (7 x 40 x 0.2), nu 48 s.
+    Repararea propusa: un parametru de loc in admit: admit(block=False, room=ACTIVE_MAX - 1).
+
+B6. Pagina: dupa prima propozitie terminata, restul textului nu mai e estompat.
+    Unde: static/index.html:180-194. chunk() decide estomparea doar dupa offsetul de inceput al
+    bucatii de text; dupa ultimul cuvant terminat, tot restul textului e o singura bucata care
+    incepe intr-o propozitie terminata.
+    Cum s-a confirmat: in node, 3 propozitii: inainte de prima, tot textul estompat; dupa prima,
+    nimic estompat, desi 2 propozitii erau inca in lucru.
+    Repararea propusa: bucatile de text simplu se taie si la granitele propozitiilor in lucru.
+
+B7. Pagina: Analizeaza se reactiveaza in timpul analizei, iar doua analize scriu in acelasi panou.
+    Unde: static/index.html:171 (count() pune disabled doar dupa lungime), chemat la fiecare
+    tasta (:174) si la schimbarea limbii (:173, prin showLang).
+    Scenariul: in timpul unei analize, o tasta in caseta, apoi click: a doua cerere porneste
+    (limita pe adresa e 2), iar ambele fluxuri redeseneaza #out si #msg cu texte diferite.
+    Cum s-a confirmat: in node: go.disabled true in timpul fluxului, false dupa o tasta; click ->
+    o a doua cerere /api/analyze.
+    Repararea propusa: o variabila "busy" respectata de count(), sau abandonarea fluxului vechi
+    (AbortController) la o analiza noua.
+
+B8. Dupa o eroare la incarcarea modelelor, serverul ramane in 500 pentru totdeauna.
+    Unde: server.py:106-109 (firul se opreste, procesul ramane) si :256-257.
+    Scenariul: o eroare trecatoare la pornire (de exemplu CUDA out of memory cand placa e
+    ocupata la boot). Docker nu reporneste un container unhealthy, doar unul al carui proces a
+    iesit; UptimeRobot trimite "Down", iar site_start iese cu "Serverul raporteaza eroare".
+    Cum s-a confirmat: serverul real cu un Pipeline care arunca la incarcare: /api/health 500 la
+    fiecare verificare, procesul (pid 1) ramane viu, firul de lucru e mort.
+    Repararea propusa: dupa log.exception, os._exit(1); restart: unless-stopped il reporneste
+    (cu pauze crescatoare daca eroarea e permanenta).
+
+B9. scripts/api_check.py pica pe configuratia de acum, la CORS.
+    Unde: scripts/api_check.py:298-303 verifica originile vechi lcp-web.vercel.app si
+    lcp-web-abc123-glosperx.vercel.app; commit-ul 0b23aad a trecut CORS pe lcp-web-static.
+    Cum s-a confirmat: api_check --parts access texts pe live: "[FAIL] cors" (400 la ambele).
+    Restul partii access trece.
+    Repararea propusa: originile lcp-web-static.vercel.app si lcp-web-static-<hash>-<echipa>.
+
+--- Buguri probabile si robustete ----------------------------------------------------------------
+
+P1. "function": true se pune pe tot ce nu e cuvant de continut, nu doar pe cuvintele functionale.
+    Unde: lcp/pipeline.py:349-351 (orice token cu litera care nu e NOUN, VERB, ADJ, ADV);
+    index.html:224-225 afiseaza "cuvant functional, neevaluat de model", nivel 1 "foarte usor".
+    Scenariul: numele proprii (PROPN), numeralele scrise (NUM), interjectiile, cuvintele straine
+    (X) apar verzi, "foarte usor". Un nume rar apare drept cel mai usor cuvant din text.
+    Cum s-a confirmat: pe live, en: Einstein, Paris, Bucharest, two sunt "function"; ro:
+    Eminescu, Viena, doi la fel.
+    Repararea propusa (de decis la Etapa 5): serverul trimite si UPOS-ul (sau un camp "kind");
+    nivel 1 doar pentru clasele inchise (DET, ADP, CCONJ, SCONJ, PRON, AUX, PART), iar PROPN,
+    NUM si X raman necolorate sau gri, cu "neevaluat" in popover.
+
+P2. Dictionarul de coduri gresite creste cu fiecare adresa noua, chiar cu cod corect.
+    Unde: server.py:218 (f = self.fails[ip] pe un defaultdict creeaza intrarea la orice cerere).
+    Cum s-a confirmat: 2128 de adrese diferite cu cod corect -> 2128 de intrari, niciuna stearsa;
+    ~760 de octeti pe deque, deci ~1 KB pe adresa. Nu e un pericol imediat (sloturile per_ip se
+    sterg corect, verificat).
+    Repararea propusa: self.fails.get(ip); intrarea se creeaza doar la un cod gresit si se
+    sterge cand fereastra o goleste.
+
+P3. /api/health nu vede un fir de lucru mort sau blocat.
+    Unde: server.py:254-261 verifica doar W.error si W.pipeline.
+    Scenariul: firul iese printr-un BaseException sau un apel llama.cpp/CUDA se blocheaza;
+    health spune "ok", iar textele primesc doar ping-uri. Nereprodus (ar cere injectarea unei
+    erori in llama.cpp).
+    Repararea propusa: un moment al ultimului pas in Worker; health 500 daca firul nu mai traieste
+    sau daca un pas dureaza peste ~120 s, apoi iesirea procesului ca la B8.
+
+P4. Pagina: un flux terminat fara "done" si fara "error" lasa "Se analizeaza..." pe ecran.
+    Unde: static/index.html:272 (done -> break, fara verificare).
+    Cum s-a confirmat: in node: mesajul ramane "Se analizeaza...", textul ramane estompat, nicio
+    eroare. Pe un proces omorat, browserul da de obicei eroare de retea (TypeError), deci cazul
+    e rar.
+    Repararea propusa: dupa bucla, daca nu a venit "done": "Analiza s-a intrerupt".
+
+P5. Pagina: login-ul nu prinde eroarea de retea.
+    Unde: static/index.html:150-158 (fetch fara try/catch).
+    Scenariul: serverul e oprit cand cineva scrie codul: nu se afiseaza nimic.
+    Cum s-a confirmat: citind codul (fetch respins -> promisiune neprinsa).
+    Repararea propusa: try/catch cu "Serverul nu raspunde".
+
+--- Cerinte lipsa --------------------------------------------------------------------------------
+
+L1. Etapa 5, frontend-ul adevarat: neinceputa. Din cerinte lipsesc acum: filtrul pe nivel din
+    legenda, apple-design, app.css/app.js; estomparea e partiala (B6).
+L2. Etapa 6: Dockerfile-ul final cu ARG TARGET, modelele in imagine, profilele cpu si gpu,
+    use_mmap=False de incercat.
+L3. Etapa 7 din PLAN: scripts/benchmark.py prin API in trei locuri.
+L4. Din concluzie_etapa8.txt:71-72: daca tunelul e lent dupa fiecare restart, "tailscale
+    down/up" trebuia pus in scriptul de pornire. Nu s-a mai verificat daca se repeta.
+
+--- Documentatie gresita -------------------------------------------------------------------------
+
+D1. Incarcarea "~40 s": server.py:8, README.md:144, concluzie_etapa4.txt:21 si :100. Acum
+    66.8 s si 77.1 s (logurile containerului; stanza preincarcat ia 21-24 s). site_start.ps1:70
+    spune corect ~70 s.
+D2. Memoria containerului "~7.2 GB": README.md:146, server.py:34, concluzie_etapa4.txt:98,
+    docs/PROMPT_audit.md:126. Remasurat: 4.2 GiB dupa pornire, 4.5 GiB dupa cele 11 texte de
+    1 paragraf, 7.4 GiB dupa api_check cu 7 texte deodata. Cifra veche e deci buna pentru un
+    server care a lucrat; documentele spun acum ambele valori.
+D3. "6 texte deodata": README.md:135 si :142, concluzie_etapa4.txt:23, docs/PROMPT_audit.md:41.
+    In realitate 7 (B5); devine adevarat dupa reparatie.
+D4. Taierea paragrafelor lungi "la ultima linie noua (sau la ultimul spatiu)":
+    concluzie_etapa4.txt:125-126. Codul taie la exact 4000 cand nu are linie noua (B4).
+D5. "Memorie shared ~110-190 MiB, normala, fara spill": concluzie_etapa8.txt:62,
+    docs/PROMPT_audit.md:162. 184-207 MiB cu 7299 MiB dedicati e starea lenta (B1).
+D6. README.md:12: titlul "Status: stage 1" e vechi.
+D7. README.md:182: "Every request except /api/health needs X-Access-Code". Nu au nevoie nici
+    /api/auth, nici pagina statica, nici /openapi.json.
+D8. scripts/api_check.py:13: textul de alternare are "~6000" de caractere; are 5122.
+D9. est_s_per_1000_chars (lcp/pipeline.py:55-56) e masurat fara spill; cat timp dureaza B1,
+    estimarea din confirmare e de ~2 ori prea mica.
+
+--- Detalii --------------------------------------------------------------------------------------
+
+D-a. /openapi.json e public, fara cod (server.py:180 opreste docs_url si redoc_url, dar nu
+     openapi_url). Arata cele 4 rute, nimic secret. Confirmat si prin Funnel (200, 2396 B).
+     Reparare: openapi_url=None.
+D-b. CORS: regex-ul (server.py:66, .env.example:7, .env) se potriveste pe toata originea
+     (Starlette foloseste fullmatch; "...vercel.app.evil.com" e refuzat). Accepta insa orice
+     proiect Vercel numit lcp-web-static-*, al oricui. Efectul e mic, pentru ca accesul tine de
+     cod, nu de origine. Reparare: regex-ul legat de numele echipei Vercel.
+D-c. Rotunjirea nivelului: fusion.py:150-152 rotunjeste jumatatile in sus. Etapa 3
+     (b_reference.py:362) si pipeline_check folosesc aceeasi functie, deci e consecvent. 6.3% din
+     percentile cad exact pe o jumatate (platourile etichetelor la 0.125, 0.375, 0.625, 0.875);
+     rotunjirea la par ar schimba nivelul la 2.4% din cuvinte. Nu e bug: o alegere de documentat.
+D-d. site_start.ps1:18-20: fara nvidia-smi, verificarea VRAM trece tacut (testat sub PowerShell 7
+     si 5.1: $used gol). Nici "docker info", nici nvidia-smi nu au timeout, deci un daemon sau un
+     driver blocat blocheaza scriptul. Lipsa Tailscale e tratata (mesaj rosu).
+D-e. Codul de acces nu apare in git (tot istoricul, toate ref-urile, obiectele neatinse), in
+     memorie, in static/ sau in fisierele din repo. Apare insa de 7 ori intr-un transcript local
+     al sesiunii Claude Code din Etapa 8 (fisierul .jsonl 6ac16fe4..., pe acest PC): a fost scris
+     in chat si repetat de asistent. Optional: alt cod in .env, apoi restartul containerului.
+D-f. FastAPI avertizeaza "Duplicate Operation ID" pentru GET si HEAD pe /api/health. Cosmetic.
+D-g. scripts/api_check.py scrie implicit peste bench/results/api_check.txt si .csv (urmarite in
+     git); pentru verificari punctuale se da --out.
+
+
+==================================================================================================
+3. Ce s-a verificat si e in regula
+==================================================================================================
+
+- Codul non-ASCII (in JSON sau ca octeti in antet) da 401, nu 500: hmac.compare_digest primeste
+  bytes.
+- Slotul pe adresa se elibereaza pe toate caile: 413 si 400 (inainte de acquire), eroare in
+  analiza, 503 la coada plina, deconectare in timpul fluxului, 300 de clienti care inchid brusc
+  dupa cerere. Dupa fiecare, per_ip e gol. Dupa o eroare in analiza, urmatorul text merge.
+  Uvicorn 0.34 anunta ASGI 2.3, deci deconectarea se vede imediat (listen_for_disconnect).
+- Anularea la deconectare opreste citirile (pipeline.py:202, verificat cu pipeline fals; pe live
+  in Etapa 4).
+- Citirea NDJSON in pagina: linii taiate la un octet, UTF-8 pe mai multi octeti, queued, ping si
+  error merg corect.
+- Escaparea HTML: textul, lema si cuvantul trec prin esc(); mesajele serverului merg prin
+  textContent. Neescapate raman doar codul si numele limbii in <option> si valorile numerice
+  (constante ale serverului).
+- Cazuri limita pe live: text doar din punctuatie (en, fil, ja), doar cifre (si), paragrafe goale:
+  fluxul complet, 0 cuvinte, fara eroare. Text gol sau doar spatii: 400.
+- Portul e legat doar la 127.0.0.1 (netstat); de pe adresa LAN si de pe adresa tailnet, portul
+  8000 nu raspunde.
+- X-Forwarded-For nu se poate falsifica prin Funnel: prin calea publica, doua texte cu adrese
+  false diferite, apoi un al treilea cu alta adresa falsa -> 429. Serverul a vazut aceeasi adresa
+  reala la toate.
+- CORS prin Funnel: originea straina primeste 400 la preflight.
+- Logurile: doar limba, lungimea, durata si tipul erorii; in "docker compose logs api" nu apare
+  niciunul dintre textele trimise in audit.
+- Datele: 0 potriviri din MLSP, RoLCP si CompLex (92 de fisiere sursa, 235.114 n-grame de
+  cuvinte, 4119 n-grame de caractere japoneze) in cele 131 de fisiere text urmarite din main si
+  in tot "git log -p main" (13 MB). Controlul pozitiv (o propozitie din date lipita la README)
+  e detectat. Branch-ul lcp_model nu a fost auditat, cum s-a cerut.
+- lcp_model/: identic cu release-ul (aceleasi blob-uri git).
+- api_check pe live: health, cele 11 limbi, erorile 400/400/413, accesul (401, 429 dupa 10
+  coduri gresite, alta adresa neafectata), 2 texte pe adresa, toate cele 11 texte de 1 paragraf
+  valide (ordinea evenimentelor, offseturile, nivelurile). Singurul FAIL e B9.
+
+
+==================================================================================================
+4. Reparatii facute dupa audit (alese de Alexandru) si verificarea lor
+==================================================================================================
+
+Server si pipeline (server.py, lcp/pipeline.py):
+- B2: middleware BodyLimit (server.py, clasa BodyLimit), in interiorul CORS. Test cu pipeline fals:
+  Content-Length de 200 MB -> 413 in 0.00 s, fara sa citeasca corpul, cu antetul CORS; corp
+  chunked de 300 KB -> 413; RSS 44 -> 46 MiB. 20000 de emoji in JSON ASCII (240 KB) trec, 20001
+  de caractere -> 413. Pe live, prin Funnel: corp de 1 MB -> 413.
+- B5: admit(block=False, room=ACTIVE_MAX - 1). Test: 23 de texte -> 6 active, 16 la coada,
+  al 23-lea 503. Pe live (api_check queue): din 7 texte, doar al 7-lea asteapta.
+- B8: dupa o eroare la incarcare, os._exit(1). Test: codul de iesire al procesului e 1, deci
+  restart: unless-stopped il reporneste.
+- B4: _cut() in lcp/pipeline.py. Test: latina cu spatii, latina cu linii noi, japoneza cu "。":
+  0 cuvinte taiate, niciun caracter pierdut; japoneza fara punctuatie se taie tare (fallback).
+- P2: Gate.fails e un dict obisnuit, intrarea apare doar la un cod gresit, iar _sweep() le sterge
+  pe cele vechi. Test (fereastra de 1 s): 2000 de adrese cu cod corect -> 0 intrari noi; 100 cu
+  cod gresit -> 100, apoi 0 dupa fereastra; limita de 10 functioneaza in continuare.
+- D-a: openapi_url=None. Pe live, prin Funnel: /openapi.json -> 404.
+
+Detectia spill-ului (B1):
+- Pipeline.probe(): acelasi prompt (118 tokeni) citit de 3 ori fara refolosire, dupa incalzire si
+  dupa fiecare 10 minute fara texte (LCP_PROBE_IDLE_S). /api/health da tok_s, slow (sub 700,
+  LCP_SLOW_TOK_S), probe_age_s si last_text_tok_s; serverul scrie in log "GPU slow". site_start
+  citeste viteza in loc de pragul de 300 MiB shared si avertizeaza cand lipseste nvidia-smi.
+- Test: rater fals (fara refolosire in timpul probei, starea refacuta dupa); server fals (3 probe
+  in 3.5 s cu pauza de 1 s, avertizarea "GPU slow" la 450 tokeni/s); ambele versiuni de
+  PowerShell parseaza scriptul.
+- Restartul de dupa reparatii (site_stop, apoi site_start; Firefox inchis, 511 MiB ocupati
+  inainte): 73 s pana la health, containerul cu 7396 MiB dedicati si 123 MiB shared, proba
+  974 tokeni/s, slow false. api_check: 0.074-0.080 s pe citire, median 15.6 s pe textele de
+  1 paragraf (Etapa 7: 14.3 s; inainte de restart 25.0 s).
+
+Pagina de test (static/index.html):
+- B3: cpMap() converteste offseturile serverului in UTF-16; contorul si avertizarea numara code
+  points, ca serverul. B6: chunk() taie textul la marginile propozitiilor in lucru. B7: BUSY
+  tine Analizeaza blocat. P4: un flux fara "done" da "analiza s-a intrerupt". P5: login cu
+  try/catch.
+- Test in node cu evenimentele reale de pe live: emoji 8/8 cuvinte corecte (inainte 1/8);
+  dupa prima din 3 propozitii, celelalte doua raman estompate; dupa o tasta in timpul analizei
+  butonul ramane blocat si un click nu mai trimite nimic; fluxul intrerupt afiseaza eroarea.
+
+Documentatie si teste:
+- B9: api_check.py verifica lcp-web-static, previzualizarile si o origine care doar incepe cu
+  numele site-ului. Pe live: api_check --parts access texts queue cancel --sizes 1 -> PASS.
+- D1, D2, D6, D7, D8: README.md, docstring-ul din server.py, api_check.py. Concluziile Etapelor 4
+  si 8 au primit cate o sectiune 9 "Dupa audit"; textul initial ramane, cu o corectie la Etapa 8.
+- Logurile dupa toate testele: niciun text trimis.
+
+Ramane nereparat:
+- P1, nume proprii si numerale ca "functionale" (de decis la Etapa 5);
+- P3, /api/health nu vede un fir de lucru mort sau blocat;
+- D-b, regex-ul CORS accepta orice proiect lcp-web-static-*;
+- D-c, rotunjirea in sus a jumatatilor, doar de documentat;
+- D-d, fara timeout la docker info si nvidia-smi in site_start;
+- D-e, codul de acces din transcriptul local (schimbarea codului e optionala);
+- L1-L4, Etapele 5, 6 si 7 finale si "tailscale down/up" dupa restart;
+- docs/PROMPT_audit.md ramane cum a fost scris (cifrele vechi sunt corectate aici si in
+  README).

@@ -10,7 +10,7 @@
   4. a single sentence without sentence ends (a benchmark text repeated) in ja (1000 characters)
      and si (~1990), longer than the 192 tokens of a piece: it must come back in pieces, its
      words flagged `cropped`;
-  5. interleaving: a multi-paragraph English text of ~6000 characters runs; meanwhile a short text
+  5. interleaving: a multi-paragraph English text of ~5100 characters runs; meanwhile a short text
      and a 1-paragraph text are sent and must finish in about their own time (each sentence of the
      long text is one turn), while the long one goes on and completes with every paragraph;
   6. queue: 7 texts at once; with LCP_ACTIVE_MAX 6 the last gets {"type": "queued"} first;
@@ -295,12 +295,15 @@ def access_test(U, h):
                 return r.status, r.headers.get("access-control-allow-origin")
         except urllib.error.HTTPError as e:
             return e.code, e.headers.get("access-control-allow-origin")
-    c1 = preflight("https://lcp-web.vercel.app")
-    c2 = preflight("https://lcp-web-abc123-glosperx.vercel.app")
+    c1 = preflight("https://lcp-web-static.vercel.app")
+    c2 = preflight("https://lcp-web-static-abc123-glosperx.vercel.app")
     c3 = preflight("https://evil.example")
-    say(f"[api] cors: lcp-web.vercel.app {c1}, a preview deployment {c2}, another origin {c3}")
-    check(c1 == (200, "https://lcp-web.vercel.app")
-          and c2[1] == "https://lcp-web-abc123-glosperx.vercel.app" and c3[1] is None, "cors")
+    c4 = preflight("https://lcp-web-static.vercel.app.evil.example")
+    say(f"[api] cors: lcp-web-static.vercel.app {c1}, a preview deployment {c2}, another origin "
+        f"{c3}, the site's name as a prefix {c4}")
+    check(c1 == (200, "https://lcp-web-static.vercel.app")
+          and c2[1] == "https://lcp-web-static-abc123-glosperx.vercel.app" and c3[1] is None
+          and c4[1] is None, "cors")
     # at most 2 texts at once from one address
     ip = {"X-Forwarded-For": "198.51.100.70"}
     res = {}

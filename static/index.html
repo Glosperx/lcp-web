@@ -102,10 +102,20 @@
 // PC; the API allows the Vercel origin through CORS (server.py).
 const API = "https://lcp.tail6e4ef5.ts.net";
 const LABELS = {1: "foarte usor", 2: "usor", 3: "neutru", 4: "dificil", 5: "foarte dificil"};
-let INFO = null, code = "";
+let INFO = null, code = "", BUSY = false;          // BUSY: an analysis is streaming
 try { code = localStorage.getItem("lcp_code") || ""; } catch (e) {}
 const $ = id => document.getElementById(id);
 const esc = s => s.replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+// The API counts characters as Unicode code points (Python), JavaScript strings as UTF-16 units:
+// an emoji is 1 for the server and 2 here. cpLen counts like the server; cpMap(text)[i] is the
+// UTF-16 index of code point i.
+const cpLen = s => { let n = 0; for (const _ of s) n++; return n; };
+function cpMap(text) {
+  const m = [0];
+  let u = 0;
+  for (const ch of text) { u += ch.length; m.push(u); }
+  return m;
+}
 
 async function api(path, opts = {}) {
   const r = await fetch(API + path, {...opts, headers: {"X-Access-Code": code, ...(opts.headers || {})}});
@@ -150,8 +160,11 @@ function note(t) {
 $("login").addEventListener("submit", async ev => {
   ev.preventDefault();
   code = $("code").value;
-  const r = await fetch(API + "/api/auth", {method: "POST", headers: {"Content-Type": "application/json"},
-                                            body: JSON.stringify({code})});
+  let r;
+  try {
+    r = await fetch(API + "/api/auth", {method: "POST", headers: {"Content-Type": "application/json"},
+                                        body: JSON.stringify({code})});
+  } catch (e) { $("loginmsg").textContent = "Serverul nu raspunde (oprit momentan)."; return; }
   if (r.ok) { try { localStorage.setItem("lcp_code", code); } catch (e) {} start(); }
   else $("loginmsg").textContent = r.status === 429 ? "Prea multe incercari; revino mai tarziu."
                                                      : "Cod gresit.";
@@ -166,9 +179,9 @@ function showLang() {
 }
 function count() {
   if (!INFO) return;
-  const n = $("text").value.length, l = lang();
+  const n = cpLen($("text").value), l = lang();
   $("count").textContent = `${n} / ${INFO.max_chars} caractere` + (n > l.warn_chars ? " (text lung)" : "");
-  $("go").disabled = n === 0 || n > INFO.max_chars;
+  $("go").disabled = BUSY || n === 0 || n > INFO.max_chars;
 }
 $("lang").addEventListener("change", showLang);
 $("text").addEventListener("input", count);
@@ -176,22 +189,35 @@ $("text").addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && e.k
 
 function render(text, pend, words) {
   // the text with its scored words coloured; parts not analysed yet are faded.
+  // Offsets are UTF-16 indices here (converted from the API's code points).
   // pend: [{start, end}] sorted, not overlapping; chunks are visited in increasing offset.
   let html = "", pos = 0, pi = 0;
-  const pending = i => {
-    while (pi < pend.length && pend[pi].end <= i) pi++;
-    return pi < pend.length && pend[pi].start <= i;
+  const chunk = (a, b) => {           // text[a:b], cut at the edges of the pending spans
+    let out = "";
+    while (a < b) {
+      while (pi < pend.length && pend[pi].end <= a) pi++;
+      const p = pend[pi];
+      if (p && p.start <= a) {
+        const e = Math.min(b, p.end);
+        out += `<span class="pending">${esc(text.slice(a, e))}</span>`;
+        a = e;
+      } else {
+        const e = p ? Math.min(b, p.start) : b;
+        out += esc(text.slice(a, e));
+        a = e;
+      }
+    }
+    return out;
   };
-  const chunk = (s, off) => !s ? "" : pending(off) ? `<span class="pending">${esc(s)}</span>` : esc(s);
   SHOWN = [...words].sort((a, b) => a.start - b.start);
   SHOWN.forEach((w, k) => {
     if (w.start < pos) return;
-    html += chunk(text.slice(pos, w.start), pos);
+    html += chunk(pos, w.start);
     html += `<span class="w w${w.level}${w.function ? " fn" : ""}" data-k="${k}" tabindex="0">` +
             `${esc(text.slice(w.start, w.end))}</span>`;
     pos = w.end;
   });
-  html += chunk(text.slice(pos), pos);
+  html += chunk(pos, text.length);
   $("out").innerHTML = html;
   const n = [0, 0, 0, 0, 0];
   let nf = 0;
@@ -249,16 +275,20 @@ document.addEventListener("click", e => { if (!e.target.closest("#pop")) closePo
 document.addEventListener("keydown", e => { if (e.key === "Escape") closePop(); });
 
 $("go").addEventListener("click", async () => {
-  const text = $("text").value, l = lang();
-  if (text.length > l.warn_chars) {
-    const min = Math.max(1, Math.round(text.length / 1000 * (l.est_s_per_1000_chars || 20) / 60));
-    if (!confirm(`Textul are ${text.length} caractere; analiza dureaza aproximativ ${min} min. Continui?`)) return;
+  if (BUSY) return;
+  const text = $("text").value, l = lang(), n = cpLen(text);
+  if (n > l.warn_chars) {
+    const min = Math.max(1, Math.round(n / 1000 * (l.est_s_per_1000_chars || 20) / 60));
+    if (!confirm(`Textul are ${n} caractere; analiza dureaza aproximativ ${min} min. Continui?`)) return;
   }
+  BUSY = true;
   $("go").disabled = true; $("msg").textContent = "Se analizeaza..."; $("msg").className = "muted";
+  const cp = cpMap(text), at = i => cp[i] ?? text.length;   // API offsets -> UTF-16
+  const span = x => ({...x, start: at(x.start), end: at(x.end)});
   let paras = [{start: 0, end: text.length}];        // paragraphs not segmented yet
   const sents = new Map(), words = [];               // sentence i -> span, while not done
   const pend = () => [...paras, ...sents.values()].sort((a, b) => a.start - b.start);
-  let n_done = 0;
+  let n_done = 0, finished = false;
   render(text, pend(), words);
   try {
     const r = await api("/api/analyze", {method: "POST", headers: {"Content-Type": "application/json"},
@@ -278,14 +308,15 @@ $("go").addEventListener("click", async () => {
         if (ev.type === "queued") {
           $("msg").textContent = `In asteptare (pozitia ${ev.position})...`;
         } else if (ev.type === "paragraphs") {
-          paras = ev.paragraphs.map(p => ({i: p.i, start: p.start, end: p.end}));
+          paras = ev.paragraphs.map(p => span({i: p.i, start: p.start, end: p.end}));
         } else if (ev.type === "sentences") {
           paras = paras.filter(p => p.i !== ev.paragraph);
-          for (const s of ev.sentences) sents.set(s.i, {start: s.start, end: s.end});
+          for (const s of ev.sentences) sents.set(s.i, span({start: s.start, end: s.end}));
         } else if (ev.type === "sentence") {
-          sents.delete(ev.i); words.push(...ev.words); n_done++;
+          sents.delete(ev.i); words.push(...ev.words.map(span)); n_done++;
           $("msg").textContent = `Se analizeaza... ${n_done} propozitii gata`;
         } else if (ev.type === "done") {
+          finished = true;
           $("msg").textContent = `Gata: ${ev.content_words} cuvinte in ${ev.timings.total_s.toFixed(1)} s.`;
         } else if (ev.type === "error") {
           throw new Error(ev.message);
@@ -293,11 +324,12 @@ $("go").addEventListener("click", async () => {
         if (ev.type !== "ping") rerender(text, pend(), words);
       }
     }
+    if (!finished) throw new Error("analiza s-a intrerupt (serverul a inchis conexiunea).");
   } catch (e) {
     $("msg").textContent = e instanceof TypeError ? "Serverul nu raspunde (oprit momentan)."
                                                   : "Eroare: " + e.message;
     $("msg").className = "err";
-  } finally { $("go").disabled = false; count(); }
+  } finally { BUSY = false; count(); }
 });
 
 start();
