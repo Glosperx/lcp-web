@@ -167,14 +167,20 @@ class Pipeline:
         self.load_seconds["probe"] = time.perf_counter() - t
         self.load_seconds["total"] = time.perf_counter() - t0
 
-    def probe(self, n=3):
+    def probe(self, n=3, warm_s=0.5):
         """The GPU's speed on a fixed prompt, n readings without KV reuse: {"tok_s",
-        "s_per_reading", "tokens", "at"}, also kept in self.speed. Run it only between texts."""
+        "s_per_reading", "tokens", "at"}, also kept in self.speed. Run it only between texts.
+        Untimed readings for warm_s seconds come first: an idle GPU sits at its lowest clocks (P8,
+        300 MHz) and the timed readings (~0.3 s) ended before it clocked up, so the re-check after
+        idle time reported "slow" (~550 tokens/s) while real texts ran at full speed."""
         lang, sent, word = PROBE
         content = signal_b.render(PROMPTS[0], lang, sent, word)
         reuse, self.rt.reuse = self.rt.reuse, False
-        ev, t = 0, time.perf_counter()
         try:
+            t = time.perf_counter()
+            while time.perf_counter() - t < warm_s:
+                self.rt.digit_probs(content)
+            ev, t = 0, time.perf_counter()
             for _ in range(n):
                 self.rt.digit_probs(content)
                 ev += self.rt.last[1]

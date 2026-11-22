@@ -166,14 +166,27 @@ Se incarca skill-ul `apple-design` inainte de primul rand de cod.
   0-1, lema, frecventa Zipf, si pe un rand mic A si B. Escape sau click in afara il inchide.
 - Nota sub iesire: scorurile se compara doar in aceeasi limba. Fara text din MLSP pe site.
 
-## Etapa 6. Imaginea Docker finala
+## Etapa 6. Imaginile Docker portabile (planificata pe 22 nov, inca neconstruita)
 
-- Un `Dockerfile` cu `ARG TARGET=cpu|cuda`: cpu pe `python:3.11-slim` (linux/arm64 pe Mac), cuda pe
-  `nvidia/cuda` devel (linux/amd64), cu llama-cpp-python compilat `-DGGML_CUDA=on`. Torch CPU in
-  ambele, doar pentru encodere.
-- Totul copt in imagine, cu revizii fixate: cod, artefacte, GGUF (7 GB), tokenizer-ul HF Gemma,
-  cele 3 encodere (~4 GB), stanza pentru 9 limbi (doar procesoarele necesare), MeCab/ipadic.
-  Imagine ~15 GB. `docker-compose.yml` cu profil cpu si profil gpu.
+Deciziile lui Alexandru (22 nov):
+- Doua imagini, doar linux/amd64 (fara arm64), dintr-un `docker/Dockerfile` cu
+  `ARG TARGET=cuda|cpu`:
+  - cuda: nvidia/cuda 12.6.3 (devel pentru build, runtime la final), cu llama.cpp compilat pentru
+    sm_75, 80, 86, 89 si 90, plus PTX compute_90 (Blackwell merge prin JIT);
+  - cpu: python:3.11-slim, ca rezerva (de ~35 de ori mai lenta).
+  In ambele, llama.cpp e compilat fara GGML_NATIVE, iar varianta de procesor se alege la rulare
+  (GGML_BACKEND_DL, GGML_CPU_ALL_VARIANTS). Torch CPU ramane doar pentru encodere.
+- Totul copt in imagine, cu revizii fixate, din volumele PC-ului, fara descarcari noi: GGUF-ul,
+  tokenizer-ul Gemma, cele 3 encodere, stanza pentru 9 limbi (doar tokenize, mwt, pos, lemma),
+  MeCab/ipadic, codul, artefactele si pagina. `HF_HUB_OFFLINE=1`, utilizator fara root,
+  healthcheck. Marimi estimate: cuda ~19-20 GB, cpu ~15 GB, cu straturile de modele comune
+  (`COPY --link`).
+- `docker-compose.server.yml`, cu profilurile gpu si cpu, pentru serverul nou. Site-ul de pe PC
+  ramane pe `lcp-web:cuda`, cu volumele si repo-ul montat (`docker-compose.yml` neschimbat).
+- Schimbari mici in cod: setarile llama.cpp din variabile de mediu (implicit cele de acum);
+  estimarea de timp scalata dupa `tok_s`; pagina vorbeste cu propria origine oriunde in afara de
+  Vercel; `LCP_TRUST_XFF` pentru un port expus fara proxy.
+- Planul detaliat, ce s-a verificat deja si testele sunt in `docs/PROMPT_etapa6.md`.
 
 ## Etapa 7. Benchmark-ul complet: `scripts/benchmark.py`
 
@@ -198,8 +211,10 @@ GitHub.
   container > 0.36 s (MLX pe Metal), altfel ceva e masurat gresit.
 - Etapa 2: A identic cu `signal_a.csv`, fuziunea identica cu `fuse.py --out`.
 - Etapa 3: r de fuziune pe 11 limbi cu llama.cpp, raportat langa 0.692521.
-- Etapele 4-6: `docker compose --profile cpu up`, `http://localhost:8000`, un paragraf in fiecare
-  limba, culorile si popover-ul merg.
+- Etapele 4-5: `docker compose up -d`, `http://localhost:8000`, un paragraf in fiecare limba,
+  culorile si popover-ul merg.
+- Etapa 6: `docker compose -f docker-compose.server.yml --profile gpu up` (si `--profile cpu`) pe
+  portul 8001, cu portile si testele din `docs/PROMPT_etapa6.md`.
 - Etapa 7: tabelul de timpi din cele trei locuri.
 
 Limitare cunoscuta: in japoneza tintele MLSP sunt unitati mai lungi (ex. 活躍した) decat tokenii
