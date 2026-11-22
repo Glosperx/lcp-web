@@ -32,7 +32,8 @@ logged. Static files (stage 5) are served from static/ when it exists. A request
 MAX_BODY (256 KiB; 20000 characters take at most ~240 KB of JSON) gets 413 before it is read. If
 the models fail to load, the process exits, so that Docker's restart policy starts it again.
 
-Access: with LCP_ACCESS_CODE set, /api/languages and /api/analyze need the header X-Access-Code;
+Access: with LCP_ACCESS_CODE set, /api/languages and /api/analyze need the header X-Access-Code
+(/api/analyze also takes it as "code" in the JSON body, so the page's POST needs no preflight);
 10 wrong codes from one address in 10 minutes block it for the rest of the window. /api/health
 stays open. CORS: LCP_CORS_ORIGINS (comma-separated) and LCP_CORS_REGEX (Vercel previews).
 The visitor's address is the last entry of X-Forwarded-For, set by Tailscale Funnel; the port is
@@ -57,9 +58,10 @@ import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 from lcp.pipeline import MAX_CHARS, Cancelled, Pipeline
 
@@ -256,10 +258,22 @@ app.add_middleware(CORSMiddleware, allow_origins=CORS_ORIGINS, allow_origin_rege
 class AnalyzeIn(BaseModel):
     lang: str
     text: str
+    code: str = ""                   # the access code, if the X-Access-Code header is not sent
 
 
 class AuthIn(BaseModel):
     code: str
+
+
+async def body_of(request, model):
+    """The JSON body as `model`, whatever its Content-Type. The page sends text/plain (a
+    CORS-safelisted type) and the code in the body, so its POSTs are "simple" requests without a
+    CORS preflight: one round trip less through the tunnel, which takes seconds on a slow relay.
+    Invalid bodies get the same 422 as FastAPI's own validation."""
+    try:
+        return model.model_validate_json(await request.body() or b"{}")
+    except ValidationError as e:
+        raise RequestValidationError(e.errors(include_url=False)) from None
 
 
 def client_ip(request):
@@ -348,8 +362,9 @@ def health():
 
 
 @app.post("/api/auth")
-def auth(body: AuthIn, request: Request):
-    """Checks an access code (the frontend asks for it once and then sends it as X-Access-Code)."""
+async def auth(request: Request):
+    """Checks an access code (the frontend asks for it once, then sends it with each request)."""
+    body = await body_of(request, AuthIn)
     G.check(client_ip(request), body.code)
     return {"ok": True}
 
@@ -361,8 +376,9 @@ def languages(request: Request):
 
 
 @app.post("/api/analyze")
-async def analyze(body: AnalyzeIn, request: Request):
-    G.check(client_ip(request), request.headers.get("x-access-code", ""))
+async def analyze(request: Request):
+    body = await body_of(request, AnalyzeIn)
+    G.check(client_ip(request), request.headers.get("x-access-code", "") or body.code)
     p = _ready()
     if body.lang not in p.langs:
         raise HTTPException(400, f"unsupported language; one of {p.langs}")

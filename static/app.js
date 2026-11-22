@@ -271,6 +271,10 @@ function renderStatus() {
 }
 
 // ------------------------------------------------------------------------------ API
+// POST bodies are JSON sent as text/plain (a CORS-safelisted type) with no custom header, so the
+// browser sends them as "simple" requests, without a CORS preflight first: through the tunnel each
+// extra round trip can take seconds. The server reads the body as JSON whatever its Content-Type.
+const SIMPLE = "text/plain;charset=UTF-8";
 function api(path, opts = {}) {
   const headers = {...(opts.headers || {})};
   if (CODE) headers["X-Access-Code"] = CODE;
@@ -307,6 +311,23 @@ function noteSlow() {
   if (HEALTH && HEALTH.status === "ok" && HEALTH.slow) showBanner("bnSlow", "warn");
   else hideBanner("bnSlow");
 }
+// Keep the connection warm. Through Tailscale Funnel a new connection can take 5-20 s (TLS through
+// a slow relay), a request on an open one ~1.5 s. While someone uses the page (visible, touched in
+// the last ACTIVE_MS), a small /api/health every WARM_MS keeps the browser's connection to the
+// server open, so "Analizează" goes out on it at once; it also keeps the slow banner current.
+const WARM_MS = 25000, ACTIVE_MS = 10 * 60 * 1000;
+let lastActive = Date.now();
+for (const e of ["pointerdown", "keydown", "input", "wheel", "touchstart"])
+  addEventListener(e, () => { lastActive = Date.now(); }, {capture: true, passive: true});
+async function keepWarm() {
+  if (RUN || document.visibilityState !== "visible" || Date.now() - lastActive > ACTIVE_MS) return;
+  const h = await checkHealth();
+  if (h && h.status === "ok") noteSlow();
+}
+setInterval(keepWarm, WARM_MS);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") { lastActive = Date.now(); keepWarm(); }
+});
 
 // ------------------------------------------------------------------------------ start, login
 let INFO_FRESH = false;                // INFO came from the server in this visit
@@ -374,7 +395,7 @@ $("loginForm").addEventListener("submit", async ev => {
   $("loginMsg").textContent = "";
   let r;
   try {
-    r = await fetch(API + "/api/auth", {method: "POST", headers: {"Content-Type": "application/json"},
+    r = await fetch(API + "/api/auth", {method: "POST", headers: {"Content-Type": SIMPLE},
                                         body: JSON.stringify({code})});
   } catch (e) {
     $("loginMsg").textContent = t("errNet");
@@ -829,9 +850,10 @@ async function analyze() {
   const tick = setInterval(runStatus, 1000);
   let final = null;
   try {
-    const r = await api("/api/analyze", {method: "POST", headers: {"Content-Type": "application/json"},
-                                         body: JSON.stringify({lang: l.code, text}),
-                                         signal: run.ctrl.signal});
+    // The code goes in the body, not in X-Access-Code: see SIMPLE.
+    const body = CODE ? {lang: l.code, text, code: CODE} : {lang: l.code, text};
+    const r = await fetch(API + "/api/analyze", {method: "POST", headers: {"Content-Type": SIMPLE},
+                                                 body: JSON.stringify(body), signal: run.ctrl.signal});
     if (r.status === 401) {
       forgetCode();
       showLogin("loginExpired");
