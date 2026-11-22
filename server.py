@@ -422,7 +422,16 @@ async def analyze(request: Request):
 
 if os.path.isdir(STATIC):
     from fastapi.staticfiles import StaticFiles
-    app.mount("/", StaticFiles(directory=STATIC, html=True), name="static")
+
+    class RevalidatedStatic(StaticFiles):
+        # Without a Cache-Control header browsers guess a freshness from Last-Modified and keep an old
+        # app.css or app.js for hours. no-cache makes them ask every time; unchanged files get a 304.
+        def file_response(self, *args, **kwargs):
+            resp = super().file_response(*args, **kwargs)
+            resp.headers["Cache-Control"] = "no-cache"
+            return resp
+
+    app.mount("/", RevalidatedStatic(directory=STATIC, html=True), name="static")
 else:
     @app.get("/", response_class=HTMLResponse)
     def root():
