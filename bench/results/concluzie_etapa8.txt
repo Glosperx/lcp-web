@@ -1,0 +1,118 @@
+Etapa 8 pe PC: serverul si hostingul
+22 noiembrie 2026
+
+Fisiere: api_check_access.txt (codul de acces, CORS, limita pe adresa, alternarea, coada,
+anularea). Codul: docker-compose.yml, .env.example, server.py (cod de acces, CORS, limita pe
+adresa, ping, HEAD pe /api/health), static/index.html (pagina de test), scripts/site_start.ps1 si
+.cmd, scripts/site_stop.ps1 si .cmd, scripts/api_check.py (--code, --parts).
+
+
+1. Cum arata
+
+  vizitator -> https://lcp-web-static.vercel.app   pagina statica (Vercel, gratuit)
+            -> https://lcp.tail6e4ef5.ts.net       Tailscale Funnel pe PC (gratuit)
+            -> 127.0.0.1:8000                      containerul lcp-web:cuda pe RTX 2070 SUPER
+
+- Partea cu GPU nu poate rula pe planurile gratuite (Vercel, Railway, Hugging Face), deci serverul
+  e PC-ul de acasa, pornit 24/7. Dintre tunelurile gratuite am ales Tailscale Funnel: Cloudflare
+  Tunnel cere un domeniu propriu, iar ngrok gratuit are doar 1 GB pe luna.
+- Vercel publica doar folderul static/ (Root Directory static, preset Other) si face deploy singur
+  la fiecare push. Planul Hobby e gratuit pentru uz necomercial. PC-ul serveste aceeasi pagina si
+  la radacina adresei ts.net.
+- Containerul porneste cu docker compose (restart: unless-stopped, healthcheck pe /api/health).
+  Portul e legat doar la 127.0.0.1, deci din afara se ajunge la server numai prin Funnel.
+
+
+2. Protectie
+
+- Cod de acces: vizitatorul il scrie o data, pagina il tine in localStorage si il trimite in
+  antetul X-Access-Code. Codul sta doar in .env (gitignored), nu in git si nici in pagina.
+  10 coduri gresite de la o adresa in 10 minute o blocheaza pana la sfarsitul ferestrei (429).
+- O adresa poate avea cel mult 2 texte in lucru sau la coada. Adresa e ultima intrare din
+  X-Forwarded-For, pe care Funnel o pune singur. Am verificat ca valorile false trimise de
+  client sunt inlocuite, deci limita nu se poate ocoli asa.
+- CORS: doar site-ul de pe Vercel (si deploy-urile lui de preview), adresa ts.net si localhost.
+  Alte origini primesc 400 la preflight.
+- Textele nu se logheaza nicaieri.
+- Testul complet (api_check.py --parts access ...) e in api_check_access.txt: 401 fara cod si cu
+  cod gresit, 429 dupa 10 coduri gresite, 429 la al treilea text de pe aceeasi adresa, PASS.
+
+
+3. Pagina de test (static/index.html)
+
+Nu e frontend-ul din Etapa 5, ci o pagina simpla ca sa se poata folosi site-ul de acum.
+- Login cu codul de acces, lista de limbi tinuta in cache (pagina apare imediat, fara sa astepte
+  serverul), analiza in flux, propozitiile neterminate estompate.
+- Toate cuvintele sunt colorate: cele de continut dupa nivelul modelului, cele functionale
+  (articole, prepozitii etc.) ca nivel 1, fara model.
+- Click sau tap pe un cuvant arata nivelul, scorul 0-1, lema, Zipf, A si B.
+- Confirmare peste warn_chars (2000, ja 700), cu estimarea timpului.
+- Testata de Alexandru pe telefon: merge.
+
+
+4. Testul de restart
+
+  16:23:33  boot
+  16:23:42  autologon
+  16:24:25  porneste Docker Desktop (la login)
+  16:24:43  porneste containerul (restart policy)
+  16:25:58  containerul e healthy, Funnel e pornit singur
+
+Site-ul revine singur in ~2.5 minute de la boot. Dupa incarcare: VRAM 7.9 din 8.2 GB, memorie
+shared a containerului ~110-190 MiB (normala, fara spill).
+
+Problema gasita: imediat dupa boot tunelul era lent. Pe PC totul e rapid (TLS prin tailscaled
+11 ms, /api/health local 3 ms), dar nodurile de ingress Funnel nu se conecteaza niciodata direct, ci
+prin releul DERP din Frankfurt. Ping-ul spre ele dadea 0.7-1.2 s, desi Frankfurt e la 33 ms, iar o
+conexiune noua ajunsese la 3-6 s. Dupa "tailscale down" si "tailscale up" a coborat la 0.8-2.5 s pe
+conexiune noua si ~0.2 s pe cerere pe o conexiune deja deschisa. Inainte de restart erau 0.3-0.5 s
+si 0.13 s. Analiza unei propozitii scurte: 3.9 s public, 1.3 s local. Pagina de pe Vercel se
+incarca in 0.4 s. Pagina de status Tailscale arata totul operational. Graficul de timp de raspuns
+din UptimeRobot arata daca revine. Daca se repeta dupa fiecare restart, "tailscale down/up" intra
+in scriptul de pornire.
+
+
+5. Monitorizare (UptimeRobot)
+
+Monitor HTTP(s) gratuit pe https://lcp.tail6e4ef5.ts.net/api/health, la 5 minute, cu alerta pe
+mail. /api/health raspunde 200 cand merge, 503 cat se incarca modelele si 500 la eroare. Daca PC-ul
+sau containerul pica, Funnel raspunde 502.
+
+Problema gasita: UptimeRobot verifica cu HEAD, iar ruta accepta doar GET. Cererea HEAD ajungea la
+mount-ul static si primea 404, deci monitorul arata "Down". Ruta accepta acum si HEAD. Prima
+verificare dupa corectura (16:45:48) a primit 200.
+
+
+6. Pornire si oprire (scripts/site_start.cmd, scripts/site_stop.cmd)
+
+- site_start: porneste Docker Desktop daca nu ruleaza. Verifica VRAM-ul inainte de incarcare: peste
+  700 MiB arata ce aplicatii folosesc placa si asteapta sa le inchizi, pentru ca altfel Gemma trece
+  in memoria shared si analiza e ~2x mai lenta. Apoi ruleaza docker compose up -d, asteapta
+  /api/health, porneste Funnel pe 8000 daca e oprit si verifica spill-ul la final.
+- site_stop: docker compose stop, deci placa e libera (de exemplu pentru jocuri). Containerul ramane
+  oprit si dupa restart, pana la urmatorul site_start. Cu -Docker inchide si Docker Desktop, ca sa
+  elibereze si RAM-ul masinii WSL (pana la 12 GB).
+- Testat sub Windows PowerShell 5.1 si PowerShell 7: oprire, apoi pornire de la zero in 76 s
+  (71 s incarcarea modelelor). VRAM 636 MiB inainte, 7931 MiB dupa, shared 195 MiB. Ramura de
+  avertizare pentru VRAM prea plin, testata pe o copie cu limita coborata, listeaza aplicatiile.
+
+
+7. Riscuri si limite
+
+- Site-ul merge cat timp merge PC-ul. Pana de curent, internet cazut sau un update de Windows
+  fara restart terminat il opresc. Dupa restart revine singur.
+- Autologonul e necesar ca Docker Desktop sa porneasca fara tine. Pretul: cine are acces fizic la
+  PC intra in cont fara parola.
+- Viteza tunelului depinde de releul Tailscale si variaza (vezi punctul 4). Planul gratuit
+  Funnel nu promite latenta sau latime de banda.
+- Cat timp serverul e oprit cu site_stop, pagina de pe Vercel se incarca, dar analiza da eroare
+  de retea, iar UptimeRobot trimite mail "Down". Monitorul se poate pune pe Pause.
+- Vercel Hobby e doar pentru uz necomercial.
+
+
+8. Ce urmeaza
+
+Etapa 5, frontend-ul adevarat. Decizii de luat inainte: scala de culori (cum e acum, cu ~50%
+nivel 1 si ~35% nivel 2 pe texte reale, sau recalibrata pe texte obisnuite), limba interfetei
+(ro, en sau ambele) si skill-ul apple-design (nu e instalat aici). Dupa ea: Etapa 6 (imaginea
+finala) si Etapa 7 (benchmark-ul final).

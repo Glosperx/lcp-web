@@ -6,7 +6,7 @@
                         (warn_chars: 2000, 700 for Japanese, which has ~3 times more content words
                         per character) with an estimate of the time per 1000 characters
   GET  /api/health      "loading" while the models load (~40 s), then "ok" with the active and
-                        waiting texts
+                        waiting texts (HEAD too, for uptime monitors)
   POST /api/analyze     {"lang": "en", "text": "..."} -> application/x-ndjson, one JSON object per
                         line: optionally {"type": "queued", "position": n}, then "paragraphs", per
                         paragraph "sentences" (its sentence spans) and one "sentence" per finished
@@ -251,7 +251,7 @@ def _ready():
     return W.pipeline
 
 
-@app.get("/api/health")
+@app.api_route("/api/health", methods=["GET", "HEAD"])  # HEAD: uptime monitors
 def health():
     if W.error:
         return JSONResponse({"status": "error"}, status_code=500)

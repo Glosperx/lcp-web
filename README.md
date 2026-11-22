@@ -117,7 +117,8 @@ Results and conclusion: `bench/results/concluzie_etapa4.txt`.
 
 ```
 lcp/pipeline.py          raw text -> per content word: level 1-5, score 0-1, lemma, Zipf, A, B
-server.py                FastAPI: POST /api/analyze (NDJSON stream), GET /api/languages, /api/health
+server.py                FastAPI: POST /api/analyze (NDJSON stream), GET /api/languages, /api/health,
+                         POST /api/auth (access code, stage 8)
 scripts/pipeline_check.py  gate: the site's code path on test rows against the stage 3 reference
 scripts/api_check.py     the running API on the benchmark texts, limits, long sentences, queue, cancel
 docker/requirements.server.txt  fastapi, starlette, uvicorn (last layer of Dockerfile.cuda)
@@ -143,3 +144,44 @@ not held up by a long one. Sentences of more than 192 tokens or 40 content words
 pieces. A client that disconnects cancels its text. Texts are never logged. The models take ~40 s
 to load; `/api/health` answers 503 until then. All nine stanza pipelines stay loaded
 (`LCP_STANZA_KEEP=0`, ~7.2 GB for the container).
+
+### Stage 8: hosting from the PC
+
+Results and conclusion: `bench/results/concluzie_etapa8.txt`.
+
+The page is static and hosted on Vercel; the API runs on the PC's GPU and is reachable only through
+Tailscale Funnel:
+
+```
+visitor -> https://lcp-web-static.vercel.app      static/ (Vercel project lcp-web, Root Directory static)
+        -> https://lcp.tail6e4ef5.ts.net          Tailscale Funnel on the PC
+        -> 127.0.0.1:8000                         the container (docker-compose.yml)
+```
+
+```
+docker-compose.yml       the API container: GPU, repo mounted at /app, restart: unless-stopped,
+                         healthcheck on /api/health, port bound to 127.0.0.1
+.env.example             template for .env (gitignored): access code, CORS origins, texts per address
+static/index.html        the page: access code, streaming analysis, colours per level (function words
+                         as level 1 without the model), score popover; the API address is inline
+scripts/site_start.cmd   double-click: Docker Desktop if needed, VRAM check, docker compose up -d,
+                         wait for /api/health, Funnel on port 8000, spill check
+scripts/site_stop.cmd    double-click: docker compose stop (frees the GPU, stays stopped after a reboot);
+                         site_stop.ps1 -Docker also quits Docker Desktop
+```
+
+```powershell
+copy .env.example .env                      # then set LCP_ACCESS_CODE
+docker compose up -d                        # or scripts\site_start.cmd
+& "C:\Program Files\Tailscale\tailscale.exe" funnel --bg 8000   # once, persists across reboots
+```
+
+After a reboot the site comes back by itself in ~2.5 min: autologon, Docker Desktop (starts at
+login), the container (restart policy), Funnel (persistent). UptimeRobot checks
+`https://lcp.tail6e4ef5.ts.net/api/health` every 5 minutes (it sends HEAD, which the route accepts).
+Every request except `/api/health` needs the header `X-Access-Code`; `POST /api/auth` checks a code,
+10 wrong codes from one address in 10 minutes block it for the rest of the window, and one address
+may have 2 texts running or waiting. The address is the last `X-Forwarded-For` entry, which Funnel
+sets itself. CORS allows the Vercel site and its preview deployments (`LCP_CORS_REGEX`). On this PC
+MagicDNS answers with the tailnet address, so test the public path with the public relay address:
+`curl --resolve lcp.tail6e4ef5.ts.net:443:<A record from public DNS> https://lcp.tail6e4ef5.ts.net/api/health`.

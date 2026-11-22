@@ -3,7 +3,8 @@
 #
 #   docker compose up -d                 start (and after every reboot, through restart: below)
 #   docker compose logs -f api           logs (texts are never logged)
-#   docker compose down                  stop
+#   docker compose stop                  stop; stays stopped after a reboot until the next up -d
+#   scripts\site_start.cmd / site_stop.cmd   the same with checks (VRAM, health, Funnel), double-click
 #
 # Secrets and settings in .env (gitignored; see .env.example). The image is the stage 7 CUDA image
 # (docker/Dockerfile.cuda); code and artifacts come from this repo, mounted at /app, and the models
