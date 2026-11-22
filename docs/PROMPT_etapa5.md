@@ -109,8 +109,7 @@ Comportament de stiut:
 
 - `static/`: HTML + CSS + JS simplu, fara build (PLAN: `index.html`, `app.css`, `app.js`). Vercel
   publica folderul asa cum e.
-- Daca skill-ul `apple-design` e instalat, se incarca inainte de primul rand de cod (vezi
-  deciziile).
+- Skill-ul `apple-design` (instalat, vezi deciziile) se incarca inainte de primul rand de cod.
 - Asezare ca DeepL: doua panouri egale, unul langa altul, unul sub altul pe telefon. Stanga: bara
   cu selectorul de limba si r-ul limbii, caseta mare de text, contorul, butonul Analizeaza si
   Cmd/Ctrl+Enter. Dreapta: acelasi text, cu cuvintele colorate.
@@ -148,8 +147,12 @@ Comportament de stiut:
    numeralele raman nivel 1 "functional" sau devin "neevaluat", fara culoare?
 2. Limba interfetei: romana, engleza sau ambele (cu comutator). Etichetele de nivel vin de la
    server in engleza; pagina le traduce.
-3. Skill-ul `apple-design`: nu e instalat pe PC. Il instaleaza Alexandru sau se lucreaza fara el,
-   dupa principiile lui (tipografie de sistem, spatiere generoasa, culori sobre, dark mode).
+3. Skill-ul `apple-design`: instalat pe 22 nov in `~/.claude/skills/apple-design/` (skill de
+   utilizator; sursa si commit-ul in `SOURCE.txt`): cel al lui Emil Kowalski din
+   github.com/emilkowalski/skills, MIT, un singur fisier, scris pentru web (raspuns imediat,
+   miscare cu arcuri si intreruptibila, materiale, tipografie, reduced motion, cele opt principii
+   Apple). Il incarci cu tool-ul Skill inainte de primul rand de cod. Nu mai e de intrebat;
+   intrebi doar daca Alexandru vrea mai multa sau mai putina miscare in pagina.
 
 ## Cum testezi
 
