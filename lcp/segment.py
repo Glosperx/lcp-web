@@ -12,6 +12,21 @@ The paper scores MLSP targets, which are content words given in a context. On ra
     realistic number of content words); the share of content words is reported by the benchmark.
 A token without any letter (numbers, symbols) is never a content word.
 
+Words, not tokens. Stanza's tokeniser sometimes cuts one written word in two with nothing between
+the pieces (Romanian "liturghie" at the end of a text without final punctuation gives "liturghi" +
+"e"). Adjacent tokens with a letter or digit on both sides of the cut are joined into one word
+(except in Japanese, written without spaces), and that word gets its UPOS and lemma from tagging
+the sentence again with it as a single token. Cuts at a hyphen or an apostrophe (Romanian "s-a",
+French "l'homme") are left as they are.
+
+Romanian typed without diacritics. The stanza Romanian models are trained on text with diacritics:
+on "Maine ma gandesc" they tag "Maine" as the US state (PROPN), "daca" as a noun, "acasa" as a
+proper noun. When a Romanian text has no diacritic at all, stanza is given a copy with them
+restored word by word: each word becomes its most frequent form in wordfreq's Romanian list that
+differs from it only by ă â î ș ț (ties and unknown words stay as typed). The copy has the same
+length, so the offsets hold; the words shown, their context and the forms scored stay the user's,
+only the UPOS and the lemma come from the copy.
+
 The context of a word is its sentence. Stanza pipelines are loaded lazily, one per language.
 
 Prepare the stanza models once (unpacks the default packages cached on Hugging Face into
@@ -78,6 +93,46 @@ def _has_letter(s):
     return any(c.isalpha() for c in s)
 
 
+# ----------------------------------------------------------------------------- Romanian diacritics
+_RO_DIACRITICS = frozenset("ăâîșțşţĂÂÎȘȚŞŢ")
+_RO_STRIP = str.maketrans("ăâîșțşţ", "aaistst")
+_RO_WORD = re.compile(r"[^\W\d_]+")
+_ro_map = None
+
+
+def _ro_restore_map():
+    """{word without diacritics: its most frequent form with diacritics}, from wordfreq."""
+    global _ro_map
+    if _ro_map is None:
+        from wordfreq import get_frequency_dict
+        fd = get_frequency_dict("ro")
+        best = {}
+        for w, f in fd.items():
+            if not any(c in _RO_DIACRITICS for c in w):
+                continue
+            k = w.translate(_RO_STRIP)
+            if len(k) == len(w) and f > fd.get(k, 0.0) and f > best.get(k, ("", 0.0))[1]:
+                best[k] = (w, f)
+        _ro_map = {k: w for k, (w, _) in best.items()}
+    return _ro_map
+
+
+def restore_ro(text):
+    """`text` with the Romanian diacritics restored word by word if it has none (same length),
+    else `text` unchanged."""
+    if any(c in _RO_DIACRITICS for c in text):
+        return text
+    m = _ro_restore_map()
+
+    def fix(mo):
+        w = mo.group(0)
+        r = m.get(w.lower())
+        if r is None or len(r) != len(w):
+            return w
+        return "".join(b.upper() if a.isupper() else b for a, b in zip(w, r))
+    return _RO_WORD.sub(fix, text)
+
+
 # ----------------------------------------------------------------------------- stanza
 class Segmenter:
     def __init__(self):
@@ -106,25 +161,62 @@ class Segmenter:
         return _regex(lang, text)
 
     def _stanza(self, lang, text):
-        doc = self.pipeline(lang)(text)
-        out = []
+        src = restore_ro(text) if lang == "ro" else text
+        nlp = self.pipeline(lang)
+        doc = nlp(src)
+
+        def glued(t, u):     # u continues the written word that t ends
+            i = u.start_char
+            return (lang != "ja" and t.end_char == i and 0 < i < len(text)
+                    and _word_char(text[i - 1]) and _word_char(text[i]))
+
+        sents = []
         for sn in doc.sentences:
             toks = [t for t in sn.tokens if t.start_char is not None and t.end_char is not None]
             if not toks:
                 continue
+            if sents and glued(sents[-1][-1], toks[0]):    # a word cut across two sentences
+                sents[-1] += toks
+            else:
+                sents.append(toks)
+        out = []
+        for toks in sents:
+            groups = []                                    # the tokens of each written word
+            for t in toks:
+                if groups and glued(groups[-1][-1], t):
+                    groups[-1].append(t)
+                else:
+                    groups.append([t])
+            retag = _retag(nlp, src, groups) if len(groups) < len(toks) else None
             s0, s1 = toks[0].start_char, toks[-1].end_char
             sent = Sentence(text[s0:s1].replace("\n", " "), s0, s1)
-            for t in toks:
-                upos = [w.upos or "" for w in t.words]
+            for k, g in enumerate(groups):
+                a, b = g[0].start_char, g[-1].end_char
+                ws = [retag[k]] if len(g) > 1 and retag else [w for t in g for w in t.words]
+                upos = [w.upos or "" for w in ws]
                 content = [u for u in upos if u in CONTENT_UPOS]
-                form = text[t.start_char:t.end_char]
+                form = text[a:b]
                 sent.words.append(Word(
-                    form, t.start_char - s0, t.end_char - s0,
-                    lemma=" ".join(w.lemma for w in t.words if w.lemma),
+                    form, a - s0, b - s0,
+                    lemma=" ".join(w.lemma for w in ws if w.lemma),
                     upos=(content or upos or [""])[0],
                     content=bool(content) and _has_letter(form)))
             out.append(sent)
         return out
+
+
+def _retag(nlp, src, groups):
+    """Stanza words of a sentence tagged again (pos, lemma) with each group of tokens as one token:
+    one word per group, or None if the pipeline has no tagger."""
+    if "pos" not in nlp.processors:
+        return None
+    from stanza.models.common.doc import Document
+    doc = Document([[{"id": i + 1, "text": src[g[0].start_char:g[-1].end_char]}
+                     for i, g in enumerate(groups)]])
+    for p in ("pos", "lemma"):
+        if p in nlp.processors:
+            nlp.processors[p].process(doc)
+    return doc.sentences[0].words
 
 
 # ----------------------------------------------------------------------------- regex (fil, si)
