@@ -229,6 +229,9 @@ textarea {
   background: transparent; padding: 18px 20px 8px;
   font-size: var(--text-size); line-height: 1.65; letter-spacing: -.003em;
 }
+/* The global :focus-visible ring outranks the outline: none above and a textarea always matches it,
+   so it drew a box that did not fit the card. The caret is the focus cue here. */
+textarea:focus-visible { outline: none; }
 textarea::placeholder { color: var(--muted); opacity: .8; }
 .count { font-size: .8125rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .count.warn { color: var(--warn); }
