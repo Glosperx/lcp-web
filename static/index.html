@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LCP - pagina de test</title>
-<script src="config.js"></script>
 <style>
   :root {
     --bg: #fafafa; --fg: #1d1d1f; --muted: #6e6e73; --card: #fff; --line: #d2d2d7;
@@ -99,7 +98,9 @@
   </section>
 </main>
 <script>
-const API = window.LCP_API || "";
+// The API: the PC, through Tailscale Funnel. The page itself may be served from Vercel or from the
+// PC; the API allows the Vercel origin through CORS (server.py).
+const API = "https://lcp.tail6e4ef5.ts.net";
 const LABELS = {1: "foarte usor", 2: "usor", 3: "neutru", 4: "dificil", 5: "foarte dificil"};
 let INFO = null, code = "";
 try { code = localStorage.getItem("lcp_code") || ""; } catch (e) {}
@@ -111,23 +112,39 @@ async function api(path, opts = {}) {
   return r;
 }
 
+function showApp() {
+  $("login").hidden = true; $("app").hidden = false;
+  const cur = $("lang").value ||
+    (() => { try { return localStorage.getItem("lcp_lang"); } catch (e) { return null; } })();
+  $("lang").innerHTML = INFO.languages.map(l => `<option value="${l.code}">${l.name}</option>`).join("");
+  if (cur && INFO.languages.some(l => l.code === cur)) $("lang").value = cur;
+  showLang(); count();
+}
+
 async function start() {
-  try {
-    const h = await fetch(API + "/api/health");
-    if (!h.ok) throw new Error();
-  } catch (e) { $("down").hidden = false; return; }
-  const r = await api("/api/languages");
+  // With a saved code the page shows at once from the cached language list; the list is then
+  // fetched again (one request through the tunnel), which also checks the code and the server.
+  if (code) {
+    try { INFO = JSON.parse(localStorage.getItem("lcp_info") || "null"); } catch (e) {}
+    if (INFO) showApp();
+  }
+  let r;
+  try { r = await api("/api/languages"); }
+  catch (e) { if (INFO) note("Serverul nu raspunde (oprit momentan)."); else $("down").hidden = false; return; }
   if (r.status === 401 || r.status === 429) {
-    $("login").hidden = false;
+    $("app").hidden = true; $("login").hidden = false;
     if (r.status === 429) $("loginmsg").textContent = "Prea multe incercari; revino mai tarziu.";
     return;
   }
+  if (!r.ok) { note(r.status === 503 ? "Serverul porneste; revino in cateva zeci de secunde."
+                                     : `Serverul a raspuns cu eroarea ${r.status}.`); return; }
   INFO = await r.json();
-  $("login").hidden = true; $("app").hidden = false;
-  $("lang").innerHTML = INFO.languages.map(l => `<option value="${l.code}">${l.name}</option>`).join("");
-  const saved = (() => { try { return localStorage.getItem("lcp_lang"); } catch (e) { return null; } })();
-  if (saved) $("lang").value = saved;
-  showLang(); count();
+  try { localStorage.setItem("lcp_info", JSON.stringify(INFO)); } catch (e) {}
+  showApp();
+}
+function note(t) {
+  if ($("app").hidden) { $("down").textContent = t; $("down").hidden = false; }
+  else { $("msg").textContent = t; $("msg").className = "err"; }
 }
 
 $("login").addEventListener("submit", async ev => {
@@ -277,7 +294,9 @@ $("go").addEventListener("click", async () => {
       }
     }
   } catch (e) {
-    $("msg").textContent = "Eroare: " + e.message; $("msg").className = "err";
+    $("msg").textContent = e instanceof TypeError ? "Serverul nu raspunde (oprit momentan)."
+                                                  : "Eroare: " + e.message;
+    $("msg").className = "err";
   } finally { $("go").disabled = false; count(); }
 });
 
